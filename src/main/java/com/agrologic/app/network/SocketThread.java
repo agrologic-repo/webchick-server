@@ -33,7 +33,7 @@ public class SocketThread extends Thread implements Network {
 
     public static final int BUFFER_SIZE = 256;
     public static final int SLEEP_TIME_BEFORE_CLOSE_SOCKET = 5000;
-    private final List<MessageManager> contMsgManager;
+    private List<MessageManager> contMsgManager;
     private Map<Long, SocketThread> sessionThreadsMap;
     private Cellink cellink;
     private CellinkDao cellinkDao;
@@ -59,6 +59,10 @@ public class SocketThread extends Thread implements Network {
     private NetworkState networkState = NetworkState.STATE_ACCEPT_KEEP_ALIVE;
     private static final int ONE_MINUTE = 60000;
 
+
+    public SocketThread(Cellink cellink){
+        this.cellink = cellink;
+    }
     /**
      * Constructor
      *
@@ -564,5 +568,9 @@ public class SocketThread extends Thread implements Network {
 
     public NetworkState getNetworkState() {
         return networkState;
+    }
+    //TODO: remove it, it's written for tests
+    public boolean isStopThread() {
+        return stopThread;
     }
 }

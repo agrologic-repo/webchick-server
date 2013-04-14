@@ -7,7 +7,7 @@
       <map>
         <entry key="protocol" value="0"/>
         <entry key="language" value="English"/>
-        <entry key="server.ip" value="192.168.1.21"/>
+        <entry key="server.ip" value="192.168.1.101"/>
         <entry key="server.port" value="5500"/>
         <entry key="keepalive.timeout" value="3"/>
         <entry key="com.port" value="COM3"/>

@@ -7,29 +7,27 @@ package com.agrologic.app.network;
 
 //~--- non-JDK imports --------------------------------------------------------
 //import com.agrologic.app.model.Configuration;
-import com.agrologic.app.config.Configuration;
-import org.apache.log4j.Logger;
 
+import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.mysql.impl.CellinkDaoImpl;
-
 import com.agrologic.app.gui.ServerUI;
-
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
-
-//~--- JDK imports ------------------------------------------------------------
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
-
 import java.net.*;
-
 import java.sql.SQLException;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Observable;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Title: ServerSocketThread <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
@@ -49,29 +47,23 @@ public class ServerThread extends Observable implements Runnable {
     public static final int MAX_NUM_SOCKET = 512;
     public static final int MAX_THREAD_IN_POOL = 512;
     public static final int SERVER_SOCKET_TIMEOUT = 5000;
-    private Logger logger = Logger.getLogger(ServerThread.class);
-    private CellinkDao cellinkDao;
+    private final Logger logger = Logger.getLogger(ServerThread.class);
+    private final CellinkDao cellinkDao;
+    private final ClientSessions clientSessions;
     private ServerActivityStates currentState;
     private Object lock;
     private ServerSocket server;
-    private ServerUI serverFacade;
+    private final ServerUI serverFacade;
     private Configuration configuration;
     private Map<Long, SocketThread> threads;
-
-    public ServerThread(Configuration serverPref) {
-        this.cellinkDao = new CellinkDaoImpl();
-        this.configuration = serverPref;
-        this.threads = new HashMap<Long, SocketThread>();
-        this.currentState = ServerActivityStates.IDLE;
-        this.lock = new Object();
-    }
 
     public ServerThread(Configuration serverPref, ServerUI serverFacade) {
         cellinkDao = new CellinkDaoImpl();
         this.configuration = serverPref;
         this.serverFacade = serverFacade;
-        this.threads = new HashMap<Long, SocketThread>();
         this.currentState = ServerActivityStates.IDLE;
+        this.clientSessions = new ClientSessions(configuration, serverFacade, cellinkDao);
+        this.threads = clientSessions.getSessions();
     }
 
     @Override
@@ -114,17 +106,14 @@ public class ServerThread extends Observable implements Runnable {
 
                 case RUNNING:
                     try {
-                        Socket socket = server.accept();
-                        SocketThread newThread = new SocketThread(threads, socket, configuration);
+                        Socket socket = server.accept();//start client session
+                        SocketThread newThread = clientSessions.createSessionWithClient(socket);
                         // notify observers
                         setChanged();
                         notifyObservers(newThread);
-                        newThread.setServreFacade(serverFacade);
-                        newThread.setName("SocketThread-" + socket.getInetAddress());
-                        newThread.start();
                     } catch (SocketTimeoutException ex) {
                         // ignore
-                        
+
                     } catch (SocketException ex) {
                         logger.info("stop server, close server socket.");
                     } catch (IOException ex) {
@@ -212,85 +201,9 @@ public class ServerThread extends Observable implements Runnable {
             try {
                 if (cellinkDao != null) {
                     log.debug("Changing cellinks state to offline state...");
-
-                    Iterator<Cellink> cellinksIterator = serverFacade.iterator();
-                    Iterator<SocketThread> iter = threads.values().iterator();
-
-                    while (iter.hasNext()) {
-                        SocketThread thread = iter.next();
-                        Cellink c = thread.getCellink();
-                        CellinkState state = c.getCellinkState();
-
-                        switch (state.getValue()) {
-                            case CellinkState.STATE_START:
-                                c.setState(CellinkState.STATE_OFFLINE);
-                                threads.get(c.getId()).stopRunning();
-
-                                // threads.remove(c.getId());
-                                break;
-
-                            case CellinkState.STATE_RUNNING:
-                                c.setState(CellinkState.STATE_OFFLINE);
-                                threads.get(c.getId()).stopRunning();
-
-//                          threads.get(c.getId()).setThreadState(ThreadState.STATE_STOP);
-                                // threads.remove(c.getId());
-                                break;
-
-                            case CellinkState.STATE_ONLINE:
-                                c.setState(CellinkState.STATE_OFFLINE);
-                                threads.get(c.getId()).stopRunning();
-
-                                // threads.get(c.getId()).setThreadState(ThreadState.STATE_STOP);
-                                // threads.remove(c.getId());
-                                break;
-
-                            case CellinkState.STATE_RESTART:
-                                c.setState(CellinkState.STATE_OFFLINE);
-                                threads.get(c.getId()).stopRunning();
-
-                                // threads.get(c.getId()).setThreadState(ThreadState.STATE_STOP);
-                                // threads.remove(c.getId());
-                                break;
-
-                            case CellinkState.STATE_UNKNOWN:
-                                c.setState(CellinkState.STATE_OFFLINE);
-                                threads.get(c.getId()).stopRunning();
-
-                                // threads.get(c.getId()).setThreadState(ThreadState.STATE_STOP);
-                                // threads.remove(c.getId());
-                                break;
-
-                            case CellinkState.STATE_STOP:
-                                c.setState(CellinkState.STATE_OFFLINE);
-                                threads.get(c.getId()).stopRunning();
-
-                                // threads.get(c.getId()).setThreadState(ThreadState.STATE_STOP);
-                                // threads.remove(c.getId());
-                                break;
-
-                            default:
-                                break;
-                        }
-
-                        cellinkDao.update(c);
-                    }
-
-                    synchronized (cellinksIterator) {
-                        while (cellinksIterator.hasNext()) {
-                            Cellink c = cellinksIterator.next();
-
-                            if (c.getCellinkState().getValue() != CellinkState.STATE_OFFLINE) {
-                                c.setState(CellinkState.STATE_OFFLINE);
-                                cellinkDao.update(c);
-                            }
-
-                            log.debug("Cellink " + c + " offline now ");
-                        }
-                    }
-
-                    log.debug("Cellinks state are offline now!");
+                    clientSessions.closeAllSessions();
                 }
+                log.debug("Cellinks state are offline now!");
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (Exception e) {
@@ -330,7 +243,6 @@ public class ServerThread extends Observable implements Runnable {
     }
 
     /**
-     *
      * @return ServerActivityStates the server activity state
      */
     public ServerActivityStates getServerState() {
