@@ -14,15 +14,17 @@ import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
 import com.agrologic.app.model.Controller;
-import com.agrologic.app.util.ByteUtil;
 import com.agrologic.app.util.Util;
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.*;
-import org.apache.log4j.Logger;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Title: ServerNetThread <br> Description: <br> Copyright: Copyright (c) 2009 <br>
@@ -59,7 +61,7 @@ public class SocketThread extends Thread implements Network {
     private static final int ONE_MINUTE = 60000;
 
 
-    public SocketThread(Cellink cellink){
+    public SocketThread(Cellink cellink) {
         this.cellink = cellink;
         this.clientSessions = null;
     }
@@ -294,7 +296,6 @@ public class SocketThread extends Thread implements Network {
     }
 
     /**
-     *
      * @throws SQLException
      * @throws IOException
      */
@@ -390,37 +391,22 @@ public class SocketThread extends Thread implements Network {
                 return false;
             }
 
-            int stx = ByteUtil.indexOf(buffer, Message.STX);
-            int etx = ByteUtil.indexOf(buffer, Message.ETX);
-            if (stx < 0 || etx < 0) {
+            KeepAliveMessage keepAlive;
+            try {
+                keepAlive = KeepAliveMessage.parseIncomingBytes(buffer);
+            } catch (WrongMessageFormatException e) {
                 logger.info("KeepAlive message validation error.");
                 logger.info("The client IP:PORT [ " + comControl.getSocket().getRemoteSocketAddress() + " ]");
                 return false;
             }
-            byte[] data = Arrays.copyOfRange(buffer, stx + 1, etx);
-            List<byte[]> dataList = ByteUtil.split(data, Message.RS);
-
-            int PASS_INDEX = 0;
-            int NAME_INDEX = 1;
-            int VERS_INDEX = 2;
-            data = dataList.get(PASS_INDEX);
-            String psswd = new String(data, 0, data.length);
-            data = dataList.get(NAME_INDEX);
-            String name = new String(data, 0, data.length);
-            String vers = "N/A";
-            if (dataList.size() > VERS_INDEX) {
-                data = dataList.get(VERS_INDEX);
-                vers = new String(data, 0, data.length);
-            }
-
-            cellink = cellinkDao.validate(name, psswd);
+            cellink = cellinkDao.validate(keepAlive.getUsername(), keepAlive.getPassword());
             if (cellink.getValidate() == true) {
                 comControl.write(new RequestMessage(MessageType.KEEP_ALIVE, keepAliveTimeout));
                 clientSessions.closeDuplicateSession(this);
                 // stop running duplicated thread
                 cellink.registrate(comControl.getSocket());
                 cellink.setState(CellinkState.STATE_ONLINE);
-                cellink.setVersion(vers);
+                cellink.setVersion(keepAlive.getVersion());
                 cellinkDao.update(cellink);
                 keepAliveTime = System.currentTimeMillis();
                 clientSessions.openSession(cellink.getId(), this);
@@ -551,6 +537,7 @@ public class SocketThread extends Thread implements Network {
     public NetworkState getNetworkState() {
         return networkState;
     }
+
     //TODO: remove it, it's written for tests
     public boolean isStopThread() {
         return stopThread;
