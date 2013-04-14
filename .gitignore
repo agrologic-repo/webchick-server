@@ -1,0 +1,12 @@
+*.class
+
+screen.ser
+# Package Files #
+*.jar
+*.war
+*.ear
+target
+
+#IntelliJ
+.idea
+*.iml
