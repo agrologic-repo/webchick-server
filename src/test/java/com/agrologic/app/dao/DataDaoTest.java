@@ -15,6 +15,7 @@ import org.junit.*;
  *
  * @author Administrator
  */
+@Ignore
 public class DataDaoTest {
 
     static DataDao dao;

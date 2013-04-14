@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Administrator
  */
+@Ignore
 public class TestAlarmDao {
     long programId = 83901;
     long langId = 2;

@@ -22,6 +22,7 @@ import org.junit.*;
  *
  * @author Administrator
  */
+@Ignore
 public class DerbyGasDaoTest {
 
     private Long flockId = Long.valueOf(1);

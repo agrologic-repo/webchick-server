@@ -5,6 +5,7 @@
 package com.agrologic.app.network;
 
 import org.junit.AfterClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -13,6 +14,7 @@ import org.junit.BeforeClass;
  *
  * @author Administrator
  */
+@Ignore
 public class TestCalcCheckSum {
 
     String shortString = "4096 116 ";

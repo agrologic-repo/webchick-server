@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Administrator
  */
+@Ignore
 public class TestRelayDao {
 
     RelayDao dao;

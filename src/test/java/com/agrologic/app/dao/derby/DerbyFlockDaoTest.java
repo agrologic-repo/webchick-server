@@ -18,6 +18,7 @@ import org.junit.*;
  *
  * @author Administrator
  */
+@Ignore
 public class DerbyFlockDaoTest extends BaseDaoTestCase {
 
     private long flockId = 1;

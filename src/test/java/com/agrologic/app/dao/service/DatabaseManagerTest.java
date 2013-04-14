@@ -26,6 +26,7 @@ import org.junit.*;
  *
  * @author Administrator
  */
+@Ignore
 public class DatabaseManagerTest {
 
     long userId = 119;

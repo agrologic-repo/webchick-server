@@ -13,6 +13,7 @@ import org.junit.*;
  *
  * @author Administrator
  */
+@Ignore
 public class ScreenDaoTest {
     long programId  = 83901;
     long screenId   = 1;

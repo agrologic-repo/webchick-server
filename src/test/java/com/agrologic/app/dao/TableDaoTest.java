@@ -16,6 +16,7 @@ import org.junit.*;
  *
  * @author Administrator
  */
+@Ignore
 public class TableDaoTest {
 
     long programId = 83901;

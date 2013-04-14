@@ -9,16 +9,16 @@ import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.dao.derby.impl.DerbyProgramDaoImpl;
-import org.junit.AfterClass;
+import org.junit.*;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 /**
  *
  * @author Administrator
  */
+@Ignore
 public class DerbyProgramDaoTest {
     private ProgramDao dao;
 

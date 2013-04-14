@@ -16,6 +16,7 @@ import org.junit.*;
  *
  * @author Administrator
  */
+@Ignore
 public class DerbyLanguageDaoTest extends BaseDaoTestCase {
 
     Language language;
