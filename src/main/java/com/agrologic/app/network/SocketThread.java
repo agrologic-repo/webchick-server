@@ -30,11 +30,9 @@ import org.apache.log4j.Logger;
  * @version 1.0 <br>
  */
 public class SocketThread extends Thread implements Network {
-
     public static final int BUFFER_SIZE = 256;
     public static final int SLEEP_TIME_BEFORE_CLOSE_SOCKET = 5000;
     private List<MessageManager> contMsgManager;
-    private Map<Long, SocketThread> sessionThreadsMap;
     private Cellink cellink;
     private CellinkDao cellinkDao;
     private ControllerDao controllerDao;
@@ -43,6 +41,7 @@ public class SocketThread extends Thread implements Network {
     private ResponseMessageMap responseMessageMap;
     private RequestMessageQueue requestQueue;
     private ServerUI serverFacade;
+    private final ClientSessions clientSessions;
     /**
      * communication
      */
@@ -62,16 +61,10 @@ public class SocketThread extends Thread implements Network {
 
     public SocketThread(Cellink cellink){
         this.cellink = cellink;
+        this.clientSessions = null;
     }
-    /**
-     * Constructor
-     *
-     * @param threads
-     * @param socket the socket
-     * @param configuration the server preferences
-     * @throws IOException
-     */
-    public SocketThread(Map<Long, SocketThread> threads, Socket socket, Configuration configuration) throws IOException {
+
+    public SocketThread(ClientSessions clientSessions, Socket socket, Configuration configuration) throws IOException {
         this.comControl = new ComControl(socket);
         this.cellinkDao = new CellinkDaoImpl();
         this.controllerDao = new ControllerDaoImpl();
@@ -83,7 +76,7 @@ public class SocketThread extends Thread implements Network {
         this.nxtDelay = Integer.parseInt(configuration.getNextDelay());
         this.maxError = Integer.parseInt(configuration.getMaxErrors());
         this.keepAliveTimeout = configuration.getKeepalive();
-        this.sessionThreadsMap = threads;
+        this.clientSessions = clientSessions;
         this.contMsgManager = new ArrayList<MessageManager>();
     }
 
@@ -423,14 +416,14 @@ public class SocketThread extends Thread implements Network {
             cellink = cellinkDao.validate(name, psswd);
             if (cellink.getValidate() == true) {
                 comControl.write(new RequestMessage(MessageType.KEEP_ALIVE, keepAliveTimeout));
-                removeDupThread(cellink.getId());
+                clientSessions.closeDuplicateSession(this);
                 // stop running duplicated thread
                 cellink.registrate(comControl.getSocket());
                 cellink.setState(CellinkState.STATE_ONLINE);
                 cellink.setVersion(vers);
                 cellinkDao.update(cellink);
                 keepAliveTime = System.currentTimeMillis();
-                sessionThreadsMap.put(cellink.getId(), this);
+                clientSessions.openSession(cellink.getId(), this);
                 logger.info("validation cellink ok  [ " + cellink + " ]");
                 return true;
             } else {
@@ -504,17 +497,6 @@ public class SocketThread extends Thread implements Network {
 
     public synchronized void stopRunning() {
         stopThread = true;
-    }
-
-    private void removeDupThread(Long cellinkId) {
-        if (sessionThreadsMap.containsKey(cellinkId)) {
-            SocketThread dupThread = sessionThreadsMap.get(cellinkId);
-            ComControl dupComControl = dupThread.getComControl();
-            if (!comControl.equals(dupComControl)) {
-                dupThread.stopRunning();
-                dupThread = null;
-            }
-        }
     }
 
     private void removeControllersData() throws SQLException {

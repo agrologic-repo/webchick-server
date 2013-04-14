@@ -13,12 +13,18 @@ import static org.mockito.Mockito.*;
 
 public class ClientSessionsTest {
     private CellinkDao cellinkDao = mock(CellinkDao.class);
-    private ClientSessions sut = new ClientSessions(null, null, cellinkDao);
+
+    @Test
+    public void closeDuplicateSessionShouldDoNothingIfNoDuplicate() {
+        ClientSessions sut = createSut(sessionWithId(1L));
+        sut.closeDuplicateSession(sessionWithId(2L));
+        assertEquals(1, sut.getSessions().size());
+    }
 
     @Test
     public void closeAllSessionsStopsRunningThread() throws Exception {
         SocketThread givenSession = sessionWithState(CellinkState.STATE_ONLINE);
-        sut.getSessions().put(1L, givenSession);
+        ClientSessions sut = createSut(givenSession);
         sut.closeAllSessions();
 
         assertTrue(givenSession.isStopThread());
@@ -28,7 +34,7 @@ public class ClientSessionsTest {
     public void closeAllSessionsIsNoOpIfSessionAlreadyStopped() throws Exception {
         SocketThread givenSession = sessionWithState(CellinkState.STATE_ONLINE);
         givenSession.stopRunning();
-        sut.getSessions().put(1L, givenSession);
+        ClientSessions sut = createSut(givenSession);
         sut.closeAllSessions();
 
         assertTrue(givenSession.isStopThread());
@@ -37,7 +43,7 @@ public class ClientSessionsTest {
     @Test
     public void closeAllSessionsSavesChangesToDb() throws Exception {
         SocketThread givenSession = sessionWithState(CellinkState.STATE_ONLINE);
-        sut.getSessions().put(1L, givenSession);
+        ClientSessions sut = createSut(givenSession);
         sut.closeAllSessions();
 
         assertEquals(CellinkState.STATE_OFFLINE, givenSession.getCellink().getState());
@@ -46,20 +52,42 @@ public class ClientSessionsTest {
 
     @Test
     public void closeAllSessionsShouldNotSaveIfStateWasOffline() throws Exception {
-        sut.getSessions().put(1L, sessionWithState(CellinkState.STATE_OFFLINE));
+        ClientSessions sut = createSut(sessionWithState(CellinkState.STATE_OFFLINE));
         sut.closeAllSessions();
         verify(cellinkDao, never()).update(any(Cellink.class));
     }
 
     @Test
     public void closeAllSessionsDoesNothingIfNoSessions() throws Exception {
-        sut.closeAllSessions();
+        createSut().closeAllSessions();
+    }
+
+    private ClientSessions createSut(SocketThread... sessions) {
+        ClientSessions clientSessions = new ClientSessions(null, null, cellinkDao);
+        for (SocketThread session : sessions) {
+            clientSessions.getSessions().put(session.getCellink().getId(), session);
+        }
+        return clientSessions;
+    }
+
+    private SocketThread sessionWithId(Long id) {
+        Cellink cellink = new Cellink();
+        cellink.setId(id);
+        return new SocketThread(cellink);
     }
 
     private SocketThread sessionWithState(Integer state) {
         Cellink cellink = new Cellink();
         cellink.setId(1L);
         cellink.setState(state);
+        return new SocketThread(cellink);
+    }
+
+    private SocketThread session(Long id, Integer state) {
+        Cellink cellink = new Cellink();
+        cellink.setId(id);
+        cellink.setState(state);
+
         return new SocketThread(cellink);
     }
 }
