@@ -11,16 +11,16 @@ import com.agrologic.app.dao.MedicineDao;
 import com.agrologic.app.dao.derby.impl.DerbyMedicineDaoImpl;
 import com.agrologic.app.model.Medicine;
 import java.sql.SQLException;
-import org.junit.AfterClass;
+
+import org.junit.*;
+
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  *
  * @author Administrator
  */
+@Ignore
 public class DerbyMedicineDaoTest {
 
     private Long cellinkId = Long.valueOf(34);

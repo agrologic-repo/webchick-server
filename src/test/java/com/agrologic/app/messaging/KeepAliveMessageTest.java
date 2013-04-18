@@ -1,5 +1,6 @@
 package com.agrologic.app.messaging;
 
+import org.apache.commons.lang.Validate;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,9 +23,10 @@ public class KeepAliveMessageTest {
 
     @Test
     public void testParseIncomingBytesIfBufferIsNull() throws WrongMessageFormatException {
+        byte[] nullArg = null;
         try {
-            KeepAliveMessage.parseIncomingBytes(null);
-        } catch (NullPointerException e) {
+            KeepAliveMessage.parseIncomingBytes(nullArg);
+        } catch (IllegalArgumentException e) {
             assert (e.getMessage().equals(KeepAliveMessage.BUUFER_IS_NULL_MSG));
         }
     }

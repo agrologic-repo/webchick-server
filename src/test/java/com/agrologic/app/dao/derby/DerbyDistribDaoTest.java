@@ -11,16 +11,16 @@ import com.agrologic.app.dao.DistribDao;
 import com.agrologic.app.dao.derby.impl.DerbyDistribDaoImpl;
 import com.agrologic.app.model.Distrib;
 import java.sql.SQLException;
-import org.junit.AfterClass;
+
+import org.junit.*;
+
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  *
  * @author Administrator
  */
+@Ignore
 public class DerbyDistribDaoTest {
 
     private Long flockId = Long.valueOf(1);

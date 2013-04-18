@@ -5,12 +5,14 @@
 package com.agrologic.app.dao;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 
 /**
  * Base class for running Dao tests.
  *
  * @author mraible
  */
+@Ignore
 public abstract class BaseDaoTestCase {
 
     protected final Logger log = Logger.getLogger(getClass().getName());

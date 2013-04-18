@@ -12,16 +12,16 @@ import com.agrologic.app.dao.derby.impl.DerbyFeedTypeDaoImpl;
 import com.agrologic.app.model.FeedType;
 import java.sql.SQLException;
 import java.util.List;
-import org.junit.AfterClass;
+
+import org.junit.*;
+
 import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  *
  * @author Administrator
  */
+@Ignore
 public class DerbyFeedTypeDaoTest {
     private Long cellinkId  = Long.valueOf(34);
     private Long flockId = Long.valueOf(1);

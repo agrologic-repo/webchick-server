@@ -69,13 +69,9 @@ public class ServerThread extends Observable implements Runnable {
     @Override
     public void run() {
         ShutdownHook shutdownHook = new ShutdownHook(threads);
-
         Runtime.getRuntime().addShutdownHook(shutdownHook);
-
         MonitorThread monitor = new MonitorThread();
-
         monitor.start();
-
         boolean running = true;
 
         LOOP:
