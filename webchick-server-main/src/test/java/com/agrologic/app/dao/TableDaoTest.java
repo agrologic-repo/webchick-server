@@ -37,7 +37,7 @@ public class TableDaoTest {
 
     @Before
     public void setUp() {
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getTableDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getTableDao();
     }
 
     @After

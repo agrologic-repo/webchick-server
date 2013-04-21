@@ -3,9 +3,7 @@
  */
 package com.agrologic.app.network;
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.FlockDao;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.ControllerDaoImpl;
 import com.agrologic.app.dao.mysql.impl.DataDaoImpl;
 import com.agrologic.app.dao.mysql.impl.FlockDaoImpl;
@@ -72,9 +70,10 @@ public class MessageManager implements Observer {
     public MessageManager(Controller controller) {
         this.controller = controller;
         this.requests = new RequestPriorityQueue(controller.getNetName());
-        this.controllerDao = new ControllerDaoImpl();
-        this.flockDao = new FlockDaoImpl();
-        this.dataDao = new DataDaoImpl();
+        DaoFactory daoFactory = DbImplDecider.getDaoFactory(DaoType.MYSQL);
+        this.controllerDao = daoFactory.getControllerDao();
+        this.flockDao = daoFactory.getFlockDao();
+        this.dataDao = daoFactory.getDataDao();
         this.logger = Logger.getLogger(MessageManager.class);
     }
 

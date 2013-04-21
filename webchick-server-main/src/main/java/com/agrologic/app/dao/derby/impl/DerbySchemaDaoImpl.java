@@ -7,7 +7,7 @@ package com.agrologic.app.dao.derby.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.SchemaDaoImpl;
 
 /**
@@ -16,12 +16,8 @@ import com.agrologic.app.dao.mysql.impl.SchemaDaoImpl;
  */
 public class DerbySchemaDaoImpl extends SchemaDaoImpl {
 
-    public DerbySchemaDaoImpl() {
-        this(DaoType.DERBY);
-    }
-
-    public DerbySchemaDaoImpl(DaoType daoType) {
-        super(daoType);
+    public DerbySchemaDaoImpl(DaoFactory daoFactory) {
+        super(daoFactory);
     }
 }
 

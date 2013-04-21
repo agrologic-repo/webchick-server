@@ -5,8 +5,8 @@
 package com.agrologic.app.dao.derby;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.GasDao;
 import com.agrologic.app.dao.derby.impl.DerbyGasDaoImpl;
 import com.agrologic.app.model.Gas;
@@ -43,7 +43,7 @@ public class DerbyGasDaoTest {
 
     @Before
     public void setUp() {
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getGasDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getGasDao();
     }
 
 //    @Test

@@ -12,6 +12,7 @@ import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.mysql.impl.CellinkDaoImpl;
 import com.agrologic.app.gui.ServerUI;
 import com.agrologic.app.model.Cellink;
@@ -58,7 +59,7 @@ public class ServerThread extends Observable implements Runnable {
     private Map<Long, SocketThread> threads;
 
     public ServerThread(Configuration serverPref, ServerUI serverFacade) {
-        cellinkDao = new CellinkDaoImpl();
+        cellinkDao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getCellinkDao();
         this.configuration = serverPref;
         this.serverFacade = serverFacade;
         this.currentState = ServerActivityStates.IDLE;
@@ -252,7 +253,7 @@ public class ServerThread extends Observable implements Runnable {
 
         // change cellink state to offline
         Logger log = Logger.getLogger(ServerThread.class);
-        CellinkDao cellinkDao = DaoFactory.getDaoFactory(DaoType.MYSQL).getCellinkDao();
+        CellinkDao cellinkDao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getCellinkDao();
 
         try {
             if (cellinkDao != null) {

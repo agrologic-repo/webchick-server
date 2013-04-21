@@ -5,8 +5,8 @@
 package com.agrologic.app.dao.derby;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.TransactionDao;
 import com.agrologic.app.dao.derby.impl.DerbyTransactionDaoImpl;
 import com.agrologic.app.model.Transaction;
@@ -40,7 +40,7 @@ public class DerbyTransactionDaoTest {
 
     @Before
     public void setUp() {
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getTransactionDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getTransactionDao();
     }
 
     @Test

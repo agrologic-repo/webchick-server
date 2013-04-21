@@ -43,19 +43,19 @@ public class FlockManagerService {
     public FlockManagerService() {
         Configuration conf = new Configuration();
         cellinkId = Long.parseLong(conf.getCellinkId());
-        fuelDao = DaoFactory.getDaoFactory(DaoType.DERBY).getFuelDao();
-        gasDao = DaoFactory.getDaoFactory(DaoType.DERBY).getGasDao();
-        spreadDao = DaoFactory.getDaoFactory(DaoType.DERBY).getSpreadDao();
-        feedDao = DaoFactory.getDaoFactory(DaoType.DERBY).getFeedDao();
-        feedTypeDao = DaoFactory.getDaoFactory(DaoType.DERBY).getFeedTypeDao();
-        workerDao = DaoFactory.getDaoFactory(DaoType.DERBY).getWorkerDao();
-        laborDao = DaoFactory.getDaoFactory(DaoType.DERBY).getLaborDao();
-        medicineDao = DaoFactory.getDaoFactory(DaoType.DERBY).getMedicineDao();
-        transactionDao = DaoFactory.getDaoFactory(DaoType.DERBY).getTransactionDao();
-        distribDao = DaoFactory.getDaoFactory(DaoType.DERBY).getDistribDao();
-        dataDao = DaoFactory.getDaoFactory(DaoType.DERBY).getDataDao();
-        flockDao = DaoFactory.getDaoFactory(DaoType.DERBY).getFlockDao();
-        controllerDao = DaoFactory.getDaoFactory(DaoType.DERBY).getControllerDao();
+        fuelDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFuelDao();
+        gasDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getGasDao();
+        spreadDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getSpreadDao();
+        feedDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFeedDao();
+        feedTypeDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFeedTypeDao();
+        workerDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getWorkerDao();
+        laborDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getLaborDao();
+        medicineDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getMedicineDao();
+        transactionDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getTransactionDao();
+        distribDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getDistribDao();
+        dataDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getDataDao();
+        flockDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFlockDao();
+        controllerDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getControllerDao();
     }
 
     public void addFlock(Flock flock) {

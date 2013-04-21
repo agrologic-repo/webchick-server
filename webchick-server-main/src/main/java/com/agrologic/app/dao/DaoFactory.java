@@ -90,26 +90,6 @@ public abstract class DaoFactory {
         return false;
     }
 
-    // List of DAO types supported by the factory
-    // There will be a method for each DAO that can be
-    // created. The concrete factories will have to
-    // implement these methods.
-    // There will be a method for each DAO that can be
-    // created. The concrete factories will have to
-    // implement these methods.
-    public static DaoFactory getDaoFactory(DaoType daoType) {
-        switch (daoType) {
-            case DERBY:
-                return DerbyDaoFactory.instance();
-
-            case MYSQL:
-                return MySqlDaoFactory.instance();
-
-            default:
-                return null;
-        }
-    }
-
     public abstract SchemaDao getSchemaDao();
 
     public abstract UserDao getUserDao();

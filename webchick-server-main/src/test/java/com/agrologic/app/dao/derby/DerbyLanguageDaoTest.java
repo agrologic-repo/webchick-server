@@ -36,7 +36,7 @@ public class DerbyLanguageDaoTest extends BaseDaoTestCase {
 
     @Before
     public void setUp() {
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getLanguageDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getLanguageDao();
     }
 
     @After

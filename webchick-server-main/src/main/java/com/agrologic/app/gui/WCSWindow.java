@@ -12,11 +12,10 @@
 package com.agrologic.app.gui;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.mysql.MySqlDaoFactory;
 import com.agrologic.app.except.StartProgramException;
-import com.agrologic.app.gui.wizard.WizardRunner;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
 import com.agrologic.app.network.*;
@@ -177,10 +176,9 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         initServerSocketThread();
 
         try {
-            ((MySqlDaoFactory) DaoFactory.getDaoFactory(DaoType.MYSQL)).getMySQLVersion();
+            ((MySqlDaoFactory) DbImplDecider.getDaoFactory(DaoType.MYSQL)).getMySQLVersion();
         } catch (RuntimeException e) {
             openConfiguration();
-//            cellinkTable.startMonitoring();
         }
     }
 
@@ -480,11 +478,6 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         btnWizardDB.setMaximumSize(new java.awt.Dimension(32, 32));
         btnWizardDB.setMinimumSize(new java.awt.Dimension(32, 32));
         btnWizardDB.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnWizardDB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnWizardDBActionPerformed(evt);
-            }
-        });
         ToolBar.add(btnWizardDB);
 
         pnlServer.setBorder(javax.swing.BorderFactory.createTitledBorder("Server Info"));
@@ -705,15 +698,6 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
             }
         }
     }//GEN-LAST:event_btnCloseUnusedActionPerformed
-
-    private void btnWizardDBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWizardDBActionPerformed
-        WizardRunner wr = new WizardRunner(this);
-        try {
-            wr.call();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }//GEN-LAST:event_btnWizardDBActionPerformed
 
     /**
      * @param args the command line arguments

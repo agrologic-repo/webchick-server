@@ -9,6 +9,7 @@ import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.except.ObjectDoesNotExist;
 import com.agrologic.app.model.Cellink;
@@ -64,11 +65,11 @@ public class DatabaseManagerTest {
     public void doLoadTableDataTest() throws SQLException, ObjectDoesNotExist {
         dbManager.doLoadTableData(config.getUserId(), config.getCellinkId());
 
-        User user = DaoFactory.getDaoFactory(DaoType.DERBY).getUserDao().getById(userId);
-        Cellink cellink = DaoFactory.getDaoFactory(DaoType.DERBY).getCellinkDao().getById(cellinkId);
+        User user = DbImplDecider.getDaoFactory(DaoType.DERBY).getUserDao().getById(userId);
+        Cellink cellink = DbImplDecider.getDaoFactory(DaoType.DERBY).getCellinkDao().getById(cellinkId);
         user.addCellink(cellink);
 
-        List<Controller> controllers = (List<Controller>) DaoFactory.getDaoFactory(DaoType.DERBY).getControllerDao().getActiveCellinkControllers(cellinkId);
+        List<Controller> controllers = (List<Controller>) DbImplDecider.getDaoFactory(DaoType.DERBY).getControllerDao().getActiveCellinkControllers(cellinkId);
         cellink.setControllers(controllers);
 
         assertEquals("getUser()", user, dbManager.getDatabaseLoader().getUser());

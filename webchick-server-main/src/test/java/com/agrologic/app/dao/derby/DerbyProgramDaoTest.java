@@ -5,8 +5,8 @@
 package com.agrologic.app.dao.derby;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.dao.derby.impl.DerbyProgramDaoImpl;
 import org.junit.*;
@@ -35,7 +35,7 @@ public class DerbyProgramDaoTest {
 
     @Before
     public void setUp() {
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getProgramDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getProgramDao();
     }
 
     @Test

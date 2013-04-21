@@ -180,117 +180,117 @@ public class DerbyDaoFactory extends DaoFactory {
 
     @Override
     public SchemaDao getSchemaDao() {
-        return new DerbySchemaDaoImpl();
+        return new DerbySchemaDaoImpl(this);
     }
 
     @Override
     public UserDao getUserDao() {
-        return new DerbyUserDaoImpl();
+        return new DerbyUserDaoImpl(this);
     }
 
     @Override
     public CellinkDao getCellinkDao() {
-        return new DerbyCellinkDaoImpl();
+        return new DerbyCellinkDaoImpl(this);
     }
 
     @Override
     public ControllerDao getControllerDao() {
-        return new DerbyControllerDaoImpl();
+        return new DerbyControllerDaoImpl(this);
     }
 
     @Override
     public ProgramDao getProgramDao() {
-        return new DerbyProgramDaoImpl();
+        return new DerbyProgramDaoImpl(this);
     }
 
     @Override
     public ScreenDao getScreenDao() {
-        return new DerbyScreenDaoImpl();
+        return new DerbyScreenDaoImpl(this);
     }
 
     @Override
     public TableDao getTableDao() {
-        return new DerbyTableDaoImpl();
+        return new DerbyTableDaoImpl(this);
     }
 
     @Override
     public DataDao getDataDao() {
-        return new DerbyDataDaoImpl();
+        return new DerbyDataDaoImpl(this);
     }
 
     @Override
     public AlarmDao getAlarmDao() {
-        return new DerbyAlarmDaoImpl();
+        return new DerbyAlarmDaoImpl(this);
     }
 
     @Override
     public RelayDao getRelayDao() {
-        return new DerbyRelayDaoImpl();
+        return new DerbyRelayDaoImpl(this);
     }
 
     @Override
     public SystemStateDao getSystemStateDao() {
-        return new DerbySystemStateDaoImpl();
+        return new DerbySystemStateDaoImpl(this);
     }
 
     @Override
     public LanguageDao getLanguageDao() {
-        return new DerbyLanguageDaoImpl();
+        return new DerbyLanguageDaoImpl(this);
     }
 
     @Override
     public FlockDao getFlockDao() {
-        return new DerbyFlockDaoImpl();
+        return new DerbyFlockDaoImpl(this);
     }
 
     @Override
     public DistribDao getDistribDao() {
-        return new DerbyDistribDaoImpl();
+        return new DerbyDistribDaoImpl(this);
     }
 
     @Override
     public FeedDao getFeedDao() {
-        return new DerbyFeedDaoImpl();
+        return new DerbyFeedDaoImpl(this);
     }
 
     @Override
     public FeedTypeDao getFeedTypeDao() {
-        return new DerbyFeedTypeDaoImpl();
+        return new DerbyFeedTypeDaoImpl(this);
     }
 
     @Override
     public FuelDao getFuelDao() {
-        return new DerbyFuelDaoImpl();
+        return new DerbyFuelDaoImpl(this);
     }
 
     @Override
     public LaborDao getLaborDao() {
-        return new DerbyLaborDaoImpl();
+        return new DerbyLaborDaoImpl(this);
     }
 
     @Override
     public GasDao getGasDao() {
-        return new DerbyGasDaoImpl();
+        return new DerbyGasDaoImpl(this);
     }
 
     @Override
     public MedicineDao getMedicineDao() {
-        return new DerbyMedicineDaoImpl();
+        return new DerbyMedicineDaoImpl(this);
     }
 
     @Override
     public SpreadDao getSpreadDao() {
-        return new DerbySpreadDaoImpl();
+        return new DerbySpreadDaoImpl(this);
     }
 
     @Override
     public TransactionDao getTransactionDao() {
-        return new DerbyTransactionDaoImpl();
+        return new DerbyTransactionDaoImpl(this);
     }
 
     @Override
     public WorkerDao getWorkerDao() {
-        return new DerbyWorkerDaoImpl();
+        return new DerbyWorkerDaoImpl(this);
     }
 
     /**

@@ -57,8 +57,8 @@ public class Graphs24HourPanel extends JPanel {
     public Graphs24HourPanel(Long controllerId) {
         try {
             initComponents();
-            controllerDao = DaoFactory.getDaoFactory(DaoType.DERBY).getControllerDao();
-            dataDao = DaoFactory.getDaoFactory(DaoType.DERBY).getDataDao();
+            controllerDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getControllerDao();
+            dataDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getDataDao();
             chartPanels = new ArrayList<ChartPanel>();
             createGraph(controllerId);
             repaint();

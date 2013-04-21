@@ -5,8 +5,8 @@
 package com.agrologic.app.dao.derby;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.SpreadDao;
 import com.agrologic.app.dao.derby.impl.DerbySpreadDaoImpl;
 import com.agrologic.app.model.Spread;
@@ -43,7 +43,7 @@ public class DerbySpreadDaoTest {
 
     @Before
     public void setUp() {
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getSpreadDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getSpreadDao();
     }
 
     @Test

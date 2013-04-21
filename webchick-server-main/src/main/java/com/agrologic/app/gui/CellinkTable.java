@@ -7,6 +7,8 @@ package com.agrologic.app.gui;
 
 //~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.CellinkDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.mysql.impl.CellinkDaoImpl;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
@@ -146,7 +148,7 @@ public final class CellinkTable extends JTable {
      */
     private Collection<Cellink> retrieveCellinks() {
         if (cellinkDao == null) {
-            cellinkDao = new CellinkDaoImpl();
+            cellinkDao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getCellinkDao();
         }
 
         try {

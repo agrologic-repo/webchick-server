@@ -7,6 +7,7 @@ package com.agrologic.app.gui.flock;
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.gui.ConfigurationDialog;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.util.Windows;
@@ -33,7 +34,7 @@ public class DesignScreen extends javax.swing.JDialog {
         initComponents();
         Windows.centerOnScreen(DesignScreen.this);
         progressBar.setVisible(false);
-        controllerDao = DaoFactory.getDaoFactory(DaoType.DERBY).getControllerDao();
+        controllerDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getControllerDao();
         try {
             List<Controller> controllers = (List<Controller>) controllerDao.getAll();
             controllerEntries = new ArrayList<ControllerEntry>();

@@ -35,7 +35,7 @@ public class TestAlarmDao {
 
     @Before
     public void setUp() {
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getAlarmDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getAlarmDao();
     }
 
     @After

@@ -4,10 +4,7 @@
  */
 package com.agrologic.app.dao.derby;
 
-import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DistribDao;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.derby.impl.DerbyDistribDaoImpl;
 import com.agrologic.app.model.Distrib;
 import java.sql.SQLException;
@@ -40,7 +37,7 @@ public class DerbyDistribDaoTest {
 
     @Before
     public void setUp() {
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getDistribDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getDistribDao();
     }
 
 //    @Test

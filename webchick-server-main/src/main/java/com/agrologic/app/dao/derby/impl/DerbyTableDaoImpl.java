@@ -8,7 +8,7 @@ package com.agrologic.app.dao.derby.impl;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.TableDaoImpl;
@@ -29,12 +29,8 @@ import java.sql.*;
  */
 public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, DropableDao, RemovebleDao  {
 
-    public DerbyTableDaoImpl() {
-        this(DaoType.DERBY);
-    }
-
-    public DerbyTableDaoImpl(DaoType daoType) {
-        super(daoType);
+    public DerbyTableDaoImpl(DaoFactory daoFactory) {
+        super(daoFactory);
     }
 
     @Override

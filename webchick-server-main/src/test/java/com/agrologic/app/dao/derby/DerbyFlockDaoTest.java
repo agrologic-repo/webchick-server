@@ -39,7 +39,7 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
 
     @Before
     public void setUp() {
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getFlockDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFlockDao();
     }
 
     @After
@@ -145,10 +145,10 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
     public void testCopyFlockHistory() throws SQLException {
         long flockIdMySql = 137;
         long flockIdDerby = 1;
-        dao = DaoFactory.getDaoFactory(DaoType.MYSQL).getFlockDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getFlockDao();
         Map<Integer, String> historyByFlockMySQL = dao.getAllHistoryByFlock(flockIdMySql);
 
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getFlockDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFlockDao();
         Map<Integer, String> historyByFlockDerby = dao.getAllHistoryByFlock(flockIdDerby);
 
         Set<Entry<Integer, String>> entries = historyByFlockDerby.entrySet();

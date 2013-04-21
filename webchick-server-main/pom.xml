@@ -33,5 +33,10 @@
             <artifactId>webchick-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>webchick-dao-mysql</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

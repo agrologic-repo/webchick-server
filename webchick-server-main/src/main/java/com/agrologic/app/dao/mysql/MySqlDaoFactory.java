@@ -179,117 +179,117 @@ public class MySqlDaoFactory extends DaoFactory {
 
     @Override
     public SchemaDao getSchemaDao() {
-        return new SchemaDaoImpl();
+        return new SchemaDaoImpl(this);
     }
 
     @Override
     public UserDao getUserDao() {
-        return new UserDaoImpl();
+        return new UserDaoImpl(this);
     }
 
     @Override
     public CellinkDao getCellinkDao() {
-        return new CellinkDaoImpl();
+        return new CellinkDaoImpl(this);
     }
 
     @Override
     public ControllerDao getControllerDao() {
-        return new ControllerDaoImpl();
+        return new ControllerDaoImpl(this);
     }
 
     @Override
     public ProgramDao getProgramDao() {
-        return new ProgramDaoImpl();
+        return new ProgramDaoImpl(this);
     }
 
     @Override
     public ScreenDao getScreenDao() {
-        return new ScreenDaoImpl();
+        return new ScreenDaoImpl(this);
     }
 
     @Override
     public TableDao getTableDao() {
-        return new TableDaoImpl();
+        return new TableDaoImpl(this);
     }
 
     @Override
     public DataDao getDataDao() {
-        return new DataDaoImpl();
+        return new DataDaoImpl(this);
     }
 
     @Override
     public AlarmDao getAlarmDao() {
-        return new AlarmDaoImpl();
+        return new AlarmDaoImpl(this);
     }
 
     @Override
     public RelayDao getRelayDao() {
-        return new RelayDaoImpl();
+        return new RelayDaoImpl(this);
     }
 
     @Override
     public SystemStateDao getSystemStateDao() {
-        return new SystemStateDaoImpl();
+        return new SystemStateDaoImpl(this);
     }
 
     @Override
     public LanguageDao getLanguageDao() {
-        return new LanguageDaoImpl();
+        return new LanguageDaoImpl(this);
     }
 
     @Override
     public FlockDao getFlockDao() {
-        return new FlockDaoImpl();
+        return new FlockDaoImpl(this);
     }
 
     @Override
     public DistribDao getDistribDao() {
-                return new DistribDaoImpl();
+                return new DistribDaoImpl(this);
     }
 
     @Override
     public FeedDao getFeedDao() {
-                return new FeedDaoImpl();
+                return new FeedDaoImpl(this);
     }
 
     @Override
     public FeedTypeDao getFeedTypeDao() {
-                return new FeedTypeDaoImpl();
+                return new FeedTypeDaoImpl(this);
     }
 
     @Override
     public FuelDao getFuelDao() {
-                return new FuelDaoImpl();
+                return new FuelDaoImpl(this);
     }
 
     @Override
     public LaborDao getLaborDao() {
-                return new LaborDaoImpl();
+                return new LaborDaoImpl(this);
     }
 
     @Override
     public GasDao getGasDao() {
-                return new GasDaoImpl();
+                return new GasDaoImpl(this);
     }
 
     @Override
     public MedicineDao getMedicineDao() {
-                return new MedicineDaoImpl();
+                return new MedicineDaoImpl(this);
     }
 
     @Override
     public SpreadDao getSpreadDao() {
-        return new SpreadDaoImpl();
+        return new SpreadDaoImpl(this);
     }
 
     @Override
     public TransactionDao getTransactionDao() {
-        return new TransactionDaoImpl();
+        return new TransactionDaoImpl(this);
     }
 
     @Override
     public WorkerDao getWorkerDao() {
-        return new WorkerDaoImpl();
+        return new WorkerDaoImpl(this);
     }
 
     /**

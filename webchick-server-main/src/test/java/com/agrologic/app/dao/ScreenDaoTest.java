@@ -33,7 +33,7 @@ public class ScreenDaoTest {
 
     @Before
     public void setUp() {
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getScreenDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getScreenDao();
     }
 
     @After

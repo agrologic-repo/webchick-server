@@ -5,8 +5,7 @@
 package com.agrologic.app.network;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.CellinkDaoImpl;
 import com.agrologic.app.dao.mysql.impl.ControllerDaoImpl;
 import com.agrologic.app.gui.ServerUI;
@@ -38,6 +37,7 @@ public class SocketThread extends Thread implements Network {
     private Cellink cellink;
     private CellinkDao cellinkDao;
     private ControllerDao controllerDao;
+    private DaoFactory daoFactory = DbImplDecider.getDaoFactory(DaoType.MYSQL);
     private Message sendMessage;
     private ResponseMessage responseMessage;
     private ResponseMessageMap responseMessageMap;
@@ -68,8 +68,8 @@ public class SocketThread extends Thread implements Network {
 
     public SocketThread(ClientSessions clientSessions, Socket socket, Configuration configuration) throws IOException {
         this.comControl = new ComControl(socket);
-        this.cellinkDao = new CellinkDaoImpl();
-        this.controllerDao = new ControllerDaoImpl();
+        this.cellinkDao = daoFactory.getCellinkDao();
+        this.controllerDao = daoFactory.getControllerDao();
         this.requestQueue = new RequestMessageQueue();
         this.responseMessageMap = new ResponseMessageMap();
         this.reqIndex = new RequestIndex();

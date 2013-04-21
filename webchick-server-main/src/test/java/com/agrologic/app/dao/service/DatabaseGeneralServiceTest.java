@@ -6,6 +6,7 @@ package com.agrologic.app.dao.service;
 
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.dao.service.impl.DatabaseGeneralService;
 import static org.junit.Assert.*;
@@ -41,7 +42,7 @@ public class DatabaseGeneralServiceTest {
 
     @Test
     public void initDaoByTypeTest() {
-        UserDao userDao = DaoFactory.getDaoFactory(DaoType.MYSQL).getUserDao();
+        UserDao userDao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getUserDao();
         assertNotNull(userDao);
         assertNotNull("getUserDao() should return not null", dgs.getUserDao());
         assertEquals("userDao.getClass() should be the same", userDao.getClass(), dgs.getUserDao().getClass());

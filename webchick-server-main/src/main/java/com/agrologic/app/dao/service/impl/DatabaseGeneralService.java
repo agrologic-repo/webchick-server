@@ -81,29 +81,29 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
      */
     public final void initDaoByType() {
         printLogbyDaoType("Initializating dao interface");
-        schemaDao = DaoFactory.getDaoFactory(daoType).getSchemaDao();
-        userDao = DaoFactory.getDaoFactory(daoType).getUserDao();
-        cellinkDao = DaoFactory.getDaoFactory(daoType).getCellinkDao();
-        controllerDao = DaoFactory.getDaoFactory(daoType).getControllerDao();
-        flockDao = DaoFactory.getDaoFactory(daoType).getFlockDao();
-        programDao = DaoFactory.getDaoFactory(daoType).getProgramDao();
-        screenDao = DaoFactory.getDaoFactory(daoType).getScreenDao();
-        tableDao = DaoFactory.getDaoFactory(daoType).getTableDao();
-        dataDao = DaoFactory.getDaoFactory(daoType).getDataDao();
-        alarmDao = DaoFactory.getDaoFactory(daoType).getAlarmDao();
-        relayDao = DaoFactory.getDaoFactory(daoType).getRelayDao();
-        systemStateDao = DaoFactory.getDaoFactory(daoType).getSystemStateDao();
-        languageDao = DaoFactory.getDaoFactory(daoType).getLanguageDao();
-        distribDao = DaoFactory.getDaoFactory(daoType).getDistribDao();
-        feedDao = DaoFactory.getDaoFactory(daoType).getFeedDao();
-        feedTypeDao = DaoFactory.getDaoFactory(daoType).getFeedTypeDao();
-        fuelDao = DaoFactory.getDaoFactory(daoType).getFuelDao();
-        laborDao = DaoFactory.getDaoFactory(daoType).getLaborDao();
-        gasDao = DaoFactory.getDaoFactory(daoType).getGasDao();
-        medicineDao = DaoFactory.getDaoFactory(daoType).getMedicineDao();
-        spreadDao = DaoFactory.getDaoFactory(daoType).getSpreadDao();
-        transactionDao = DaoFactory.getDaoFactory(daoType).getTransactionDao();
-        workerDao = DaoFactory.getDaoFactory(daoType).getWorkerDao();
+        schemaDao = DbImplDecider.getDaoFactory(daoType).getSchemaDao();
+        userDao = DbImplDecider.getDaoFactory(daoType).getUserDao();
+        cellinkDao = DbImplDecider.getDaoFactory(daoType).getCellinkDao();
+        controllerDao = DbImplDecider.getDaoFactory(daoType).getControllerDao();
+        flockDao = DbImplDecider.getDaoFactory(daoType).getFlockDao();
+        programDao = DbImplDecider.getDaoFactory(daoType).getProgramDao();
+        screenDao = DbImplDecider.getDaoFactory(daoType).getScreenDao();
+        tableDao = DbImplDecider.getDaoFactory(daoType).getTableDao();
+        dataDao = DbImplDecider.getDaoFactory(daoType).getDataDao();
+        alarmDao = DbImplDecider.getDaoFactory(daoType).getAlarmDao();
+        relayDao = DbImplDecider.getDaoFactory(daoType).getRelayDao();
+        systemStateDao = DbImplDecider.getDaoFactory(daoType).getSystemStateDao();
+        languageDao = DbImplDecider.getDaoFactory(daoType).getLanguageDao();
+        distribDao = DbImplDecider.getDaoFactory(daoType).getDistribDao();
+        feedDao = DbImplDecider.getDaoFactory(daoType).getFeedDao();
+        feedTypeDao = DbImplDecider.getDaoFactory(daoType).getFeedTypeDao();
+        fuelDao = DbImplDecider.getDaoFactory(daoType).getFuelDao();
+        laborDao = DbImplDecider.getDaoFactory(daoType).getLaborDao();
+        gasDao = DbImplDecider.getDaoFactory(daoType).getGasDao();
+        medicineDao = DbImplDecider.getDaoFactory(daoType).getMedicineDao();
+        spreadDao = DbImplDecider.getDaoFactory(daoType).getSpreadDao();
+        transactionDao = DbImplDecider.getDaoFactory(daoType).getTransactionDao();
+        workerDao = DbImplDecider.getDaoFactory(daoType).getWorkerDao();
     }
 
     /**
@@ -322,7 +322,7 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
     }
 
     public void closeAll() {
-        DaoFactory.getDaoFactory(daoType).closeAllConnection();
+        DbImplDecider.getDaoFactory(daoType).closeAllConnection();
     }
 }
 

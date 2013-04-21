@@ -30,7 +30,7 @@ public class ControllerDaoTest {
 
     @Before
     public void setUp() {
-        dao = DaoFactory.getDaoFactory(DaoType.DERBY).getControllerDao();
+        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getControllerDao();
     }
 
     @After

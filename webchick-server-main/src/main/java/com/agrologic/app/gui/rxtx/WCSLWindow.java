@@ -5,8 +5,8 @@
 package com.agrologic.app.gui.rxtx;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.mysql.MySqlDaoFactory;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.except.ObjectDoesNotExist;
@@ -15,7 +15,6 @@ import com.agrologic.app.gui.ConfigurationDialog;
 import com.agrologic.app.gui.WCSWindow;
 import com.agrologic.app.gui.flock.DesignScreen;
 import com.agrologic.app.gui.flock.FlockManager;
-import com.agrologic.app.gui.wizard.WizardRunner;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.network.rxtx.NetworkState;
 import com.agrologic.app.network.rxtx.SocketThread;
@@ -217,21 +216,9 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
 
     private String getMySQLPath() {
         String mySqlPath = getPath();
-        String version = ((MySqlDaoFactory) DaoFactory.getDaoFactory(DaoType.MYSQL)).getMySQLVersion();
+        String version = ((MySqlDaoFactory) DbImplDecider.getDaoFactory(DaoType.MYSQL)).getMySQLVersion();
         mySqlPath = mySqlPath + "MySql\\MySql Server " + version + "\\bin";
         return mySqlPath;
-    }
-
-    /**
-     * Launch DerbyDBWizard program to create derby database.
-     */
-    public void createDerbyDBWizard() {
-        WizardRunner wr = new WizardRunner(WCSLWindow.this);
-        try {
-            wr.call();
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     /**

@@ -6,10 +6,7 @@
 package com.agrologic.app.dao.derby.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
-import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DropableDao;
-import com.agrologic.app.dao.RemovebleDao;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.CellinkDaoImpl;
 import com.agrologic.app.model.Cellink;
 import java.sql.*;
@@ -24,12 +21,8 @@ import java.sql.*;
  */
 public class DerbyCellinkDaoImpl extends CellinkDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyCellinkDaoImpl() {
-        this(DaoType.DERBY);
-    }
-
-    public DerbyCellinkDaoImpl(DaoType daoType) {
-        super(daoType);
+    public DerbyCellinkDaoImpl(DaoFactory daoFactory) {
+        super(daoFactory);
     }
 
     @Override
