@@ -14,7 +14,7 @@ package com.agrologic.app.gui;
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.mysql.MySqlDaoFactory;
+import com.agrologic.app.dao.mysql.impl.MySqlDaoFactory;
 import com.agrologic.app.except.StartProgramException;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;

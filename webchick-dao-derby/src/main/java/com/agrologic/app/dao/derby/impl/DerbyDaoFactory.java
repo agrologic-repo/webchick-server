@@ -3,16 +3,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.agrologic.app.dao.derby;
+package com.agrologic.app.dao.derby.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.derby.impl.*;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * {Insert class description here}

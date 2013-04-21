@@ -7,7 +7,7 @@ package com.agrologic.app.gui.rxtx;
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.mysql.MySqlDaoFactory;
+import com.agrologic.app.dao.mysql.impl.MySqlDaoFactory;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.except.ObjectDoesNotExist;
 import com.agrologic.app.except.SerialPortControlFailure;

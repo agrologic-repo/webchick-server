@@ -6,32 +6,29 @@
 package com.agrologic.app.dao.derby.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.ControllerDaoImpl;
-
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
 
-import com.agrologic.app.network.MessageManager;
-
-//~--- JDK imports ------------------------------------------------------------
-
 import java.sql.*;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+//~--- JDK imports ------------------------------------------------------------
+
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class DerbyControllerDaoImpl extends ControllerDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
@@ -272,7 +269,8 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
         }
     }
 
-    public void updateControllerData(MessageManager cmm) throws SQLException {
+    @Override
+    public void updateControllerData(Long controllerId, Collection<Data> onlineData) throws SQLException {
         final String sqlSelectQuery =
                 "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         final String sqlInsertQuery = "INSERT INTO CONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
@@ -287,12 +285,10 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
             prepstmtSelect = con.prepareStatement(sqlSelectQuery);
             prepstmtInsert = con.prepareStatement(sqlInsertQuery);
             prepstmtUpdate = con.prepareStatement(sqlUpdateQuery);
-            prepstmtSelect.setLong(1, cmm.getController().getId());
+            prepstmtSelect.setLong(1, controllerId);
 
-            final Collection<Data> values = cmm.getUpdatedOnlineData().values();
-
-            for (Data dc : values) {
-                prepstmtSelect.setLong(1, cmm.getController().getId());
+            for (Data dc : onlineData) {
+                prepstmtSelect.setLong(1, controllerId);
                 prepstmtSelect.setLong(2, dc.getId());
 
                 ResultSet rs = prepstmtSelect.executeQuery();
@@ -304,13 +300,13 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
 
                     if (exist == 1) {
                         con.setAutoCommit(false);
-                        prepstmtUpdate.setLong(2, cmm.getController().getId());
+                        prepstmtUpdate.setLong(2, controllerId);
                         prepstmtUpdate.setLong(3, dc.getId());
                         prepstmtUpdate.setLong(1, dc.getValue());
                         prepstmtUpdate.addBatch();
                     } else {
                         con.setAutoCommit(false);
-                        prepstmtInsert.setLong(1, cmm.getController().getId());
+                        prepstmtInsert.setLong(1, controllerId);
                         prepstmtInsert.setLong(2, dc.getId());
                         prepstmtInsert.setLong(3, dc.getValue());
                         prepstmtInsert.addBatch();

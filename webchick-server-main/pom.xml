@@ -38,5 +38,10 @@
             <artifactId>webchick-dao-mysql</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>webchick-dao-derby</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
