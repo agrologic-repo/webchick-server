@@ -1,9 +1,7 @@
 package com.agrologic.app.messaging;
 
-import org.apache.commons.lang.Validate;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class KeepAliveMessageTest {
 

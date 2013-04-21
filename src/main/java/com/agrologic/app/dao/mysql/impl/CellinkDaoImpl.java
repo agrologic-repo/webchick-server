@@ -27,6 +27,10 @@ public class CellinkDaoImpl implements CellinkDao {
 
     protected DaoFactory dao;
 
+    public CellinkDaoImpl(DaoFactory dao) {
+        this.dao = dao;
+    }
+
     public CellinkDaoImpl() {
         this(DaoType.MYSQL);
     }
