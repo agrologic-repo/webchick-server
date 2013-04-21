@@ -23,8 +23,8 @@
         <entry key="runatstartup" value="true"/>
         <entry key="access" value="regular"/>
         <entry key="webchick.uri" value="http://localhost:8080/webchick/startpage.html"/>
-        <entry key="cellink.id" value="14"/>
-        <entry key="user.id" value="16"/>
+        <entry key="cellink.id" value="34"/>
+        <entry key="user.id" value="33"/>
         <entry key="pc.comm" value="1"/>
         <entry key="server.comport" value="COM3"/>
         <entry key="role" value="1"/>
