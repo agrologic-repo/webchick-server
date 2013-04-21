@@ -10,10 +10,8 @@ package com.agrologic.app.network;
 
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.mysql.impl.CellinkDaoImpl;
 import com.agrologic.app.gui.ServerUI;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;

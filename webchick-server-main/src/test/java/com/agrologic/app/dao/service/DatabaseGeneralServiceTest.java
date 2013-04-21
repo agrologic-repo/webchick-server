@@ -4,7 +4,6 @@
  */
 package com.agrologic.app.dao.service;
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;

@@ -5,10 +5,8 @@
 package com.agrologic.app.gui.flock;
 
 import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.gui.ConfigurationDialog;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.util.Windows;
 import java.sql.SQLException;

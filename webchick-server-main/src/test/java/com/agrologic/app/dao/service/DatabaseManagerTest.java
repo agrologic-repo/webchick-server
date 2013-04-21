@@ -5,7 +5,6 @@
 package com.agrologic.app.dao.service;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 
