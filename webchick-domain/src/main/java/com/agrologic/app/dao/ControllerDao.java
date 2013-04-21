@@ -5,17 +5,14 @@ package com.agrologic.app.dao;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
 
-import com.agrologic.app.network.MessageManager;
-
-//~--- JDK imports ------------------------------------------------------------
-
 import java.sql.SQLException;
 import java.sql.Timestamp;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Title: ControllerDao - Encapsulate all SQL queries to database that are related to controllers <br> Description:
@@ -41,7 +38,6 @@ public interface ControllerDao {
     /**
      * Updates an existing controller row in table controller
      *
-     * @param newController a object that encapsulates a controller attributes
      * @throws SQLException if failed to remove the controller from the database
      */
     void update(Controller controller) throws SQLException;
@@ -49,7 +45,6 @@ public interface ControllerDao {
     /**
      * Removes a controller from the database
      *
-     * @param controllerId a controller id of the controller to be removed from the database
      * @throws SQLException if failed to remove the controller from the database
      */
     void remove(Long id) throws SQLException;
@@ -66,7 +61,7 @@ public interface ControllerDao {
      * Remove value that has to be changed on the controller .
      *
      * @param controllerId the controller id .
-     * @param dataId the data id .
+     * @param dataId       the data id .
      * @throws SQLException if failed to remove data value .
      */
     void removeChangedValue(Long controllerId, Long dataId) throws SQLException;
@@ -82,17 +77,16 @@ public interface ControllerDao {
     /**
      * Updates an existing controller data rows in table 'controllerdata'.
      *
-     * @param controller the controller object that holds all necessary data
      * @throws SQLException if failed to update table
      */
-    void updateControllerData(MessageManager controller) throws SQLException;
+    void updateControllerData(Long controllerId, Collection<Data> onlineData) throws SQLException;
 
     /**
      * Updates an existing controller data row in table 'controllerdata'.
      *
      * @param controllerId the controller id .
-     * @param dataId the data id to change the value.
-     * @param value the new value
+     * @param dataId       the data id to change the value.
+     * @param value        the new value
      * @throws SQLException if failed to change value .
      */
     void updateControllerData(Long controllerId, Long dataId, Long value) throws SQLException;
@@ -101,8 +95,8 @@ public interface ControllerDao {
      * Update an existing controller graphs rows in table graph24hours .
      *
      * @param controllerId the controller id
-     * @param values the values that represent 24 hour graph for controller.
-     * @param updateTime the time of requested graph.
+     * @param values       the values that represent 24 hour graph for controller.
+     * @param updateTime   the time of requested graph.
      * @throws SQLException if failed to update values
      */
     void updateControllerGraph(Long controllerId, String values, Timestamp updateTime) throws SQLException;
@@ -111,8 +105,8 @@ public interface ControllerDao {
      * Update an existing controller graphs rows in table graph24hours .
      *
      * @param controllerId the controller id
-     * @param values the values that represent 24 hour graph for controller.
-     * @param updateTime the time of requested graph.
+     * @param values       the values that represent 24 hour graph for controller.
+     * @param updateTime   the time of requested graph.
      * @throws SQLException if failed to update values
      */
     void updateControllerHistogram(Long controllerId, String plate, String values, Timestamp updateTime)
@@ -122,8 +116,8 @@ public interface ControllerDao {
      * Insert new data value into newcontrollerdata table
      *
      * @param controllerId the controller id
-     * @param dataId the data id
-     * @param value the new value
+     * @param dataId       the data id
+     * @param value        the new value
      * @throws SQLException if failed to execute sql query.
      */
     void sendNewDataValueToController(Long controllerId, Long dataId, Long value) throws SQLException;
@@ -132,8 +126,8 @@ public interface ControllerDao {
      * Insert new data value into controller data table.
      *
      * @param controllerId the controller id
-     * @param dataId the data id
-     * @param value the new value
+     * @param dataId       the data id
+     * @param value        the new value
      * @throws SQLException if failed to execute sql query.
      */
     void saveNewDataValueOnController(Long controllerId, Long dataId, Long value) throws SQLException;

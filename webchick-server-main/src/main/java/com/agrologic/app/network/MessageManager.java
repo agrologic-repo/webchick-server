@@ -14,10 +14,11 @@ import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.Flock;
+import org.apache.log4j.Logger;
+
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
-import org.apache.log4j.Logger;
 
 /**
  * Title: ControllerMessageManager <br> Description: Decorator for Controller and Observer for MessageManager<br>
@@ -25,7 +26,6 @@ import org.apache.log4j.Logger;
  *
  * @author Valery Manakhimov
  * @version 1.0 <br>
- *
  */
 public class MessageManager implements Observer {
 
@@ -145,7 +145,6 @@ public class MessageManager implements Observer {
     }
 
     /**
-     *
      * @param o
      * @throws SQLException
      */
@@ -159,8 +158,6 @@ public class MessageManager implements Observer {
 
     /**
      * Creating request and add to queue.
-     *
-     * @param messageManager the request message queue
      */
     private boolean createRequest() throws SQLException {
         if (updatedFlag == false) {
@@ -201,7 +198,6 @@ public class MessageManager implements Observer {
     }
 
     /**
-     *
      * @return @throws SQLException
      */
     private boolean createRequestToWrite() throws SQLException {
@@ -217,6 +213,7 @@ public class MessageManager implements Observer {
     /**
      * Test if need to create request for this controller.
      * Also set controller state to ON if it was in off state
+     *
      * @return true if request fro this controller should be created.
      */
     public boolean requestShouldBeCreated() {
@@ -395,7 +392,6 @@ public class MessageManager implements Observer {
     }
 
     /**
-     *
      * @param responseMessageMap
      * @throws SQLException
      */
@@ -421,22 +417,22 @@ public class MessageManager implements Observer {
                     break;
                 case REQUEST_CHANGED:
                     updateOnlineData(response, true);
-                    controllerDao.updateControllerData(this);
+                    controllerDao.updateControllerData(controller.getId(), getOnlineData().values());
                     break;
 
                 case REQUEST_PANEL:
                     updateOnlineData(response);
-                    controllerDao.updateControllerData(this);
+                    controllerDao.updateControllerData(controller.getId(), getOnlineData().values());
                     break;
 
                 case REQUEST_CHICK_SCALE:
                     updateOnlineData(response);
-                    controllerDao.updateControllerData(this);
+                    controllerDao.updateControllerData(controller.getId(), getOnlineData().values());
                     break;
 
                 case REQUEST_CONTROLLER:
                     updateOnlineData(response);
-                    controllerDao.updateControllerData(this);
+                    controllerDao.updateControllerData(controller.getId(), getOnlineData().values());
                     break;
 
                 case REQUEST_HISTOGRAM:
@@ -450,7 +446,7 @@ public class MessageManager implements Observer {
 
                 case REQUEST_EGG_COUNT:
                     updateOnlineData(response);
-                    controllerDao.updateControllerData(this);
+                    controllerDao.updateControllerData(controller.getId(), getOnlineData().values());
                     break;
 
                 case REQUEST_GRAPHS:
@@ -671,6 +667,7 @@ public class MessageManager implements Observer {
 
     /**
      * Check the onlineDataItems if the values of data already exist
+     *
      * @return true if there is values exists, otherwise false
      */
     public boolean isOnlineDataReady() {
@@ -739,6 +736,7 @@ public class MessageManager implements Observer {
 
     /**
      * Return controller object
+     *
      * @return the controller
      */
     public Controller getController() {
@@ -764,7 +762,6 @@ public class MessageManager implements Observer {
     }
 
     /**
-     *
      * @return
      * @throws SQLException
      */

@@ -236,7 +236,7 @@ public class ControllerDaoImpl implements ControllerDao {
     }
 
     @Override
-    public void updateControllerData(MessageManager cmm) throws SQLException {
+    public void updateControllerData(Long controllerId, Collection<Data> onlineData) throws SQLException {
         final String sqlQuery = "insert into controllerdata (ControllerID, DataID,Value) "
                 + "VALUES (?,?,?) on duplicate key update value=values(value)";
 
@@ -248,10 +248,8 @@ public class ControllerDaoImpl implements ControllerDao {
             // turn off autocommit
             con.setAutoCommit(false);
 
-            final Collection<Data> values = cmm.getUpdatedOnlineData().values();
             prepstmt = con.prepareStatement(sqlQuery);
-            long controllerId= cmm.getController().getId();
-            for (Data dc : values) {
+            for (Data dc : onlineData) {
                 prepstmt.setLong(1, controllerId);
                 prepstmt.setLong(2, dc.getId());
                 prepstmt.setLong(3, dc.getValue());
