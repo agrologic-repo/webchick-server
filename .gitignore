@@ -10,3 +10,6 @@ target
 #IntelliJ
 .idea
 *.iml
+
+*.log
+nbactions.xml
