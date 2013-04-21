@@ -1,7 +1,7 @@
 package com.agrologic.app.dao;
 
 import com.agrologic.app.dao.derby.DerbyDaoFactory;
-import com.agrologic.app.dao.mysql.MySqlDaoFactory;
+import com.agrologic.app.dao.mysql.impl.MySqlDaoFactory;
 
 public class DbImplDecider {
     public static DaoFactory getDaoFactory(DaoType daoType) {

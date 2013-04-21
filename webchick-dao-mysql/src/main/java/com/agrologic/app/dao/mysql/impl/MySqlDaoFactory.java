@@ -1,37 +1,31 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
-
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.*;
-import org.apache.log4j.Logger;
-
+import com.agrologic.app.dao.mysql.impl.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  * {Insert class description here}
  *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
  * @version $Revision: 1.1.1.1 $
  * @since Build {insert version here} (MM YYYY)
+ * @author Valery Manakhimov
+ * @author $Author: nbweb $, (this version)
  */
 public class MySqlDaoFactory extends DaoFactory {
-    private static final Configuration CONFIG = new Configuration();
-    private static final String DRIVER = CONFIG.getDbDriver();
-    private static final String URL = CONFIG.getDbUrl();
-    private static final String USER = CONFIG.getDbUser();
-    private static final String PASS = CONFIG.getDbPassword();
-    private static final boolean DEBUG = false;
-    private static MySqlDaoFactory instance = null;
-    private static Logger logger = Logger.getRootLogger();
+    private static final Configuration     CONFIG         = new Configuration();
+    private static final String            DRIVER         = CONFIG.getDbDriver();
+    private static final String            URL            = CONFIG.getDbUrl();
+    private static final String            USER           = CONFIG.getDbUser();
+    private static final String            PASS           = CONFIG.getDbPassword();
+    private static final boolean           DEBUG          = false;
+    private static MySqlDaoFactory         instance       = null;
+    private static Logger                  logger         = Logger.getRootLogger();
 
     /**
      * This static block causes the class loader to load the jdbcDriver.
@@ -49,7 +43,16 @@ public class MySqlDaoFactory extends DaoFactory {
         }
     }
 
-    private MySqlDaoFactory() {
+    private MySqlDaoFactory() {}
+
+    public static MySqlDaoFactory instance() {
+        if (instance == null) {
+            synchronized (MySqlDaoFactory.class) {
+                instance = new MySqlDaoFactory();
+            }
+        }
+
+        return instance;
     }
 
     /**
@@ -73,7 +76,7 @@ public class MySqlDaoFactory extends DaoFactory {
     }
 
     /**
-     * Close all connection that in the connection pool
+     * Close all connection that in the connection pool 
      */
     @Override
     public void closeAllConnection() {
@@ -135,13 +138,13 @@ public class MySqlDaoFactory extends DaoFactory {
      * @return version the of installed mysql
      */
     public static String getMySQLVersion() {
-        String sqlQuery = "SELECT VERSION()";
-        Statement stmt = null;
-        Connection con = null;
-        String version = "";
+        String     sqlQuery = "SELECT VERSION()";
+        Statement  stmt     = null;
+        Connection con      = null;
+        String     version  = "";
 
         try {
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/", USER, PASS);
+            con  = DriverManager.getConnection("jdbc:mysql://localhost:3306/", USER, PASS);
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -154,13 +157,11 @@ public class MySqlDaoFactory extends DaoFactory {
         } finally {
             try {
                 stmt.close();
-            } catch (SQLException ex) {
-            }
+            } catch (SQLException ex) {}
 
             try {
                 con.close();
-            } catch (SQLException ex) {
-            }
+            } catch (SQLException ex) {}
         }
 
         int pidx = version.lastIndexOf(".");
@@ -295,17 +296,16 @@ public class MySqlDaoFactory extends DaoFactory {
     static final class ConnectionPool {
 
         // Max connections in SQL server 200 unless we configure it differently
-        private static final int MAX_CONNECTIONS = 200;
-        private static Connection con = null;
-        private static int currentConnectionsInSystem = 0;
-        private static List<Connection> pool = new ArrayList<Connection>();
-        private static ConnectionPool instance;
+        private static final int        MAX_CONNECTIONS            = 200;
+        private static Connection       con                        = null;
+        private static int              currentConnectionsInSystem = 0;
+        private static List<Connection> pool                       = new ArrayList<Connection>();
+        private static ConnectionPool   instance;
 
         /**
          * Default Constructor.
          */
-        private ConnectionPool() {
-        }
+        private ConnectionPool() {}
 
         /**
          * Gets a reference of the connection pool.
