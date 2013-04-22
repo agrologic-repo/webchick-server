@@ -56,7 +56,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
     }
 
     public void startTimerThread() {
-        timerDB = new javax.swing.Timer(ScreenUI.REFRESH_RATE, new ActionListener() {
+        timerDB = new javax.swing.Timer(REFRESH_RATE, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 executeUpdate();
@@ -176,7 +176,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                             maxWidth = rect.width;
                         }
                         tableCount++;
-                        if (tableCount % ScreenUI.COL_NUMBERS == 0) {
+                        if (tableCount % COL_NUMBERS == 0) {
                             y += maxHeight;
                             x = 0;
                             maxHeight = 0;

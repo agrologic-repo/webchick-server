@@ -6,7 +6,6 @@
 package com.agrologic.app.network;
 
 /**
- *
  * @author JanL
  */
 public enum CommandType {

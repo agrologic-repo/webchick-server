@@ -6,14 +6,8 @@
 package com.agrologic.app.gui.rxtx;
 
 //~--- JDK imports ------------------------------------------------------------
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.service.impl.DatabaseManager;
-import com.agrologic.app.model.Data;
 import java.awt.Color;
 import java.awt.Font;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 

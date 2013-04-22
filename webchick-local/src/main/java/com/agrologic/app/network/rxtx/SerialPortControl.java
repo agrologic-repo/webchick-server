@@ -276,7 +276,7 @@ public class SerialPortControl implements SerialPortEventListener {
                 data = in.read() & 0x7F;
                 if (((byte) data) == Message.EOT) {
                     buffer[ count++ ] = (byte) data;
-                    network.setThreadState(NetworkState.STATE_READ);
+                    network.setThreadState(com.agrologic.app.network.rxtx.NetworkState.STATE_READ);
                     break;
                 } else {
                     buffer[ count++ ] = (byte) data;
@@ -286,7 +286,7 @@ public class SerialPortControl implements SerialPortEventListener {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            network.setThreadState(NetworkState.STATE_ABORT);
+            network.setThreadState(com.agrologic.app.network.rxtx.NetworkState.STATE_ABORT);
         } catch (InterruptedException e) {
             // ignore
             e.printStackTrace();
@@ -301,7 +301,7 @@ public class SerialPortControl implements SerialPortEventListener {
                 data = in.read() & 0x7F;
                 if (((byte) data) == Message.EOT) {
                     buffer[count++] = (byte) data;
-                    network.setThreadState(NetworkState.STATE_READ);
+                    network.setThreadState(com.agrologic.app.network.rxtx.NetworkState.STATE_READ);
                     break;
                 } else {
                     buffer[count++] = (byte) data;
@@ -311,7 +311,7 @@ public class SerialPortControl implements SerialPortEventListener {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            network.setThreadState(NetworkState.STATE_ABORT);
+            network.setThreadState(com.agrologic.app.network.rxtx.NetworkState.STATE_ABORT);
         } catch (InterruptedException e) {
             // ignore
             e.printStackTrace();
@@ -361,17 +361,17 @@ public class SerialPortControl implements SerialPortEventListener {
 
         @Override
         public void run() {
-            final NetworkState state = network.getNetworkState();
-            if (state == NetworkState.STATE_BUSY) {
+            final com.agrologic.app.network.rxtx.NetworkState state = network.getNetworkState();
+            if (state == com.agrologic.app.network.rxtx.NetworkState.STATE_BUSY) {
                 final long waitingForDataTime = sendTime + sotDelay;
                 if ((waitingForDataTime < System.currentTimeMillis()) && !sotrecieved) {
                     logger.debug("Read from stream Timeout. " + waitingForDataTime);
-                    network.setThreadState(NetworkState.STATE_TIMEOUT);
+                    network.setThreadState(com.agrologic.app.network.rxtx.NetworkState.STATE_TIMEOUT);
                 }
                 if ((waitingForDataTime + eotDelay) < System.currentTimeMillis() && sotrecieved) {
                     clearInputStream();
                     logger.debug("End Of Transmission Error." + waitingForDataTime);
-                    network.setThreadState(NetworkState.STATE_ERROR);
+                    network.setThreadState(com.agrologic.app.network.rxtx.NetworkState.STATE_ERROR);
                 }
             } else {
                 try {
@@ -380,7 +380,7 @@ public class SerialPortControl implements SerialPortEventListener {
                         logger.debug("timertick execute");
                     }
                 } catch (IOException ex) {
-                    network.setThreadState(NetworkState.STATE_ABORT);
+                    network.setThreadState(com.agrologic.app.network.rxtx.NetworkState.STATE_ABORT);
                 }
             }
         }

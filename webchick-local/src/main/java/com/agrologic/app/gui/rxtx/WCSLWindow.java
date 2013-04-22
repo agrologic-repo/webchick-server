@@ -18,10 +18,7 @@ import com.agrologic.app.gui.flock.FlockManager;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.network.rxtx.NetworkState;
 import com.agrologic.app.network.rxtx.SocketThread;
-import com.agrologic.app.util.ObjectSizeFetcher;
-import com.agrologic.app.util.PropertyFileUtil;
-import com.agrologic.app.util.Util;
-import com.agrologic.app.util.Windows;
+import com.agrologic.app.util.*;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -465,7 +462,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
                 result = configDialog.showDialog();
             }
             if (result == true) {
-                Util.restartApplicationss();
+                LocalUtil.restartApplicationss();
             }
         } catch (URISyntaxException ex) {
             java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -560,11 +557,11 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
             int progress = 0;
             setProgress(0);
             try {
-                Util.sleep(100);
+                LocalUtil.sleep(100);
                 Process p = Runtime.getRuntime().exec("CDM20814_Setup.exe");
                 while (progress < 100 && !isCancelled()) {
                     //Sleep for up to one second.
-                    Util.sleep(random.nextInt(100));
+                    LocalUtil.sleep(random.nextInt(100));
                     //Make random progress.
                     p.waitFor();
                     System.out.println(p.exitValue());

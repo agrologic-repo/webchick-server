@@ -9,6 +9,7 @@
         <module>webchick-server-main</module>
         <module>webchick-dao-mysql</module>
         <module>webchick-dao-derby</module>
+        <module>webchick-local</module>
     </modules>
     <groupId>com.agrologic</groupId>
     <artifactId>webchick-server</artifactId>

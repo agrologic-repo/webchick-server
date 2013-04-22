@@ -4,9 +4,6 @@
 package com.agrologic.app.network;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.mysql.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.mysql.impl.DataDaoImpl;
-import com.agrologic.app.dao.mysql.impl.FlockDaoImpl;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Controller;

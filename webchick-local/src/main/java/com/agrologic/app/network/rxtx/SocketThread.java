@@ -12,12 +12,12 @@ import com.agrologic.app.dao.service.DatabaseLoadAccessor;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.except.ObjectDoesNotExist;
 import com.agrologic.app.except.SerialPortControlFailure;
+import com.agrologic.app.network.*;
 import com.agrologic.app.gui.rxtx.WCSLWindow;
 import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.rxtx.DataController;
-import com.agrologic.app.network.MessageManager;
-import com.agrologic.app.util.Util;
+import com.agrologic.app.util.LocalUtil;
 import com.agrologic.app.util.StatusChar;
 import java.awt.HeadlessException;
 import java.io.IOException;
@@ -43,7 +43,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
     private final int sotDelay;
     private final int maxError;
     private Integer errorCount;
-    private NetworkState networkState;
+    private com.agrologic.app.network.rxtx.NetworkState networkState;
     private Integer recCount;
     private ResponseMessage responseMessage;
     private RequestIndex reqIndex;
@@ -155,7 +155,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
             try {
                 switch (networkState) {
                     case STATE_IDLE:
-                        Util.sleep(10);
+                        LocalUtil.sleep(10);
                         break;
 
                     case STATE_STOP:
@@ -175,7 +175,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         break;
 
                     case STATE_BUSY:
-                        Util.sleep(100);
+                        LocalUtil.sleep(100);
                         String s = statusLabel.getText();
                         int i = s.indexOf("]");
                         s = s.substring(0, i + 1);
@@ -184,7 +184,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         break;
 
                     case STATE_DELAY:
-                        Util.sleep(nxtDelay);
+                        LocalUtil.sleep(nxtDelay);
                         setThreadState(NetworkState.STATE_SEND);
                         requestQueue.getRequestToChange();
 

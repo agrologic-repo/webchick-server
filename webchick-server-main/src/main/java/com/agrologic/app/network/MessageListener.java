@@ -15,12 +15,14 @@ import com.agrologic.app.messaging.Message;
  * This means that a listener assigned to one or more consumers of the same
  * session can assume that the onMessage method is not called with the next
  * message until the session has completed the last call.
+ *
  * @author Valery Manakhimov
  */
 public interface MessageListener {
 
     /**
      * Passes a message to the listener
+     *
      * @param message - the message passed to the listener
      */
     void onMessage(Message message);

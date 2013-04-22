@@ -7,7 +7,8 @@ package com.agrologic.app.model.rxtx;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.agrologic.app.gui.rxtx.DataImage.Type;
+
+import com.agrologic.app.gui.rxtx.DataImage;
 
 /**
  * {Insert class description here}
@@ -20,7 +21,7 @@ import com.agrologic.app.gui.rxtx.DataImage.Type;
 public class DataChangeEvent {
     private Integer bitNumber;
     private String  newString;
-    private Type    newType;
+    private DataImage.Type newType;
     private Long    newValue;
 
     public DataChangeEvent(Long newValue) {
@@ -31,11 +32,11 @@ public class DataChangeEvent {
         this.newString = newString;
     }
 
-    public DataChangeEvent(Type newType) {
+    public DataChangeEvent(DataImage.Type newType) {
         this.newType = newType;
     }
 
-    public DataChangeEvent(Type newType, Integer bitNumber) {
+    public DataChangeEvent(DataImage.Type newType, Integer bitNumber) {
         this.newType   = newType;
         this.bitNumber = bitNumber;
     }
@@ -44,7 +45,7 @@ public class DataChangeEvent {
         return newValue;
     }
 
-    public Type getType() {
+    public DataImage.Type getType() {
         return newType;
     }
 

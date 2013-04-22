@@ -7,6 +7,10 @@ package com.agrologic.app.gui.rxtx;
 
 //~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.service.DatabaseAccessor;
+import com.agrologic.app.gui.rxtx.DataImage;
+import com.agrologic.app.gui.rxtx.DataLabel;
+import com.agrologic.app.gui.rxtx.DataTextField;
+import com.agrologic.app.gui.rxtx.ProgramAlarmPopup;
 import com.agrologic.app.model.*;
 import com.agrologic.app.model.rxtx.DataController;
 import java.awt.*;
