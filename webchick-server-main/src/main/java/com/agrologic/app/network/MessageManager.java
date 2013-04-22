@@ -393,9 +393,7 @@ public class MessageManager implements Observer {
      */
     public void updateDataList(ResponseMessageMap responseMessageMap) throws SQLException {
         createOnlineData();
-        if (controller.getNetName().equals("T901")) {
-            System.out.println(controller);
-        }
+
         Map<RequestMessage, ResponseMessage> responses = responseMessageMap.getResponseMap();
         boolean exist = responseMessageMap.isMapCountainsRequest(requestToSend);
 
@@ -413,22 +411,22 @@ public class MessageManager implements Observer {
                     break;
                 case REQUEST_CHANGED:
                     updateOnlineData(response, true);
-                    controllerDao.updateControllerData(controller.getId(), getOnlineData().values());
+                    controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_PANEL:
                     updateOnlineData(response);
-                    controllerDao.updateControllerData(controller.getId(), getOnlineData().values());
+                    controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_CHICK_SCALE:
                     updateOnlineData(response);
-                    controllerDao.updateControllerData(controller.getId(), getOnlineData().values());
+                    controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_CONTROLLER:
                     updateOnlineData(response);
-                    controllerDao.updateControllerData(controller.getId(), getOnlineData().values());
+                    controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_HISTOGRAM:
@@ -442,7 +440,7 @@ public class MessageManager implements Observer {
 
                 case REQUEST_EGG_COUNT:
                     updateOnlineData(response);
-                    controllerDao.updateControllerData(controller.getId(), getOnlineData().values());
+                    controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_GRAPHS:
@@ -670,8 +668,8 @@ public class MessageManager implements Observer {
         boolean result = true;
         Iterator<Data> iter = getOnlineData().values().iterator();
         while (iter.hasNext()) {
-            Data data = (Data) iter.next();
-            if (!data.isDataReady()) {
+            Data d = (Data) iter.next();
+            if (!d.isDataReady()) {
                 result = false;
             }
         }
