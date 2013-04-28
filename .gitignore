@@ -6,7 +6,11 @@ screen.ser
 *.war
 *.ear
 target
+agrodb
 
 #IntelliJ
 .idea
 *.iml
+
+*.log
+nbactions.xml

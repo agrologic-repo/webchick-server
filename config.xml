@@ -7,7 +7,7 @@
       <map>
         <entry key="protocol" value="0"/>
         <entry key="language" value="English"/>
-        <entry key="server.ip" value="192.168.1.21"/>
+        <entry key="server.ip" value="192.168.1.101"/>
         <entry key="server.port" value="5500"/>
         <entry key="keepalive.timeout" value="3"/>
         <entry key="com.port" value="COM3"/>
@@ -16,15 +16,15 @@
         <entry key="database.user" value="root"/>
         <entry key="database.password" value="agro1950"/>
         <entry key="com.baud" value="2400"/>
-        <entry key="com.sot" value="25000"/>
+        <entry key="com.sot" value="2000"/>
         <entry key="com.eot" value="2000"/>
         <entry key="com.next" value="500"/>
         <entry key="com.maxerr" value="3"/>
         <entry key="runatstartup" value="true"/>
         <entry key="access" value="regular"/>
         <entry key="webchick.uri" value="http://localhost:8080/webchick/startpage.html"/>
-        <entry key="cellink.id" value="14"/>
-        <entry key="user.id" value="16"/>
+        <entry key="cellink.id" value="164"/>
+        <entry key="user.id" value="152"/>
         <entry key="pc.comm" value="1"/>
         <entry key="server.comport" value="COM3"/>
         <entry key="role" value="1"/>
