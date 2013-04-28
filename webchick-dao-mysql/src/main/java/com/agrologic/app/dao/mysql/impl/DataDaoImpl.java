@@ -1,22 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-import java.sql.*;
-import java.util.Collection;
-import java.util.List;
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.util.DataUtil;
 
-/**
- *
- * @author JanL
- */
+import java.sql.*;
+import java.util.Collection;
+import java.util.List;
+
 public class DataDaoImpl implements DataDao {
 
     protected DaoFactory dao;
@@ -591,7 +583,7 @@ public class DataDaoImpl implements DataDao {
 
     @Override
     public Collection<Data> getOnlineTableDataList(Long controllerId, Long programId, Long screenId, Long tableId,
-            Long langId) throws SQLException {
+                                                   Long langId) throws SQLException {
         String sqlQuery = "select * from datatable "
                 + "left join controllerdata cd on cd.dataid=datatable.dataid and cd.controllerid=? and cd.value=-1 "
                 + "left join databylanguage on databylanguage.dataid=datatable.dataid and databylanguage.langid=? "

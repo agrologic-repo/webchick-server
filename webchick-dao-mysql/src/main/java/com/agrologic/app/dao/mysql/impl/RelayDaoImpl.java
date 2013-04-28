@@ -1,29 +1,15 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.RelayDao;
-import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.ProgramRelay;
 import com.agrologic.app.model.Relay;
-import com.agrologic.app.util.AlarmUtil;
 import com.agrologic.app.util.RelayUtil;
+
 import java.sql.*;
 import java.util.Collection;
 
-/**
- * Title: RelayDaoImpl <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class RelayDaoImpl implements RelayDao {
 
     protected DaoFactory dao;
@@ -394,7 +380,7 @@ public class RelayDaoImpl implements RelayDao {
     public Collection<ProgramRelay> getSelectedProgramRelays(Long programId) throws SQLException {
         String sqlQuery =
                 "select * from programrelays "
-                + "where ProgramID=? and TEXT not Like '%None%' and Text not Like '%Damy%' order by DataID,BitNumber";
+                        + "where ProgramID=? and TEXT not Like '%None%' and Text not Like '%Damy%' order by DataID,BitNumber";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -442,6 +428,3 @@ public class RelayDaoImpl implements RelayDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

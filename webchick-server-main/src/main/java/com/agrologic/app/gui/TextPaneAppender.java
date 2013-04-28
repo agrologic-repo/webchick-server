@@ -433,4 +433,4 @@ public class TextPaneAppender extends AppenderSkeleton {
 }    // TextPaneAppender
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

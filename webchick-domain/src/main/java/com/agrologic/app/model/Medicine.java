@@ -112,4 +112,3 @@ public class Medicine {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

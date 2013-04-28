@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.dao.derby.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.AlarmDaoImpl;
 import java.sql.*;
@@ -162,4 +162,4 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

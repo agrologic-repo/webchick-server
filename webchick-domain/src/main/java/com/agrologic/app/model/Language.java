@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.model;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.io.Serializable;
 
@@ -49,4 +48,3 @@ public class Language implements Serializable {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

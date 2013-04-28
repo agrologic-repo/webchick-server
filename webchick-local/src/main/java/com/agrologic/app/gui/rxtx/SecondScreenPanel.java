@@ -9,6 +9,8 @@ import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.model.*;
 import com.agrologic.app.model.rxtx.DataController;
 import com.agrologic.app.util.Windows;
+import org.apache.log4j.Logger;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -43,9 +45,12 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
     private Controller controller;
     private TreeMap<Screen, TreeMap<Table, List<DataController>>> screenTableDataMap;
     private Timer timerDB;
+    private static Logger logger = Logger.getLogger(SecondScreenPanel.class);
 
     /**
-     * Creates new form SecondPanel
+     *
+     * @param dbManager
+     * @param controller
      */
     public SecondScreenPanel(DatabaseManager dbManager, Controller controller) {
         initComponents();
@@ -80,6 +85,8 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
     }
 
     public void initLoadedControllerData() {
+        logger.info("Initialization second screen ");
+
         DatabaseAccessor dbaccess = dbManager.getDatabaseGeneralService();
         if(screenTableDataMap != null) {
             return;
@@ -127,6 +134,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                             tableDataMap.put(table, dataControllerList);
                         }
                     } catch (NullPointerException e) {
+                        logger.info("NPE",e);
                         e.printStackTrace();
                     }
                     screenTableDataMap.put(screen, tableDataMap);

@@ -110,5 +110,5 @@ public interface DatabaseAccessor {
 
     void setWorkerDao(WorkerDao workerDao);
 }
-//~ Formatted by Jindent --- http://www.jindent.com
+
 

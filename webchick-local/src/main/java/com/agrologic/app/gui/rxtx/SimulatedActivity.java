@@ -5,18 +5,20 @@
 package com.agrologic.app.gui.rxtx;
 
 import help.examples.LoadingFrame;
-import javax.swing.SwingWorker;
+
+import javax.swing.*;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class SimulatedActivity extends SwingWorker<Void, Integer> {
     private LoadingFrame loading;
+
     /**
      * Constructs the simulated activity that increments a counter from 0 to a given target.
      *

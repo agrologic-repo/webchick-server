@@ -16,4 +16,3 @@ public enum DaoType {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

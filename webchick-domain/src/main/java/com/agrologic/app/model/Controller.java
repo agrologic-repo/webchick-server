@@ -9,11 +9,9 @@
  */
 package com.agrologic.app.model;
 
-//~--- non-JDK imports --------------------------------------------------------
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -258,4 +256,3 @@ public class Controller implements Serializable {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

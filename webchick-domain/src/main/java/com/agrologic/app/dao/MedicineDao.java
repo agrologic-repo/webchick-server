@@ -5,10 +5,8 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.model.Medicine;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 
@@ -32,4 +30,3 @@ public interface MedicineDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

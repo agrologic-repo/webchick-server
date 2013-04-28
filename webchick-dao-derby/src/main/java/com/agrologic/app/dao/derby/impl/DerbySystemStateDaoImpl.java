@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.dao.derby.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
+
 
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.*;
@@ -166,4 +166,4 @@ public class DerbySystemStateDaoImpl extends SystemStateDaoImpl implements Creat
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

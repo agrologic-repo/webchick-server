@@ -1,21 +1,14 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.dao;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 
 /**
- *
  * @author Administrator
  */
 public interface CreatebleDao {
     static final String CANNOT_EXECUTE_QUERY = "Cannot Execute Query";
-    static final String CANNOT_CREATE_TABLE  = "Cannot Create New Table";
+    static final String CANNOT_CREATE_TABLE = "Cannot Create New Table";
 
     /**
      * Check if table exist in database
@@ -34,4 +27,4 @@ public interface CreatebleDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

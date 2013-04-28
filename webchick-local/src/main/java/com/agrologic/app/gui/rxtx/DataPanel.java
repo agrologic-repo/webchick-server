@@ -6,21 +6,21 @@
 package com.agrologic.app.gui.rxtx;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.dao.service.DatabaseAccessor;
-import com.agrologic.app.gui.rxtx.DataLabel;
 import com.agrologic.app.model.*;
 import com.agrologic.app.model.rxtx.DataController;
+
+import javax.swing.*;
 import java.util.List;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class DataPanel extends JPanel {
 

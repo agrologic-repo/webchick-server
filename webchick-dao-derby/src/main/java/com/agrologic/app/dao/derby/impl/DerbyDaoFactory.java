@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.dao.derby.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.dao.*;
 
 import java.sql.*;
@@ -400,4 +400,4 @@ public class DerbyDaoFactory extends DaoFactory {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

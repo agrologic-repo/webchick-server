@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.util;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.awt.Component;
 import java.awt.Container;
@@ -209,4 +209,4 @@ public class SpringUtilities {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

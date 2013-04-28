@@ -1,32 +1,13 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.LanguageDao;
-
 import com.agrologic.app.model.Language;
-
 import com.agrologic.app.util.LanguageUtil;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.sql.*;
-
 import java.util.Collection;
 
-/**
- * Title: LanguageDaoImpl <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class LanguageDaoImpl implements LanguageDao {
     protected DaoFactory dao;
 
@@ -35,12 +16,12 @@ public class LanguageDaoImpl implements LanguageDao {
     }
 
     public void insert(Language language) throws SQLException {
-        String            sqlQuery = "insert into languages values (?,?,?)";
+        String sqlQuery = "insert into languages values (?,?,?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setObject(1, language.getId());
             prepstmt.setString(2, language.getLanguage());
@@ -56,9 +37,9 @@ public class LanguageDaoImpl implements LanguageDao {
     }
 
     public void insert(Collection<Language> languageList) throws SQLException {
-        String            sqlQuery = "insert into languages values (?,?,?)";
+        String sqlQuery = "insert into languages values (?,?,?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
             con = dao.getConnection();
@@ -105,12 +86,12 @@ public class LanguageDaoImpl implements LanguageDao {
     }
 
     public void update(Language language) throws SQLException {
-        String            sqlQuery = "update languages set Lang=?, Short=? where ID=?";
+        String sqlQuery = "update languages set Lang=?, Short=? where ID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setString(1, language.getLanguage());
             prepstmt.setString(2, language.getShortLang());
@@ -127,12 +108,12 @@ public class LanguageDaoImpl implements LanguageDao {
     }
 
     public void remove(Long langId) throws SQLException {
-        String            sqlQuery = "delete from languages where ID=?";
+        String sqlQuery = "delete from languages where ID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, langId);
             prepstmt.executeUpdate();
@@ -148,12 +129,12 @@ public class LanguageDaoImpl implements LanguageDao {
 
     @Override
     public Long getLanguageId(String l) throws SQLException {
-        String     sqlQuery = "select id from languages where short like '%" + l + "%'";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select id from languages where short like '%" + l + "%'";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -175,12 +156,12 @@ public class LanguageDaoImpl implements LanguageDao {
 
     @Override
     public Language getById(Long langId) throws SQLException {
-        String            sqlQuery = "select * from languages where ID=?";
+        String sqlQuery = "select * from languages where ID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, langId);
 
@@ -202,12 +183,12 @@ public class LanguageDaoImpl implements LanguageDao {
 
     @Override
     public Collection<Language> geAll() throws SQLException {
-        String     sqlQuery = "select * from languages";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select * from languages";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sqlQuery);
             return LanguageUtil.makeLangList(rs);
@@ -220,6 +201,3 @@ public class LanguageDaoImpl implements LanguageDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

@@ -12,7 +12,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.awt.Color;
 import java.awt.Font;
@@ -53,4 +53,4 @@ public final class Graph24Empty {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

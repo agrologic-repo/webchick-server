@@ -1,13 +1,6 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.FuelDao;
 import com.agrologic.app.model.Fuel;
 
@@ -15,14 +8,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author JanL
- */
 public class FuelDaoImpl implements FuelDao {
 
     protected DaoFactory dao;
@@ -30,6 +18,7 @@ public class FuelDaoImpl implements FuelDao {
     public FuelDaoImpl(DaoFactory daoFactory) {
         dao = daoFactory;
     }
+
     private Fuel makeFuel(ResultSet rs) throws SQLException {
         Fuel fuel = new Fuel();
 
@@ -153,6 +142,3 @@ public class FuelDaoImpl implements FuelDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

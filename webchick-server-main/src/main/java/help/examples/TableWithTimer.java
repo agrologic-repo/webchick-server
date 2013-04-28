@@ -5,7 +5,7 @@
  */
 package help.examples;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -285,4 +285,4 @@ public class TableWithTimer implements ActionListener, Runnable {
         };
     }
 }
-//~ Formatted by Jindent --- http://www.jindent.com
+

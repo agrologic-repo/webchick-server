@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.util;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.sql.Timestamp;
 
@@ -70,4 +70,4 @@ public class DateLocal extends java.util.Date {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

@@ -12,9 +12,10 @@ import com.agrologic.app.model.Data;
 import com.agrologic.app.model.rxtx.DataController;
 import com.agrologic.app.network.rxtx.SocketThread;
 import com.agrologic.app.util.Windows;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Rectangle;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -23,32 +24,27 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.swing.*;
-import org.apache.log4j.Logger;
 
 /**
- *
  * @author Administrator
  */
 public class MainScreenPanel extends JPanel implements ScreenUI {
 
     public static final int BUTTON_HEIGHT = 30;
-    public static final int BUTTON_WIDTH = 180;
-    public static final long serialVersionUID = 1L;
     public final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    public static Logger logger = Logger.getLogger(MainScreenPanel.class);
     private Dimension thePanelHolderSize = new Dimension();
-    private Controller controller;
-    private List<DataController> dataControllerList;
     private DataPanel dataPanel;
-    private DatabaseManager dbManager;
     private JPanel holderPanel;
     private final JPanel me;
-    private SocketThread nwt;
-    private List<MainScreenPanel> otherMainScreens;
     private JScrollPane scrollPane;
     private SecondScreenPanel secondScreenPanel;
+    private List<DataController> dataControllerList;
+    private List<MainScreenPanel> otherMainScreens;
+    private Controller controller;
+    private DatabaseManager dbManager;
+    private SocketThread nwt;
     private Timer timerDB;
+    private static Logger logger = Logger.getLogger(MainScreenPanel.class);
 
     /**
      * Creates new form MainScreenPanell
@@ -71,7 +67,9 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                 secondScreenPanel.initLoadedControllerData();
                 secondScreenPanel.initScreenComponents();
                 secondScreenPanel.startTimerThread();
+
                 Rectangle rect = secondScreenPanel.getBounds();
+
                 scrollPane.setBounds(rect.x, rect.y, rect.width, rect.height);
                 holderPanel.setBounds(rect.x, rect.y, rect.width, rect.height);
                 holderPanel.setPreferredSize(rect.getSize());
@@ -135,34 +133,6 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
         setBounds(0, 0, dataPanel.getWidth() + 5, dataPanel.getHeight() + pnlHouse.getHeight() + 5);
     }
 
-    private void setUpdatedTime(JButton btnHouse) {
-        DataDao dataDao = dbManager.getDatabaseGeneralService().getDataDao();
-        try {
-            Data setClock = dataDao.getSetClockByController(controller.getId());
-            String title = btnHouse.getText();
-            int index = title.indexOf("Last update");
-            if (index == -1) {
-                title = title.substring(6);
-                title = title.substring(0, title.length() - 7);
-                StringBuilder sb = new StringBuilder();
-                sb.append("<html>").append(title).append("<p>").append("Last update").append(" 12:00 ").append("</p></html>");
-                btnHouse.setText(sb.toString());
-            } else {
-                int lastIndex = title.indexOf("<p>");
-                String s = title.substring(6, lastIndex);
-                StringBuilder sb = new StringBuilder();
-                sb.append("<html>").append(s).append("<p>").append("Last update ").append(setClock.getFormatedValue()).append("</p></html>");
-                btnHouse.setText(sb.toString());
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public synchronized void setNetworkThread(SocketThread nwt) {
-        this.nwt = nwt;
-    }
-
     public void showMainScreen() {
         if ((otherMainScreens != null) && (otherMainScreens.size() > 0)) {
             for (MainScreenPanel msp : otherMainScreens) {
@@ -188,10 +158,10 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
     }
 
     public void setBounds() {
-        Dimension dimens = Windows.screenResolution();
+        Dimension dimension = Windows.screenResolution();
         Rectangle rect = secondScreenPanel.getBounds();
-        scrollPane.setBounds(rect.x, rect.y, dimens.width - 20, dimens.height - 110);
-        holderPanel.setBounds(rect.x, rect.y, dimens.width - 20, dimens.height - 110);
+        scrollPane.setBounds(rect.x, rect.y, dimension.width - 20, dimension.height - 110);
+        holderPanel.setBounds(rect.x, rect.y, dimension.width - 20, dimension.height - 110);
         holderPanel.setPreferredSize(thePanelHolderSize);
     }
 
@@ -276,12 +246,12 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
         javax.swing.GroupLayout pnlHouseLayout = new javax.swing.GroupLayout(pnlHouse);
         pnlHouse.setLayout(pnlHouseLayout);
         pnlHouseLayout.setHorizontalGroup(
-            pnlHouseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                pnlHouseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pnlHouseLayout.setVerticalGroup(
-            pnlHouseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnHouse, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+                pnlHouseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnHouse, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
         );
 
         add(pnlHouse);

@@ -5,26 +5,21 @@
  */
 package com.agrologic.app.util;
 
-//~--- non-JDK imports --------------------------------------------------------
 
-import com.agrologic.app.model.SystemState;
 import com.agrologic.app.model.ProgramSystemState;
 import com.agrologic.app.model.SystemState;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.*;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class SystemStateUtil {
     public static SystemState makeSystemState(ResultSet rs) throws SQLException {
@@ -100,4 +95,3 @@ public class SystemStateUtil {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

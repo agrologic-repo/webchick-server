@@ -9,7 +9,6 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.User;
 import java.sql.SQLException;
@@ -132,4 +131,3 @@ public interface UserDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.messaging;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,4 +141,4 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

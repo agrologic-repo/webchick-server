@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.util;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.util.BitSet;
 
@@ -66,4 +66,4 @@ public class IntToBitUtil {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

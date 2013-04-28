@@ -26,10 +26,9 @@ import org.apache.log4j.Logger;
  */
 public class DatabaseInsertion implements DatabaseInsertable {
 
-    private final Logger log = Logger.getLogger(DatabaseInsertion.class.getName());
+    private final Logger logger = Logger.getLogger(DatabaseInsertion.class.getName());
     private DatabaseAccessor dba;
     private DatabaseLoadAccessor dla;
-    private Long langId;
 
     public DatabaseInsertion(DatabaseAccessor dba, DatabaseLoadAccessor dla) {
         this.dba = dba;
@@ -38,52 +37,52 @@ public class DatabaseInsertion implements DatabaseInsertable {
 
     @Override
     public void insertLoadedData() {
-        log.info(" Start inserting data into the tables .");
-        langId = dla.getLangId();
+        logger.info(" Start inserting data into the tables .");
+        Long langId = dla.getLangId();
         try {
             dba.getLanguageDao().insert(dla.getLanguages());
-            log.info("the data inserted successfully to the language table");
+            logger.info("the data inserted successfully to the language table");
             dba.getAlarmDao().insert(dla.getAlarms());
             dba.getAlarmDao().insertTranslation(dla.getAlarms());
-            log.info("the data inserted successfully to the alarm and alarmbylanguage table");
+            logger.info("the data inserted successfully to the alarm and alarmbylanguage table");
             dba.getRelayDao().insert(dla.getRelays());
             dba.getRelayDao().insertTranslation(dla.getRelays());
-            log.info("the data inserted successfully to the relays and relaysbylanguage table");
+            logger.info("the data inserted successfully to the relays and relaysbylanguage table");
             dba.getSystemStateDao().insert(dla.getSystemStates());
             dba.getSystemStateDao().insertTranslation(dla.getSystemStates());
-            log.info("the data inserted successfully to the systemStates and systemstatesbylanguage table");
+            logger.info("the data inserted successfully to the systemStates and systemstatesbylanguage table");
             dba.getDataDao().insert(dla.getDataTable());
             dba.getDataDao().insertTranslation(dla.getDataTable());
-            log.info("the data inserted successfully to the datatable and databylanguage table");
+            logger.info("the data inserted successfully to the datatable and databylanguage table");
             dba.getUserDao().insert(dla.getUser());
-            log.info("the data inserted successfully to the users table");
+            logger.info("the data inserted successfully to the users table");
 
             for (Cellink cellink : dla.getUser().getCellinks()) {
                 insertNewCellink(cellink);
-                log.info("the data inserted successfully to the cellinks table");
+                logger.info("the data inserted successfully to the cellinks table");
                 List<Controller> controllers = cellink.getControllers();
                 for (Controller controller : controllers) {
                     insertNewController(controller);
-                    log.info("the data inserted successfully to the controller and controllerdata table");
+                    logger.info("the data inserted successfully to the controller and controllerdata table");
                 }
             }
 
             for (Program program : dla.getPrograms()) {
                 if (!dba.getProgramDao().programExist(program.getId())) {
                     dba.getProgramDao().insert(program);
-                    log.info("the data inserted successfully to the program table");
+                    logger.info("the data inserted successfully to the program table");
                     dba.getAlarmDao().insertProgramAlarms(program.getProgramAlarms());
-                    log.info("the program alarms inserted successfully to the programalarm table");
+                    logger.info("the program alarms inserted successfully to the programalarm table");
                     dba.getRelayDao().insertProgramRelays(program.getProgramRelays());
-                    log.info("the program relay inserted successfully to the programrelay table");
+                    logger.info("the program relay inserted successfully to the programrelay table");
                     dba.getSystemStateDao().insertProgramSystemState(program.getProgramSystemStates());
-                    log.info("the program system state inserted successfully to the programsysstate table");
+                    logger.info("the program system state inserted successfully to the programsysstate table");
 
                     Collection<Screen> screenList = program.getScreens();
                     dba.getScreenDao().insert(screenList);
-                    log.info("the data inserted successfully to the screens table");
+                    logger.info("the data inserted successfully to the screens table");
                     dba.getScreenDao().insertTranslation(screenList, langId);
-                    log.info("the data inserted successfully to the screenbylanguage table");
+                    logger.info("the data inserted successfully to the screenbylanguage table");
 
                     for (Screen screen : screenList) {
                         List<Table> tableList = screen.getTables();
@@ -99,7 +98,7 @@ public class DatabaseInsertion implements DatabaseInsertable {
                 }
             }
 
-            log.info(" Finished inserting data .");
+            logger.info(" Finished inserting data .");
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (RuntimeException e) {
@@ -165,10 +164,10 @@ public class DatabaseInsertion implements DatabaseInsertable {
         try {
             dba.getControllerDao().insert(c);
         } catch (Exception e) {
-            log.info(e);
+            logger.info(e);
         }
     }
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

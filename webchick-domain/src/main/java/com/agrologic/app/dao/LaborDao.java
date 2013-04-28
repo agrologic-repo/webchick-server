@@ -5,9 +5,7 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 
-//~--- JDK imports ------------------------------------------------------------
 
 import com.agrologic.app.model.Labor;
 import java.sql.SQLException;
@@ -32,4 +30,3 @@ public interface LaborDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

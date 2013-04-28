@@ -105,4 +105,3 @@ public class Gas {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

@@ -5,11 +5,9 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.FeedType;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 
@@ -31,4 +29,3 @@ public interface FeedTypeDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

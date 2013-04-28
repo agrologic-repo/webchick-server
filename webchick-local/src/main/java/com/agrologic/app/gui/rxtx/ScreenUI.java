@@ -5,7 +5,6 @@
 package com.agrologic.app.gui.rxtx;
 
 /**
- *
  * @author Administrator
  */
 public interface ScreenUI {

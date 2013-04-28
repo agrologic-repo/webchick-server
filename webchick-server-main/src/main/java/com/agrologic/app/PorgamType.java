@@ -5,7 +5,6 @@
 package com.agrologic.app;
 
 /**
- *
  * @author Administrator
  */
 public enum PorgamType {

@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.dao.derby.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
+
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.SchemaDaoImpl;
@@ -22,4 +22,4 @@ public class DerbySchemaDaoImpl extends SchemaDaoImpl {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

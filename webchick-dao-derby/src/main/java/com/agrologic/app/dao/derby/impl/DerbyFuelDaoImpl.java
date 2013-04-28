@@ -5,12 +5,12 @@
  */
 package com.agrologic.app.dao.derby.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.FuelDaoImpl;
 import com.agrologic.app.model.Fuel;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.sql.*;
 
@@ -141,4 +141,4 @@ public class DerbyFuelDaoImpl extends FuelDaoImpl implements CreatebleDao, Dropa
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

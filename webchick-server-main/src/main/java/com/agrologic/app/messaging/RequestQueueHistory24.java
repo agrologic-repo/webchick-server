@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.messaging;
 
-//~--- JDK imports ------------------------------------------------------------
+
 import com.agrologic.app.model.Data;
 import java.util.*;
 
@@ -235,4 +235,4 @@ public class RequestQueueHistory24 {
         rqh24.printAll();
     }
 }
-//~ Formatted by Jindent --- http://www.jindent.com
+

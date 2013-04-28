@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.util;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 /**
  * Title: ProgramInstanceLocker.java <br>
@@ -95,4 +95,4 @@ public class ProgramInstanceLocker {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

@@ -6,7 +6,6 @@
  */
 package com.agrologic.app.config;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -70,7 +69,7 @@ public class Configuration extends Observable {
     public static final String  DEFAULT_CELLINK_ID         = "1";
     public static final String  DEFAULT_WEBCHICK_URI       = "http://localhost:8080/webchick/startpage.html";
     public static final Boolean DEFAULT_RUN_AT_STARTUP     = Boolean.FALSE;
-    public static final String  DEFAULT_VERSION            = "6.5.9";
+    public static final String  DEFAULT_VERSION            = "6.5.10";
     private String language;
 
     /**
@@ -477,4 +476,3 @@ public class Configuration extends Observable {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

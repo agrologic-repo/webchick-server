@@ -66,4 +66,3 @@ public class CellinkEvent {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

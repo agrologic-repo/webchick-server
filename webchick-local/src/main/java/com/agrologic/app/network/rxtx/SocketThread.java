@@ -1,63 +1,61 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.network.rxtx;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.dao.service.DatabaseLoadAccessor;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.except.ObjectDoesNotExist;
 import com.agrologic.app.except.SerialPortControlFailure;
-import com.agrologic.app.network.*;
+import com.agrologic.app.gui.rxtx.StatusPanel;
 import com.agrologic.app.gui.rxtx.WCSLWindow;
 import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Controller;
-import com.agrologic.app.model.rxtx.DataController;
+import com.agrologic.app.network.MessageManager;
 import com.agrologic.app.util.LocalUtil;
 import com.agrologic.app.util.StatusChar;
-import java.awt.HeadlessException;
-import java.io.IOException;
-import java.util.*;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+
 /**
- * Title: NetworkThread <br> Description: <br> Copyright: Copyright (c) 2009 <br>
+ * Title: NetworkThread <br> Description: <br> Copyright: Copyright (c) 2009
+ * <br>
  *
  * @version 1.0 <br>
  */
 public final class SocketThread extends Observable implements Runnable, Network {
 
-    private boolean DEBUG = false;
-    private Logger logger = Logger.getLogger(SocketThread.class);
-    private SerialPortControl com;
-    private List<MessageManager> controllerManagers;
-    private DatabaseManager dbManager;
     private final int eotDelay;
     private final int nxtDelay;
     private final int sotDelay;
     private final int maxError;
-    private Integer errorCount;
-    private com.agrologic.app.network.rxtx.NetworkState networkState;
-    private Integer recCount;
+    private SerialPortControl com;
+    private List<MessageManager> controllerManagers;
+    private DatabaseManager dbManager;
+    private NetworkState networkState;
     private ResponseMessage responseMessage;
     private RequestIndex reqIndex;
     private RequestMessageQueue requestQueue;
     private ResponseMessageMap responseMessageMap;
     private Message sendMessage;
-    private Integer sentCount;
     private WCSLWindow wcsl;
     private JLabel statusLabel;
+    private StatusPanel statusPanel;
+    private boolean DEBUG = false;
+    private Logger logger = Logger.getLogger(SocketThread.class);
 
     /**
-     * Constructor
      *
-     * @param wcsl window interface
+     * @param wcsl
+     * @param dbManager
+     * @throws SerialPortControlFailure
+     * @throws NumberFormatException
+     * @throws ObjectDoesNotExist
      */
     public SocketThread(WCSLWindow wcsl, DatabaseManager dbManager)
             throws SerialPortControlFailure, NumberFormatException, ObjectDoesNotExist {
@@ -70,9 +68,6 @@ public final class SocketThread extends Observable implements Runnable, Network 
         this.requestQueue = new RequestMessageQueue();
         this.responseMessageMap = new ResponseMessageMap();
         this.controllerManagers = new ArrayList<MessageManager>();
-        this.sentCount = 0;
-        this.recCount = 0;
-        this.errorCount = 0;
         this.reqIndex = new RequestIndex();
         // sets network attributes
         this.sotDelay = Integer.parseInt(configuration.getSotDelay());
@@ -85,7 +80,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
             final String comport = configuration.getComPort();
             try {
                 com = new SerialPortControl(comport, this);
-                logger.info("Comunication port opened successfully!");
+                logger.info("Communication port opened successfully!");
             } catch (SerialPortControlFailure e) {
                 logger.error(e);
                 throw new SerialPortControlFailure(e.getMessage(), e);
@@ -114,35 +109,6 @@ public final class SocketThread extends Observable implements Runnable, Network 
         for (Controller c : tempControllers) {
             MessageManager cmm = new MessageManager(c, dbaccessor);
             controllerManagers.add(cmm);
-        }
-    }
-
-    public MessageManager getControllerManagerBy(Long id) {
-        for (MessageManager cmm : controllerManagers) {
-            if (cmm.getController().getId().equals(id)) {
-                return cmm;
-            }
-        }
-        return null;
-    }
-
-    public boolean isControllerOnlineDataReady() {
-        boolean result = true;
-        for (MessageManager cmm : controllerManagers) {
-            if (!cmm.isOnlineDataReady()) {
-                result = false;
-            }
-        }
-        return result;
-    }
-
-    public void setListeners() {
-        MessageManager cmm = controllerManagers.get(1);
-        SortedMap sm = cmm.getUpdatedOnlineData();
-        Iterator iter = sm.values().iterator();
-        while (iter.hasNext()) {
-            DataController newData = new DataController((DataController) iter.next());
-            newData.setValue(newData.getValue());
         }
     }
 
@@ -176,11 +142,8 @@ public final class SocketThread extends Observable implements Runnable, Network 
 
                     case STATE_BUSY:
                         LocalUtil.sleep(100);
-                        String s = statusLabel.getText();
-                        int i = s.indexOf("]");
-                        s = s.substring(0, i + 1);
-                        statusLabel.setText(s + " " + StatusChar.getChar());
-
+                        statusPanel.setProgress("" + StatusChar.getChar());
+                        statusPanel.setControllerStatus(getControllersStatus());
                         break;
 
                     case STATE_DELAY:
@@ -193,9 +156,9 @@ public final class SocketThread extends Observable implements Runnable, Network 
                     case STATE_READ:
 
                         // check if there is a data to chenge
-                        // messageManager.getRequestToChange();
                         responseMessage = (ResponseMessage) com.read();
-                        statusLabel.setText("Received [" + responseMessage.getIndex() + " " + responseMessage + "]");
+                        logger.info(responseMessage);
+                        statusPanel.setRecvMsg(responseMessage.getIndex() + " " + responseMessage);
                         if (responseMessage.getMessageType() == MessageType.ERROR) {
                             MessageType sendMessageType = sendMessage.getMessageType();
                             if (sendMessageType == MessageType.REQUEST_TO_WRITE) {
@@ -235,24 +198,24 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         if (errCount < maxError) {
                             responseMessage = new ResponseMessage(null);
                             requestQueue.setReplyRequest(true);
-                            logger.error("Error count : " + errCount);
-                            logger.error("Error [" + responseMessage + "]");
-                            statusLabel.setText("Error [" + responseMessage + "]");
+                            logger.info("Error count : " + errCount);
+                            logger.info("Error [" + responseMessage + "]");
+                            statusPanel.setRecvMsg("" + responseMessage + " " + errCount);
                         } else {
                             responseMessage = new ResponseMessage(null);
-                            logger.error("Error count : " + errCount);
-                            logger.error("Error [" + responseMessage + "]");
+                            logger.info("Error count : " + errCount);
+                            logger.info("Error [" + responseMessage + "]");
                             statusLabel.setText("Error [" + responseMessage + "]");
+                            statusPanel.setRecvMsg("" + responseMessage + " " + errCount);
                             errCount = 0;
                             responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
 
                             // we need at least one controller in on state
-                            // otherwise we we set all controllres on
+                            // otherwise we we set all controllers on
                             if (allControllersOff()) {
                                 setControllersOn();
                             }
                         }
-                        incErrCount();
 
                         break;
 
@@ -261,29 +224,27 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         errCount++;
                         if (errCount < maxError) {
                             requestQueue.setReplyRequest(true);
-                            logger.error(responseMessage + " Error count : " + errCount);
-                            statusLabel.setText("Error [" + responseMessage + "]");
+                            logger.info(responseMessage + " Error count : " + errCount);
+                            statusPanel.setRecvMsg("" + responseMessage + " " + errCount);
                         } else {
-                            logger.error("Error count : " + errCount);
-                            logger.error("Error count " + errCount + " : SOT Error");
-                            statusLabel.setText("Error [" + responseMessage + "]");
+                            logger.info("Error count : " + errCount);
+                            logger.info("Error count " + errCount + " : SOT Error");
+                            statusPanel.setRecvMsg("" + responseMessage + " " + errCount);
                             errCount = 0;
                             responseMessageMap.put((RequestMessage) sendMessage, new ResponseMessage(null));
                             // we need at least one controller in on state
-                            // otherwise we we set all controllres on
+                            // otherwise we we set all controllers on
                             if (allControllersOff()) {
                                 setControllersOn();
                             }
                         }
-                        incErrCount();
 
                         break;
 
                     case STATE_ABORT:
                         stop = true;
                         closingComport();
-                        wcsl.showErrorMsg("Network Error",
-                                "Connection aborted .\nCheck USB cable connection !");
+                        wcsl.showErrorMsg("Network Error", "Connection aborted .\nCheck USB cable connection !");
 
                         break;
 
@@ -320,13 +281,16 @@ public final class SocketThread extends Observable implements Runnable, Network 
             com.write("V" + reqIndex.getIndex(), sendMessage, sotDelay, eotDelay);
             logger.info("Sent [" + sendMessage + "]");
             logger.info("Wait for data...");
-            statusLabel.setText("Sent [V" + reqIndex.getIndex() + sendMessage + "]");
-            incSentCount();
-            // check if there is a data to chenge
+            statusPanel.setSendMsg("V" + reqIndex.getIndex() + sendMessage);
+            // check if there is a data to change
             reqIndex.nextIndex();
         }
     }
 
+    /**
+     *
+     * @throws HeadlessException
+     */
     private void startingCommunication() throws HeadlessException {
         // Here we transform each controller into
         // the observer the manager of messages
@@ -347,7 +311,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
     }
 
     /**
-     * Closing ServerSocket
+     * Closing communication port a
      */
     public void closingComport() {
         if (com != null) {
@@ -357,10 +321,11 @@ public final class SocketThread extends Observable implements Runnable, Network 
     }
 
     /**
-     *
+     * Set status panel
+     * @param sp the status panel
      */
-    public void setStatusLabel(JLabel sl) {
-        this.statusLabel = sl;
+    public void setStatusPanel(StatusPanel sp) {
+        statusPanel = sp;
     }
 
     /**
@@ -374,7 +339,6 @@ public final class SocketThread extends Observable implements Runnable, Network 
     }
 
     /**
-     * Set network state
      *
      * @param networkState
      */
@@ -383,55 +347,9 @@ public final class SocketThread extends Observable implements Runnable, Network 
         synchronized (this) {
             this.networkState = networkState;
             if (networkState == NetworkState.STATE_STOP) {
-                System.out.println("Stoped");
+                System.out.println("Stopped");
             }
         }
-    }
-
-    /**
-     * Stop running network thread
-     */
-    public synchronized void stopRunning() {
-        networkState = NetworkState.STATE_STOP;
-    }
-
-    /**
-     * Count sent requests
-     */
-    private void incSentCount() {
-        sentCount++;
-//      wcsl.setSentCount(sentCount.toString());
-//      wcsl.setSent(sendMessage.toString());
-//      wcsl.setControllerStatus(getControllersStatus());
-    }
-
-    /**
-     * Increment counter of received response
-     */
-    private void incRecCount() {
-        recCount++;
-//      wcsl.setRecCount(recCount.toString());
-//      String cs = ((ResponseMessage)recvMessage).getCalcCheckSum() + "/" + ((ResponseMessage)recvMessage).getReadCheckSum();
-//       ((ResponseMessage)recvMessage).getErrorCode() ;
-//      wcsl.setCheckSum(recvMessage.toString());
-//      wcsl.setReceived(recvMessage.toString());
-//      wcsl.setControllerStatus(getControllersStatus());
-    }
-
-    /**
-     * Increment counter of errors
-     */
-    private void incErrCount() {
-        errorCount++;
-
-        if (responseMessage != null) {
-//          //            String cs = recvMessage.getCalcCheckSum() + "/" + recvMessage.getReadCheckSum();
-//                      wcsl.setCheckSum(recvMessage.toString());
-//                      wcsl.setReceived(recvMessage.toString());
-        }
-
-//      wcsl.setErrCount(errorCount.toString());
-//      wcsl.setControllerStatus(getControllersStatus());
     }
 
     /**
@@ -441,13 +359,8 @@ public final class SocketThread extends Observable implements Runnable, Network 
      */
     private String getControllersStatus() {
         final StringBuilder statusString = new StringBuilder();
-
-//      for (int i = controllerManager.size() - 1; i >= 0; i--) {
         for (int i = controllerManagers.size() - 1; i >= 0; i--) {
             Controller c = controllerManagers.get(i).getController();
-
-//          Controller c = controllerManager.first().getController();
-            // statusString.append(c.getStatusString());
             statusString.append(c.getStatusString());
         }
 
@@ -478,6 +391,3 @@ public final class SocketThread extends Observable implements Runnable, Network 
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

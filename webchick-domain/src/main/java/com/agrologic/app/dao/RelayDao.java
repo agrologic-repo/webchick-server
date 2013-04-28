@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.ProgramRelay;
@@ -32,7 +31,7 @@ public interface RelayDao {
     /**
      * Insert relay names
      *
-     * @param realyList the relay list
+     * @param relayList the relay list
      * @throws SQLException if failed to insert to the relay table
      */
     void insert(Collection<Relay> relayList) throws SQLException;
@@ -150,4 +149,3 @@ public interface RelayDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

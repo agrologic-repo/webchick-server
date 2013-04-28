@@ -6,25 +6,26 @@
 package com.agrologic.app.dao.service.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.TableDao;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.dao.service.DatabaseLoadAccessor;
 import com.agrologic.app.dao.service.DatabaseLoadable;
 import com.agrologic.app.model.*;
-import java.sql.SQLClientInfoException;
+import org.apache.log4j.Logger;
+
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
-import org.apache.log4j.Logger;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, ThreadCompleteListener {
 
@@ -69,7 +70,7 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
     }
 
     @Override
-    public void loadAllDataByUserAndCellink(Long userId, Long cellinkId) throws SQLException  {
+    public void loadAllDataByUserAndCellink(Long userId, Long cellinkId) throws SQLException {
         try {
             Configuration config = new Configuration();
             // load constant table data

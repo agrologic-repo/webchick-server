@@ -1,31 +1,20 @@
-/**
- * To change this template, choose Tools | Templates and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.WorkerDao;
 import com.agrologic.app.model.Worker;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author JanL
- */
 public class WorkerDaoImpl implements WorkerDao {
 
     protected DaoFactory dao;
+
     public WorkerDaoImpl(DaoFactory daoFactory) {
         dao = daoFactory;
     }
@@ -180,6 +169,3 @@ public class WorkerDaoImpl implements WorkerDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

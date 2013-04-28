@@ -5,7 +5,7 @@
  */
 package help.examples;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -126,4 +126,4 @@ public class ProgramAlarmDialog extends JDialog {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

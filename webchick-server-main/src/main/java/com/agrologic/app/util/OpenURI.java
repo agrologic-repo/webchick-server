@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.util;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.awt.Desktop;
 
@@ -73,4 +73,4 @@ public class OpenURI {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

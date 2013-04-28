@@ -5,13 +5,11 @@
  */
 package com.agrologic.app.model;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.io.Serializable;
 
@@ -93,4 +91,3 @@ public class Alarm implements Serializable {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

@@ -5,12 +5,10 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.ProgramAlarm;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 
@@ -62,7 +60,7 @@ public interface AlarmDao {
      * Insert program alarm list translation to program alarm by language table. <br> This is a dictionary of alarm
      * types .
      *
-     * @param the program alarm list
+     * @param programAlarms list
      * @throws SQLException if failed to insert to the program alarm by language table
      */
     void insertProgramAlarms(Collection<ProgramAlarm> programAlarms) throws SQLException;
@@ -146,4 +144,3 @@ public interface AlarmDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

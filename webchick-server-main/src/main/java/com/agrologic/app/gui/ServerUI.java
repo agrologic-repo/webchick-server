@@ -9,7 +9,7 @@ package com.agrologic.app.gui;
 
 import com.agrologic.app.model.Cellink;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.util.Iterator;
 
@@ -24,4 +24,4 @@ public interface ServerUI {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.model;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import java.io.Serializable;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -111,4 +110,3 @@ public class ProgramSystemState implements Serializable {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

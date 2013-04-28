@@ -1,28 +1,13 @@
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
-
 import com.agrologic.app.model.Cellink;
-
 import com.agrologic.app.util.CellinkUtil;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.sql.*;
-
 import java.util.Collection;
 
-/**
- * Title: CellinkDaoImpl - Encapsulate all SQL queries to database that are
- * related to farm <br> Description: Contains 3 types of SQL methods:<ul>
- * <li>regular jdbc statements</li> <li>prepared statements<br></li></ul>
- * Copyright: Copyright (c) 2008 <br>
- *
- * @version 1.0 <br>
- */
 public class CellinkDaoImpl implements CellinkDao {
 
     protected DaoFactory dao;
@@ -293,6 +278,3 @@ public class CellinkDaoImpl implements CellinkDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

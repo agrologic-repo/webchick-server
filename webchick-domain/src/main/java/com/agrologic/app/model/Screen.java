@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.model;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.io.Serializable;
 
@@ -174,4 +173,3 @@ public class Screen implements Serializable, Comparable<Screen> {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

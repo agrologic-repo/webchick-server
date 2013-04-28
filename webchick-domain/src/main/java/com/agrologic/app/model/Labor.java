@@ -115,4 +115,3 @@ public class Labor {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

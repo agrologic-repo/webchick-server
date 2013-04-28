@@ -1,30 +1,16 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.SpreadDao;
 import com.agrologic.app.model.Spread;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author JanL
- */
 public class SpreadDaoImpl implements SpreadDao {
 
     protected DaoFactory dao;
@@ -60,7 +46,7 @@ public class SpreadDaoImpl implements SpreadDao {
     @Override
     public void insert(Spread spread) throws SQLException {
         String sqlQuery = "INSERT INTO SPREAD (FLOCKID, AMOUNT, DATE, NUMBERACCOUNT, PRICE, TOTAL) "
-                + "VALUES (?,?,?,?,?,?) " ;
+                + "VALUES (?,?,?,?,?,?) ";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -183,6 +169,3 @@ public class SpreadDaoImpl implements SpreadDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

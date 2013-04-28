@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.util;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.model.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -132,4 +131,3 @@ public class DataUtil {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

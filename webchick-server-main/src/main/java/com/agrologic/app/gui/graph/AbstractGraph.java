@@ -8,7 +8,7 @@ package com.agrologic.app.gui.graph;
 //~--- non-JDK imports --------------------------------------------------------
 import org.jfree.chart.JFreeChart;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -88,4 +88,4 @@ public abstract class AbstractGraph implements Graph {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

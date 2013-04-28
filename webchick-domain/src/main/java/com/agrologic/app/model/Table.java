@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.model;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -202,4 +201,3 @@ public class Table implements Serializable, Comparable<Table> {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

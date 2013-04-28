@@ -5,25 +5,20 @@
  */
 package com.agrologic.app.util;
 
-//~--- non-JDK imports --------------------------------------------------------
-import com.agrologic.app.model.Relay;
 import com.agrologic.app.model.ProgramRelay;
 import com.agrologic.app.model.Relay;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.*;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class RelayUtil {
 
@@ -103,4 +98,3 @@ public class RelayUtil {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

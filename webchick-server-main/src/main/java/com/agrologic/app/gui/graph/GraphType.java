@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.gui.graph;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -134,4 +134,4 @@ public class GraphType {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

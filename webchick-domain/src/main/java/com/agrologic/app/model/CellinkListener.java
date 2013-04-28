@@ -19,4 +19,3 @@ public interface CellinkListener {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

@@ -77,4 +77,3 @@ public enum UserRole {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

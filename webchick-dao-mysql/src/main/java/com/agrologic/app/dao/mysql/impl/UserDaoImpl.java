@@ -1,40 +1,15 @@
-
-/*
-* LoginDB.java
-*
-* Created on 11 ��� 2008, 10:30
-*
-* To change this template, choose Tools | Template Manager
-* and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.UserDao;
-
 import com.agrologic.app.model.User;
-
 import com.agrologic.app.util.UserUtil;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.sql.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Title: UserDaoImpl - Encapsulate all SQL queries to database that are related to USERS<br> Description: Contains 3
- * types of SQL methods:<ul> <li>regular jdbc statements</li> <li>prepared statements<br></li></ul> Copyright: Copyright
- * (c) 2007
- *
- * @author Valery Manakhimov
- * @version 1.0
- */
 public class UserDaoImpl implements UserDao {
     protected DaoFactory dao;
 
@@ -45,13 +20,13 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insert(User user) throws SQLException {
         String sqlQuery =
-            "INSERT INTO USERS (USERID, NAME, PASSWORD, FIRSTNAME, LASTNAME, ROLE, STATE, PHONE, EMAIL, COMPANY)"
-            + " VALUES (?,?,?,?,?,?,?,?,?,?)";
+                "INSERT INTO USERS (USERID, NAME, PASSWORD, FIRSTNAME, LASTNAME, ROLE, STATE, PHONE, EMAIL, COMPANY)"
+                        + " VALUES (?,?,?,?,?,?,?,?,?,?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setObject(1, null);
             prepstmt.setString(2, user.getLogin());
@@ -77,12 +52,12 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(User user) throws SQLException {
         String sqlQuery =
-            "update users set Name=?,Password=?,FirstName=?,LastName=?,Role=?,Phone=?,Email=?, Company=? where UserID=?";
+                "update users set Name=?,Password=?,FirstName=?,LastName=?,Role=?,Phone=?,Email=?, Company=? where UserID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setString(1, user.getLogin());
             prepstmt.setString(2, user.getPassword());
@@ -106,12 +81,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void remove(Long userId) throws SQLException {
-        String            sqlQuery = "delete from users where UserID=?";
+        String sqlQuery = "delete from users where UserID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, userId);
             prepstmt.executeUpdate();
@@ -127,12 +102,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Integer getTotalNumUsers() throws SQLException {
-        String     sqlQuery = "select count(*) as num from users";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select count(*) as num from users";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -154,12 +129,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getById(Long userId) throws SQLException {
-        String     sqlQuery = "select * from users where UserID=" + userId;
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select * from users where UserID=" + userId;
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -181,12 +156,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User validate(String loginName, String loginPassword) throws SQLException {
-        String            sqlQuery = "select * from users where Name = ? and Password = ?";
+        String sqlQuery = "select * from users where Name = ? and Password = ?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setString(1, loginName);
             prepstmt.setString(2, loginPassword);
@@ -210,12 +185,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Boolean loginEnabled(String login) throws SQLException {
-        String            sqlQuery = "select * from users where Name = ?";
+        String sqlQuery = "select * from users where Name = ?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setString(1, login);
 
@@ -234,15 +209,15 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Collection<String> getUserCompanies() throws SQLException {
-        String     sqlQuery = "select distinct company from users";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select distinct company from users";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
 
-            ResultSet    rs        = stmt.executeQuery(sqlQuery);
+            ResultSet rs = stmt.executeQuery(sqlQuery);
             List<String> companies = new ArrayList<String>();
 
             while (rs.next()) {
@@ -262,12 +237,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Collection<User> getAll() throws SQLException {
-        String     sqlQuery = "select * from users";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select * from users";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -285,12 +260,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Collection<User> getAllByRole(Integer role) throws SQLException {
-        String            sqlQuery = "select * from users where Role =?";
+        String sqlQuery = "select * from users where Role =?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setInt(1, role);
 
@@ -309,9 +284,9 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Collection<User> getAll(Integer role, String company, String searchText) throws SQLException {
-        String     sqlQuery = "select * from users";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select * from users";
+        Statement stmt = null;
+        Connection con = null;
 
         if (role != 0) {
             sqlQuery = "select * from (" + sqlQuery + ") as a where role=" + role;
@@ -326,7 +301,7 @@ public class UserDaoImpl implements UserDao {
         }
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -342,6 +317,3 @@ public class UserDaoImpl implements UserDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

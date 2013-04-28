@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.dao.derby.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.DropableDao;
@@ -14,7 +14,7 @@ import com.agrologic.app.dao.mysql.impl.ScreenDaoImpl;
 
 import com.agrologic.app.model.Screen;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.sql.*;
 
@@ -244,4 +244,4 @@ public class DerbyScreenDaoImpl extends ScreenDaoImpl implements CreatebleDao , 
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

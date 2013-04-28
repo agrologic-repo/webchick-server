@@ -5,11 +5,9 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.Screen;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 
@@ -64,6 +62,14 @@ public interface ScreenDao {
      * @param id the id of the screen to be removed from the database
      * @throws SQLException if failed to remove the screen from the database
      */
+    /**
+     * Removes a screen from the database
+     *
+     * @param programId the program id
+     * @param screenId  the old program id , the program id that was selected by user.
+     * @throws SQLException
+     */
+
     void remove(Long programId, Long screenId) throws SQLException;
 
     /**
@@ -125,4 +131,3 @@ public interface ScreenDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

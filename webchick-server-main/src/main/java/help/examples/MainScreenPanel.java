@@ -9,7 +9,7 @@ package help.examples;
 
 import com.agrologic.app.util.Windows;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.awt.*;
 
@@ -69,4 +69,4 @@ public class MainScreenPanel extends JPanel {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

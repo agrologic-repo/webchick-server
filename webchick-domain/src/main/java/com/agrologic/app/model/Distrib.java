@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.model;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.io.Serializable;
 
@@ -321,4 +320,3 @@ public class Distrib implements Serializable {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

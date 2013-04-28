@@ -1,22 +1,13 @@
 package com.agrologic.app.dao.mysql.impl;
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.mysql.impl.*;
+import org.apache.log4j.Logger;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
 
-/**
- * {Insert class description here}
- *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- */
 public class MySqlDaoFactory extends DaoFactory {
     private static final Configuration     CONFIG         = new Configuration();
     private static final String            DRIVER         = CONFIG.getDbDriver();
@@ -403,6 +394,3 @@ public class MySqlDaoFactory extends DaoFactory {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

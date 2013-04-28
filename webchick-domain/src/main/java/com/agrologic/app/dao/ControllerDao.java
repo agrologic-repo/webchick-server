@@ -1,6 +1,5 @@
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
@@ -12,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Title: ControllerDao - Encapsulate all SQL queries to database that are related to controllers <br> Description:
@@ -222,4 +220,3 @@ public interface ControllerDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

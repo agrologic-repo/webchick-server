@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.dao.derby.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.CellinkDaoImpl;
 import com.agrologic.app.model.Cellink;
@@ -142,4 +142,4 @@ public class DerbyCellinkDaoImpl extends CellinkDaoImpl implements CreatebleDao,
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

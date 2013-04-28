@@ -1,9 +1,7 @@
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.model.Data;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 
@@ -150,4 +148,3 @@ public interface DataDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

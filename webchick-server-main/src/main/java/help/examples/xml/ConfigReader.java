@@ -10,7 +10,7 @@ package help.examples.xml;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -55,4 +55,4 @@ public class ConfigReader {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

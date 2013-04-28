@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.dao;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 
@@ -31,4 +30,3 @@ public abstract class SchemaDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

@@ -1,30 +1,13 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.util.ProgramUtil;
+
 import java.sql.*;
 import java.util.Collection;
 
-/**
- * Title: ProgramDaoImpl
- * <br> Description:
- * <br> Copyright: Copyright (c) 2009
- * <br> Company: AgroLogic LTD.
- * <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class ProgramDaoImpl implements ProgramDao {
     protected DaoFactory dao;
 
@@ -34,12 +17,12 @@ public class ProgramDaoImpl implements ProgramDao {
 
     @Override
     public void insert(Program program) throws SQLException {
-        String            sqlQuery = "insert into programs values (?,?,?,?)";
+        String sqlQuery = "insert into programs values (?,?,?,?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setObject(1, program.getId());
             prepstmt.setString(2, program.getName());
@@ -58,12 +41,12 @@ public class ProgramDaoImpl implements ProgramDao {
 
     @Override
     public void update(Program program) throws SQLException {
-        String            sqlQuery = "update programs set Name=?, Modified=? where ProgramID=?";
+        String sqlQuery = "update programs set Name=?, Modified=? where ProgramID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setString(1, program.getName());
             prepstmt.setString(2, program.getModifiedDate());
@@ -81,12 +64,12 @@ public class ProgramDaoImpl implements ProgramDao {
 
     @Override
     public void remove(Long id) throws SQLException {
-        String            sqlQuery = "delete from programs where ProgramID=?";
+        String sqlQuery = "delete from programs where ProgramID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, id);
             prepstmt.executeUpdate();
@@ -102,12 +85,12 @@ public class ProgramDaoImpl implements ProgramDao {
 
     @Override
     public Program getById(Long id) throws SQLException {
-        String            sqlQuery = "select * from programs where ProgramID=?";
+        String sqlQuery = "select * from programs where ProgramID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, id);
 
@@ -130,12 +113,12 @@ public class ProgramDaoImpl implements ProgramDao {
 
     @Override
     public Collection<Program> getAll() throws SQLException {
-        String     sqlQuery = "select * from programs";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select * from programs";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -158,6 +141,3 @@ public class ProgramDaoImpl implements ProgramDao {
         return p != null;
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

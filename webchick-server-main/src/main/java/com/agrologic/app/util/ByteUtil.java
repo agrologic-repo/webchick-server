@@ -1,13 +1,12 @@
 package com.agrologic.app.util;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- *
  * @author Administrator
  */
 public class ByteUtil {
@@ -17,7 +16,7 @@ public class ByteUtil {
         }
 
         int count = 0;
-        int i     = -1;
+        int i = -1;
 
         for (byte b : buffer) {
             if (b == input) {
@@ -38,7 +37,7 @@ public class ByteUtil {
         }
 
         int count = 0;
-        int i     = -1;
+        int i = -1;
 
         for (byte b : buffer) {
             if (b == input) {
@@ -52,11 +51,11 @@ public class ByteUtil {
     }
 
     public static List<byte[]> split(byte[] buffer, byte input) {
-        ArrayList<byte[]> matchList  = new ArrayList<byte[]>();
-        int               matchCount = 0;
-        int               from       = 0;
-        int               to         = 0;
-        byte[]            tmp        = new byte[buffer.length];
+        ArrayList<byte[]> matchList = new ArrayList<byte[]>();
+        int matchCount = 0;
+        int from = 0;
+        int to = 0;
+        byte[] tmp = new byte[buffer.length];
 
         for (byte b : buffer) {
             tmp[to] = b;
@@ -93,7 +92,7 @@ public class ByteUtil {
             throw new StringIndexOutOfBoundsException(endIndex - beginIndex);
         }
 
-        int    size      = endIndex - beginIndex;
+        int size = endIndex - beginIndex;
         byte[] newBuffer = new byte[size];
 
         for (int i = 0; i < size; i++) {
@@ -111,4 +110,4 @@ public class ByteUtil {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

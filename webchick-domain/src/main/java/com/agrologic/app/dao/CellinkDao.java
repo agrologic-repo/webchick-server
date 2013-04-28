@@ -1,10 +1,8 @@
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.Cellink;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -122,4 +120,3 @@ public interface CellinkDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

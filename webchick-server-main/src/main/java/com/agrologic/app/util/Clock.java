@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.util;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -82,4 +82,4 @@ public class Clock extends Observable {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

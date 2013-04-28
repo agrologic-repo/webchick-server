@@ -11,7 +11,7 @@ import com.agrologic.app.gui.ServerUI;
 
 import com.agrologic.app.util.Clock;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.util.Observable;
 import java.util.Observer;
@@ -135,4 +135,4 @@ public class ServerInfo extends Observable implements Observer {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

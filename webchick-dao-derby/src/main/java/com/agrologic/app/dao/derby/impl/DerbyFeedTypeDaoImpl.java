@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.dao.derby.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.DropableDao;
@@ -136,4 +136,4 @@ public class DerbyFeedTypeDaoImpl extends FeedTypeDaoImpl implements CreatebleDa
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

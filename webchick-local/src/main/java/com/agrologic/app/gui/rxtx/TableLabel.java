@@ -6,18 +6,17 @@
 package com.agrologic.app.gui.rxtx;
 
 //~--- JDK imports ------------------------------------------------------------
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class TableLabel extends JLabel {
     public static final int fontSize = 15;

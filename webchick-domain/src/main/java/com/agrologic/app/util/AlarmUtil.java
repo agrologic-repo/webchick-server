@@ -5,25 +5,20 @@
  */
 package com.agrologic.app.util;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.model.Alarm;
-import com.agrologic.app.model.Data;
 import com.agrologic.app.model.ProgramAlarm;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.*;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class AlarmUtil {
 
@@ -109,4 +104,3 @@ public class AlarmUtil {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

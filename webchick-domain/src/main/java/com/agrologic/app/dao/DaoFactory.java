@@ -32,6 +32,9 @@ public abstract class DaoFactory {
      */
     public abstract void closeConnection(Connection con);
 
+    /**
+     *  Close all connection that in connection pool
+     */
     public abstract void closeAllConnection();
 
 

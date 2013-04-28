@@ -1,22 +1,12 @@
-/**
- * To change this template, choose Tools | Templates and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.model.Flock;
+
 import java.sql.*;
 import java.util.*;
 
-/**
- * Title: FlockDaoImpl.java <br> Description: <br> Copyright: Copyright � 2010 <br> Company: AgroLogic Ltd. �<br>
- *
- * @author Valery Manakhimov <br>
- * @version 0.1.1 <br>
- */
 public class FlockDaoImpl implements FlockDao {
 
     protected DaoFactory dao;
@@ -777,6 +767,3 @@ public class FlockDaoImpl implements FlockDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

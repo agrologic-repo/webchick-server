@@ -6,17 +6,19 @@
 package com.agrologic.app.gui.rxtx;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.model.rxtx.DataChangeEvent;
 import com.agrologic.app.model.rxtx.DataChangeListener;
-import javax.swing.JLabel;
+
+import javax.swing.*;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class DataLabel extends JLabel implements DataChangeListener {
 

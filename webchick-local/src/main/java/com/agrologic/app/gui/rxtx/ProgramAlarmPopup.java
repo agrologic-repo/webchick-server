@@ -8,32 +8,30 @@ package com.agrologic.app.gui.rxtx;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.ProgramAlarm;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class ProgramAlarmPopup extends JDialog {
-    int                x = -1;
-    int                y = -1;
-    JPanel             alarmsPanel;
-    JButton            button;
-    JPanel             buttonPanel;
-    JPanel             contentPanel;
-    Point              location;
+    int x = -1;
+    int y = -1;
+    JPanel alarmsPanel;
+    JButton button;
+    JPanel buttonPanel;
+    JPanel contentPanel;
+    Point location;
     List<ProgramAlarm> programAlarms;
 
     public ProgramAlarmPopup() {
@@ -43,7 +41,7 @@ public class ProgramAlarmPopup extends JDialog {
 
     public ProgramAlarmPopup(Point location, List<ProgramAlarm> pa) {
         super();
-        this.location      = location;
+        this.location = location;
         this.programAlarms = pa;
         initComponents();
     }
@@ -63,7 +61,7 @@ public class ProgramAlarmPopup extends JDialog {
         buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(button);
 
-        alarmsPanel = new JPanel(new GridLayout(programAlarms.size() + 1 , 1));
+        alarmsPanel = new JPanel(new GridLayout(programAlarms.size() + 1, 1));
         alarmsPanel.add(new JLabel("<html><p></p></html>"));
 
         for (ProgramAlarm pa : programAlarms) {
@@ -71,7 +69,7 @@ public class ProgramAlarmPopup extends JDialog {
             alarmsPanel.add(label);
         }
 
-        int width  = 50;
+        int width = 50;
         int height = (programAlarms.size() + 1) * 20;
         if (location == null) {
             setBounds(40, 80, width * 5, height);

@@ -5,12 +5,10 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.ProgramSystemState;
 import com.agrologic.app.model.SystemState;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 
@@ -41,10 +39,9 @@ public interface SystemStateDao {
     void insert(Collection<SystemState> systemStateList) throws SQLException;
 
     /**
-     * Insert systemState translation row to systemState by language table. <br> This is a dictionary of systemState
-     * types .
+     * Insert systemState translation row to systemState by language table. This is a dictionary of systemState types .
      *
-     * @param systemStateId the id of systemStates
+     * @param screenId the screen id
      * @param langId the id of language
      * @param translation the translation text
      * @throws SQLException if failed to insert to the systemState by language table
@@ -52,14 +49,20 @@ public interface SystemStateDao {
     void insertTranslation(Long screenId, Long langId, String translation) throws SQLException;
 
     /**
-     * Insert systemState list translation to systemState by language table. <br> This is a dictionary of systemState
-     * types .
+     * Insert systemState list translation to systemState by language table.
+     * This is a dictionary of systemState types .
      *
      * @param systemStateList the systemState list
      * @throws SQLException if failed to insert to the systemState by language table
      */
     void insertTranslation(Collection<SystemState> systemStateList) throws SQLException;
 
+    /**
+     * Insert program system states rows
+     *
+     * @param programSystemStates the list of program system states
+     * @throws SQLException if failed to insert the program system state list to the database
+     */
     void insertProgramSystemState(Collection<ProgramSystemState> programSystemStates) throws SQLException;
 
     /**
@@ -139,6 +142,3 @@ public interface SystemStateDao {
      */
     Collection<ProgramSystemState> getAllProgramSystemStates(Long programId, Long langId) throws SQLException;
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

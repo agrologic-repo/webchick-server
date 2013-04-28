@@ -5,11 +5,9 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.Program;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 
@@ -75,4 +73,3 @@ public interface ProgramDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

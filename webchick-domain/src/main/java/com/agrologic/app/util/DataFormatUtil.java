@@ -8,27 +8,27 @@ package com.agrologic.app.util;
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class DataFormatUtil {
-    public static final int    DATE        = 7;
-    public static final String DATE_DELIM  = "/";
-    public static final int    DEC_0       = 0;
-    public static final int    DEC_1       = 1;
-    public static final int    DEC_2       = 2;
-    public static final int    DEC_3       = 3;
-    public static final int    DEC_4       = 8;
-    public static final int    DEC_5       = 10;
-    public static final int    DEC__       = 9;
-    public static final String DOT_DELIM   = ".";
+    public static final int DATE = 7;
+    public static final String DATE_DELIM = "/";
+    public static final int DEC_0 = 0;
+    public static final int DEC_1 = 1;
+    public static final int DEC_2 = 2;
+    public static final int DEC_3 = 3;
+    public static final int DEC_4 = 8;
+    public static final int DEC_5 = 10;
+    public static final int DEC__ = 9;
+    public static final String DOT_DELIM = ".";
     public static final String EMPTY_DELIM = "";
-    public static final int    HUMIDITY    = 4;
-    public static final int    TIME        = 5;
-    public static final String TIME_DELIM  = ":";
-    public static final int    TIME_SEC    = 6;
+    public static final int HUMIDITY = 4;
+    public static final int TIME = 5;
+    public static final String TIME_DELIM = ":";
+    public static final int TIME_SEC = 6;
 
     public static boolean isDelimtChar(char c) {
         if ((c == '.') || (c == ':') || (c == '/')) {
@@ -58,107 +58,107 @@ public class DataFormatUtil {
         double number = Double.parseDouble(string);
 
         switch (format) {
-        case DEC_0 :
-            string = clearZero(string);
-
-            if (string.length() > 4) {
-                string = string.substring(1, string.length());
+            case DEC_0:
                 string = clearZero(string);
-            }
 
-            break;
+                if (string.length() > 4) {
+                    string = string.substring(1, string.length());
+                    string = clearZero(string);
+                }
 
-        case DEC_1 :
-            number /= 10;
-            string = String.format("%.1f", number);
+                break;
 
-            if (string.length() > 4) {
-                string = string.substring(1, string.length());
-            }
+            case DEC_1:
+                number /= 10;
+                string = String.format("%.1f", number);
 
-            break;
+                if (string.length() > 4) {
+                    string = string.substring(1, string.length());
+                }
 
-        case DEC_2 :
-            number /= 100;
-            string = String.format("%.2f", number);
+                break;
 
-            if (string.length() > 5) {
-                string = string.substring(1, string.length());
-            }
+            case DEC_2:
+                number /= 100;
+                string = String.format("%.2f", number);
 
-            break;
+                if (string.length() > 5) {
+                    string = string.substring(1, string.length());
+                }
 
-        case DEC_3 :
-            number /= 1000;
-            string = String.format("%.3f", number);
+                break;
 
-            if (string.length() > 5) {
-                string = string.substring(1, string.length());
-            }
+            case DEC_3:
+                number /= 1000;
+                string = String.format("%.3f", number);
 
-            break;
+                if (string.length() > 5) {
+                    string = string.substring(1, string.length());
+                }
 
-        case DEC_4 :
-            string = clearZero(string);
+                break;
 
-            if (string.length() > 6) {
-                string = string.substring(1, string.length());
+            case DEC_4:
                 string = clearZero(string);
-            }
 
-            break;
+                if (string.length() > 6) {
+                    string = string.substring(1, string.length());
+                    string = clearZero(string);
+                }
 
-        case DEC_5 :
-            string = clearZero(string);
+                break;
 
-            if (string.length() > 5) {
-                string = string.substring(1, string.length());
+            case DEC_5:
                 string = clearZero(string);
-            }
 
-            break;
+                if (string.length() > 5) {
+                    string = string.substring(1, string.length());
+                    string = clearZero(string);
+                }
 
-        case HUMIDITY :
-            string = clearZero(string);
+                break;
 
-            if (string.length() > 3) {
-                string = string.substring(1, string.length());
+            case HUMIDITY:
                 string = clearZero(string);
-            }
 
-            break;
+                if (string.length() > 3) {
+                    string = string.substring(1, string.length());
+                    string = clearZero(string);
+                }
 
-        case TIME :
-            number /= 100;
-            string = String.format("%.2f", number);
+                break;
 
-            if (string.length() > 5) {
-                string = string.substring(1, string.length());
-            }
+            case TIME:
+                number /= 100;
+                string = String.format("%.2f", number);
 
-            string = string.replace(".", ":");
+                if (string.length() > 5) {
+                    string = string.substring(1, string.length());
+                }
 
-            break;
+                string = string.replace(".", ":");
 
-        case DATE :
-            number /= 100;
-            string = Double.toString(number);
-            string = String.format("%.2f", number);
+                break;
 
-            if (string.length() > 5) {
-                string = string.substring(1, string.length());
-            }
+            case DATE:
+                number /= 100;
+                string = Double.toString(number);
+                string = String.format("%.2f", number);
 
-            string = string.replace(".", "/");
+                if (string.length() > 5) {
+                    string = string.substring(1, string.length());
+                }
 
-            break;
+                string = string.replace(".", "/");
+
+                break;
         }
 
         return string;
     }
 
     private static String clearZero(String s) {
-        String  string  = s;
+        String string = s;
         boolean allZero = true;
 
         for (char c : string.toCharArray()) {
@@ -210,4 +210,3 @@ public class DataFormatUtil {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

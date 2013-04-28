@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.model.Distrib;
 import java.sql.SQLException;
 import java.util.List;
@@ -26,4 +25,3 @@ public interface DistribDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

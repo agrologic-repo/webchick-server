@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.model.Table;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -31,7 +30,7 @@ public interface TableDao {
      */
     public static final int SHOW_CHECKED = 2;
     /*
-     * exveption messages
+     * exception messages
      */
     public static final String CANNOT_INSERT_TABLE = "Cannot Insert ScreenTable From DataBase";
     public static final String CANNOT_UPDATE_TABLE = "Cannot Update ScreenTable From DataBase";
@@ -55,7 +54,7 @@ public interface TableDao {
     void insert(Collection<Table> tableList) throws SQLException;
 
     /**
-     * Insert table list translation to table by language table. <br> This is a dictionary of data types .
+     * Insert table list translation to table by language table. This is a dictionary of data types .
      *
      * @param tableList the table list
      * @throws SQLException if failed to insert to the table by language table
@@ -73,13 +72,15 @@ public interface TableDao {
     /**
      * Removes a table from the database
      *
-     * @param id the id of the table to be removed from the database
+     * @param programId  the id of the program
+     * @param screenId   the id of the screen
+     * @param tableId    the id of the table
      * @throws SQLException if failed to remove the table from the database
      */
     void remove(Long programId, Long screenId, Long tableId) throws SQLException;
 
     /**
-     * @see TableDao#getTableById()
+     * @see TableDao#getTableById(Long programId, Long screenId, Long tableId, Long langId) ()
      */
     Table getById(Long programId, Long screenId, Long tableId, Long langId) throws SQLException;
 
@@ -124,4 +125,3 @@ public interface TableDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

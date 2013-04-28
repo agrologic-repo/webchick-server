@@ -5,7 +5,7 @@
  */
 package help.examples;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.awt.*;
 
@@ -51,4 +51,4 @@ class TableBackroundPaint0 extends JTable {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

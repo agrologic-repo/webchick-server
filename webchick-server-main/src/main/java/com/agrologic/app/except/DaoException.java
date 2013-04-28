@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.except;
 
-//~--- JDK imports ------------------------------------------------------------
+
 import java.sql.SQLException;
 
 /**
@@ -29,4 +29,4 @@ public class DaoException extends SQLException {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

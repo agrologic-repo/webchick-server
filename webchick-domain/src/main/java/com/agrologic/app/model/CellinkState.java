@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.model;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -165,4 +164,3 @@ public class CellinkState {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

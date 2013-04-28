@@ -6,8 +6,6 @@ package com.agrologic.app.gui.rxtx;
 
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.mysql.impl.MySqlDaoFactory;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.except.ObjectDoesNotExist;
 import com.agrologic.app.except.SerialPortControlFailure;
@@ -18,77 +16,53 @@ import com.agrologic.app.gui.flock.FlockManager;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.network.rxtx.NetworkState;
 import com.agrologic.app.network.rxtx.SocketThread;
-import com.agrologic.app.util.*;
+import com.agrologic.app.util.LocalUtil;
+import com.agrologic.app.util.ObjectSizeFetcher;
+import com.agrologic.app.util.PropertyFileUtil;
+import com.agrologic.app.util.Windows;
+import org.apache.log4j.Logger;
 
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
-
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
-import javax.swing.*;
-import org.apache.log4j.Logger;
 
 /**
- *
  * @author Administrator
  */
 public class WCSLWindow extends JFrame implements PropertyChangeListener {
 
-    private static final String ERROR_OPENING_COM_PORT = "An error occured while trying to access the com port."
+    private static final String ERROR_OPENING_COM_PORT = "An error occure while trying to access the com port."
             + "\n Please select a different  port."
             + "\n Click on the OK button to open configuration dialog .";
-    private static final String USER_CANNOT_FOUND = "The User ID and Farm ID could not be found. \n"
-            + "Click on the OK button to open the Configuration window and manually enter them there.";
+    private static final String USER_CANNOT_FOUND = "The User ID and Farm ID could not be found. " +
+            "\n Click on the OK button to open the Configuration window and manually enter them there.";
     private static final long serialVersionUID = 1L;
-
-    enum ServerState {
-
-        START, STOP
-    };
-    WCSLWindow.ServerState currentState = WCSLWindow.ServerState.STOP;
     private DatabaseManager dbManager;
     private ConfigurationDialog configDialog;
     private Configuration configuration;
     private Task task;
     private ProgressMonitor progressMonitor;
-    private JFileChooser chooser;
-    private File currDir;
-    private Process process;
     private SocketThread networkThread;
-    private FlockManager fmw;
     private MainScreenPanel[] mainScreenPanels;
-    private SecondScreenPanel[] secondscreens;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private long langId;
     public static Logger logger = Logger.getLogger(WCSLWindow.class);
 
     /**
-     * Creates new form WCSL
+     * Creates a new {@link WCSLWindow}.
      */
     public WCSLWindow() {
         initComponents();
         try {
             Windows.setWindowsLAF(this);
             Windows.centerOnScreen(this);
-            configuration = new Configuration();
-            setTitle("WebchickLocal " + configuration.getVersion());
-            setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             final WindowListener closeWindow = new WindowAdapter() {
 
                 @Override
@@ -96,27 +70,33 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
                     exit();
                 }
             };
+
+            configuration = new Configuration();
+            setTitle("WebchickLocal " + configuration.getVersion());
+            setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             addWindowListener(closeWindow);
+
             dbManager = new DatabaseManager(DaoType.DERBY);
             dbManager.getDatabaseGeneralService().setDatabaseDir(PropertyFileUtil.getProgramPath());
             dbManager.doLoadTableData();
+
             try {
                 networkThread = new SocketThread(WCSLWindow.this, dbManager);
             } catch (SerialPortControlFailure e) {
-                logger.info(e.getMessage(), e);
                 throw new Throwable(ERROR_OPENING_COM_PORT + e.getMessage() + "\n");
             }
-            logger.info("Create controller screens");
             createControllersScreens();
-            logger.info("Fineshed creating controller screens");
+
             Thread comThread = new Thread(networkThread);
-            logger.info("Start running communication thread");
             comThread.start();
+
         } catch (Throwable t) {
             t.printStackTrace();
             if (t.getMessage() == null) {
+                logger.info(t.getMessage(), t);
                 JOptionPane.showMessageDialog(WCSLWindow.this, USER_CANNOT_FOUND, "Error", JOptionPane.ERROR_MESSAGE);
             } else {
+                logger.info(t.getMessage(), t);
                 JOptionPane.showMessageDialog(WCSLWindow.this, ERROR_OPENING_COM_PORT, "Error", JOptionPane.ERROR_MESSAGE);
             }
             openConfiguration();
@@ -128,10 +108,9 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
      * Calculate maximum dimension
      *
      * @param size the size
-     * @param colsOnScreen the number of column
      * @return dimension the calculated dimension
      */
-    public Dimension calcMaximumDimens(int size, int colsOnScreen) {
+    public Dimension calcMaximumDimens(int size) {
         Dimension dimension = new Dimension(0, 0);
         for (int i = 0; i < size; i++) {
             if (size == 1) {
@@ -152,16 +131,16 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
     /**
      * Set main screen panel location according to dimension
      *
-     * @param dimens the dimension
-     * @param size the size
+     * @param dimension    the dimension
+     * @param size         the size
      * @param colsOnScreen the number of main screen panel column
      */
-    public void setMainScreenLocation(Dimension dimens, int size, int colsOnScreen) {
+    public void setMainScreenLocation(Dimension dimension, int size, int colsOnScreen) {
         for (int i = 0; i < size; i++) {
             int difX = i % colsOnScreen;
             int difY = i / colsOnScreen;
-            int x = dimens.width * difX;
-            int y = dimens.height * difY;
+            int x = dimension.width * difX;
+            int y = dimension.height * difY;
             mainScreenPanels[i].setLocation(x, y);
         }
     }
@@ -173,49 +152,6 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
 //        settingView = new SettingDialog(this, true);
 //        settingView.addListener(this);
 //        settingView.show();
-    }
-
-    /**
-     * Show log file in note pad program.
-     */
-    public void openLogfile() {
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        final Thread runner = new Thread() {
-
-            @Override
-            public void run() {
-                String fileName = "logs\\system.log";
-                try {
-                    Runtime.getRuntime().exec("notepad.exe " + fileName);
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(null,
-                            "Error opening " + fileName,
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-                setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            }
-        };
-        runner.start();
-    }
-
-    private String getPath() {
-        String drive = System.getProperty("user.dir");
-        String[] pp = drive.split("\\\\");
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 2; i++) {
-            sb.append(pp[i]).append("\\");
-        }
-        return sb.toString();
-
-    }
-
-    private String getMySQLPath() {
-        String mySqlPath = getPath();
-        String version = ((MySqlDaoFactory) DbImplDecider.getDaoFactory(DaoType.MYSQL)).getMySQLVersion();
-        mySqlPath = mySqlPath + "MySql\\MySql Server " + version + "\\bin";
-        return mySqlPath;
     }
 
     /**
@@ -239,8 +175,8 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
             }
 
             int colsOnScreen = ScreenUI.COL_NUMBERS;
-            Dimension dimens = calcMaximumDimens(size, colsOnScreen);
-            setMainScreenLocation(dimens, size, colsOnScreen);
+            Dimension dimension = calcMaximumDimens(size);
+            setMainScreenLocation(dimension, size, colsOnScreen);
             for (int i = 0; i < mainScreenPanels.length; i++) {
                 for (int j = 0; j < mainScreenPanels.length; j++) {
                     if (i != j) {
@@ -249,22 +185,21 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
                 }
             }
 
-            dimens.width *= ((size / colsOnScreen) > 0 ? 1 : 0)
+            dimension.width *= ((size / colsOnScreen) > 0 ? 1 : 0)
                     * colsOnScreen + ((size / colsOnScreen) > 0 ? 0 : (size % colsOnScreen));
-            dimens.height *= ((size / colsOnScreen) + ((size % colsOnScreen) > 0 ? 1 : 0));
-            mainScreenPanelHolder.setPreferredSize(dimens);
-            mainScreenPanelHolder.setSize(dimens);
+            dimension.height *= ((size / colsOnScreen) + ((size % colsOnScreen) > 0 ? 1 : 0));
+            mainScreenPanelHolder.setPreferredSize(dimension);
+            mainScreenPanelHolder.setSize(dimension);
 
             logger.info("Start creating  second screen panel ");
-            secondscreens = new SecondScreenPanel[controllers.size()];
+            SecondScreenPanel[] secondScreenPanels = new SecondScreenPanel[controllers.size()];
 
             for (int i = 0; i < controllers.size(); i++) {
                 ObjectSizeFetcher.getObjectSize();
-                logger.info("Second screen panel of controller : " + controllers.get(i));
-                secondscreens[i] = new SecondScreenPanel(dbManager, controllers.get(i));
-                mainScreenPanels[i].addSecondPanel(secondscreens[i]);
-                mainScreenPanelHolder.add(secondscreens[i]);
-                secondscreens[i].setMainScreenPanel(mainScreenPanels[i]);
+                secondScreenPanels[i] = new SecondScreenPanel(dbManager, controllers.get(i));
+                mainScreenPanels[i].addSecondPanel(secondScreenPanels[i]);
+                mainScreenPanelHolder.add(secondScreenPanels[i]);
+                secondScreenPanels[i].setMainScreenPanel(mainScreenPanels[i]);
             }
             logger.info("Finished creating  second screen panel ");
 
@@ -283,35 +218,17 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
             setLayout(null);
             getContentPane().add(scrollPane);
 
-            JSeparator statusSeparator = new JSeparator();
-            Dimension screenResolut = Windows.screenResolution();
-            statusSeparator.setBounds(0, screenResolut.height - 105, screenResolut.width, 30);
-            JLabel statusLabel = new JLabel("Started");
-            statusLabel.setBounds(0, 0, 250, 20);
-            statusSeparator.add(statusLabel);
-            networkThread.setStatusLabel(statusLabel);
+            Dimension screenResolution = Windows.screenResolution();
+            StatusPanel sp = new StatusPanel();
+            sp.setBounds(0, screenResolution.height - 105, screenResolution.width, 30);
 
-            getContentPane().add(statusSeparator);
-            setSize(screenResolut.width, screenResolut.height);
+            networkThread.setStatusPanel(sp);
+            getContentPane().add(sp);
+            setSize(screenResolution.width, screenResolution.height);
             Windows.centerOnScreen(this);
-            logger.info("Fineshed creating main screens and second screens panels");
         } catch (ObjectDoesNotExist ex) {
             ex.printStackTrace();
         }
-    }
-
-    private Rectangle calcMaxBoundsMainScreens() {
-        Rectangle maxBounds = new Rectangle(0, 0, 0, 0);
-        for (MainScreenPanel msp : mainScreenPanels) {
-            Rectangle b = msp.getBounds();
-            if (b.width > maxBounds.width) {
-                maxBounds.width = b.width;
-            }
-            if (b.height > maxBounds.height) {
-                maxBounds.height = b.height;
-            }
-        }
-        return maxBounds;
     }
 
     /**
@@ -336,8 +253,9 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
     }
 
     /**
-     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
-     * content of this method is always regenerated by the Form Editor.
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -413,12 +331,12 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 757, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 757, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 544, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 544, Short.MAX_VALUE)
         );
 
         pack();
@@ -441,8 +359,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
     }//GEN-LAST:event_mnuSetupDriverActionPerformed
 
     private void mnuManageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuManageActionPerformed
-        logger.info("Show flock manager");
-        fmw = new FlockManager();
+        FlockManager fmw = new FlockManager();
         fmw.setVisible(true);
     }//GEN-LAST:event_mnuManageActionPerformed
 
@@ -453,7 +370,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
     }//GEN-LAST:event_mnuDesignActionPerformed
 
     public void openConfiguration() {
-        boolean result = false;
+        boolean result;
         try {
             if (configDialog == null) {
                 configDialog = new ConfigurationDialog(this, true);
@@ -471,31 +388,6 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
         }
     }
 
-    public void openJARFile() {
-        try {
-            String path = new File(".").getCanonicalPath();
-            path = path + "\\lib\\WebchickConfig.jar";
-            File file = new File(path);
-            URL url = file.toURL();
-            URL[] urls = new URL[]{url};
-            ClassLoader cl = new URLClassLoader(urls);
-            Class clazz = cl.loadClass("webchickconfig.ui.ConfigurationDialog");
-            ConfigurationDialog cfg = (ConfigurationDialog) clazz.newInstance();
-        } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(WCSLWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     /**
      * @param args the command line arguments
      */
@@ -505,7 +397,8 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
          */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /*
-         * If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel. For details see
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the
+         * default look and feel. For details see
          * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
@@ -537,6 +430,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
             }
         });
     }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem mnuConfig1;

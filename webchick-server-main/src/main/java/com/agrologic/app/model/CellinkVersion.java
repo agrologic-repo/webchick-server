@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.model;
 
-//~--- JDK imports ------------------------------------------------------------
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,4 +49,4 @@ public class CellinkVersion {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

@@ -1,28 +1,16 @@
-/**
- * To change this template, choose Tools | Templates and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.TransactionDao;
 import com.agrologic.app.model.Transaction;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author JanL
- */
 public class TransactionDaoImpl implements TransactionDao {
 
     protected DaoFactory dao;
@@ -197,6 +185,3 @@ public class TransactionDaoImpl implements TransactionDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

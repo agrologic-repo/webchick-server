@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.messaging;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.util.LinkedList;
 
@@ -114,4 +114,4 @@ public class CyclicQueue<RequestMessage> {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

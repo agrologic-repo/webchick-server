@@ -52,7 +52,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
     private Clock clock;
     private JPopupMenu popupTableMenu;
     private JMenuItem startedState;
-    private JMenuItem stopedState;
+    private JMenuItem stoppedState;
     private CellinkTable cellinkTable;
     private static final String ERROR_OPENNING_SOCKET = "Error opening socket \nServerAddress already in use !";
     private static final String CANNOT_CREATE_LOCK_FILE = "Can't create Lock File.\nAccess is denied !";
@@ -87,15 +87,15 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
             }
         });
         popupTableMenu.add(startedState);
-        stopedState = new JMenuItem("Stop");
-        stopedState.addActionListener(new ActionListener() {
+        stoppedState = new JMenuItem("Stop");
+        stoppedState.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 int row = cellinkTable.getSelectedRow();
                 cellinkTable.setState(row, CellinkState.STATE_STOP);
             }
         });
-        popupTableMenu.add(stopedState);
+        popupTableMenu.add(stoppedState);
 
         Windows.setWindowsLAF(WCSWindow.this);
         Windows.centerOnScreen(WCSWindow.this);

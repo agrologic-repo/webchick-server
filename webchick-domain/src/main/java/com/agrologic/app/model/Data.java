@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.model;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.io.Serializable;
 
@@ -359,4 +358,3 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
     }
 }
 
-//~ Formatted by Jindent --- http://www.jindent.com

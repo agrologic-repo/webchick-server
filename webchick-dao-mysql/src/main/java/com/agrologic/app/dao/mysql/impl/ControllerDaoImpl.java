@@ -9,13 +9,6 @@ import com.agrologic.app.util.ControllerUtil;
 import java.sql.*;
 import java.util.*;
 
-/**
- * Title: ControllerDaoImpl - Encapsulate all SQL queries to database that are related to controllers <br> Description:
- * Contains 3 types of SQL methods:<ul> <li>regular jdbc statements</li> <li>prepared statements<br></li></ul>
- * Copyright: Copyright (c) 2008 <br>
- *
- * @version 1.0 <br>
- */
 public class ControllerDaoImpl implements ControllerDao {
 
     protected DaoFactory dao;

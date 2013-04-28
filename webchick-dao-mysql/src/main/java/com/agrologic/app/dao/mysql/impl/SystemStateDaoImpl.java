@@ -1,35 +1,14 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.SystemStateDao;
-import com.agrologic.app.model.Alarm;
-
 import com.agrologic.app.model.ProgramSystemState;
 import com.agrologic.app.model.SystemState;
-import com.agrologic.app.util.AlarmUtil;
-
 import com.agrologic.app.util.SystemStateUtil;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.sql.*;
-
 import java.util.Collection;
 
-/**
- * Title: SystemStateDaoImpl <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class SystemStateDaoImpl implements SystemStateDao {
     protected DaoFactory dao;
 
@@ -39,12 +18,12 @@ public class SystemStateDaoImpl implements SystemStateDao {
 
     @Override
     public void insert(SystemState systemstate) throws SQLException {
-        String            sqlQuery = "insert into systemstatenames values (?,?)";
+        String sqlQuery = "insert into systemstatenames values (?,?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, systemstate.getId());
             prepstmt.setString(2, systemstate.getText());
@@ -62,9 +41,9 @@ public class SystemStateDaoImpl implements SystemStateDao {
     public void insert(Collection<SystemState> systemStateList) throws SQLException {
         // there is duplicate SystemState elements in systemStateList we need only unique elements
         Collection<SystemState> uniqueSystemStateList = SystemStateUtil.getUniqueElements(systemStateList);
-        String                  sqlQuery = "INSERT INTO SYSTEMSTATENAMES (ID, NAME) VALUES(?,?)";
-        PreparedStatement       prepstmt = null;
-        Connection              con      = null;
+        String sqlQuery = "INSERT INTO SYSTEMSTATENAMES (ID, NAME) VALUES(?,?)";
+        PreparedStatement prepstmt = null;
+        Connection con = null;
 
         try {
             con = dao.getConnection();
@@ -104,12 +83,12 @@ public class SystemStateDaoImpl implements SystemStateDao {
     @Override
     public void insertTranslation(Long systemstateId, Long langId, String translation) throws SQLException {
         String sqlQuery =
-            "insert into systemstatebylanguage values (?,?,?) on duplicate key update UnicodeName=values(UnicodeName)";
+                "insert into systemstatebylanguage values (?,?,?) on duplicate key update UnicodeName=values(UnicodeName)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, systemstateId);
             prepstmt.setLong(2, langId);
@@ -129,7 +108,7 @@ public class SystemStateDaoImpl implements SystemStateDao {
         String sqlQuery = "insert into systemStatebylanguage values (?,?,?) ";
 //      + "on duplicate key update UnicodeName=values(UnicodeName)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
             con = dao.getConnection();
@@ -170,9 +149,9 @@ public class SystemStateDaoImpl implements SystemStateDao {
 
     @Override
     public void insertProgramSystemState(Collection<ProgramSystemState> programSystemStates) throws SQLException {
-        String            sqlQuery = "insert into programsysstates values (?,?,?,?,?,?)";
+        String sqlQuery = "insert into programsysstates values (?,?,?,?,?,?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
             con = dao.getConnection();
@@ -210,12 +189,12 @@ public class SystemStateDaoImpl implements SystemStateDao {
 
     @Override
     public void update(SystemState systemstate) throws SQLException {
-        String            sqlQuery = "update systemstatenames set Name=? where ID=?";
+        String sqlQuery = "update systemstatenames set Name=? where ID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setString(1, systemstate.getText());
             prepstmt.setLong(2, systemstate.getId());
@@ -232,12 +211,12 @@ public class SystemStateDaoImpl implements SystemStateDao {
 
     @Override
     public void remove(Long id) throws SQLException {
-        String            sqlQuery = "delete from systemstatenames where ID=?";
+        String sqlQuery = "delete from systemstatenames where ID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, id);
             prepstmt.executeUpdate();
@@ -251,12 +230,12 @@ public class SystemStateDaoImpl implements SystemStateDao {
 
     @Override
     public SystemState getById(Long id) throws SQLException {
-        String            sqlQuery = "select * from systemstatenames where ID=?";
+        String sqlQuery = "select * from systemstatenames where ID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, id);
             ResultSet rs = prepstmt.executeQuery();
@@ -277,12 +256,12 @@ public class SystemStateDaoImpl implements SystemStateDao {
 
     @Override
     public Collection<SystemState> getAll() throws SQLException {
-        String     sqlQuery = "select * from systemstatenames order by ID,Name";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select * from systemstatenames order by ID,Name";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -301,13 +280,13 @@ public class SystemStateDaoImpl implements SystemStateDao {
     @Override
     public Collection<SystemState> getAll(Long langId) throws SQLException {
         String sqlQuery =
-            "select s1.id, s1.name, s2.systemstateid, s2.langid, s2.unicodename from systemstatenames s1 "
-            + "left join systemstatebylanguage s2 on s1.id=s2.systemstateid and langid=" + langId;
-        Statement  stmt = null;
-        Connection con  = null;
+                "select s1.id, s1.name, s2.systemstateid, s2.langid, s2.unicodename from systemstatenames s1 "
+                        + "left join systemstatebylanguage s2 on s1.id=s2.systemstateid and langid=" + langId;
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -326,13 +305,13 @@ public class SystemStateDaoImpl implements SystemStateDao {
     @Override
     public Collection<SystemState> getAllWithTranslation() throws SQLException {
         String sqlQuery = "select * from systemstatenames "
-                          + "join systemstatebylanguage on systemstatenames.id=systemstatebylanguage.systemstateid "
-                          + "order by systemstatebylanguage.langid , systemstatebylanguage.systemstateid";
-        Statement  stmt = null;
-        Connection con  = null;
+                + "join systemstatebylanguage on systemstatenames.id=systemstatebylanguage.systemstateid "
+                + "order by systemstatebylanguage.langid , systemstatebylanguage.systemstateid";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -350,12 +329,12 @@ public class SystemStateDaoImpl implements SystemStateDao {
 
     @Override
     public Collection<ProgramSystemState> getAllProgramSystemStates(Long programId) throws SQLException {
-        String            sqlQuery = "select * from programsysstates where ProgramID=? ";
+        String sqlQuery = "select * from programsysstates where ProgramID=? ";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, programId);
             return SystemStateUtil.makeProgramSystemStateList(prepstmt.executeQuery());
@@ -370,12 +349,12 @@ public class SystemStateDaoImpl implements SystemStateDao {
     @Override
     public Collection<ProgramSystemState> getSelectedProgramSystemStates(Long programId) throws SQLException {
         String sqlQuery = "select * from programsysstates where ProgramID=? and TEXT not Like '%None%' "
-                          + "and Text not Like '%Damy%' order by DataID, SystemStateNumber";
+                + "and Text not Like '%Damy%' order by DataID, SystemStateNumber";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, programId);
             return SystemStateUtil.makeProgramSystemStateList(prepstmt.executeQuery());
@@ -390,15 +369,15 @@ public class SystemStateDaoImpl implements SystemStateDao {
     @Override
     public Collection<ProgramSystemState> getAllProgramSystemStates(Long programId, Long langId) throws SQLException {
         String sqlQuery =
-            "select * from programsysstates as pss "
-                + " inner join systemstatebylanguage ssbl on "
-                + " ssbl.SystemStateID=pss.systemstatetextid and ssbl.langid=? and pss.programid=? and pss.text not like '%None%' "
-                + " and pss.Text not Like '%None%' and pss.Text not Like '%Damy%' order by pss.DataID,pss.Number ";
+                "select * from programsysstates as pss "
+                        + " inner join systemstatebylanguage ssbl on "
+                        + " ssbl.SystemStateID=pss.systemstatetextid and ssbl.langid=? and pss.programid=? and pss.text not like '%None%' "
+                        + " and pss.Text not Like '%None%' and pss.Text not Like '%Damy%' order by pss.DataID,pss.Number ";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, langId);
             prepstmt.setLong(2, programId);
@@ -411,6 +390,3 @@ public class SystemStateDaoImpl implements SystemStateDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

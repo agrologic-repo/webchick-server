@@ -5,10 +5,8 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.model.Gas;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 
@@ -30,4 +28,3 @@ public interface GasDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

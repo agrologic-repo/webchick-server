@@ -5,13 +5,20 @@
 package com.agrologic.app.gui.rxtx;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.gui.graph.AbstractGraph;
 import com.agrologic.app.gui.graph.Graph24FWI;
 import com.agrologic.app.gui.graph.Graph24IOH;
 import com.agrologic.app.gui.graph.GraphType;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
+import org.jfree.chart.ChartPanel;
+
+import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -21,13 +28,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JPanel;
-import javax.swing.SwingWorker;
-import javax.swing.Timer;
-import org.jfree.chart.ChartPanel;
 
 /**
- *
  * @author Administrator
  */
 public class Graphs24HourPanel extends JPanel {

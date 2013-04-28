@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.model.Flock;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -55,4 +54,3 @@ public interface FlockDao {
 
     Map<Integer, String> getAllHistory24ByFlockAndDnum(Long flockId, String dnum) throws SQLException;
 }
-//~ Formatted by Jindent --- http://www.jindent.com

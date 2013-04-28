@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.dao.derby.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
+
 
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.*;
@@ -15,7 +15,7 @@ import com.agrologic.app.dao.mysql.impl.TableDaoImpl;
 
 import com.agrologic.app.model.Table;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.sql.*;
 
@@ -170,4 +170,4 @@ public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, Dro
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.dao.derby.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
+
 
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.DaoFactory;
@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 /**
  * {Insert class description here}
@@ -271,8 +271,7 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
 
     @Override
     public void updateControllerData(Long controllerId, Collection<Data> onlineData) throws SQLException {
-        final String sqlSelectQuery =
-                "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
+        final String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         final String sqlInsertQuery = "INSERT INTO CONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
         final String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
         PreparedStatement prepstmtSelect = null;
@@ -312,7 +311,6 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
                         prepstmtInsert.addBatch();
                     }
                 }
-
                 con.setAutoCommit(true);
             }
 
@@ -525,4 +523,4 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

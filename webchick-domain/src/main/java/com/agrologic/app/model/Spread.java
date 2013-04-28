@@ -78,4 +78,3 @@ public class Spread {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

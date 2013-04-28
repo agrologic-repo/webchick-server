@@ -5,14 +5,10 @@
  */
 package com.agrologic.app.util;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.model.Screen;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,10 +16,10 @@ import java.util.List;
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class ScreenUtil {
 
@@ -39,7 +35,7 @@ public class ScreenUtil {
         try {
             screen.setLangId(rs.getLong("LangId"));
         } catch (SQLException e) {
-            screen.setLangId((long)1);
+            screen.setLangId((long) 1);
         }
         try {
             if ((rs.getString("UnicodeTitle") != null)) {
@@ -67,4 +63,3 @@ public class ScreenUtil {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

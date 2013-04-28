@@ -5,34 +5,30 @@
  */
 package com.agrologic.app.util;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.Controller;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class ControllerUtil {
 
     /**
-     *     Help to create controller from result set
+     * Help to create controller from result set
      *
-     *     @param rs a result set
-     *     @return controller and object that encapsulate a controller attributes
-     *     @throws java.sql.SQLException if failed to execute statement.
+     * @param rs a result set
+     * @return controller and object that encapsulate a controller attributes
+     * @throws java.sql.SQLException if failed to execute statement.
      */
     public static Controller makeController(ResultSet rs) throws SQLException {
         Controller controller = new Controller();
@@ -68,4 +64,3 @@ public class ControllerUtil {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

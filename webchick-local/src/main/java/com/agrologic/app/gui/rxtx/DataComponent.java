@@ -6,35 +6,30 @@
 package com.agrologic.app.gui.rxtx;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.dao.service.DatabaseAccessor;
-import com.agrologic.app.gui.rxtx.DataImage;
-import com.agrologic.app.gui.rxtx.DataLabel;
-import com.agrologic.app.gui.rxtx.DataTextField;
-import com.agrologic.app.gui.rxtx.ProgramAlarmPopup;
 import com.agrologic.app.model.*;
 import com.agrologic.app.model.rxtx.DataController;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class DataComponent {
 
-    public static final int HEIGHT   = 25;
-    public static final int WIDTH    = 150;
+    public static final int HEIGHT = 25;
+    public static final int WIDTH = 150;
     public static final int X_OFFSET = 2;
     public static final int Y_OFFSET = 2;
     private Rectangle boundsComponent;
@@ -47,17 +42,6 @@ public class DataComponent {
     private Point location;
     private List<ProgramAlarm> programAlarms;
     private ProgramRelay relay;
-
-    public DataComponent(DataController d, int xCordL, int yCordL, int xCordC, int yCordC, ProgramSystemState pas) {
-        data = d;
-        boundsLabel = new Rectangle(xCordL, yCordL, xCordC - 10, HEIGHT);
-        boundsComponent = new Rectangle(xCordC, yCordC, 60, HEIGHT);
-        label = new JLabel("<html>" + data.getUnicodeLabel() + "</html>");
-        label.setBounds(boundsLabel);
-        label.setOpaque(true);
-        component = createComponent();
-        component.setBounds(boundsComponent);
-    }
 
     public DataComponent(DataController d, int xCordL, int yCordL, int xCordC, int yCordC, List<ProgramAlarm> pas) {
         data = d;
@@ -91,7 +75,7 @@ public class DataComponent {
     }
 
     public DataComponent(DataController d, int xCordL, int yCordL, int xCordC, int yCordC, Controller c,
-            DatabaseAccessor dba) {
+                         DatabaseAccessor dba) {
         controller = c;
         dbaccess = dba;
         data = d;
@@ -146,7 +130,7 @@ public class DataComponent {
     }
 
     private JComponent createComponent() {
-        JComponent returnCompon = null;
+        JComponent returnCompon;
 
         if (!data.isStatus()) {
             if (!data.getReadonly()) {

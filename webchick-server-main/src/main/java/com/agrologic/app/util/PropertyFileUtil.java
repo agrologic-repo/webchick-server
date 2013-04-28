@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.util;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -118,4 +118,4 @@ public class PropertyFileUtil {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

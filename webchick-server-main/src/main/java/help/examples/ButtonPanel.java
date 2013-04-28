@@ -9,7 +9,7 @@ package help.examples;
 
 import com.agrologic.app.util.Windows;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -51,4 +51,4 @@ public class ButtonPanel extends JPanel {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

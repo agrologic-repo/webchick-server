@@ -1,28 +1,16 @@
-/**
- * To change this template, choose Tools | Templates and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.MedicineDao;
 import com.agrologic.app.model.Medicine;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author JanL
- */
 public class MedicineDaoImpl implements MedicineDao {
 
     protected DaoFactory dao;
@@ -181,6 +169,3 @@ public class MedicineDaoImpl implements MedicineDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

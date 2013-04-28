@@ -12,25 +12,26 @@ import com.agrologic.app.model.Data;
 import com.agrologic.app.model.rxtx.DataChangeEvent;
 import com.agrologic.app.model.rxtx.DataChangeListener;
 import com.agrologic.app.util.DataFormatUtil;
+
+import javax.swing.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.SQLException;
-import javax.swing.JTextField;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class DataTextField extends JTextField implements DataChangeListener {
     private volatile boolean locked = false;
-    private long             controllerId;
-    private Data             data;
+    private long controllerId;
+    private Data data;
     private DatabaseAccessor dbaccess;
 
     public DataTextField(String text) {
@@ -42,8 +43,8 @@ public class DataTextField extends JTextField implements DataChangeListener {
         super(text);
         setListneners();
         this.controllerId = cid;
-        this.data         = d;
-        this.dbaccess     = dbaccess;
+        this.data = d;
+        this.dbaccess = dbaccess;
     }
 
     private void setListneners() {
@@ -56,6 +57,7 @@ public class DataTextField extends JTextField implements DataChangeListener {
                     textField.selectAll();
                 }
             }
+
             @Override
             public void focusLost(FocusEvent e) {
                 if (e.getSource() instanceof DataTextField) {
@@ -87,12 +89,15 @@ public class DataTextField extends JTextField implements DataChangeListener {
                     }
                 }
             }
+
             @Override
-            public void keyPressed(KeyEvent e) {}
+            public void keyPressed(KeyEvent e) {
+            }
+
             @Override
             public void keyReleased(KeyEvent e) {
-                DataTextField txt    = (DataTextField) e.getSource();
-                String        string = DataFormatUtil.fixDecPoint(txt.getText(), data.getFormat());
+                DataTextField txt = (DataTextField) e.getSource();
+                String string = DataFormatUtil.fixDecPoint(txt.getText(), data.getFormat());
 
                 txt.setText(string);
 

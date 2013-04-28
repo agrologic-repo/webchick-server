@@ -9,7 +9,7 @@ package help.examples.xml;
 
 import com.thoughtworks.xstream.XStream;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -49,4 +49,4 @@ public class Writer {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

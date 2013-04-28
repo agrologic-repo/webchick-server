@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Observable;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 /**
  * Title: ServerSocketThread <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
@@ -409,4 +409,4 @@ public class ServerThread extends Observable implements Runnable {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

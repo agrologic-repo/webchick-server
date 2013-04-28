@@ -1,27 +1,13 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.ScreenDao;
 import com.agrologic.app.model.Screen;
 import com.agrologic.app.util.ScreenUtil;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.sql.*;
-
 import java.util.Collection;
 
-/**
- *
- * @author JanL
- */
 public class ScreenDaoImpl implements ScreenDao {
 
     protected DaoFactory dao;
@@ -333,6 +319,3 @@ public class ScreenDaoImpl implements ScreenDao {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

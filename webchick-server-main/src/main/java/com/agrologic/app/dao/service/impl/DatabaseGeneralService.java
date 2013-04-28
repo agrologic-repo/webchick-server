@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
  */
 public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
 
-    protected final Logger log = Logger.getLogger(DatabaseGeneralService.class.getName());
+    protected final Logger log = Logger.getLogger(DatabaseGeneralService.class);
     protected AlarmDao alarmDao;
     protected CellinkDao cellinkDao;
     protected ControllerDao controllerDao;
@@ -80,7 +80,7 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
      * Initialize dao interface by dao type
      */
     public final void initDaoByType() {
-        printLogbyDaoType("Initializating dao interface");
+        printLogbyDaoType("Initialize dao interface");
         schemaDao = DbImplDecider.getDaoFactory(daoType).getSchemaDao();
         userDao = DbImplDecider.getDaoFactory(daoType).getUserDao();
         cellinkDao = DbImplDecider.getDaoFactory(daoType).getCellinkDao();
@@ -327,4 +327,4 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

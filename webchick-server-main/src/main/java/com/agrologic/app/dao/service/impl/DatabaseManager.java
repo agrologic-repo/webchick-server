@@ -1,20 +1,22 @@
 package com.agrologic.app.dao.service.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.model.*;
+import org.apache.log4j.Logger;
+
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.apache.log4j.Logger;
 
 public class DatabaseManager {
 
-    private final Logger log = Logger.getLogger(DatabaseManager.class.getName());
+    private final Logger logger = Logger.getLogger(DatabaseManager.class);
     private DatabaseCreator databaseCreator;
     private DatabaseGeneralService databaseGeneralService;
     private DatabaseInsertion databaseInsertion;
@@ -23,10 +25,17 @@ public class DatabaseManager {
     private Long cellinkId;
     private final ExecutorService executorService;
 
+    /**
+     * Creates a new {@link DatabaseManager}.
+     */
     public DatabaseManager() {
         this(DaoType.MYSQL);
     }
 
+    /**
+     * Creates a new {@link DatabaseManager}.
+     * @param daoType the dao type
+     */
     public DatabaseManager(DaoType daoType) {
         this.databaseGeneralService = new DatabaseGeneralService(daoType);
         this.databaseLoader = new DatabaseLoader(databaseGeneralService);
@@ -43,7 +52,7 @@ public class DatabaseManager {
         cellinkId = Long.parseLong(scellinkId);
         try {
             if (userId.equals((long) -1) || cellinkId.equals((long) -1)) {
-                log.trace("UserID or CellinkID argument error : userId= " + userId + "; cellinkId= " + cellinkId + ";");
+                logger.trace("UserID or CellinkID argument error : userId= " + userId + "; cellinkId= " + cellinkId + ";");
                 throw new IllegalArgumentException();
             }
             databaseLoader.loadAllDataByUserAndCellink(userId, cellinkId);
@@ -72,9 +81,9 @@ public class DatabaseManager {
 
     public synchronized void runRemoveOldData() {
         try {
-            ((RemovebleDao)databaseGeneralService.getControllerDao()).removeFromTable();
-            ((RemovebleDao)databaseGeneralService.getCellinkDao()).removeFromTable();
-            ((RemovebleDao)databaseGeneralService.getUserDao()).removeFromTable();
+            ((RemovebleDao) databaseGeneralService.getControllerDao()).removeFromTable();
+            ((RemovebleDao) databaseGeneralService.getCellinkDao()).removeFromTable();
+            ((RemovebleDao) databaseGeneralService.getUserDao()).removeFromTable();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -90,7 +99,7 @@ public class DatabaseManager {
 
     public void finish() {
         userId = null;
-        cellinkId= null;
+        cellinkId = null;
         databaseGeneralService.closeAll();
         databaseGeneralService = null;
         databaseCreator = null;

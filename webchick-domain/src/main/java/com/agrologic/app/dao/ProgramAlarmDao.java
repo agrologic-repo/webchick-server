@@ -5,11 +5,9 @@
  */
 package com.agrologic.app.dao;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.ProgramAlarm;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.SQLException;
 
@@ -39,4 +37,3 @@ public interface ProgramAlarmDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

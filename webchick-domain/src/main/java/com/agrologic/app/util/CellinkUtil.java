@@ -5,15 +5,11 @@
  */
 package com.agrologic.app.util;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.Cellink;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,10 +17,10 @@ import java.util.List;
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class CellinkUtil {
 
@@ -73,4 +69,3 @@ public class CellinkUtil {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

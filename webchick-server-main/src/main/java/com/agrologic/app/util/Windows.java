@@ -5,7 +5,7 @@
  */
 package com.agrologic.app.util;
 
-//~--- JDK imports ------------------------------------------------------------
+
 /**
  * Title: Windows.java <br> Description: <br> Copyright: Copyright © 2010 <br> Company: Agro Logic Ltd. ®<br>
  *
@@ -85,4 +85,4 @@ public class Windows {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

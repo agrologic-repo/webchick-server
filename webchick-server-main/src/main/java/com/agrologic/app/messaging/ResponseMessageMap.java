@@ -9,7 +9,7 @@ package com.agrologic.app.messaging;
 
 import com.agrologic.app.network.CommandType;
 
-//~--- JDK imports ------------------------------------------------------------
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -106,4 +106,4 @@ public class ResponseMessageMap extends Observable {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

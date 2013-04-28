@@ -1,11 +1,5 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.dao.AlarmDao;
 import com.agrologic.app.dao.DaoFactory;
@@ -16,12 +10,6 @@ import com.agrologic.app.util.AlarmUtil;
 import java.sql.*;
 import java.util.Collection;
 
-/**
- * Title: AlarmDaoImpl <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class AlarmDaoImpl implements AlarmDao {
     protected DaoFactory dao;
 
@@ -412,4 +400,4 @@ public class AlarmDaoImpl implements AlarmDao {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

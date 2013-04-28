@@ -16,4 +16,4 @@ package com.agrologic.app.dao.derby.impl;
 public class DerbySpecialDataLabel {}
 
 
-//~ Formatted by Jindent --- http://www.jindent.com
+

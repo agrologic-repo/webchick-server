@@ -1,25 +1,13 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.mysql.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.TableDao;
 import com.agrologic.app.model.Table;
 import com.agrologic.app.util.TableUtil;
+
 import java.sql.*;
 import java.util.Collection;
 
-/**
- * Title: TableDaoImpl <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class TableDaoImpl implements TableDao {
 
     protected DaoFactory dao;

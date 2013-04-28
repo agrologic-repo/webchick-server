@@ -9,20 +9,20 @@ package com.agrologic.app.gui.rxtx;
 
 import com.agrologic.app.model.rxtx.DataChangeEvent;
 import com.agrologic.app.model.rxtx.DataChangeListener;
-import java.awt.Dimension;
+
+import javax.swing.*;
+import java.awt.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 @SuppressWarnings("serial")
 public class DataImage extends JLabel implements DataChangeListener {
@@ -49,7 +49,7 @@ public class DataImage extends JLabel implements DataChangeListener {
     }
 
     private Integer bitNumber;
-    private Type    currType;
+    private Type currType;
 
     public enum Type {
         FAN_ON, FAN_OFF, COOL_OFF, COOL_ON, LIGHT_ON, LIGHT_OFF, AOUGER_ON, AOUGER_OFF, WATER_ON, WATER_OFF, RELAY_ON,

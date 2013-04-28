@@ -78,4 +78,3 @@ public class Fuel {
 }
 
 
-//~ Formatted by Jindent --- http://www.jindent.com

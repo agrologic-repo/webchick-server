@@ -7,6 +7,7 @@ package com.agrologic.app.network.rxtx;
 
 /**
  *
+ *
  * @author Administrator
  */
 public interface Network {
@@ -109,7 +110,7 @@ public interface Network {
     public static final byte STX = 2;    // START OF TEXT
 
     /**
-     * terminal packet
+     * Terminal packet
      */
     public static final byte TERMINAL = 20;    // TERMINAL INDICATOR
 

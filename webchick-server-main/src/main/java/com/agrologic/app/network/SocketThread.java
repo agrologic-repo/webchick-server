@@ -82,7 +82,7 @@ public class SocketThread extends Thread implements Network {
         this.contMsgManager = new ArrayList<MessageManager>();
     }
 
-    public void setServreFacade(ServerUI serverFacade) {
+    public void setServerFacade(ServerUI serverFacade) {
         this.serverFacade = serverFacade;
     }
 
