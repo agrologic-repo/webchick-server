@@ -6,9 +6,8 @@
 package com.agrologic.app.messaging;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.except.ReadChecksumException;
-import com.agrologic.app.network.MessageListener;
-import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
@@ -18,15 +17,6 @@ import org.apache.log4j.Logger;
  * @version 1.1 <br>
  */
 public final class ResponseMessage implements Message {
-
-    /**
-     * Constant for a message type for binary messages (value = "binary").
-     */
-    public static final String BINARY_MESSAGE = "binary";
-    /**
-     * Constant for a message type for text messages (value = "text").
-     */
-    public static final String TEXT_MESSAGE = "text";
     private int errorCode = 0;
     private Logger logger = Logger.getLogger(ResponseMessage.class);
     /**
@@ -49,8 +39,6 @@ public final class ResponseMessage implements Message {
      * The body of message without head and check sum
      */
     private String messageBody;
-
-    private List<MessageListener> messageListeners;
     /**
      * The message type
      */
@@ -81,20 +69,6 @@ public final class ResponseMessage implements Message {
         errorCode = error;
     }
 
-    public ResponseMessage(byte[] buf, byte buftype) {
-        if (buf == null) {
-            this.messageType = MessageType.ERROR;
-            this.errorCode = SOT_ERROR;
-            recvCHS = -1;
-            calcCHS = -1;
-        } else {
-            this.messageType = MessageType.RESPONSE_DATA;
-            this.bufferType = buftype;
-            setBuffer(buf);
-            init();
-        }
-    }
-
     private void init() {
         try {
             if (bufferType == Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE) {
@@ -107,7 +81,6 @@ public final class ResponseMessage implements Message {
                 int eot = recievedString.lastIndexOf(Message.EOT);
 
                 if ((soidx == -1) && (sot == -1)) {
-                    sot = 0;
                     index = "100";
                     messageBody = "-1 ";
                     setMessageType(MessageType.ERROR);
@@ -211,7 +184,6 @@ public final class ResponseMessage implements Message {
 
         System.out.println(new String(buffer, 0, buffer.length));
 
-
         if (calcCHS != recvCHS) {
             calcCHS = overFlowErrorChecksum(buffer, sot + 1, space);
             if (calcCHS != recvCHS) {
@@ -254,15 +226,6 @@ public final class ResponseMessage implements Message {
         }
     }
 
-    /**
-     * Return calculated checksum for received buffer
-     *
-     * @param buffer received buffer
-     * @return checksum the check sum
-     */
-    protected int calcCheckSum(final byte[] buffer) {
-        return calcChecksum(buffer, 0, buffer.length);
-    }
 
     private int calcChecksum(final byte[] buffer, int sot, int space) {
         int checksum = 0;
@@ -301,17 +264,9 @@ public final class ResponseMessage implements Message {
         return checksum;
     }
 
-    public String getBody() {
-        return messageBody;
-    }
-
-    public void setBody(String body) {
-        this.messageBody = body;
-    }
-
     @Override
     public String getIndex() {
-        if(index == null) {
+        if (index == null) {
             return "00";
         }
         index = index.trim();
@@ -330,10 +285,6 @@ public final class ResponseMessage implements Message {
 
     public void setErrorCode(int errorCode) {
         this.errorCode = errorCode;
-    }
-
-    public int getErrorCode() {
-        return errorCode;
     }
 
     public byte[] getBuffer() {

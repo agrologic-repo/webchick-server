@@ -7,6 +7,9 @@
 package com.agrologic.app.config;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,51 +28,52 @@ import java.util.prefs.Preferences;
  * @version 2.0.6 <br>
  */
 public class Configuration extends Observable {
-    public static final String PROTOCOL_FIELD           = "protocol";
-    public static final String LANGUAGE_FIELD           = "language";
-    public static final String ACCESS_FIELD             = "access";
-    public static final String COM_BAUD_FIELD           = "com.baud";
-    public static final String DATABASE_DRIVER_FIELD    = "database.driver";
-    public static final String DATABASE_PASSWORD_FIELD  = "database.password";
-    public static final String DATABASE_URL_FIELD       = "database.url";
-    public static final String DATABASE_USER_FIELD      = "database.user";
+    private final Logger logger = LoggerFactory.getLogger(Configuration.class);
+    public static final String PROTOCOL_FIELD = "protocol";
+    public static final String LANGUAGE_FIELD = "language";
+    public static final String ACCESS_FIELD = "access";
+    public static final String COM_BAUD_FIELD = "com.baud";
+    public static final String DATABASE_DRIVER_FIELD = "database.driver";
+    public static final String DATABASE_PASSWORD_FIELD = "database.password";
+    public static final String DATABASE_URL_FIELD = "database.url";
+    public static final String DATABASE_USER_FIELD = "database.user";
     public static final String KEEP_ALIVE_TIMEOUT_FIELD = "keepalive.timeout";
-    public static final String MAX_ERRORS_FIELD         = "com.maxerr";
-    public static final String DELAY_NEXT_FIELD         = "com.next";
-    public static final String DELAY_SOT_FIELD          = "com.sot";
-    public static final String DELAY_EOT_FIELD          = "com.eot";
-    public static final String RUN_AT_STARTUP_FIELD     = "runatstartup";
-    public static final String COMPORT_FIELD            = "com.port";
-    public static final String SERVER_IP_FIELD          = "server.ip";
-    public static final String SERVER_PORT_FIELD        = "server.port";
-    public static final String USER_ID_FIELD            = "user.id";
-    public static final String CELLINK_ID_FIELD         = "cellink.id";
-    public static final String VERSION_FIELD            = "version";
-    public static final String WEBCHICK_URI_FIELD       = "webchick.uri";
+    public static final String MAX_ERRORS_FIELD = "com.maxerr";
+    public static final String DELAY_NEXT_FIELD = "com.next";
+    public static final String DELAY_SOT_FIELD = "com.sot";
+    public static final String DELAY_EOT_FIELD = "com.eot";
+    public static final String RUN_AT_STARTUP_FIELD = "runatstartup";
+    public static final String COMPORT_FIELD = "com.port";
+    public static final String SERVER_IP_FIELD = "server.ip";
+    public static final String SERVER_PORT_FIELD = "server.port";
+    public static final String USER_ID_FIELD = "user.id";
+    public static final String CELLINK_ID_FIELD = "cellink.id";
+    public static final String VERSION_FIELD = "version";
+    public static final String WEBCHICK_URI_FIELD = "webchick.uri";
     // default data values
-    public static final String  DEFAULT_PROTOCOL             = "0";
-    public static final String  DEFAULT_LANGUAGE           = "English";
-    public static final String  DEFAULT_ACCESS             = "regular";
-    public static final String  DEFAULT_COM_BAUD           = "2400";
-    public static final String  DEFAULT_COMPORT            = "COM1";
-    public static final String  DEFAULT_CONFIG             = "config.xml";
-    public static final String  DEFAULT_CONFIG_REG         = "webchick-config";
-    public static final String  DEFAULT_DATABASE_DRIVER    = "com.mysql.jdbc.Driver";
-    public static final String  DEFAULT_DATABASE_PASSWORD  = "agrologic";
-    public static final String  DEFAULT_DATABASE_URL       = "jdbc:mysql://localhost:3306/" + "agrodb?autoReconnect=true";
-    public static final String  DEFAULT_DATABASE_USER      = "root";
-    public static final String  DEFAULT_DELAY_SOT          = "5000";
-    public static final String  DEFAULT_DELAY_EOT          = "10000";
-    public static final String  DEFAULT_DELAY_NEXT         = "5000";
+    public static final String DEFAULT_PROTOCOL = "0";
+    public static final String DEFAULT_LANGUAGE = "English";
+    public static final String DEFAULT_ACCESS = "regular";
+    public static final String DEFAULT_COM_BAUD = "2400";
+    public static final String DEFAULT_COMPORT = "COM1";
+    public static final String DEFAULT_CONFIG = "config.xml";
+    public static final String DEFAULT_CONFIG_REG = "webchick-config";
+    public static final String DEFAULT_DATABASE_DRIVER = "com.mysql.jdbc.Driver";
+    public static final String DEFAULT_DATABASE_PASSWORD = "agrologic";
+    public static final String DEFAULT_DATABASE_URL = "jdbc:mysql://localhost:3306/" + "agrodb?autoReconnect=true";
+    public static final String DEFAULT_DATABASE_USER = "root";
+    public static final String DEFAULT_DELAY_SOT = "5000";
+    public static final String DEFAULT_DELAY_EOT = "10000";
+    public static final String DEFAULT_DELAY_NEXT = "5000";
     public static final Integer DEFAULT_KEEP_ALIVE_TIMEOUT = 3;
-    public static final String  DEFAULT_MAX_ERRORS         = "3";
-    public static final String  DEFAULT_SERVER_IP          = "192.168.1.1";
-    public static final Integer DEFAULT_SERVER_PORT        = 8080;
-    public static final String  DEFAULT_USER_ID            = "1";
-    public static final String  DEFAULT_CELLINK_ID         = "1";
-    public static final String  DEFAULT_WEBCHICK_URI       = "http://localhost:8080/webchick/startpage.html";
-    public static final Boolean DEFAULT_RUN_AT_STARTUP     = Boolean.FALSE;
-    public static final String  DEFAULT_VERSION            = "6.5.10";
+    public static final String DEFAULT_MAX_ERRORS = "3";
+    public static final String DEFAULT_SERVER_IP = "192.168.1.1";
+    public static final Integer DEFAULT_SERVER_PORT = 8080;
+    public static final String DEFAULT_USER_ID = "1";
+    public static final String DEFAULT_CELLINK_ID = "1";
+    public static final String DEFAULT_WEBCHICK_URI = "http://localhost:8080/webchick/startpage.html";
+    public static final Boolean DEFAULT_RUN_AT_STARTUP = Boolean.FALSE;
+    public static final String DEFAULT_VERSION = "6.5.10";
     private String language;
 
     /**
@@ -195,12 +199,14 @@ public class Configuration extends Observable {
     }
 
     public void loadConfiguration() {
-        InputStream is = null;
+        InputStream is;
         try {
             is = new BufferedInputStream(new FileInputStream(DEFAULT_CONFIG));
             Preferences.importPreferences(is);
             settingPreferences = Preferences.userRoot();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            logger.error("Could not read configuration file", e);
+        }
     }
 
     public void loadPreferences() {
@@ -208,28 +214,28 @@ public class Configuration extends Observable {
     }
 
     private void initPreferences() {
-        protocol        = settingPreferences.get(PROTOCOL_FIELD, DEFAULT_PROTOCOL);
+        protocol = settingPreferences.get(PROTOCOL_FIELD, DEFAULT_PROTOCOL);
         Protocol type = Protocol.get(Integer.valueOf(protocol));
         baud = type.getBaud();
-        language     = settingPreferences.get(LANGUAGE_FIELD, DEFAULT_LANGUAGE);
-        ip           = settingPreferences.get(SERVER_IP_FIELD, DEFAULT_SERVER_IP);
-        port         = settingPreferences.getInt(SERVER_PORT_FIELD, DEFAULT_SERVER_PORT);
-        keepalive    = settingPreferences.getInt(KEEP_ALIVE_TIMEOUT_FIELD, DEFAULT_KEEP_ALIVE_TIMEOUT);
-        dbDriver     = settingPreferences.get(DATABASE_DRIVER_FIELD, DEFAULT_DATABASE_DRIVER);
-        dbUrl        = settingPreferences.get(DATABASE_URL_FIELD, DEFAULT_DATABASE_URL);
-        dbUser       = settingPreferences.get(DATABASE_USER_FIELD, DEFAULT_DATABASE_USER);
-        dbPassword   = settingPreferences.get(DATABASE_PASSWORD_FIELD, DEFAULT_DATABASE_PASSWORD);
-        sotDelay     = settingPreferences.get(DELAY_SOT_FIELD, DEFAULT_DELAY_SOT);
-        eotDelay     = settingPreferences.get(DELAY_EOT_FIELD, DEFAULT_DELAY_EOT);
-        nextDelay    = settingPreferences.get(DELAY_NEXT_FIELD, DEFAULT_DELAY_NEXT);
-        maxErrors    = settingPreferences.get(MAX_ERRORS_FIELD, DEFAULT_MAX_ERRORS);
+        language = settingPreferences.get(LANGUAGE_FIELD, DEFAULT_LANGUAGE);
+        ip = settingPreferences.get(SERVER_IP_FIELD, DEFAULT_SERVER_IP);
+        port = settingPreferences.getInt(SERVER_PORT_FIELD, DEFAULT_SERVER_PORT);
+        keepalive = settingPreferences.getInt(KEEP_ALIVE_TIMEOUT_FIELD, DEFAULT_KEEP_ALIVE_TIMEOUT);
+        dbDriver = settingPreferences.get(DATABASE_DRIVER_FIELD, DEFAULT_DATABASE_DRIVER);
+        dbUrl = settingPreferences.get(DATABASE_URL_FIELD, DEFAULT_DATABASE_URL);
+        dbUser = settingPreferences.get(DATABASE_USER_FIELD, DEFAULT_DATABASE_USER);
+        dbPassword = settingPreferences.get(DATABASE_PASSWORD_FIELD, DEFAULT_DATABASE_PASSWORD);
+        sotDelay = settingPreferences.get(DELAY_SOT_FIELD, DEFAULT_DELAY_SOT);
+        eotDelay = settingPreferences.get(DELAY_EOT_FIELD, DEFAULT_DELAY_EOT);
+        nextDelay = settingPreferences.get(DELAY_NEXT_FIELD, DEFAULT_DELAY_NEXT);
+        maxErrors = settingPreferences.get(MAX_ERRORS_FIELD, DEFAULT_MAX_ERRORS);
         runAtStartup = settingPreferences.getBoolean(RUN_AT_STARTUP_FIELD, DEFAULT_RUN_AT_STARTUP);
-        comPort      = settingPreferences.get(COMPORT_FIELD, DEFAULT_COMPORT);
-        version      = settingPreferences.get(VERSION_FIELD, DEFAULT_VERSION);
-        webchickURI  = settingPreferences.get(WEBCHICK_URI_FIELD, DEFAULT_WEBCHICK_URI);
-        access       = settingPreferences.get(ACCESS_FIELD, DEFAULT_ACCESS);
-        userId       = settingPreferences.get(USER_ID_FIELD, DEFAULT_USER_ID);
-        cellinkId    = settingPreferences.get(CELLINK_ID_FIELD, DEFAULT_CELLINK_ID);
+        comPort = settingPreferences.get(COMPORT_FIELD, DEFAULT_COMPORT);
+        version = settingPreferences.get(VERSION_FIELD, DEFAULT_VERSION);
+        webchickURI = settingPreferences.get(WEBCHICK_URI_FIELD, DEFAULT_WEBCHICK_URI);
+        access = settingPreferences.get(ACCESS_FIELD, DEFAULT_ACCESS);
+        userId = settingPreferences.get(USER_ID_FIELD, DEFAULT_USER_ID);
+        cellinkId = settingPreferences.get(CELLINK_ID_FIELD, DEFAULT_CELLINK_ID);
     }
 
     public void saveToXmlFile() {

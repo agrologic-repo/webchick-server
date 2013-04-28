@@ -83,29 +83,29 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
      */
     public final void initDaoByType() {
         printLogbyDaoType("Initialize dao interface");
-        schemaDao = DbImplDecider.getDaoFactory(daoType).getSchemaDao();
-        userDao = DbImplDecider.getDaoFactory(daoType).getUserDao();
-        cellinkDao = DbImplDecider.getDaoFactory(daoType).getCellinkDao();
-        controllerDao = DbImplDecider.getDaoFactory(daoType).getControllerDao();
-        flockDao = DbImplDecider.getDaoFactory(daoType).getFlockDao();
-        programDao = DbImplDecider.getDaoFactory(daoType).getProgramDao();
-        screenDao = DbImplDecider.getDaoFactory(daoType).getScreenDao();
-        tableDao = DbImplDecider.getDaoFactory(daoType).getTableDao();
-        dataDao = DbImplDecider.getDaoFactory(daoType).getDataDao();
-        alarmDao = DbImplDecider.getDaoFactory(daoType).getAlarmDao();
-        relayDao = DbImplDecider.getDaoFactory(daoType).getRelayDao();
-        systemStateDao = DbImplDecider.getDaoFactory(daoType).getSystemStateDao();
-        languageDao = DbImplDecider.getDaoFactory(daoType).getLanguageDao();
-        distribDao = DbImplDecider.getDaoFactory(daoType).getDistribDao();
-        feedDao = DbImplDecider.getDaoFactory(daoType).getFeedDao();
-        feedTypeDao = DbImplDecider.getDaoFactory(daoType).getFeedTypeDao();
-        fuelDao = DbImplDecider.getDaoFactory(daoType).getFuelDao();
-        laborDao = DbImplDecider.getDaoFactory(daoType).getLaborDao();
+        schemaDao = DbImplDecider.use(daoType).getDao(SchemaDao.class);
+        userDao = DbImplDecider.use(daoType).getDao(UserDao.class);
+        cellinkDao = DbImplDecider.use(daoType).getDao(CellinkDao.class);
+        controllerDao = DbImplDecider.use(daoType).getDao(ControllerDao.class);
+        flockDao = DbImplDecider.use(daoType).getDao(FlockDao.class);
+        programDao = DbImplDecider.use(daoType).getDao(ProgramDao.class);
+        screenDao = DbImplDecider.use(daoType).getDao(ScreenDao.class);
+        tableDao = DbImplDecider.use(daoType).getDao(TableDao.class);
+        dataDao = DbImplDecider.use(daoType).getDao(DataDao.class);
+        alarmDao = DbImplDecider.use(daoType).getDao(AlarmDao.class);
+        relayDao = DbImplDecider.use(daoType).getDao(RelayDao.class);
+        systemStateDao = DbImplDecider.use(daoType).getDao(SystemStateDao.class);
+        languageDao = DbImplDecider.use(daoType).getDao(LanguageDao.class);
+        distribDao = DbImplDecider.use(daoType).getDao(DistribDao.class);
+        feedDao = DbImplDecider.use(daoType).getDao(FeedDao.class);
+        feedTypeDao = DbImplDecider.use(daoType).getDao(FeedTypeDao.class);
+        fuelDao = DbImplDecider.use(daoType).getDao(FuelDao.class);
+        laborDao = DbImplDecider.use(daoType).getDao(LaborDao.class);
         gasDao = DbImplDecider.use(daoType).getDao(GasDao.class);
-        medicineDao = DbImplDecider.getDaoFactory(daoType).getMedicineDao();
-        spreadDao = DbImplDecider.getDaoFactory(daoType).getSpreadDao();
-        transactionDao = DbImplDecider.getDaoFactory(daoType).getTransactionDao();
-        workerDao = DbImplDecider.getDaoFactory(daoType).getWorkerDao();
+        medicineDao = DbImplDecider.use(daoType).getDao(MedicineDao.class);
+        spreadDao = DbImplDecider.use(daoType).getDao(SpreadDao.class);
+        transactionDao = DbImplDecider.use(daoType).getDao(TransactionDao.class);
+        workerDao = DbImplDecider.use(daoType).getDao(WorkerDao.class);
     }
 
     /**

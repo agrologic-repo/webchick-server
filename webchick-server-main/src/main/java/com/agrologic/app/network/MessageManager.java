@@ -23,7 +23,6 @@ import java.util.*;
  * @version 1.0 <br>
  */
 public class MessageManager implements Observer {
-
     private static final int DATATABLE_SIZE = 65535;
     private static final int HIGH_16BIT_ON_MASK = 0x8000;
     private static final int HIGH_32BIT_OFF_MASK = 0x0000FFFF;
@@ -161,7 +160,7 @@ public class MessageManager implements Observer {
         }
         if (graphsShouldBeRequested() && isSetClockInOnlineData()) {
             //2. create graph request hourly.
-            requestToSend = new MessageFactory().createGraphRequest(controller.getName());
+            requestToSend = new MessageFactory().createGraphRequest(controller.getNetName());
         } else if (historyShouldBeRequested()) {
             //3.1. create history daily
             try {
@@ -508,7 +507,7 @@ public class MessageManager implements Observer {
     private void updateOnlineData(Message response, boolean skipDiagnostic) {
         byte[] buffer = response.getBuffer();
         String responseString = new String(buffer, 0, buffer.length);
-        logger.error(response);
+        logger.debug(response);
         StringTokenizer token = new StringTokenizer(responseString, " ");
         int countTokens = token.countTokens();
         int count = 0;

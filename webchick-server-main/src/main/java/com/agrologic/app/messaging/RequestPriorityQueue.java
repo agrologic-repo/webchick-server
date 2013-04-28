@@ -16,9 +16,7 @@ import java.util.PriorityQueue;
  * @version 1.0 <br>
  */
 public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
-    private static final int DEFAULT_GROWDAY = 1;
-    private Integer growDay;
-    private String netname;
+    private final String netname;
     private List<RequestMessage> requestList;
 
     /**
@@ -27,19 +25,7 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
      * @param netname the net name for creating request.
      */
     public RequestPriorityQueue(final String netname) {
-        this(netname, DEFAULT_GROWDAY);
-    }
-
-    /**
-     * Construct a RequestPriorityQueue with default list of requests.
-     *
-     * @param netname the net name for creating request.
-     * @param growDay the grow day for history requests.
-     */
-    public RequestPriorityQueue(final String netname, final Integer growDay) {
-        super();
         this.netname = netname;
-        this.growDay = growDay;
         onCreateQueue();
     }
 
@@ -58,15 +44,6 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
         for (RequestMessage rm : requestList) {
             add(rm);
         }
-    }
-
-    /**
-     * Remove request for changed data on controller
-     *
-     * @param request the request to remove
-     */
-    public final void removeChangeRequest(RequestMessage request) {
-        remove(request);
     }
 
     /**
@@ -92,7 +69,7 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
      * Returns the nextElem element in the list.
      *
      * @return the nextElem element in the list.
-     * @throws NoSuchElementException if the iteration has no nextElem element.
+     * @throws IllegalAccessException if the iteration has no nextElem element.
      */
     public final RequestMessage next() throws IllegalAccessException {
         if (isEmpty()) {
@@ -104,24 +81,6 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
         } else {
             return poll();
         }
-    }
-
-    /**
-     * Returns grow day of controller .
-     *
-     * @return the growDay
-     */
-    public Integer getGrowDay() {
-        return growDay;
-    }
-
-    /**
-     * Sets controller grow day .
-     *
-     * @param growDay the growDay to set
-     */
-    public void setGrowDay(Integer growDay) {
-        this.growDay = growDay;
     }
 }
 

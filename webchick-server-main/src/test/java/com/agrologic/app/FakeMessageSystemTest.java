@@ -3,6 +3,7 @@ package com.agrologic.app;
 import com.agrologic.app.messaging.Message;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -10,7 +11,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import static org.junit.Assert.assertEquals;
-
+@Ignore
 public class FakeMessageSystemTest {
 
     private InputStream inputStream;

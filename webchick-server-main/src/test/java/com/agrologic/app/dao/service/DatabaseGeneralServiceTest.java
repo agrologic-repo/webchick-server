@@ -7,17 +7,18 @@ package com.agrologic.app.dao.service;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.service.impl.DatabaseGeneralService;
-import static org.junit.Assert.*;
 import org.junit.*;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
- *
  * @author Administrator
  */
+@Ignore
 public class DatabaseGeneralServiceTest {
 
-    DatabaseGeneralService dgs;
+    UserDao userDao;
 
     public DatabaseGeneralServiceTest() {
     }
@@ -32,7 +33,7 @@ public class DatabaseGeneralServiceTest {
 
     @Before
     public void setUp() {
-        dgs = new DatabaseGeneralService(DaoType.MYSQL);
+        userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
     }
 
     @After
@@ -41,9 +42,9 @@ public class DatabaseGeneralServiceTest {
 
     @Test
     public void initDaoByTypeTest() {
-        UserDao userDao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getUserDao();
         assertNotNull(userDao);
-        assertNotNull("getUserDao() should return not null", dgs.getUserDao());
-        assertEquals("userDao.getClass() should be the same", userDao.getClass(), dgs.getUserDao().getClass());
+        assertNotNull("getUserDao() should return not null", userDao);
+        assertEquals("userDao.getClass() should be the same", userDao.getClass(),
+                DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class).getClass());
     }
 }

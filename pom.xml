@@ -4,6 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <!-- Says what kind of module this is -->
     <packaging>pom</packaging>
+
+    <!-- The list of modules -->
     <modules>
         <module>webchick-domain</module>
         <module>webchick-server-main</module>
@@ -12,6 +14,7 @@
         <module>webchick-local</module>
         <module>webchick-web</module>
     </modules>
+
     <groupId>com.agrologic</groupId>
     <artifactId>webchick-server</artifactId>
     <version>6.5.10-SNAPSHOT</version>

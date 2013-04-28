@@ -5,6 +5,27 @@
     <bean id="daoParent" abstract="true">
         <constructor-arg type="com.agrologic.app.dao.DaoFactory" ref="daoFactory"/>
     </bean>
+
+    <bean id="alarmDao" class="com.agrologic.app.dao.derby.impl.DerbyAlarmDaoImpl" parent="daoParent"/>
+    <bean id="controllerDao" class="com.agrologic.app.dao.derby.impl.DerbyControllerDaoImpl" parent="daoParent"/>
+    <bean id="dataDao" class="com.agrologic.app.dao.derby.impl.DerbyDataDaoImpl" parent="daoParent"/>
+    <bean id="distribDao" class="com.agrologic.app.dao.derby.impl.DerbyDistribDaoImpl" parent="daoParent"/>
+    <bean id="feedDao" class="com.agrologic.app.dao.derby.impl.DerbyFeedDaoImpl" parent="daoParent"/>
+    <bean id="feedTypeDao" class="com.agrologic.app.dao.derby.impl.DerbyFeedTypeDaoImpl" parent="daoParent"/>
+    <bean id="flockDao" class="com.agrologic.app.dao.derby.impl.DerbyFlockDaoImpl" parent="daoParent"/>
+    <bean id="fuelDao" class="com.agrologic.app.dao.derby.impl.DerbyFuelDaoImpl" parent="daoParent"/>
+    <bean id="laborDao" class="com.agrologic.app.dao.derby.impl.DerbyLaborDaoImpl" parent="daoParent"/>
+    <bean id="userDao" class="com.agrologic.app.dao.derby.impl.DerbyUserDaoImpl" parent="daoParent"/>
+    <bean id="programDao" class="com.agrologic.app.dao.derby.impl.DerbyProgramDaoImpl" parent="daoParent"/>
+    <bean id="screenDao" class="com.agrologic.app.dao.derby.impl.DerbyScreenDaoImpl" parent="daoParent"/>
+    <bean id="tableDao" class="com.agrologic.app.dao.derby.impl.DerbyTableDaoImpl" parent="daoParent"/>
+    <bean id="schemaDao" class="com.agrologic.app.dao.derby.impl.DerbySchemaDaoImpl" parent="daoParent"/>
+    <bean id="relayDao" class="com.agrologic.app.dao.derby.impl.DerbyRelayDaoImpl" parent="daoParent"/>
+    <bean id="systemStateDao" class="com.agrologic.app.dao.derby.impl.DerbySystemStateDaoImpl" parent="daoParent"/>
+    <bean id="languageDao" class="com.agrologic.app.dao.derby.impl.DerbyLanguageDaoImpl" parent="daoParent"/>
+    <bean id="spreadDao" class="com.agrologic.app.dao.derby.impl.DerbySpreadDaoImpl" parent="daoParent"/>
+    <bean id="transactionDao" class="com.agrologic.app.dao.derby.impl.DerbyTransactionDaoImpl" parent="daoParent"/>
+    <bean id="workerDao" class="com.agrologic.app.dao.derby.impl.DerbyWorkerDaoImpl" parent="daoParent"/>
     <bean id="cellinkDao" class="com.agrologic.app.dao.derby.impl.DerbyCellinkDaoImpl" parent="daoParent"/>
     <bean id="medicineDao" class="com.agrologic.app.dao.derby.impl.DerbyMedicineDaoImpl" parent="daoParent"/>
     <bean id="gasDao" class="com.agrologic.app.dao.derby.impl.DerbyGasDaoImpl" parent="daoParent"/>
