@@ -161,7 +161,7 @@ public class MessageManager implements Observer {
         }
         if (graphsShouldBeRequested() && isSetClockInOnlineData()) {
             //2. create graph request hourly.
-            requestToSend = new RequestMessage(MessageType.REQUEST_GRAPHS, controller.getNetName());
+            requestToSend = new MessageFactory().createGraphRequest(controller.getName());
         } else if (historyShouldBeRequested()) {
             //3.1. create history daily
             try {
@@ -198,8 +198,7 @@ public class MessageManager implements Observer {
      */
     private boolean createRequestToWrite() throws SQLException {
         if (isAnyDataToChange()) {//1. create request to write if it necessary.
-            requestToSend = new RequestMessage(
-                    MessageType.REQUEST_TO_WRITE, controller.getNetName(), data.getType(), data.getValue());
+            requestToSend = new MessageFactory().createWriteRequest(controller.getNetName(), data.getType(), data.getValue());
             data = null;
             return true;
         }

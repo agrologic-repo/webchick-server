@@ -34,6 +34,22 @@ public class MessageFactory {
         return createPerHourReportRequests(netname, growDay, RequestQueueHistory24.DataType.values());
     }
 
+    public RequestMessage createGraphRequest(String netname) {
+        return new RequestMessage(MessageType.REQUEST_GRAPHS, netname);
+    }
+
+    public RequestMessage createErrorMessage() {
+        return new RequestMessage(MessageType.ERROR);
+    }
+
+    public RequestMessage createKeepAlive(int keepAliveTimeoutSeconds){
+        return new RequestMessage(MessageType.KEEP_ALIVE, keepAliveTimeoutSeconds);
+    }
+
+    public RequestMessage createWriteRequest(String netname, Long dataType, Long propValue) {
+        return new RequestMessage(MessageType.REQUEST_TO_WRITE, netname, dataType, propValue);
+    }
+
     private List<RequestMessage> createPerHourReportRequests(String netname, int growDay, RequestQueueHistory24.DataType... dataTypes) {
         List<RequestMessage> result = new ArrayList<RequestMessage>(dataTypes.length);
         for (RequestQueueHistory24.DataType dataType : dataTypes) {

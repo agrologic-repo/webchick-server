@@ -61,13 +61,6 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
     }
 
     /**
-     * Creates request for changed data on controller and added to queue of requests.
-     */
-    public final void createChangeRequests() {
-        add(new RequestMessage(MessageType.REQUEST_CHANGED, netname));
-    }
-
-    /**
      * Remove request for changed data on controller
      *
      * @param request the request to remove

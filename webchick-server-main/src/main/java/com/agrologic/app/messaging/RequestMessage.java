@@ -79,18 +79,6 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
         initialize();
     }
 
-    public RequestMessage(final MessageType type, final String netName, String plate) {
-        this.netName = netName;
-        this.messageType = type;
-        this.plate = plate;
-        initialize();
-    }
-
-    public RequestMessage(final MessageType type, final String netName, Integer growDay) {
-        this(type, netName, growDay, null);
-        initialize();
-    }
-
     public RequestMessage(final MessageType type, final String netName, Integer growDay, String dnum) {
         this.netName = netName;
         this.messageType = type;

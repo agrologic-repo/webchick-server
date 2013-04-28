@@ -401,8 +401,7 @@ public class SocketThread extends Thread implements Network {
             }
             cellink = cellinkDao.validate(keepAlive.getUsername(), keepAlive.getPassword());
             if (cellink.getValidate() == true) {
-
-                RequestMessage msg = new RequestMessage(MessageType.KEEP_ALIVE, keepAliveTimeout);
+                RequestMessage msg = new MessageFactory().createKeepAlive(keepAliveTimeout);
                 comControl.write(msg);
                 logger.debug("Sent answer: [{}]", msg);
 
@@ -418,7 +417,7 @@ public class SocketThread extends Thread implements Network {
                 return true;
             } else {
                 logger.info("validation cellink failed  [ " + comControl.getSocket().getRemoteSocketAddress() + " ]");
-                comControl.write(new RequestMessage(MessageType.ERROR));
+                comControl.write(new MessageFactory().createErrorMessage());
                 logger.error("The client IP:PORT [ " + comControl.getSocket().getRemoteSocketAddress() + " ]");
                 return false;
             }
