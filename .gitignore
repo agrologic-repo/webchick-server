@@ -6,6 +6,7 @@ screen.ser
 *.war
 *.ear
 target
+agrodb
 
 #IntelliJ
 .idea
