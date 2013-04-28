@@ -197,7 +197,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         errCount++;
                         if (errCount < maxError) {
                             responseMessage = new ResponseMessage(null);
-                            requestQueue.setReplyRequest(true);
+                            requestQueue.setReplyForPreviousRequestPending(true);
                             logger.info("Error count : " + errCount);
                             logger.info("Error [" + responseMessage + "]");
                             statusPanel.setRecvMsg("" + responseMessage + " " + errCount);
@@ -223,7 +223,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         setThreadState(NetworkState.STATE_DELAY);
                         errCount++;
                         if (errCount < maxError) {
-                            requestQueue.setReplyRequest(true);
+                            requestQueue.setReplyForPreviousRequestPending(true);
                             logger.info(responseMessage + " Error count : " + errCount);
                             statusPanel.setRecvMsg("" + responseMessage + " " + errCount);
                         } else {

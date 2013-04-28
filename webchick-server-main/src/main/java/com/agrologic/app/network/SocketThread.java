@@ -192,7 +192,7 @@ public class SocketThread extends Thread implements Network {
     private int timeoutErrorHandler(int errCount) {
         errCount++;
         if (errCount < maxError) {
-            requestQueue.setReplyRequest(true);
+            requestQueue.setReplyForPreviousRequestPending(true);
             responseMessage = (ResponseMessage) comControl.read();
 
         } else {
@@ -217,7 +217,7 @@ public class SocketThread extends Thread implements Network {
         boolean withLogger = getWithLogging();
         errCount++;
         if (errCount < maxError) {
-            requestQueue.setReplyRequest(true);
+            requestQueue.setReplyForPreviousRequestPending(true);
             responseMessage = (ResponseMessage) comControl.read();
         } else {
             responseMessage = new ResponseMessage(null);
