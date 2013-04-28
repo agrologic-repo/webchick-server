@@ -142,6 +142,8 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
                 byte[] ka = getKeepAlive().getBytes();
                 setBuffer(new byte[]{SOT, ka[0], '\r'});
                 break;
+
+
             case TEST_MESSAGE:
                 messageString.append("%").append(getNetName()).append("R4096 100").append(" ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");
                 setBuffer(messageString.toString().getBytes());
@@ -206,7 +208,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
      * @param buffer buffer to send
      * @return checksum the check sum
      */
-    protected static int calcCheckSumToSend(final byte[] buffer) throws NullPointerException {
+    public static int calcCheckSumToSend(final byte[] buffer) throws NullPointerException {
         if (buffer == null) {
             throw new NullPointerException("Buffer is null");
         }

@@ -16,7 +16,7 @@
         <entry key="database.user" value="root"/>
         <entry key="database.password" value="agro1950"/>
         <entry key="com.baud" value="2400"/>
-        <entry key="com.sot" value="2000"/>
+        <entry key="com.sot" value="25000"/>
         <entry key="com.eot" value="2000"/>
         <entry key="com.next" value="500"/>
         <entry key="com.maxerr" value="3"/>

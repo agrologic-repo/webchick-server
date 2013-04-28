@@ -6,8 +6,6 @@
 package com.agrologic.app.messaging;
 
 
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -18,16 +16,15 @@ import java.util.PriorityQueue;
  * @version 1.0 <br>
  */
 public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
-    private static final int     DEFAULT_GROWDAY = 1;
-    private Integer              growDay;
-    private String               netname;
+    private static final int DEFAULT_GROWDAY = 1;
+    private Integer growDay;
+    private String netname;
     private List<RequestMessage> requestList;
 
     /**
      * Construct a RequestPriorityQueue with default list of requests.
      *
      * @param netname the net name for creating request.
-     * @param growDay the grow day for history requests.
      */
     public RequestPriorityQueue(final String netname) {
         this(netname, DEFAULT_GROWDAY);
@@ -50,12 +47,7 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
      * Create real time data default request list
      */
     public final void onCreateQueue() {
-        requestList = new ArrayList<RequestMessage>();
-        requestList.add(new RequestMessage(MessageType.REQUEST_PANEL, netname));
-        requestList.add(new RequestMessage(MessageType.REQUEST_CONTROLLER, netname));
-        requestList.add(new RequestMessage(MessageType.REQUEST_CHICK_SCALE, netname));
-        requestList.add(new RequestMessage(MessageType.REQUEST_EGG_COUNT, netname));
-        requestList.add(new RequestMessage(MessageType.REQUEST_CHANGED, netname));
+        requestList = new MessageFactory().createRealTimeRequests(netname);
         initReaTimeRequest();
     }
 
@@ -107,7 +99,7 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
      * Returns the nextElem element in the list.
      *
      * @return the nextElem element in the list.
-     * @exception NoSuchElementException if the iteration has no nextElem element.
+     * @throws NoSuchElementException if the iteration has no nextElem element.
      */
     public final RequestMessage next() throws IllegalAccessException {
         if (isEmpty()) {

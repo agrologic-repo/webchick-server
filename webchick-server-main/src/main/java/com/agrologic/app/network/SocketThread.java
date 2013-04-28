@@ -6,15 +6,14 @@ package com.agrologic.app.network;
 
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.mysql.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.mysql.impl.ControllerDaoImpl;
 import com.agrologic.app.gui.ServerUI;
 import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.util.Util;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -56,7 +55,7 @@ public class SocketThread extends Thread implements Network {
     private RequestIndex reqIndex;
     private long keepAliveTime;
     private boolean stopThread = false;
-    private Logger logger = Logger.getLogger(SocketThread.class);
+    private Logger logger = LoggerFactory.getLogger(SocketThread.class);
     private NetworkState networkState = NetworkState.STATE_ACCEPT_KEEP_ALIVE;
     private static final int ONE_MINUTE = 60000;
 
@@ -166,7 +165,7 @@ public class SocketThread extends Thread implements Network {
                 try {
                     removeControllersData();
                 } catch (SQLException ex) {
-                    logger.error(ex);
+                    logger.error("Exception: ", ex);
                 }
             }
         }
@@ -237,7 +236,7 @@ public class SocketThread extends Thread implements Network {
         }
         if (withLogger) {
             logger.debug(cellink.getName() + " error count : " + errCount);
-            logger.error(responseMessage);
+            logger.error("Exception: ", responseMessage);
         }
         setThreadState(NetworkState.STATE_DELAY);
         return errCount;
@@ -394,6 +393,7 @@ public class SocketThread extends Thread implements Network {
             KeepAliveMessage keepAlive;
             try {
                 keepAlive = KeepAliveMessage.parseIncomingBytes(buffer);
+                logger.debug("Received keep alive [{}]", keepAlive);
             } catch (WrongMessageFormatException e) {
                 logger.info("KeepAlive message validation error.");
                 logger.info("The client IP:PORT [ " + comControl.getSocket().getRemoteSocketAddress() + " ]");
@@ -401,7 +401,11 @@ public class SocketThread extends Thread implements Network {
             }
             cellink = cellinkDao.validate(keepAlive.getUsername(), keepAlive.getPassword());
             if (cellink.getValidate() == true) {
-                comControl.write(new RequestMessage(MessageType.KEEP_ALIVE, keepAliveTimeout));
+
+                RequestMessage msg = new RequestMessage(MessageType.KEEP_ALIVE, keepAliveTimeout);
+                comControl.write(msg);
+                logger.debug("Sent answer: [{}]", msg);
+
                 clientSessions.closeDuplicateSession(this);
                 // stop running duplicated thread
                 cellink.registrate(comControl.getSocket());
@@ -428,7 +432,7 @@ public class SocketThread extends Thread implements Network {
             return false;
         } catch (SQLException ex) {
             logger.info(ex.getMessage());
-            logger.trace(ex);
+            logger.trace("Exception: ", ex);
             return false;
         }
     }
@@ -440,26 +444,17 @@ public class SocketThread extends Thread implements Network {
     private boolean isKeepAliveTime(long keepAliveOccuredTime) {
         long timeSinceLastKeepalive = System.currentTimeMillis() - keepAliveOccuredTime;
         int keepAliveInterval = keepAliveTimeout * ONE_MINUTE;
-        if (timeSinceLastKeepalive > keepAliveInterval) {
-            return true;
-        }
-        return false;
+        return timeSinceLastKeepalive > keepAliveInterval;
     }
 
     private boolean isCellinkTimedOut() throws SQLException {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         Timestamp updateTime = cellinkDao.getUpdatedTime(cellink.getId());
-        if ((currentTime.getTime() - updateTime.getTime()) > Cellink.ONLINE_TIMEOUT) {
-            return true;
-        }
-        return false;
+        return (currentTime.getTime() - updateTime.getTime()) > Cellink.ONLINE_TIMEOUT;
     }
 
     private boolean isCellinkStoped() throws SQLException {
-        if (cellinkDao.getState(cellink.getId()) == CellinkState.STATE_STOP) {
-            return true;
-        }
-        return false;
+        return cellinkDao.getState(cellink.getId()) == CellinkState.STATE_STOP;
     }
 
     private void errorTimeout(int errorCount) {

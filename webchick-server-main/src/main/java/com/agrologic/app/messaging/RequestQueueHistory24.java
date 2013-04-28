@@ -7,6 +7,7 @@ package com.agrologic.app.messaging;
 
 
 import com.agrologic.app.model.Data;
+
 import java.util.*;
 
 /**
@@ -19,28 +20,31 @@ import java.util.*;
 public class RequestQueueHistory24 {
 
     private static final int DEFAULT_GROWDAY = 1;
-    private static final String D1 = "D1";
-    private static final String D2 = "D2";
-    private static final String D18 = "D18";
-    private static final String D19 = "D19";
-    private static final String D20 = "D20";
-    private static final String D21 = "D21";
-    private static final String D42 = "D42";
-    private static final String D43 = "D43";
-    private static final String D70 = "D70";
-    private static final String D71 = "D71";
-    private static final String D72 = "D72";
-    private static final String D73 = "D73";
+
+    public enum DataType {
+        OVERALL_WATER_CONSUMPTION("D1", 1302), FEED_CONSUMPTION("D2", 1301),
+        INSIDE_TEMPERATURE("D18", 3122), OUTSIDE_TEMPERATURE("D19", 3107), PER_HOUR_HUMIDITY("D20", 3142),
+        PER_HOUR_WATER_CONSUMPTION("D21", 1302), WATER_2_CONSUMPTION("D42", 1329), FEED_2_CONSUMPTION("D43", 1328),
+        RESET_TIME("D70", 3009), PER_HOUR_WATER_2_CONSUMPTION("D71", 1329), PER_HOUR_FEED_CONSUMPTION("D72", 1301),
+        PER_HOUR_FEED_2_CONSUMPTION("D73", 1328);
+
+        private DataType(String name, int id) {
+            this.name = name;
+            this.id = id;
+        }
+
+        public final String name;
+        public final int id;
+    }
+
     private Integer growDay;
     private final String netname;
-    private List<RequestMessage> requestList;
     private final CyclicQueue<RequestMessage> requests;
     private List<RequestMessage> activeRequests = new ArrayList<RequestMessage>();
     private Map<String, Long> dnMap = new HashMap<String, Long>();
     private Map<RequestMessage, Boolean> defaultList = new HashMap<RequestMessage, Boolean>();
 
     /**
-     *
      * Constructor with one parameter , takes default parameter DEFAULT_GROWDAY.
      *
      * @param netname the net name
@@ -58,60 +62,23 @@ public class RequestQueueHistory24 {
     public RequestQueueHistory24(final String netname, final Integer growDay) {
         this.netname = netname;
         this.growDay = growDay;
-        this.requests = new CyclicQueue<RequestMessage>();
-        this.requestList = new ArrayList<RequestMessage>();
-        initRequestList();
         initDefaultList();
         initDnMap();
+        this.requests = new CyclicQueue<RequestMessage>();
         setActiveRequests(null);
         initHistory24Request();
     }
 
-    private void initRequestList() {
-        requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D18));
-        requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D19));
-        requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D20));
-        requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D21));
-        requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D70));
-        requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D71));
-        requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D72));
-        requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D73));
-//      requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_HISTOGRAM, netname, growDay, "A"));
-//      requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_HISTOGRAM, netname, growDay, "B"));
-//      requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_HISTOGRAM, netname, growDay, "C"));
-//      requestList.add(new RequestMessage(MessageType.REQUEST_HISTORY_HISTOGRAM, netname, growDay, "D"));
-    }
-
     private void initDefaultList() {
-        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D1), true);
-        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D2), true);
-        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D18), true);
-        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D19), true);
-        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D20), true);
-        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D21), true);
-        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D70), true);
-        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D71), true);
-        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D72), true);
-        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, D73), true);
-//        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, "D165"), true);
-//        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, "D166"), true);
-//        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, "D169"), true);
-//        defaultList.put(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, "D170"), true);
+        for (RequestMessage request : new MessageFactory().createPerHourDailyReportRequests(netname, growDay)) {
+            defaultList.put(request, true);
+        }
     }
 
     private void initDnMap() {
-        dnMap.put(D1, Long.valueOf(1302));
-        dnMap.put(D2, Long.valueOf(1301));
-        dnMap.put(D18, Long.valueOf(3122));
-        dnMap.put(D19, Long.valueOf(3107));
-        dnMap.put(D20, Long.valueOf(3142));
-        dnMap.put(D21, Long.valueOf(1302));
-        dnMap.put(D42, Long.valueOf(1329));
-        dnMap.put(D43, Long.valueOf(1328));
-        dnMap.put(D70, Long.valueOf(3009));
-        dnMap.put(D71, Long.valueOf(1329));
-        dnMap.put(D72, Long.valueOf(1301));
-        dnMap.put(D73, Long.valueOf(1328));
+        for (DataType type : DataType.values()) {
+            dnMap.put(type.name, (long) type.id);
+        }
     }
 
     /**
@@ -162,9 +129,7 @@ public class RequestQueueHistory24 {
         requests.clear();
 
         for (RequestMessage rm : activeRequests) {
-//        for (RequestMessage rm : requestList) {
-            RequestMessage newrm = new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR,
-                    netname, growDay, rm.getDnum());
+            RequestMessage newrm = new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, rm.getDnum());
             requests.add(newrm);
         }
     }
@@ -173,7 +138,7 @@ public class RequestQueueHistory24 {
      * Returns the next element in the list.
      *
      * @return the nextElem element in the list.
-     * @exception NoSuchElementException if the iteration has no nextElem element.
+     * @throws NoSuchElementException if the iteration has no nextElem element.
      */
     public final RequestMessage next() throws IllegalAccessException {
         return requests.nextElem();

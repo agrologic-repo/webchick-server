@@ -14,6 +14,9 @@ package com.agrologic.app.messaging;
  * @version     1.0 <br>
  */
 public enum MessageType {
+
+    FAKE_MESSAGE,
+
     TEST_MESSAGE,
 
     /**

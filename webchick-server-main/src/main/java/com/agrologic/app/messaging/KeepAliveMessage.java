@@ -64,4 +64,13 @@ public class KeepAliveMessage {
 
         return new KeepAliveMessage(name, psswd, vers);
     }
+
+    @Override
+    public String toString() {
+        return "KeepAliveMessage{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", version='" + version + '\'' +
+                '}';
+    }
 }
