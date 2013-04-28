@@ -1,0 +1,189 @@
+p.p-menu
+{
+    padding-top: 0px;
+    padding-bottom: 5px;
+    margin: 0px;
+    text-align: center;
+    font-weight: bold;
+    vertical-align: middle;
+    color:#000000;
+    height:20px;
+    min-width:250px;
+}
+
+p.p-menu:hover
+{
+    color:#FFFFFF;
+}
+
+table.navbar
+{
+    font-size: 8pt;
+    font-family:chasm;
+    z-index:50;
+    vertical-align: middle;
+}
+
+table.menuNormal
+{
+    margin: 0px;
+    color:#000000;
+    vertical-align: middle;
+    background-color: #F0EFFF;
+    cursor: hand;
+    height:20px;
+
+}
+
+td.menuNormal
+{
+    padding: 1px;
+    color:#000000;
+    vertical-align: middle;
+    background-color: #F0EFFF;
+    cursor: url;
+    height:20px;
+    width:250px;
+}
+
+td.menuHover
+{
+    padding: 1px;
+    color:#FFFFFF;
+    vertical-align: middle;
+    /*remove the following line for drop-down menu with images*/
+    background-color: #99ccff;
+    cursor: pointer;
+    vertical-align: middle;
+    height:20px;
+    width:250px;
+}
+
+div.menuNormal
+{
+    border-top: 1px solid #FFFFFF;
+    display: none;
+    position: static;
+    color:#000000;
+    vertical-align: middle;
+    cursor: pointer;
+    height:20px;
+    width:250px;
+}
+
+div.menuHover
+{
+    border-top: 1px solid #FFFFFF;
+    background-color: #99ccff;
+    display: inline;
+    position: absolute;
+    z-index:50;
+    color:#FFFFFF;
+    cursor: pointer;
+    vertical-align: middle;
+    padding-top:0px;
+    margin-top:1px;
+    height:20px;
+    width:250px;
+}
+
+a.menuitem:link
+{
+    text-decoration: none;
+    color:#000000;
+    background-color: #F0EFFF;
+    display: block;
+    cursor: pointer;
+    vertical-align: bottom;
+
+    font-weight: bold;
+    height:20px
+}
+
+a.menuitem:visited
+{
+    text-decoration: none;
+    color:#000000;
+    background-color: #F0EFFF;
+    display: block;
+    vertical-align: bottom;
+    cursor: pointer;
+    height:20px;
+}
+
+a.menuitem:hover
+{
+    text-decoration: none;
+    color:#FFFFFF;
+    background-color: #99ccff;
+    display: block;
+    vertical-align: middle;
+    cursor: pointer;
+    height:20px;
+}
+
+a.menuitem:active
+{
+    text-decoration: none;
+    color:#000000;
+    background-color: #F0EFFF;
+    display: block;
+    vertical-align: middle;
+    cursor: pointer;
+    height:20px;
+}
+
+.langopt{
+	color:#000000;
+	background:#FFFFFF;
+    height:25px;
+}
+
+#mnu {
+	background-color: #F0EFFF;
+	Font-Size : 12px;
+	font-family: verdana, arial;
+	font-weight: bold;
+	color: #0000FF;
+}
+
+#mnu a {
+	padding: 2px;
+	display: block;
+	border: 1px dotted #FFFFFF;
+	text-decoration: none;
+	line-height: 1.5em;
+	/*width: 110px;*/
+	font-family: verdana, arial;
+	Font-Size : 12px;
+	text-indent: 2pt;
+	color: #0000FF;
+}
+
+#mnu a:link, #mnu a:visited {
+	color: #0000FF;
+	font-family: verdana, arial;
+	Font-Size : 12px;
+}
+
+#mnu a:hover, #mnu a:active {
+	color: #FFFFFF;
+	background-color: #99ccff;
+	border: 1px solid #000000;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	Font-Size : 12px;
+}
+
+#mnu ul {
+	padding-left: 0px;
+	list-style-type: none;
+	margin-left: 0px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	Font-Size : 12px;
+}
+
+#mnu li {
+	margin: 0px 0px 6px 0px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	Font-Size : 12px;
+}

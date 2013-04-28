@@ -1,0 +1,39 @@
+div.TabView div.Tabs {
+  height: 24px;
+  overflow: hidden;
+}
+
+div.TabView div.Tabs a {
+  float: left;
+  display: block;
+  width:  90px;
+  text-align: center;
+  height:      24px;
+  line-height: 28px;
+  vertical-align: middle;
+  background: url('../img/tabs.png') no-repeat -2px -1px;
+  text-decoration: none;
+  font-weight: 900;
+  font-size: 13px;
+  color: #000080;
+}
+
+div.TabView div.Tabs a:hover, div.TabView div.Tabs a.Active {
+  background: url('../img/tabs.png') no-repeat -2px -31px;
+}
+
+div.TabView div.Pages {
+  clear: both;
+  border: 1px solid #404040;
+  overflow: hidden;
+}
+
+div.TabView div.Pages div.Page {
+  height: 100%;
+  padding: 0px;
+  overflow: hidden;
+}
+
+div.TabView div.Pages div.Page div.Pad {
+  padding: 3px 18px;
+}
