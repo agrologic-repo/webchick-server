@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+    <bean id="daoParent" abstract="true">
+        <constructor-arg type="com.agrologic.app.dao.DaoFactory" ref="daoFactory"/>
+    </bean>
+    <bean id="cellinkDao" class="com.agrologic.app.dao.derby.impl.DerbyCellinkDaoImpl" parent="daoParent"/>
+    <bean id="medicineDao" class="com.agrologic.app.dao.derby.impl.DerbyMedicineDaoImpl" parent="daoParent"/>
+    <bean id="gasDao" class="com.agrologic.app.dao.derby.impl.DerbyGasDaoImpl" parent="daoParent"/>
+    <bean id="daoFactory" class="com.agrologic.app.dao.derby.impl.DerbyDaoFactory" factory-method="instance"/>
+</beans>

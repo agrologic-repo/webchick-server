@@ -6,18 +6,20 @@
 package com.agrologic.app.dao.service.impl;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.service.DatabaseAccessor;
-import java.io.Serializable;
 import org.apache.log4j.Logger;
+
+import java.io.Serializable;
 
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
 
@@ -99,7 +101,7 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
         feedTypeDao = DbImplDecider.getDaoFactory(daoType).getFeedTypeDao();
         fuelDao = DbImplDecider.getDaoFactory(daoType).getFuelDao();
         laborDao = DbImplDecider.getDaoFactory(daoType).getLaborDao();
-        gasDao = DbImplDecider.getDaoFactory(daoType).getGasDao();
+        gasDao = DbImplDecider.use(daoType).getDao(GasDao.class);
         medicineDao = DbImplDecider.getDaoFactory(daoType).getMedicineDao();
         spreadDao = DbImplDecider.getDaoFactory(daoType).getSpreadDao();
         transactionDao = DbImplDecider.getDaoFactory(daoType).getTransactionDao();
