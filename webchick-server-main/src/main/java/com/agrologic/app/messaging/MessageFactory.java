@@ -34,22 +34,57 @@ public class MessageFactory {
         return createPerHourReportRequests(netname, growDay, RequestQueueHistory24.DataType.values());
     }
 
+    /**
+     * Creating request to get the set of data that used for 24 hour graphs.
+     *
+     * @param netname the type of the controller and its network index
+     * @return the request message
+     */
     public RequestMessage createGraphRequest(String netname) {
         return new RequestMessage(MessageType.REQUEST_GRAPHS, netname);
     }
 
+    /**
+     * Create request that used to notice client about the error.
+     *
+     * @return the request message to notice client about the error
+     */
     public RequestMessage createErrorMessage() {
         return new RequestMessage(MessageType.ERROR);
     }
 
-    public RequestMessage createKeepAlive(int keepAliveTimeoutSeconds){
-        return new RequestMessage(MessageType.KEEP_ALIVE, keepAliveTimeoutSeconds);
+    /**
+     * Create request message to send back to cellink . This message used when cellink send keep alive and waiting
+     * acknowledge with keep alive timeout in minutes.
+     *
+     * @param keepAliveTimeoutMinutes the timeout for next keep alive message from cellink
+     * @return the request message with keep alive timeout in minutes
+     */
+    public RequestMessage createKeepAlive(int keepAliveTimeoutMinutes) {
+        return new RequestMessage(MessageType.KEEP_ALIVE, keepAliveTimeoutMinutes);
     }
 
+    /**
+     *  Creates request message that used to change value of specified data type on controller .
+     *
+     * @param netname  the type of the controller and its network index
+     * @param dataType the data type that have to be changed
+     * @param propValue the new value to send
+     * @return the write request message that was created
+     */
     public RequestMessage createWriteRequest(String netname, Long dataType, Long propValue) {
         return new RequestMessage(MessageType.REQUEST_TO_WRITE, netname, dataType, propValue);
     }
 
+    /**
+     * Create the set of messages to get per hour reports from controller. This messages are used when new flock
+     * opened and age of bird was increased .
+     *
+     * @param netname   the type of the controller and its network index
+     * @param growDay   the age of birds we're going to get data for
+     * @param dataTypes the list of data types that used for request reports
+     * @return result a set of messages to be used to grab daily report
+     */
     private List<RequestMessage> createPerHourReportRequests(String netname, int growDay, RequestQueueHistory24.DataType... dataTypes) {
         List<RequestMessage> result = new ArrayList<RequestMessage>(dataTypes.length);
         for (RequestQueueHistory24.DataType dataType : dataTypes) {
