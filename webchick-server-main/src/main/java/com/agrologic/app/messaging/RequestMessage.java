@@ -6,7 +6,6 @@ package com.agrologic.app.messaging;
 
 import com.agrologic.app.util.StringUtil;
 import java.util.Arrays;
-import org.apache.log4j.Logger;
 
 /**
  * RequestMessage using to create request message for controllers
@@ -28,7 +27,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
     /**
      * priority message
      */
-    private MessagePriority priority;
+    private Priority priority;
     /**
      * net name
      */
@@ -57,10 +56,6 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
      * keep alive string
      */
     private String keepAlive;
-    /**
-     * logger
-     */
-    private Logger logger = Logger.getLogger(RequestMessage.class);
 
     public RequestMessage(final MessageType type) {
         this.messageType = type;
@@ -105,16 +100,16 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
             case REQUEST_EGG_COUNT:
             case REQUEST_CHICK_SCALE:
             case REQUEST_HISTOGRAM:
-                priority = MessagePriority.HIGH;
+                priority = Priority.HIGH;
                 break;
             case REQUEST_TO_WRITE:
-                priority = MessagePriority.URGENT;
+                priority = Priority.URGENT;
                 break;
             case REQUEST_CHANGED:
-                priority = MessagePriority.LOW;
+                priority = Priority.LOW;
                 break;
             default:
-                priority = MessagePriority.MEDIUM;
+                priority = Priority.MEDIUM;
                 break;
         }
 
@@ -226,30 +221,12 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
     }
 
     /**
-     * Set net name.
-     *
-     * @param netName the net name of message.
-     */
-    public void setNetName(String netName) {
-        this.netName = netName;
-    }
-
-    /**
      * The grow day for history request
      *
      * @return growDay the grow day
      */
     public Integer getGrowDay() {
         return growDay;
-    }
-
-    /**
-     * Set grow day for using in request history message.
-     *
-     * @param growDay the grow day to set
-     */
-    public final void setGrowDay(Integer growDay) {
-        this.growDay = growDay;
     }
 
     /**
@@ -277,15 +254,6 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
      */
     public Long getDataIdWithFormat() {
         return dataType;
-    }
-
-    /**
-     * Set data type the data id with format field.
-     *
-     * @param dataType the data id with format.
-     */
-    public final void setDataIdWithFormat(Long dataType) {
-        this.dataType = dataType;
     }
 
     /**
@@ -347,30 +315,12 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
     }
 
     /**
-     * Set the number of history data
-     *
-     * @param dnum
-     */
-    public void setDnum(String dnum) {
-        this.dnum = dnum;
-    }
-
-    /**
      * Return plate name of chick scale
      *
      * @return plate name
      */
     public String getPlate() {
         return plate;
-    }
-
-    /**
-     * Set plate name of chick scale
-     *
-     * @param plate the plate name
-     */
-    public void setPlate(String plate) {
-        this.plate = plate;
     }
 
     /**
@@ -416,10 +366,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
         return false;
     }
 
-    public void setUnusedType() {
-    }
-
-    public MessagePriority getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
@@ -493,10 +440,25 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
                 str = "keep alive : " + keepAlive;
                 break;
             default:
-                priority = MessagePriority.LOW;
+                priority = Priority.LOW;
                 str = "To String not Implemented for this type of RequestMessage";
                 break;
         }
         return str;
+    }
+
+    public static enum Priority {
+
+        /** highest priority {changing data on controllers} */
+        URGENT,
+
+        /** high priority {almost for all request} */
+        HIGH,
+
+        /** medium priority {not in use} */
+        MEDIUM,
+
+        /** low priority {request changed data} */
+        LOW
     }
 }

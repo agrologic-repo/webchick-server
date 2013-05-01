@@ -200,7 +200,6 @@ public class CellinkTableModel extends AbstractTableModel {
      * Add new cellink to current cellink list . Remove cellink from current
      * cellink list .
      *
-     * @param currCellinkList the current cellink list .
      * @param retrievedCellinkList the retrieved from database cellink list .
      */
     public void addAndRemoveAbsent(List<Cellink> retrievedCellinkList) {

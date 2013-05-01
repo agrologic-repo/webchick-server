@@ -1,7 +1,5 @@
 package com.agrologic.app.dao.service.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.RemovebleDao;
@@ -107,68 +105,5 @@ public class DatabaseManager {
         databaseLoader = null;
         executorService.shutdownNow();
         System.gc();
-    }
-
-    public void printLoadedDatabase() throws SQLException {
-        long langId = 1;
-
-        System.out.println("============================= U S E R ==============================");
-        System.out.println(databaseLoader.getUser());
-
-        Collection<Cellink> cellinks = databaseLoader.getUser().getCellinks();
-
-        for (Cellink cellink : cellinks) {
-            System.out.println("\t============================ C E L L I N K S ============================");
-            System.out.println("\t" + cellink);
-
-            Collection<Controller> controllers = cellink.getControllers();
-
-            System.out.println("\t\t============================ C O N T R O L L E R S ============================");
-
-            for (Controller controller : controllers) {
-                System.out.println("\t\t" + controller);
-                System.out.println("\t\t============================ P R O G R A M ============================");
-
-                Program program = controller.getProgram();
-
-                System.out.println("\t\t" + program);
-
-                Collection<Screen> screenList = program.getScreens();
-
-                for (Screen screen : screenList) {
-                    System.out.println("\t\t============================ S C R E E N ============================");
-                    System.out.println("\t\t" + screen);
-
-                    Collection<Table> tableList = screen.getTables();
-
-                    for (Table table : tableList) {
-                        System.out.println("\t\t============================ T A B L E ============================");
-                        System.out.println("\t\t" + table);
-
-                        Collection<Data> dataList = table.getDataList();
-
-                        System.out.println("\t\t============================ DATA ITEMS ============================");
-
-                        for (Data d : dataList) {
-                            System.out.println("\t\t" + d);
-                        }
-                    }
-                }
-            }
-
-            System.out.println("=====================================================================");
-            System.out.println("");
-        }
-    }
-
-    public static void main(String[] args) throws SQLException {
-        DatabaseManager dbManager = new DatabaseManager(DaoType.DERBY);
-        List<Data> dataList = (List<Data>) dbManager.getDatabaseGeneralService().getDataDao().getAllWithTranslation();
-        dataList.size();
-        for (Data d : dataList) {
-            System.out.print(d);
-            System.out.print(" " + d.getLangId());
-            System.out.println("" + d.getUnicodeLabel());
-        }
     }
 }

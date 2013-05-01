@@ -1,20 +1,9 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao;
 
 import com.agrologic.app.model.Table;
 import java.sql.SQLException;
 import java.util.Collection;
 
-/**
- * Title: ITableDao <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public interface TableDao {
 
     /**
@@ -35,7 +24,7 @@ public interface TableDao {
     public static final String CANNOT_INSERT_TABLE = "Cannot Insert ScreenTable From DataBase";
     public static final String CANNOT_UPDATE_TABLE = "Cannot Update ScreenTable From DataBase";
     public static final String CANNOT_DELETE_TABLE = "Cannot Delete ScreenTable From DataBase";
-    public static final String CANNOT_RETREIEVE_TABLE = "Cannot Retrieve ScreenTable From DataBase";
+    public static final String CANNOT_RETRIEVE_TABLE = "Cannot Retrieve ScreenTable From DataBase";
 
     /**
      * Inserts a new table row to table table .

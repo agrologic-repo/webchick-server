@@ -22,12 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-/**
- * Title: NetworkThread <br> Description: <br> Copyright: Copyright (c) 2009
- * <br>
- *
- * @version 1.0 <br>
- */
 public final class SocketThread extends Observable implements Runnable, Network {
 
     private final int eotDelay;
@@ -58,7 +52,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
      * @throws ObjectDoesNotExist
      */
     public SocketThread(WCSLWindow wcsl, DatabaseManager dbManager)
-            throws SerialPortControlFailure, NumberFormatException, ObjectDoesNotExist {
+            throws NumberFormatException, ObjectDoesNotExist {
         super();
         this.wcsl = wcsl;
         this.networkState = NetworkState.STATE_STARTING;
@@ -78,13 +72,13 @@ public final class SocketThread extends Observable implements Runnable, Network 
         // trying to open comport
         if (com == null) {
             final String comport = configuration.getComPort();
-            try {
+            //try {
                 com = new SerialPortControl(comport, this);
                 logger.info("Communication port opened successfully!");
-            } catch (SerialPortControlFailure e) {
-                logger.error(e);
-                throw new SerialPortControlFailure(e.getMessage(), e);
-            }
+            //} catch (SerialPortControlFailure e) {
+            //    logger.error(e);
+                //throw new SerialPortControlFailure(e.getMessage(), e);
+            //}
         }
 
         try {
@@ -149,7 +143,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                     case STATE_DELAY:
                         LocalUtil.sleep(nxtDelay);
                         setThreadState(NetworkState.STATE_SEND);
-                        requestQueue.getRequestToChange();
+                        requestQueue.notifyToCreateRequestToChange();
 
                         break;
 
@@ -158,7 +152,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         // check if there is a data to chenge
                         responseMessage = (ResponseMessage) com.read();
                         logger.info(responseMessage);
-                        statusPanel.setRecvMsg(responseMessage.getIndex() + " " + responseMessage);
+                        statusPanel.setReceiveMsg(responseMessage.getIndex() + " " + responseMessage);
                         if (responseMessage.getMessageType() == MessageType.ERROR) {
                             MessageType sendMessageType = sendMessage.getMessageType();
                             if (sendMessageType == MessageType.REQUEST_TO_WRITE) {
@@ -200,13 +194,13 @@ public final class SocketThread extends Observable implements Runnable, Network 
                             requestQueue.setReplyForPreviousRequestPending(true);
                             logger.info("Error count : " + errCount);
                             logger.info("Error [" + responseMessage + "]");
-                            statusPanel.setRecvMsg("" + responseMessage + " " + errCount);
+                            statusPanel.setReceiveMsg("" + responseMessage + " " + errCount);
                         } else {
                             responseMessage = new ResponseMessage(null);
                             logger.info("Error count : " + errCount);
                             logger.info("Error [" + responseMessage + "]");
                             statusLabel.setText("Error [" + responseMessage + "]");
-                            statusPanel.setRecvMsg("" + responseMessage + " " + errCount);
+                            statusPanel.setReceiveMsg("" + responseMessage + " " + errCount);
                             errCount = 0;
                             responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
 
@@ -225,11 +219,11 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         if (errCount < maxError) {
                             requestQueue.setReplyForPreviousRequestPending(true);
                             logger.info(responseMessage + " Error count : " + errCount);
-                            statusPanel.setRecvMsg("" + responseMessage + " " + errCount);
+                            statusPanel.setReceiveMsg("" + responseMessage + " " + errCount);
                         } else {
                             logger.info("Error count : " + errCount);
                             logger.info("Error count " + errCount + " : SOT Error");
-                            statusPanel.setRecvMsg("" + responseMessage + " " + errCount);
+                            statusPanel.setReceiveMsg("" + responseMessage + " " + errCount);
                             errCount = 0;
                             responseMessageMap.put((RequestMessage) sendMessage, new ResponseMessage(null));
                             // we need at least one controller in on state
@@ -300,7 +294,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
         }
 
         // prepare send messages
-        requestQueue.prepareRequests();
+        requestQueue.notifyToPrepareRequests();
 
         if (controllerManagers.size() > 0) {
             setThreadState(NetworkState.STATE_DELAY);

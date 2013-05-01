@@ -9,12 +9,6 @@ package com.agrologic.app.messaging;
 import java.util.List;
 import java.util.PriorityQueue;
 
-/**
- * RequestPriorityQueue
- *
- * @author Administrator
- * @version 1.0 <br>
- */
 public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
     private final String netname;
     private List<RequestMessage> requestList;

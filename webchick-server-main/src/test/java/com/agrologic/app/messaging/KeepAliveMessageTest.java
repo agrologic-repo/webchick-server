@@ -25,7 +25,7 @@ public class KeepAliveMessageTest {
         try {
             KeepAliveMessage.parseIncomingBytes(nullArg);
         } catch (IllegalArgumentException e) {
-            assert (e.getMessage().equals(KeepAliveMessage.BUUFER_IS_NULL_MSG));
+            assert (e.getMessage().equals(KeepAliveMessage.BUFFER_MUST_NOT_BE_NULL));
         }
     }
 
@@ -34,7 +34,7 @@ public class KeepAliveMessageTest {
         try {
             KeepAliveMessage.parseIncomingBytes(WRONG_FORMAT_PAY_LOAD);
         } catch (WrongMessageFormatException e) {
-            assert (e.getMessage().equals(KeepAliveMessage.WRONG_FORMAT_MSG));
+            assert (e.getMessage().equals(KeepAliveMessage.MESSAGE_DOES_NOT_MATCH_THE_REQUIRED_FORMAT));
         }
     }
 }

@@ -1,17 +1,7 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
-
 
 import java.io.Serializable;
 
-/**
- *
- * @author JanL
- */
 public class Distrib implements Serializable {
     private static final long serialVersionUID = 1L;
     private int               accountNumber;
@@ -42,40 +32,6 @@ public class Distrib implements Serializable {
     private int               weight;
 
     public Distrib() {}
-
-    public Distrib(Long id) {
-        this.id = id;
-    }
-
-    public Distrib(Long id, int accountNumber, String sex, String target, int numOfBirds, int weight, int quantityA,
-                      int quantityB, int quantityC, int badVeterinary, int badAnother, double priceA, double priceB,
-                      double priceC, int ageDistrib, int averageWeight, String dtA, String dtB, String dtC,
-                      String dtVeterinary, String dtAnother, double calcSum, double handSum, double total) {
-        this.id            = id;
-        this.accountNumber = accountNumber;
-        this.sex           = sex;
-        this.target        = target;
-        this.numOfBirds    = numOfBirds;
-        this.weight        = weight;
-        this.quantityA     = quantityA;
-        this.quantityB     = quantityB;
-        this.quantityC     = quantityC;
-        this.badVeterinary = badVeterinary;
-        this.badAnother    = badAnother;
-        this.priceA        = priceA;
-        this.priceB        = priceB;
-        this.priceC        = priceC;
-        this.ageDistrib    = ageDistrib;
-        this.averageWeight = averageWeight;
-        this.dtA           = dtA;
-        this.dtB           = dtB;
-        this.dtC           = dtC;
-        this.dtVeterinary  = dtVeterinary;
-        this.dtAnother     = dtAnother;
-        this.calcSum       = calcSum;
-        this.handSum       = handSum;
-        this.total         = total;
-    }
 
     public Long getId() {
         return id;

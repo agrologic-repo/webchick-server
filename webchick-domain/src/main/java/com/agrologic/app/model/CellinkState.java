@@ -1,23 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
-
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * Title: CellinkState <br>
- * Decription: <br>
- * Copyright:   Copyright (c) 2009 <br>
- * Company:     Agro Logic LTD. <br>
- * @author      Valery Manakhimov <br>
- * @version     1.1 <br>
- */
 public class CellinkState {
     public static final int STATE_OFFLINE = 0;
     public static final int STATE_ONLINE  = 1;
@@ -115,8 +101,8 @@ public class CellinkState {
 
     /**
      * Convert a int to a CellinkState object.
-     * @param str The String
-     * @return The CellinkState or null
+     * @param i the state
+     * @return cellink state
      */
     public static CellinkState intToState(int i) {
         if (i == STATE_ONLINE) {

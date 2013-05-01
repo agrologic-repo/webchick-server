@@ -9,10 +9,6 @@ package com.agrologic.app.model;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author Administrator
- */
 public class CellinkVersion {
 
     public static final int DEFAULT_HEAD_BYTES = 4;
@@ -23,7 +19,7 @@ public class CellinkVersion {
         VERSIONS_MAP.put("1",   DEFAULT_HEAD_BYTES - 1);
     }
 
-    public static int headerBytesByVers(String version) {
+    public static int headerBytesByVersion(String version) {
         String vers = version.trim();
         for (Map.Entry<String, Integer> entry : VERSIONS_MAP.entrySet()) {
             if (vers.startsWith(entry.getKey()) == true) {
@@ -33,7 +29,7 @@ public class CellinkVersion {
         return DEFAULT_HEAD_BYTES;
     }
 
-    public static int dataBytesByVers(String version) {
+    public static int dataBytesByVersion(String version) {
         String vers = version.trim();
         for (Map.Entry<String, Integer> entry : VERSIONS_MAP.entrySet()) {
             if (vers.startsWith(entry.getKey()) == true) {

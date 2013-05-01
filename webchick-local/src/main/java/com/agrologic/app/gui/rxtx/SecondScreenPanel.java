@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx;
 
 import com.agrologic.app.dao.service.DatabaseAccessor;
@@ -11,31 +7,18 @@ import com.agrologic.app.model.rxtx.DataController;
 import com.agrologic.app.util.Windows;
 import org.apache.log4j.Logger;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.*;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-/**
- *
- * @author Administrator
- */
 public class SecondScreenPanel extends JPanel implements ScreenUI {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -212,44 +195,6 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         setSize(dim.width, dim.height - 110);
     }
 
-    public void serialize() {
-        try {
-            //use buffering
-            OutputStream file = new FileOutputStream("screen.ser");
-            OutputStream buffer = new BufferedOutputStream(file);
-            ObjectOutput output = new ObjectOutputStream(buffer);
-            try {
-                output.writeObject(screenTableDataMap);
-            } finally {
-                output.close();
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void deserialize() {
-        //deserialize the quarks.ser file
-        //note the use of abstract base class references
-
-        try {
-            //use buffering
-            InputStream file = new FileInputStream("screen.ser");
-            InputStream buffer = new BufferedInputStream(file);
-            ObjectInput input = new ObjectInputStream(buffer);
-            try {
-                //deserialize the List
-                screenTableDataMap = (TreeMap<Screen, TreeMap<Table, List<DataController>>>) input.readObject();
-            } finally {
-                input.close();
-            }
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
     /**
      * Move iterator to beginning of list.
      *
@@ -313,38 +258,6 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         tablePanel.add(dataPanel);
         tablePanel.setBounds(x, y, dataPanel.getWidth() + 5, dataPanel.getHeight() + pnlTitle.getHeight() + 10);
         return tablePanel;
-    }
-
-    /**
-     * Check if some of text box fields is in focus .
-     *
-     * @return true if text box field is in focus , otherwise false;
-     */
-    private boolean isTextBoxInFocus(int index) {
-        JScrollPane pane = (JScrollPane) tabsPane.getComponent(index);
-        JPanel screenPanel = (JPanel) pane.getViewport().getView();
-        if (screenPanel.getComponentCount() == 0) {
-            return false;
-        }
-
-        JPanel panel = (JPanel) screenPanel.getComponent(0);
-        for (Component c : panel.getComponents()) {
-            if (c instanceof DataPanel) {
-                Component[] components = ((DataPanel) c).getComponents();
-                for (int i = 0; i < components.length; i++) {
-                    if (components[i] instanceof JTextField) {
-                        JTextField tf = (JTextField) components[i];
-                        synchronized (tf) {
-                            if (tf.isFocusOwner()) {
-                                System.out.println("Component in focus value : " + tf.getText());
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     private int getMaxLength(Component[] components) {

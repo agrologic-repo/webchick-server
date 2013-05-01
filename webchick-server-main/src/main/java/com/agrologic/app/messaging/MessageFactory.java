@@ -31,7 +31,7 @@ public class MessageFactory {
      * @return a set of messages to be used to grab daily report
      */
     public List<RequestMessage> createPerHourDailyReportRequests(String netname, int growDay) {
-        return createPerHourReportRequests(netname, growDay, RequestQueueHistory24.DataType.values());
+        return createPerHourReportRequests(netname, growDay, RequestMessageQueueHistory24.DataType.values());
     }
 
     /**
@@ -85,9 +85,9 @@ public class MessageFactory {
      * @param dataTypes the list of data types that used for request reports
      * @return result a set of messages to be used to grab daily report
      */
-    private List<RequestMessage> createPerHourReportRequests(String netname, int growDay, RequestQueueHistory24.DataType... dataTypes) {
+    private List<RequestMessage> createPerHourReportRequests(String netname, int growDay, RequestMessageQueueHistory24.DataType... dataTypes) {
         List<RequestMessage> result = new ArrayList<RequestMessage>(dataTypes.length);
-        for (RequestQueueHistory24.DataType dataType : dataTypes) {
+        for (RequestMessageQueueHistory24.DataType dataType : dataTypes) {
             result.add(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, dataType.name));
         }
         return result;

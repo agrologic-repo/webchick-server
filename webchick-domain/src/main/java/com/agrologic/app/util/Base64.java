@@ -20,12 +20,6 @@
 
 package com.agrologic.app.util;
 
-/**
- * Utility to base64 encode and decode a string.
- *
- * @author Stephen Uhler
- * @version 1.9, 02/07/24
- */
 public class Base64 {
     static String charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     static byte[] encodeData;
@@ -66,7 +60,7 @@ public class Base64 {
      *
      * @param src   The byte array to encode
      * @param start The starting index
-     * @param len   The number of bytes @returns    The base64 encoded result
+     * @param length   The number of bytes @returns    The base64 encoded result
      */
     public static String encode(byte[] src, int start, int length) {
         byte[] dst = new byte[(length + 2) / 3 * 4 + length / 72];
@@ -186,19 +180,6 @@ public class Base64 {
 
         return result;
     }
-
-    /**
-     * Test the decoder and encoder. Call as
-     * <code>Base64 [string]</code>.
-     */
-//    public static void main(String[] args) {
-//        String[] arg = new String[2];
-//
-//        arg[0] = "valery";
-//        arg[1] = encode(arg[0]);
-//        System.out.println("encode: " + arg[0] + " -> (" + encode(arg[0]) + ")");
-//        System.out.println("decode: " + arg[1] + " -> (" + new String(decode(arg[1])) + ")");
-//    }
 }
 
 

@@ -18,14 +18,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
 public class DataComponent {
 
     public static final int HEIGHT = 25;
@@ -289,8 +281,8 @@ public class DataComponent {
     }
 
     private JComponent createAlarmComponent() {
-        JComponent compon = null;
-        compon = createReadOnlyComponent();
+        JComponent jComponent = null;
+        jComponent = createReadOnlyComponent();
 
         StringBuilder toolTipBuffer = new StringBuilder();
         toolTipBuffer.append("<html>");
@@ -305,11 +297,11 @@ public class DataComponent {
         toolTipBuffer.append("</font>");
         toolTipBuffer.append("</center>");
         toolTipBuffer.append("</html>");
-        compon.setToolTipText(toolTipBuffer.toString());
-        compon.setForeground(Color.blue);
-        Font font = compon.getFont();
-        compon.setFont(new Font(font.getFontName(), Font.BOLD, font.getSize()));
-        return compon;
+        jComponent.setToolTipText(toolTipBuffer.toString());
+        jComponent.setForeground(Color.blue);
+        Font font = jComponent.getFont();
+        jComponent.setFont(new Font(font.getFontName(), Font.BOLD, font.getSize()));
+        return jComponent;
     }
 
     private JButton createShowAlramDialogButton(Point p) {

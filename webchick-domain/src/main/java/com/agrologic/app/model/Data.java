@@ -1,17 +1,7 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
-
 
 import java.io.Serializable;
 
-/**
- *
- * @author JanL
- */
 public class Data implements Serializable, Comparable<Data>, Cloneable {
     public static final int   ALARM            = 2;
     public static final int   DATA             = 4;
@@ -327,11 +317,6 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
         if ((this.id != other.id) && ((this.id == null) ||!this.id.equals(other.id))) {
             return false;
         }
-//
-//        if ((this.value != other.value) && ((this.value == null) ||!this.value.equals(other.value))) {
-//            return false;
-//        }
-
         return true;
     }
 
@@ -342,10 +327,6 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
         hash = 29 * hash + ((this.id != null)
                             ? this.id.hashCode()
                             : 0);
-//        hash = 29 * hash + ((this.value != null)
-//                            ? this.value.hashCode()
-//                            : 0);
-
         return hash;
     }
 

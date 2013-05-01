@@ -1,24 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
-public class StatusPanel extends javax.swing.JSeparator {
+import javax.swing.*;
 
-    private javax.swing.JLabel lblHouse;
-    private javax.swing.JLabel lblRecvMsg;
-    private javax.swing.JLabel lblSendMsg;
-    private javax.swing.JLabel lblProgress;
-    private javax.swing.JLabel lblControllerStatus;
+public class StatusPanel extends JSeparator {
+
+    private JLabel lblHouse;
+    private JLabel lblReceiveMsg;
+    private JLabel lblSendMsg;
+    private JLabel lblProgress;
+    private JLabel lblControllerStatus;
 
     public StatusPanel() {
         initComponents();
@@ -26,11 +16,11 @@ public class StatusPanel extends javax.swing.JSeparator {
 
     private void initComponents() {
 
-        lblHouse = new javax.swing.JLabel();
-        lblSendMsg = new javax.swing.JLabel();
-        lblRecvMsg = new javax.swing.JLabel();
-        lblProgress = new javax.swing.JLabel();
-        lblControllerStatus = new javax.swing.JLabel();
+        lblHouse = new JLabel();
+        lblSendMsg = new JLabel();
+        lblReceiveMsg = new JLabel();
+        lblProgress = new JLabel();
+        lblControllerStatus = new JLabel();
 
         setMaximumSize(new java.awt.Dimension(940, 20));
         setMinimumSize(new java.awt.Dimension(940, 20));
@@ -45,9 +35,9 @@ public class StatusPanel extends javax.swing.JSeparator {
         add(lblSendMsg);
         lblSendMsg.setBounds(102, 2, 120, 17);
 
-        lblRecvMsg.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        add(lblRecvMsg);
-        lblRecvMsg.setBounds(222, 2, 150, 17);
+        lblReceiveMsg.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        add(lblReceiveMsg);
+        lblReceiveMsg.setBounds(222, 2, 150, 17);
 
         lblProgress.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         add(lblProgress);
@@ -58,16 +48,12 @@ public class StatusPanel extends javax.swing.JSeparator {
         lblControllerStatus.setBounds(422, 2, 450, 17);
     }
 
-    public void setHouse(String house) {
-        lblHouse.setText(house);
-    }
-
     public void setSendMsg(String sendMsg) {
         lblSendMsg.setText(sendMsg);
     }
 
-    public void setRecvMsg(String recvMsg) {
-        lblRecvMsg.setText(recvMsg);
+    public void setReceiveMsg(String receiveMsg) {
+        lblReceiveMsg.setText(receiveMsg);
     }
 
     public void setProgress(String progress) {
@@ -76,13 +62,5 @@ public class StatusPanel extends javax.swing.JSeparator {
 
     public void setControllerStatus(String contrStatus) {
         lblControllerStatus.setText(contrStatus);
-    }
-
-    public String getProgress() {
-        return lblProgress.getText();
-    }
-
-    public String getControllerStatus() {
-        return lblControllerStatus.getText();
     }
 }

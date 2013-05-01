@@ -1,10 +1,4 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.derby.impl;
-
 
 import com.agrologic.app.dao.*;
 
@@ -12,21 +6,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * {Insert class description here}
- *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- */
 public class DerbyDaoFactory extends DaoFactory {
 
     private static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
     private static final String SCHEMA = "AGRODB";
     private static final String URL = "jdbc:derby:agrodb;create=true";
     private static DerbyDaoFactory instanceObject = null;
-    private static final long serialVersionUID = 1L;
     private static final boolean DEBUG = false;
 
     /**

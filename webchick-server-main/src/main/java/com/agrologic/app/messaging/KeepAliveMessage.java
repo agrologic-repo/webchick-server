@@ -8,8 +8,8 @@ import java.util.List;
 
 public class KeepAliveMessage {
 
-    public static final String BUUFER_IS_NULL_MSG = "Buffer must not be null";
-    public static final String WRONG_FORMAT_MSG = "Message does not match the required format";
+    public static final String BUFFER_MUST_NOT_BE_NULL = "Buffer must not be null";
+    public static final String MESSAGE_DOES_NOT_MATCH_THE_REQUIRED_FORMAT = "Message does not match the required format";
     private final String username;
     private final String password;
     private final String version;
@@ -35,18 +35,18 @@ public class KeepAliveMessage {
     public static KeepAliveMessage parseIncomingBytes(byte[] payload) throws WrongMessageFormatException,
             IllegalArgumentException {
 
-        Validate.notNull(payload, BUUFER_IS_NULL_MSG);
+        Validate.notNull(payload, BUFFER_MUST_NOT_BE_NULL);
 
         int stx = ByteUtil.indexOf(payload, Message.STX);
         int etx = ByteUtil.indexOf(payload, Message.ETX);
         if (stx < 0 || etx < 0) {
-            throw new WrongMessageFormatException(WRONG_FORMAT_MSG);
+            throw new WrongMessageFormatException(MESSAGE_DOES_NOT_MATCH_THE_REQUIRED_FORMAT);
         }
         byte[] data = Arrays.copyOfRange(payload, stx + 1, etx);
         List<byte[]> dataList = ByteUtil.split(data, Message.RS);
 
         if (dataList.size() < 2) {
-            throw new WrongMessageFormatException(WRONG_FORMAT_MSG);
+            throw new WrongMessageFormatException(MESSAGE_DOES_NOT_MATCH_THE_REQUIRED_FORMAT);
         }
 
         int PASS_INDEX = 0;

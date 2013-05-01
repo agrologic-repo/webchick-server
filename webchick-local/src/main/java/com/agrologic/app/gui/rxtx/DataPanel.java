@@ -1,11 +1,4 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx;
-
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.model.*;
@@ -14,14 +7,6 @@ import com.agrologic.app.model.rxtx.DataController;
 import javax.swing.*;
 import java.util.List;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
 public class DataPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -136,31 +121,31 @@ public class DataPanel extends JPanel {
         add(dataComponent.getLabel());
         JComponent jc = dataComponent.getComponent();
         ((DataLabel) jc).setText(text);
-        ((DataLabel) jc).setSize(maxWidth * 2, ((DataLabel) jc).getSize().height);
+        jc.setSize(maxWidth * 2, jc.getSize().height);
         add(dataComponent.getComponent());
         j--;
         return j;
     }
 
-    public List<ProgramAlarm> getProgramAlarms() {
-        return programAlarms;
-    }
+//    public List<ProgramAlarm> getProgramAlarms() {
+//        return programAlarms;
+//    }
 
     public void setProgramAlarms(List<ProgramAlarm> programAlarms) {
         this.programAlarms = programAlarms;
     }
 
-    public List<ProgramRelay> getProgramRelays() {
-        return programRelays;
-    }
+//    public List<ProgramRelay> getProgramRelays() {
+//        return programRelays;
+//    }
 
     public void setProgramRelays(List<ProgramRelay> programRelays) {
         this.programRelays = programRelays;
     }
 
-    public List<ProgramSystemState> getProgramSystemStates() {
-        return programSystemStates;
-    }
+//    public List<ProgramSystemState> getProgramSystemStates() {
+//        return programSystemStates;
+//    }
 
     public void setProgramSystemStates(List<ProgramSystemState> programSystemStates) {
         this.programSystemStates = programSystemStates;
@@ -183,6 +168,3 @@ public class DataPanel extends JPanel {
         return length;
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

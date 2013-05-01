@@ -1,26 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
-import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.FlockDaoImpl;
 import com.agrologic.app.model.Flock;
+
 import java.sql.*;
 
-/**
- * {Insert class description here}
- *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- */
 public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
 

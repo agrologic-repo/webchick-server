@@ -16,7 +16,7 @@ import java.util.Map.Entry;
  */
 public interface DataDao {
 
-    public static final String CANNOT_RETREIVE_DATA = "Cannot Retreive Data From In DataBase";
+    public static final String CANNOT_RETRIEVE_DATA_FROM_DATABASE = "Cannot Retrieve Data From DataBase";
     public static final String TRANSACTION_ROLLED_BACK = "Transaction is being rolled back";
 
     void insert(Data data) throws SQLException;

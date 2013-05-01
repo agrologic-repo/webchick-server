@@ -1,28 +1,13 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
-
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-/**
- * Title: Program <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class Program implements Serializable, Comparable<Program> {
     private static final long        serialVersionUID = 2L;
     private String                   createdDate;
@@ -91,19 +76,20 @@ public class Program implements Serializable, Comparable<Program> {
         this.programSystemStates = programSystemStates;
     }
 
-    public ProgramSystemState getSystemStateByNumber(long number) {
-        int systemStateNumber = (int) number;
-
-        for (ProgramSystemState ps : programSystemStates) {
-            if (ps.getSystemStateNumber().equals(systemStateNumber)) {
-                return ps;
-            } else {
-                continue;
-            }
-        }
-
-        return new ProgramSystemState();
-    }
+    // TODO : delete if code is unused
+//    public ProgramSystemState getSystemStateByNumber(long number) {
+//        int systemStateNumber = (int) number;
+//
+//        for (ProgramSystemState ps : programSystemStates) {
+//            if (ps.getSystemStateNumber().equals(systemStateNumber)) {
+//                return ps;
+//            } else {
+//                continue;
+//            }
+//        }
+//
+//        return new ProgramSystemState();
+//    }
 
     public List<Screen> getScreens() {
         if (screens == null) {
@@ -117,9 +103,10 @@ public class Program implements Serializable, Comparable<Program> {
         this.screens = screens;
     }
 
-    public void addScreen(final Screen screen) {
-        getScreens().add(screen);
-    }
+    // TODO : delete if code is unused
+//    public void addScreen(final Screen screen) {
+//        getScreens().add(screen);
+//    }
 
     public Screen getScreenById(final Long screenId) {
         for (Screen s : getScreens()) {
@@ -131,41 +118,42 @@ public class Program implements Serializable, Comparable<Program> {
         return null;
     }
 
-    public List<ProgramRelay> getProgramRelayByData(long dataId) {
-        List<ProgramRelay> relayByData = new ArrayList<ProgramRelay>();
-
-        for (ProgramRelay e : programRelays) {
-            if (e.getDataId() == dataId) {
-                relayByData.add(e);
-            }
-        }
-
-        return relayByData;
-    }
-
-    public List<ProgramAlarm> getProgramAlarmsByData(long dataId) {
-        List<ProgramAlarm> alarmsByData = new ArrayList<ProgramAlarm>();
-
-        for (ProgramAlarm e : programAlarms) {
-            if (e.getDataId() == dataId) {
-                alarmsByData.add(e);
-            }
-        }
-
-        return alarmsByData;
-    }
-
-    public List<ProgramSystemState> getProgramSystemStateByData(long dataId) {
-        List<ProgramSystemState> systemStateByData = new ArrayList<ProgramSystemState>();
-
-        for (ProgramSystemState e : programSystemStates) {
-            if (e.getDataId() == dataId) {
-                systemStateByData.add(e);
-            }
-        }
-
-        return systemStateByData;
-    }
+    // TODO : delete if code is unused
+//    public List<ProgramRelay> getProgramRelayByData(long dataId) {
+//        List<ProgramRelay> relayByData = new ArrayList<ProgramRelay>();
+//
+//        for (ProgramRelay e : programRelays) {
+//            if (e.getDataId() == dataId) {
+//                relayByData.add(e);
+//            }
+//        }
+//
+//        return relayByData;
+//    }
+//
+//    public List<ProgramAlarm> getProgramAlarmsByData(long dataId) {
+//        List<ProgramAlarm> alarmsByData = new ArrayList<ProgramAlarm>();
+//
+//        for (ProgramAlarm e : programAlarms) {
+//            if (e.getDataId() == dataId) {
+//                alarmsByData.add(e);
+//            }
+//        }
+//
+//        return alarmsByData;
+//    }
+//
+//    public List<ProgramSystemState> getProgramSystemStateByData(long dataId) {
+//        List<ProgramSystemState> systemStateByData = new ArrayList<ProgramSystemState>();
+//
+//        for (ProgramSystemState e : programSystemStates) {
+//            if (e.getDataId() == dataId) {
+//                systemStateByData.add(e);
+//            }
+//        }
+//
+//        return systemStateByData;
+//    }
 
     @Override
     public int compareTo(Program o) {

@@ -5,25 +5,16 @@
  */
 package com.agrologic.app.dao.service.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.service.DatabaseAccessor;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
 public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
 
-    protected final Logger log = Logger.getLogger(DatabaseGeneralService.class);
+    protected final Logger log = LoggerFactory.getLogger(DatabaseGeneralService.class);
     protected AlarmDao alarmDao;
     protected CellinkDao cellinkDao;
     protected ControllerDao controllerDao;
@@ -70,10 +61,6 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
         log.info(buffer.toString());
     }
 
-    public DaoType getDaoType() {
-        return daoType;
-    }
-
     public void setDaoType(DaoType daoType) {
         this.daoType = daoType;
     }
@@ -106,6 +93,10 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
         spreadDao = DbImplDecider.use(daoType).getDao(SpreadDao.class);
         transactionDao = DbImplDecider.use(daoType).getDao(TransactionDao.class);
         workerDao = DbImplDecider.use(daoType).getDao(WorkerDao.class);
+    }
+
+    public void closeAll() {
+        DbImplDecider.use(daoType).getDao(DaoFactory.class).closeAllConnection();
     }
 
     /**
@@ -321,10 +312,6 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
 
     public void setWorkerDao(WorkerDao workerDao) {
         this.workerDao = workerDao;
-    }
-
-    public void closeAll() {
-        DbImplDecider.getDaoFactory(daoType).closeAllConnection();
     }
 }
 

@@ -1,11 +1,5 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.model.rxtx;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.gui.rxtx.DataImage;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.ProgramRelay;
@@ -14,24 +8,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * {Insert class description here}
- *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- */
 public class DataController extends Data implements Serializable {
 
     private List<DataChangeListener> listeners;
     private List<ProgramRelay> programRelays;
     private List<ProgramSystemState> programSystemStates;
-
-    public DataController() {
-        super();
-        this.listeners = new ArrayList<DataChangeListener>();
-    }
 
     public DataController(Data copy) {
         super(copy);
@@ -40,10 +21,6 @@ public class DataController extends Data implements Serializable {
 
     public void addDataChangeListener(DataChangeListener listener) {
         listeners.add(listener);
-    }
-
-    public void removeDataChangeListener(DataChangeListener listener) {
-        listeners.remove(listener);
     }
 
     public void fireDataChanges(DataChangeEvent event) {
@@ -179,6 +156,3 @@ public class DataController extends Data implements Serializable {
         return returnType;
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

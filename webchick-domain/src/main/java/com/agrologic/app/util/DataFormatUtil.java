@@ -1,45 +1,23 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.util;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
-public class DataFormatUtil {
-    public static final int DATE = 7;
-    public static final String DATE_DELIM = "/";
-    public static final int DEC_0 = 0;
-    public static final int DEC_1 = 1;
-    public static final int DEC_2 = 2;
-    public static final int DEC_3 = 3;
-    public static final int DEC_4 = 8;
-    public static final int DEC_5 = 10;
-    public static final int DEC__ = 9;
-    public static final String DOT_DELIM = ".";
-    public static final String EMPTY_DELIM = "";
-    public static final int HUMIDITY = 4;
-    public static final int TIME = 5;
-    public static final String TIME_DELIM = ":";
-    public static final int TIME_SEC = 6;
+import com.agrologic.app.model.DataFormat;
 
-    public static boolean isDelimtChar(char c) {
-        if ((c == '.') || (c == ':') || (c == '/')) {
+public class DataFormatUtil {
+
+    public static boolean isDelimiterChar(char c) {
+        if ((String.valueOf(c).equals(DataFormat.DOT_DELIMITER)) ||
+                (String.valueOf(c).equals(DataFormat.TIME_DELIMITER) ||
+                        (String.valueOf(c).equals(DataFormat.DATE_DELIMITER)))) {
             return true;
         } else {
             return false;
         }
     }
 
-    public static boolean isAnyDelimtExist(String s) {
-        if ((s.indexOf(DOT_DELIM) > -1) || (s.indexOf(DATE_DELIM) > -1) || (s.indexOf(TIME_DELIM) > -1)) {
+    public static boolean isDelimiterExist(String s) {
+        if ((s.indexOf(DataFormat.DOT_DELIMITER) > -1) ||
+                (s.indexOf(DataFormat.DATE_DELIMITER) > -1) ||
+                (s.indexOf(DataFormat.TIME_DELIMITER) > -1)) {
             return true;
         } else {
             return false;
@@ -53,12 +31,12 @@ public class DataFormatUtil {
 
         String string = s;
 
-        string = clearDelimt(string);
+        string = clearDelimiter(string);
 
         double number = Double.parseDouble(string);
 
         switch (format) {
-            case DEC_0:
+            case DataFormat.DEC_0:
                 string = clearZero(string);
 
                 if (string.length() > 4) {
@@ -68,7 +46,7 @@ public class DataFormatUtil {
 
                 break;
 
-            case DEC_1:
+            case DataFormat.DEC_1:
                 number /= 10;
                 string = String.format("%.1f", number);
 
@@ -78,7 +56,7 @@ public class DataFormatUtil {
 
                 break;
 
-            case DEC_2:
+            case DataFormat.DEC_2:
                 number /= 100;
                 string = String.format("%.2f", number);
 
@@ -88,7 +66,7 @@ public class DataFormatUtil {
 
                 break;
 
-            case DEC_3:
+            case DataFormat.DEC_3:
                 number /= 1000;
                 string = String.format("%.3f", number);
 
@@ -98,7 +76,7 @@ public class DataFormatUtil {
 
                 break;
 
-            case DEC_4:
+            case DataFormat.DEC_4:
                 string = clearZero(string);
 
                 if (string.length() > 6) {
@@ -108,7 +86,7 @@ public class DataFormatUtil {
 
                 break;
 
-            case DEC_5:
+            case DataFormat.DEC_5:
                 string = clearZero(string);
 
                 if (string.length() > 5) {
@@ -118,7 +96,7 @@ public class DataFormatUtil {
 
                 break;
 
-            case HUMIDITY:
+            case DataFormat.HUMIDITY:
                 string = clearZero(string);
 
                 if (string.length() > 3) {
@@ -128,28 +106,25 @@ public class DataFormatUtil {
 
                 break;
 
-            case TIME:
+            case DataFormat.TIME:
                 number /= 100;
                 string = String.format("%.2f", number);
 
                 if (string.length() > 5) {
                     string = string.substring(1, string.length());
                 }
-
-                string = string.replace(".", ":");
+                string = string.replace(DataFormat.DOT_DELIMITER, DataFormat.TIME_DELIMITER);
 
                 break;
 
-            case DATE:
+            case DataFormat.DATE:
                 number /= 100;
-                string = Double.toString(number);
                 string = String.format("%.2f", number);
 
                 if (string.length() > 5) {
                     string = string.substring(1, string.length());
                 }
-
-                string = string.replace(".", "/");
+                string = string.replace(DataFormat.DOT_DELIMITER, DataFormat.DATE_DELIMITER);
 
                 break;
         }
@@ -178,21 +153,19 @@ public class DataFormatUtil {
         return string;
     }
 
-    public static String clearDelimt(String s) {
+    public static String clearDelimiter(String s) {
         String string = s;
-
-        if (string.indexOf(".") > -1) {
-            string = string.replace(".", "");
+        if (string.indexOf(DataFormat.DOT_DELIMITER) > -1) {
+            string = string.replace(DataFormat.DOT_DELIMITER, DataFormat.EMPTY_DELIMITER);
         }
 
-        if (string.indexOf(":") > -1) {
-            string = string.replace(":", "");
+        if (string.indexOf(DataFormat.TIME_DELIMITER) > -1) {
+            string = string.replace(DataFormat.TIME_DELIMITER, DataFormat.EMPTY_DELIMITER);
         }
 
-        if (string.indexOf("/") > -1) {
-            string = string.replace("/", "");
+        if (string.indexOf(DataFormat.DATE_DELIMITER) > -1) {
+            string = string.replace(DataFormat.DATE_DELIMITER, DataFormat.EMPTY_DELIMITER);
         }
-
         return string;
     }
 

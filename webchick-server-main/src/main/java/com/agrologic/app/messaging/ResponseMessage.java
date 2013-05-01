@@ -10,12 +10,6 @@ package com.agrologic.app.messaging;
 import com.agrologic.app.except.ReadChecksumException;
 import org.apache.log4j.Logger;
 
-/**
- * Title: ResponseMessage <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public final class ResponseMessage implements Message {
     private int errorCode = 0;
     private Logger logger = Logger.getLogger(ResponseMessage.class);

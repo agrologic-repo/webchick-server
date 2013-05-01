@@ -1,10 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx;
 
-import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.model.Controller;
@@ -25,9 +20,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * @author Administrator
- */
 public class MainScreenPanel extends JPanel implements ScreenUI {
 
     public static final int BUTTON_HEIGHT = 30;

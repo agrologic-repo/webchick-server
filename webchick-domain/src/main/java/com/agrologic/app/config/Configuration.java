@@ -1,11 +1,4 @@
-
-/*
-* @(#)ServerActivityStates.java        1.0 01/03/10
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.config;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,16 +10,6 @@ import java.io.InputStream;
 import java.util.Observable;
 import java.util.prefs.Preferences;
 
-/**
- * Title: ServerPreferences
- * <br> Description:
- * <br> Copyright: Copyright (c) 2009
- * <br> Company: AgroLogic LTD.
- * <br>
- *
- * @author Valery Manakhimov <br>
- * @version 2.0.6 <br>
- */
 public class Configuration extends Observable {
     private final Logger logger = LoggerFactory.getLogger(Configuration.class);
     public static final String PROTOCOL_FIELD = "protocol";
@@ -257,14 +240,6 @@ public class Configuration extends Observable {
         notifyObservers();
     }
 
-    public void setDelays(String sotDelay, String eotDelay, String nextDelay) {
-        setSotDelay(sotDelay);
-        setEotDelay(eotDelay);
-        setNextDelay(nextDelay);
-        setChanged();
-        notifyObservers();
-    }
-
     public void setMaxError(String maxerr) {
         setMaxErrors(maxerr);
         setChanged();
@@ -471,9 +446,6 @@ public class Configuration extends Observable {
         initPreferences();
     }
 
-    public Preferences getPreferences() {
-        return settingPreferences;
-    }
 
     @Override
     public String toString() {

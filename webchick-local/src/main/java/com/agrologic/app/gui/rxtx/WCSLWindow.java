@@ -1,18 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx;
 
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.except.ObjectDoesNotExist;
-import com.agrologic.app.except.SerialPortControlFailure;
 import com.agrologic.app.gui.ConfigurationDialog;
 import com.agrologic.app.gui.WCSWindow;
-import com.agrologic.app.gui.flock.DesignScreen;
-import com.agrologic.app.gui.flock.FlockManager;
+import com.agrologic.app.gui.rxtx.flock.DesignScreen;
+import com.agrologic.app.gui.rxtx.flock.FlockManager;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.network.rxtx.NetworkState;
 import com.agrologic.app.network.rxtx.SocketThread;
@@ -35,9 +30,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 
-/**
- * @author Administrator
- */
 public class WCSLWindow extends JFrame implements PropertyChangeListener {
 
     private static final String ERROR_OPENING_COM_PORT = "An error occure while trying to access the com port."
@@ -80,11 +72,14 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
             dbManager.getDatabaseGeneralService().setDatabaseDir(PropertyFileUtil.getProgramPath());
             dbManager.doLoadTableData();
 
+            networkThread = new SocketThread(WCSLWindow.this, dbManager);
+            /*
             try {
                 networkThread = new SocketThread(WCSLWindow.this, dbManager);
             } catch (SerialPortControlFailure e) {
                 throw new Throwable(ERROR_OPENING_COM_PORT + e.getMessage() + "\n");
             }
+            */
             createControllersScreens();
 
             Thread comThread = new Thread(networkThread);
@@ -379,7 +374,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
                 result = configDialog.showDialog();
             }
             if (result == true) {
-                LocalUtil.restartApplicationss();
+                LocalUtil.restartApplication();
             }
         } catch (URISyntaxException ex) {
             java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);

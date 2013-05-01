@@ -1,11 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx;
-
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.rxtx.DataChangeEvent;
 import com.agrologic.app.model.rxtx.DataChangeListener;
@@ -16,14 +9,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
 @SuppressWarnings("serial")
 public class DataImage extends JLabel implements DataChangeListener {
     private static Map<Type, ImageIcon> imageIconMap;
@@ -97,16 +82,8 @@ public class DataImage extends JLabel implements DataChangeListener {
         }
     }
 
-    public Integer getBitNumber() {
-        return bitNumber;
-    }
-
     public void setBitNumber(Integer bitNumber) {
         this.bitNumber = bitNumber;
-    }
-
-    public void setType(Type newType) {
-        this.currType = newType;
     }
 }
 

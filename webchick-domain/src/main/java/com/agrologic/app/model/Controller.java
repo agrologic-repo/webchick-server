@@ -1,12 +1,3 @@
-
-/*
- * Gprs.java
- *
- * Created on July 7, 2008, 9:35 AM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
 package com.agrologic.app.model;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -15,17 +6,11 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.HashMap;
-
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-/**
- * Title: <br> Description: Copyright: Copyright (c) 2008
- *
- * @version 1.0
- */
 public class Controller implements Serializable {
 
     private static final long serialVersionUID = 1L;

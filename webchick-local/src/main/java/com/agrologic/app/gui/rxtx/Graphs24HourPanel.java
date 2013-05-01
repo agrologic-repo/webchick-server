@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx;
 
 import com.agrologic.app.config.Configuration;
@@ -9,10 +5,10 @@ import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.gui.graph.AbstractGraph;
-import com.agrologic.app.gui.graph.Graph24FWI;
-import com.agrologic.app.gui.graph.Graph24IOH;
-import com.agrologic.app.gui.graph.GraphType;
+import com.agrologic.app.gui.rxtx.graph.AbstractGraph;
+import com.agrologic.app.gui.rxtx.graph.Graph24FWI;
+import com.agrologic.app.gui.rxtx.graph.Graph24IOH;
+import com.agrologic.app.gui.rxtx.graph.GraphType;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
 import org.jfree.chart.ChartPanel;
@@ -29,9 +25,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * @author Administrator
- */
 public class Graphs24HourPanel extends JPanel {
 
     private int width = 800;
@@ -54,7 +47,7 @@ public class Graphs24HourPanel extends JPanel {
     }
 
     /**
-     * Creates new form RealtimeGraphScreen
+     * Creates new form Graphs24HourPanel
      */
     public Graphs24HourPanel(Long controllerId) {
         try {
@@ -82,7 +75,7 @@ public class Graphs24HourPanel extends JPanel {
         String values = controllerDao.getControllerGraph(controllerId);
         Data setClock = dataDao.getSetClockByController(controllerId);
         if (values != null && values.length() >= AbstractGraph.LENGHT) {
-            AbstractGraph graph = null;
+            AbstractGraph graph;
 
             Locale locale = getLocal();
 
@@ -112,8 +105,7 @@ public class Graphs24HourPanel extends JPanel {
      * @param graph the created graph
      */
     private void createAndAddChartPanel(AbstractGraph graph) {
-        ChartPanel chartpanel = null;
-        chartpanel = new ChartPanel(graph.createChart());
+        ChartPanel chartpanel = new ChartPanel(graph.createChart());
         chartpanel.setSize(width, height);
         chartpanel.setVisible(true);
         add(chartpanel);

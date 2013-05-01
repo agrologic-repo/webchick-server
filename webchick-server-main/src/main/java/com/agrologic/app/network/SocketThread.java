@@ -124,7 +124,7 @@ public class SocketThread extends Thread implements Network {
 
                         case STATE_DELAY:
                             waitDelayTime();
-                            requestQueue.getRequestToChange();
+                            requestQueue.notifyToCreateRequestToChange();
 
                             break;
 
@@ -333,7 +333,7 @@ public class SocketThread extends Thread implements Network {
             responseMessageMap.addObserver(mm);
         }
         // prepare write messages
-        requestQueue.prepareRequests();
+        requestQueue.notifyToPrepareRequests();
         setThreadState(NetworkState.STATE_SEND);
         // read header changed by cellink version.
         comControl.setCellinkVersion(cellink.getVersion());

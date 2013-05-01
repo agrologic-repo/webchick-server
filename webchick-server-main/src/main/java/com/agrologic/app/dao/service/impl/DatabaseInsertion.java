@@ -5,30 +5,23 @@
  */
 package com.agrologic.app.dao.service.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.dao.service.DatabaseInsertable;
 import com.agrologic.app.dao.service.DatabaseLoadAccessor;
 import com.agrologic.app.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
-import org.apache.log4j.Logger;
 
-/**
- * {Insert class description here}
- *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- */
 public class DatabaseInsertion implements DatabaseInsertable {
 
-    private final Logger logger = Logger.getLogger(DatabaseInsertion.class.getName());
     private DatabaseAccessor dba;
     private DatabaseLoadAccessor dla;
+    private final Logger logger = LoggerFactory.getLogger(DatabaseInsertion.class);
 
     public DatabaseInsertion(DatabaseAccessor dba, DatabaseLoadAccessor dla) {
         this.dba = dba;
@@ -106,65 +99,21 @@ public class DatabaseInsertion implements DatabaseInsertable {
         }
     }
 
-    public void insertNewUser() {
-        try {
-            dba.getUserDao().insert(dla.getUser());
-            for (Cellink cellink : dla.getUser().getCellinks()) {
-                insertNewCellink(cellink);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void insertNewCellink() {
-        Cellink newCellink = new Cellink();
-        newCellink.setId((long) 1);
-        newCellink.setName("yatir67");
-        newCellink.setPassword("paul");
-        newCellink.setUserId((long) 1);
-        newCellink.setTime(new Timestamp(System.currentTimeMillis()));
-        newCellink.setPort(8800);
-        newCellink.setIp("0.0.0.0");
-        newCellink.setState(0);
-        newCellink.setScreenId((long) 1);
-        newCellink.setActual(true);
-        try {
-            dba.getCellinkDao().insert(newCellink);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void insertNewCellinks() {
-        for (Cellink cellink : dla.getUser().getCellinks()) {
-            insertNewCellink(cellink);
-        }
-    }
-
+    @Override
     public void insertNewCellink(Cellink cellink) {
         try {
             dba.getCellinkDao().insert(cellink);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Cannot insert cellink to the database ",e);
         }
     }
 
-    public void insertNewControllers() {
-        for (Cellink cellink : dla.getUser().getCellinks()) {
-            List<Controller> controllers = cellink.getControllers();
-
-            for (Controller c : controllers) {
-                insertNewController(c);
-            }
-        }
-    }
-
+    @Override
     public void insertNewController(Controller c) {
         try {
             dba.getControllerDao().insert(c);
         } catch (Exception e) {
-            logger.info(e);
+            logger.info("Cannot insert controller to the database ",e);
         }
     }
 }

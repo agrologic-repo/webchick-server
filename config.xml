@@ -12,8 +12,8 @@
         <entry key="keepalive.timeout" value="3"/>
         <entry key="com.port" value="COM3"/>
         <entry key="database.driver" value="com.mysql.jdbc.Driver"/>
-        <entry key="database.url" value="jdbc:mysql://localhost:3306/agrodb?autoReconnect=true"/>
-        <entry key="database.user" value="root"/>
+        <entry key="database.url" value="jdbc:mysql://204.93.160.169:3306/agrodb?autoReconnect=true"/>
+        <entry key="database.user" value="client"/>
         <entry key="database.password" value="agro1950"/>
         <entry key="com.baud" value="2400"/>
         <entry key="com.sot" value="25000"/>

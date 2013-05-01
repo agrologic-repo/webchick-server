@@ -5,8 +5,6 @@
  */
 package com.agrologic.app.gui.rxtx;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.rxtx.DataChangeEvent;
@@ -20,24 +18,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.SQLException;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
 public class DataTextField extends JTextField implements DataChangeListener {
     private volatile boolean locked = false;
     private long controllerId;
     private Data data;
     private DatabaseAccessor dbaccess;
-
-    public DataTextField(String text) {
-        super(text);
-        setListneners();
-    }
 
     public DataTextField(String text, long cid, Data d, DatabaseAccessor dbaccess) {
         super(text);
@@ -79,8 +64,8 @@ public class DataTextField extends JTextField implements DataChangeListener {
                     // (this is a sloppy way to check)
                     if (!(Character.isDigit(c))) {
                         DataTextField txt = (DataTextField) e.getSource();
-                        if (DataFormatUtil.isDelimtChar(c)) {
-                            if (DataFormatUtil.isAnyDelimtExist(txt.getText())) {
+                        if (DataFormatUtil.isDelimiterChar(c)) {
+                            if (DataFormatUtil.isDelimiterExist(txt.getText())) {
                                 e.consume();    // Ignore this key
                             }
                         } else {
@@ -105,7 +90,7 @@ public class DataTextField extends JTextField implements DataChangeListener {
 
                 // Don't ignore backspace or delete
                 if (c == KeyEvent.VK_ENTER) {
-                    string = DataFormatUtil.clearDelimt(string);
+                    string = DataFormatUtil.clearDelimiter(string);
 
                     long value = Long.parseLong(string);
 
@@ -134,6 +119,3 @@ public class DataTextField extends JTextField implements DataChangeListener {
         }
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

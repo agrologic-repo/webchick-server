@@ -1,64 +1,46 @@
 
-/*
-* Cellink.java
-*
-* Created on 10 August 2008 , 15:03
-*
-* To change this template, choose Tools | Template Manager
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
-
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-
 import java.io.Serializable;
-
 import java.net.Socket;
-
 import java.sql.Timestamp;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Title: Cellink<br> Description: <br> Copyright: Copyright (c) 2008 <br>
- *
- * @version 1.0 <br>
- */
 public class Cellink implements Comparable<Cellink>, Serializable {
-    public static final long  ONE_HOUR         = 1000 * 60 * 60;
-    public static final long  ONLINE_TIMEOUT   = ONE_HOUR * 8;
+    public static final long ONE_HOUR = 1000 * 60 * 60;
+    public static final long ONLINE_TIMEOUT = ONE_HOUR * 8;
     private static final long serialVersionUID = 1L;
 
     /**
      * network traffic should\shouldn't displayed in log flag.
      */
-    private Boolean               withLogging           = false;
+    private Boolean withLogging = false;
     private List<CellinkListener> cellinkStateListeners = new LinkedList<CellinkListener>();
-    private Boolean               actual;
-    private List<Controller>      controllers;
-    private Long                  id;
-    private String                ip;
-    private String                name;
-    private String                password;
-    private Integer               port;
-    private Long                  screenId;
-    private String                simNumber;
-    private int                   state;
-    private Timestamp             time;
-    private String                type;
-    private Long                  userId;
-    private Boolean               validate;
-    private String                version;
+    private Boolean actual;
+    private List<Controller> controllers;
+    private Long id;
+    private String ip;
+    private String name;
+    private String password;
+    private Integer port;
+    private Long screenId;
+    private String simNumber;
+    private int state;
+    private Timestamp time;
+    private String type;
+    private Long userId;
+    private Boolean validate;
+    private String version;
 
     public Cellink() {
         this.controllers = new ArrayList<Controller>();
-        this.validate    = false;
+        this.validate = false;
     }
 
     public Long getId() {
@@ -144,8 +126,8 @@ public class Cellink implements Comparable<Cellink>, Serializable {
 
     public String getVersion() {
         return (version == null)
-               ? "N/A"
-               : version;
+                ? "N/A"
+                : version;
     }
 
     public void setVersion(String version) {
@@ -202,6 +184,7 @@ public class Cellink implements Comparable<Cellink>, Serializable {
 
     /**
      * Returns whether network traffic should  displayed in  log .
+     *
      * @return the true if it is; false otherwise.
      */
     public Boolean isWithLogging() {
@@ -210,6 +193,7 @@ public class Cellink implements Comparable<Cellink>, Serializable {
 
     /**
      * Set with logging flag  .
+     *
      * @param withLogging the log flag
      */
     public void setWithLogging(Boolean withLogging) {
@@ -270,7 +254,7 @@ public class Cellink implements Comparable<Cellink>, Serializable {
     /**
      * Replaces the controller at the specified position in this list of controllers with the specified element.
      *
-     * @param index - index of the controller to replace
+     * @param index      - index of the controller to replace
      * @param controller - controller to be stored at the specified position
      */
     public void setController(int index, Controller controller) {
@@ -281,9 +265,8 @@ public class Cellink implements Comparable<Cellink>, Serializable {
      * Removes the specified listener from the list of observers.
      *
      * @param listener the listener to remove from list of observers
-     * @return
-     * <code>true</code> if the specified listener was removed from the list,
-     * <code>false</code> otherwise
+     * @return <code>true</code> if the specified listener was removed from the list,
+     *         <code>false</code> otherwise
      */
     public boolean removeCellinkStateListener(CellinkListener listener) {
         return cellinkStateListeners.remove(listener);
@@ -345,12 +328,12 @@ public class Cellink implements Comparable<Cellink>, Serializable {
     public String toString() {
         if (validate == true) {
             return new StringBuilder().append(" ID: ").append(this.getId()).append("; NAME: ").append(
-                this.getName()).append("; PASSWORD: ").append(this.getPassword()).append("; IP: ").append(
-                this.getIp()).append("; PORT: ").append(this.getPort()).append("; STATE: ").append(
-                this.getState()).append("; VERSION: ").append(this.getVersion()).toString();
+                    this.getName()).append("; PASSWORD: ").append(this.getPassword()).append("; IP: ").append(
+                    this.getIp()).append("; PORT: ").append(this.getPort()).append("; STATE: ").append(
+                    this.getState()).append("; VERSION: ").append(this.getVersion()).toString();
         } else {
             return new StringBuilder().append(" NAME : ").append(name).append("; PASSWORD : ").append(
-                password).toString();
+                    password).toString();
         }
     }
 }

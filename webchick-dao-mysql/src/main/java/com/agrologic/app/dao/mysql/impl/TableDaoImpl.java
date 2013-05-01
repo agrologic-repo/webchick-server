@@ -193,7 +193,7 @@ public class TableDaoImpl implements TableDao {
         } catch (SQLException e) {
             dao.printSQLException(e);
 
-            throw new SQLException(CANNOT_RETREIEVE_TABLE, e);
+            throw new SQLException(CANNOT_RETRIEVE_TABLE, e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -237,7 +237,7 @@ public class TableDaoImpl implements TableDao {
             return TableUtil.makeTableList(rs);
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETREIEVE_TABLE, e);
+            throw new SQLException(CANNOT_RETRIEVE_TABLE, e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -258,7 +258,7 @@ public class TableDaoImpl implements TableDao {
             return TableUtil.makeTableList(rs);
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETREIEVE_TABLE, e);
+            throw new SQLException(CANNOT_RETRIEVE_TABLE, e);
         } finally {
             stmt.close();
             dao.closeConnection(con);

@@ -1,11 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.dao.derby.impl;
-
-
 
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.*;
@@ -17,14 +10,6 @@ import com.agrologic.app.dao.mysql.impl.RelayDaoImpl;
 
 import java.sql.*;
 
-/**
- * {Insert class description here}
- *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- */
 public class DerbyRelayDaoImpl extends RelayDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
     public DerbyRelayDaoImpl(DaoFactory daoFactory) {

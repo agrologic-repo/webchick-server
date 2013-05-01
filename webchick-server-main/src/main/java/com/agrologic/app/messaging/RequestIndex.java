@@ -5,14 +5,8 @@
  */
 package com.agrologic.app.messaging;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.agrologic.app.util.StringUtil;
 
-/**
- *
- * @author JanL
- */
 public class RequestIndex {
 
     /**
@@ -31,6 +25,7 @@ public class RequestIndex {
 
     /**
      * Return current request index
+     *
      * @return the index
      */
     public final String getIndex() {
@@ -72,9 +67,6 @@ public class RequestIndex {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("RequestIndex : "+ index).toString();
+        return new StringBuilder().append("RequestIndex : " + index).toString();
     }
 }
-
-
-

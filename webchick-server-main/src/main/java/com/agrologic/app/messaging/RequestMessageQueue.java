@@ -14,11 +14,6 @@ import java.util.PriorityQueue;
 public class RequestMessageQueue extends Observable {
 
     /**
-     * Queue with requests
-     */
-    private final PriorityQueue<RequestMessage> queue = new PriorityQueue<RequestMessage>();
-
-    /**
      * true if request must send again
      */
     private boolean replyForPreviousRequestPending;
@@ -29,10 +24,17 @@ public class RequestMessageQueue extends Observable {
     private RequestMessage requestToSend;
 
     /**
-     * @param sendMessage
+     * Queue with requests
      */
-    public void addRequest(RequestMessage sendMessage) {
-        queue.add(sendMessage);
+    private final PriorityQueue<RequestMessage> queue = new PriorityQueue<RequestMessage>();
+
+
+    /**
+     * Add request to queue . The request message
+     * @param requestMessage
+     */
+    public void addRequest(RequestMessage requestMessage) {
+        queue.add(requestMessage);
     }
 
     /**

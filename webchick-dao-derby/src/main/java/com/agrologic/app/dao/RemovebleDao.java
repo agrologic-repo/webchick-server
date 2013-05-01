@@ -2,10 +2,6 @@ package com.agrologic.app.dao;
 
 import java.sql.SQLException;
 
-/**
- *
- * @author Administrator
- */
 public interface RemovebleDao {
     static final String CANNOT_REMOVE_TABLE  = "Cannot Remove Table";
 

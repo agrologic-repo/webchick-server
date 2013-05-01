@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.config;
 
-/**
- *
- * @author Administrator
- */
 public enum Protocol {
 
     LOW_ASCII(0, "2400", "Text 2400 bps"),

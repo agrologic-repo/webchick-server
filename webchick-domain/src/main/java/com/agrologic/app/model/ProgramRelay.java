@@ -1,23 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
-
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-
 import java.io.Serializable;
 
-/**
- * Title: ProgramRelayDto <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class ProgramRelay implements Serializable {
     private static final long serialVersionUID = 1L;
     private Integer           bitNumber;
@@ -80,13 +67,14 @@ public class ProgramRelay implements Serializable {
         this.unicodeText = unicodeText;
     }
 
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
+    // TODO : delete if code is unused
+//    public Integer getIndex() {
+//        return index;
+//    }
+//
+//    public void setIndex(Integer index) {
+//        this.index = index;
+//    }
 
     public Long getRelayTextId() {
         return relayTextId;
@@ -95,10 +83,10 @@ public class ProgramRelay implements Serializable {
     public void setRelayTextId(Long relayTextId) {
         this.relayTextId = relayTextId;
     }
-
-    public String getOn() {
-        return on;
-    }
+    // TODO : delete if code is unused
+//    public String getOn() {
+//        return on;
+//    }
 
     public void setOn() {
         this.on = "ON";
@@ -121,7 +109,7 @@ public class ProgramRelay implements Serializable {
             setOff();
         }
     }
-
+    // TODO : delete if code is unused
 //  public String getImage(String name) {
 //      if(name.startsWith("Fan")) {
 //          if(isOn()) {

@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.dao;
-
 
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.ProgramRelay;
@@ -12,12 +6,6 @@ import com.agrologic.app.model.Relay;
 import java.sql.SQLException;
 import java.util.Collection;
 
-/**
- * Title: RelayDao <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.0 <br>
- */
 public interface RelayDao {
 
     /**

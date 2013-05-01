@@ -1,11 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx;
-
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.ProgramAlarm;
 
@@ -16,28 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
 public class ProgramAlarmPopup extends JDialog {
-    int x = -1;
-    int y = -1;
-    JPanel alarmsPanel;
-    JButton button;
-    JPanel buttonPanel;
-    JPanel contentPanel;
-    Point location;
-    List<ProgramAlarm> programAlarms;
-
-    public ProgramAlarmPopup() {
-        super();
-        initComponents();
-    }
+    private JPanel alarmsPanel;
+    private JButton button;
+    private JPanel buttonPanel;
+    private JPanel contentPanel;
+    private Point location;
+    private List<ProgramAlarm> programAlarms;
 
     public ProgramAlarmPopup(Point location, List<ProgramAlarm> pa) {
         super();
@@ -81,14 +59,14 @@ public class ProgramAlarmPopup extends JDialog {
         contentPanel.add(alarmsPanel, BorderLayout.PAGE_END);
         add(contentPanel);
     }
-
-    private static JButton createHelpButton() {
-        final JButton button = new JButton();
-        button.setIcon(new javax.swing.ImageIcon(button.getClass().getResource("/help/examples/help.gif")));
-        button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button.setOpaque(false);
-        return button;
-    }
+//
+//    private static JButton createHelpButton() {
+//        final JButton button = new JButton();
+//        button.setIcon(new javax.swing.ImageIcon(button.getClass().getResource("/help/examples/help.gif")));
+//        button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+//        button.setOpaque(false);
+//        return button;
+//    }
 
     private static JButton createCloseButton() {
         final JButton button = new JButton();
@@ -98,6 +76,3 @@ public class ProgramAlarmPopup extends JDialog {
         return button;
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

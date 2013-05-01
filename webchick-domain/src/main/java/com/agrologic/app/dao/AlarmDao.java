@@ -1,25 +1,11 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.dao;
 
 
 import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.ProgramAlarm;
-
-
 import java.sql.SQLException;
-
 import java.util.Collection;
 
-/**
- * Title: AlarmDao <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public interface AlarmDao {
 
     /**

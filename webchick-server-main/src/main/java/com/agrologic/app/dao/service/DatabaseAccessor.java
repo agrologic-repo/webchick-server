@@ -5,17 +5,8 @@
  */
 package com.agrologic.app.dao.service;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.dao.*;
 
-/**
- * {Insert class description here}
- *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- */
 public interface DatabaseAccessor {
 
     AlarmDao getAlarmDao();

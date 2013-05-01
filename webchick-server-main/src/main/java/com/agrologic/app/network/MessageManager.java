@@ -52,7 +52,7 @@ public class MessageManager implements Observer {
     private RequestMessage requestToSend;
     private RequestMessage oldRequestToSend;
     private RequestPriorityQueue requests;
-    private RequestQueueHistory24 requestsHistory24;
+    private RequestMessageQueueHistory24 requestsHistory24;
     private Logger logger;
     private boolean debug = false;
     private boolean justStarted = true;
@@ -374,7 +374,7 @@ public class MessageManager implements Observer {
         }
 
         if (requestsHistory24 == null) {
-            requestsHistory24 = new RequestQueueHistory24(controller.getNetName(), growDay);
+            requestsHistory24 = new RequestMessageQueueHistory24(controller.getNetName(), growDay);
         }
 
         RequestMessage returnRequest = requestsHistory24.next();
@@ -393,7 +393,7 @@ public class MessageManager implements Observer {
         createOnlineData();
 
         Map<RequestMessage, ResponseMessage> responses = responseMessageMap.getResponseMap();
-        boolean exist = responseMessageMap.isMapCountainsRequest(requestToSend);
+        boolean exist = responseMessageMap.isContainRequest(requestToSend);
 
         if (exist) {
             final MessageType msgType = requestToSend.getMessageType();
@@ -703,7 +703,7 @@ public class MessageManager implements Observer {
      * @throws SQLException
      */
     private void errorHandler(final ResponseMessageMap responseMessageMap) throws SQLException {
-        boolean exist = responseMessageMap.isMapCountainsRequest(requestToSend);
+        boolean exist = responseMessageMap.isContainRequest(requestToSend);
         if (exist) {
             updatedFlag = true;
             if (requestToSend.isUnusedType()) {
@@ -772,6 +772,5 @@ public class MessageManager implements Observer {
     @Override
     public String toString() {
         return new StringBuilder().append("MessageManager : ").append(controller.getNetName()).toString();
-
     }
 }

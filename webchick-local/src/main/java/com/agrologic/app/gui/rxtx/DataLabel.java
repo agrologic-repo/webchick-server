@@ -1,25 +1,10 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx;
-
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.rxtx.DataChangeEvent;
 import com.agrologic.app.model.rxtx.DataChangeListener;
 
 import javax.swing.*;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
 public class DataLabel extends JLabel implements DataChangeListener {
 
     public DataLabel(String text) {
@@ -31,13 +16,11 @@ public class DataLabel extends JLabel implements DataChangeListener {
         setText("<html>" + event.getNewString() + "</html>");
     }
 
-    public void setText(Long value) {
-        String svalue = value.toString();
-        setText(svalue);
-        revalidate();
-        repaint();
-        invalidate();
-    }
+//    public void setText(Long value) {
+//        String svalue = value.toString();
+//        setText(svalue);
+//        revalidate();
+//        repaint();
+//        invalidate();
+//    }
 }
-
-//~ Formatted by Jindent --- http://www.jindent.com

@@ -5,31 +5,22 @@
  */
 package com.agrologic.app.dao.service.impl;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.dao.service.DatabaseCreatable;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
 public class DatabaseCreator implements DatabaseCreatable {
 
-    private final Logger logger = Logger.getLogger(DatabaseCreator.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(DatabaseCreator.class);
     /**
      * List of Creatable objects.
      */

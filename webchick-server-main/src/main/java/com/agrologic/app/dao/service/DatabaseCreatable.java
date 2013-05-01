@@ -5,10 +5,6 @@
  */
 package com.agrologic.app.dao.service;
 
-/**
- *
- * @author Administrator
- */
 public interface DatabaseCreatable {
 
     void createAllTables();

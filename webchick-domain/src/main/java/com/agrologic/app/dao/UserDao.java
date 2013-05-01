@@ -1,27 +1,9 @@
-
-/*
-* UserDao.java
-*
-* Created on 11 ��� 2008, 10:30
-*
-* To change this template, choose Tools | Template Manager
-* and open the template in the editor.
- */
 package com.agrologic.app.dao;
-
 
 import com.agrologic.app.model.User;
 import java.sql.SQLException;
 import java.util.Collection;
 
-/**
- * Title: UserDao - Encapsulate all SQL queries to database that are related to USERS<br> Description: Contains 3 types
- * of SQL methods:<ul> <li>regular jdbc statements</li> <li>prepared statements<br> </li> </ul> Copyright: Copyright (c)
- * 2007
- *
- * @author Valery Manakhimov
- * @version 1.0
- */
 public interface UserDao {
 
     /**

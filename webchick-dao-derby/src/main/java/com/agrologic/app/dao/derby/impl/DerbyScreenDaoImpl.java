@@ -1,34 +1,16 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.derby.impl;
 
-
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.ScreenDaoImpl;
-
 import com.agrologic.app.model.Screen;
 
-
-
 import java.sql.*;
-
 import java.util.Collection;
 
-/**
- * {Insert class description here}
- *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- */
-public class DerbyScreenDaoImpl extends ScreenDaoImpl implements CreatebleDao , DropableDao , RemovebleDao {
+public class DerbyScreenDaoImpl extends ScreenDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
     public DerbyScreenDaoImpl(DaoFactory daoFactory) {
         super(daoFactory);

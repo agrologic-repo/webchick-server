@@ -3,19 +3,11 @@ package com.agrologic.app.dao;
 
 import com.agrologic.app.model.Cellink;
 
-
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import java.util.Collection;
 
-/**
- * Title: FarmDB - Encapsulate all SQL queries to database that are related to farm <br> Description: Contains 2 types
- * of SQL methods:<ul> <li>regular jdbc statements</li> <li>prepared statements<br></li></ul> Copyright: Copyright (c)
- * 2008 <br>
- *
- * @version 1.0 <br>
- */
 public interface CellinkDao {
 
     /**

@@ -1,6 +1,5 @@
 package com.agrologic.app.dao.mysql.impl;
 
-
 import com.agrologic.app.dao.AlarmDao;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.model.Alarm;

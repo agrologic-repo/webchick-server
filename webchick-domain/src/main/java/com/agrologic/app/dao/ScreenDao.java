@@ -1,22 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.dao;
 
-
 import com.agrologic.app.model.Screen;
-
-
 import java.sql.SQLException;
-
 import java.util.Collection;
 
-/**
- *
- * @author JanL
- */
 public interface ScreenDao {
     static final String CANNOT_RETRIEVE_SCREENS_MESSAGE = "Cannot Retrieve Screens From Database\n";
     static final String CANNOT_INSERT_SCREEN_MESSAGE    = "Cannot Insert Screen To DataBase\n";

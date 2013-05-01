@@ -1,35 +1,21 @@
-
-/*
- * SerialPortControl.java
- *
- * Created on July 29, 2008, 2:50 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
 package com.agrologic.app.network.rxtx;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.config.Protocol;
-import com.agrologic.app.except.SerialPortControlFailure;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.messaging.ResponseMessage;
 import gnu.io.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TooManyListenersException;
-import org.apache.log4j.Logger;
 
-/**
- * Title: SerialPortControl <br> Description: <br> Copyright: Copyright (c) 2008 <br> Company: Agro Logic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.0 <br>
- */
 public class SerialPortControl implements SerialPortEventListener {
 
     private static final int BUFFER_SIZE = 32000;
@@ -49,16 +35,15 @@ public class SerialPortControl implements SerialPortEventListener {
     private SerialPort serialPort;
     private Timer timer;
     private boolean DEBUG = false;
-    private Logger logger = Logger.getLogger(SerialPortControl.class);
+    private Logger logger = LoggerFactory.getLogger(SerialPortControl.class);
 
     /**
      * Creates a new instance of SerialPortControl .
      *
      * @param com the com name
      * @param network the network thread.
-     * @throws SerialPortControlException if failed initialization .
      */
-    public SerialPortControl(final String com, final Network network) throws SerialPortControlFailure {
+    public SerialPortControl(final String com, final Network network) {
         Configuration c = new Configuration();
         Integer protocol = Integer.parseInt(c.getProtocol());
         protocolType = Protocol.get(protocol);
@@ -90,9 +75,8 @@ public class SerialPortControl implements SerialPortEventListener {
      * Initialization serial port control fields.
      *
      * @param comport com name
-     * @throws SerialPortControlException if failed initialization .
      */
-    private void init(final String comport) throws SerialPortControlFailure {
+    private void init(final String comport) {
         try {
             Configuration config = new Configuration();
             CommPortIdentifier portId;
@@ -116,21 +100,25 @@ public class SerialPortControl implements SerialPortEventListener {
                     SerialPort.PARITY_NONE);
             serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
         } catch (UnsupportedCommOperationException ex) {
-            logger.debug(ex);
-            throw new SerialPortControlFailure("COM port does not support operation you choosed .", ex);
+            logger.info("Unsupported Comm Operation . ",ex);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            //throw new SerialPortControlException("COM port does not support operation you choosed .", ex);
         } catch (TooManyListenersException ex) {
-            logger.debug(ex);
-            throw new SerialPortControlFailure("Serial port does not failure.", ex);
-        } catch (IOException ex) {
-            logger.debug(ex);
-            throw new SerialPortControlFailure("Can not create in\\out streams for serial port.", ex);
+            logger.info("Too Many Listeners .",ex);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (PortInUseException ex) {
-            logger.debug(ex);
-            throw new SerialPortControlFailure("Selected port in use . Try select another port.", ex);
+            logger.info("Selected port: [{}] is in use , try another port ", comport);
+            JOptionPane.showMessageDialog(null, "Selected port: ["+comport+"] is in use , try another port ", "Error", JOptionPane.ERROR_MESSAGE);
+            //throw new PortInUseException("Selected port in use . Try select another port.", ex);
         } catch (NoSuchPortException ex) {
-            logger.debug(ex);
-            throw new SerialPortControlFailure("No such port .Try select another port.", ex);
+            logger.info("No such a port ",ex);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            //throw new NoSuchPortException("No such port .Try select another port.", ex);
+        } catch (Throwable t) {
+            JOptionPane.showMessageDialog(null, "Application could not open serial port identefier .\n" +
+                    "Missing rxtxSerial.dll in program path .", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
     }
 
     /**
@@ -142,7 +130,6 @@ public class SerialPortControl implements SerialPortEventListener {
      * @throws IOException if I/O exception occurs.
      */
     public synchronized void write(final Message message, final int sot, final int eot) throws IOException {
-
         // reset counter
         resetCount();
         clearBuffer();
@@ -154,7 +141,6 @@ public class SerialPortControl implements SerialPortEventListener {
         if (DEBUG) {
             logger.info("Sent :  " + message);
         }
-
     }
 
     /**
@@ -237,14 +223,14 @@ public class SerialPortControl implements SerialPortEventListener {
         try {
             in.skip(in.available());
         } catch (IOException ex) {
-            logger.error(ex);
+            logger.error("Unable to skip data from input stream ", ex);
         }
     }
 
     /**
      * Method declaration
      *
-     * @param event A serial port event. See the JavaDoc for the Java CommAPI for details.
+     * @param serialPortEvent A serial port event. See the JavaDoc for the Java CommAPI for details.
      */
     @Override
     public void serialEvent(SerialPortEvent serialPortEvent) {
@@ -386,4 +372,3 @@ public class SerialPortControl implements SerialPortEventListener {
         }
     }
 }
-//~ Formatted by Jindent --- http://www.jindent.com

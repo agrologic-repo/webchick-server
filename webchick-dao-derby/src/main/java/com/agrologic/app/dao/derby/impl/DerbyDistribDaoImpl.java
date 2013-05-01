@@ -14,14 +14,6 @@ import com.agrologic.app.dao.mysql.impl.DistribDaoImpl;
 import com.agrologic.app.model.Distrib;
 import java.sql.*;
 
-/**
- * {Insert class description here}
- *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- */
 public class DerbyDistribDaoImpl extends DistribDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
     public DerbyDistribDaoImpl(DaoFactory daoFactory) {

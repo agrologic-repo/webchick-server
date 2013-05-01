@@ -72,7 +72,7 @@ public class ReadBuffer {
         bufferIsLast = in.read();
         bufferIndex = in.read();
         bufferSize = in.read();
-        if (CellinkVersion.dataBytesByVers(version) > 1) {
+        if (CellinkVersion.dataBytesByVersion(version) > 1) {
             bufferSize <<= 8;
             bufferSize += in.read();
         }

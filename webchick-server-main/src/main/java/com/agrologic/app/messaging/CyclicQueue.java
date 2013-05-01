@@ -70,7 +70,7 @@ public class CyclicQueue<RequestMessage> {
     /**
      * Returns the nextElem element in the list.
      * @return the nextElem element in the list.
-     * @exception NoSuchElementException if the iteration has no nextElem element.
+     * @exception IllegalAccessException if the iteration has no nextElem element.
      */
     public RequestMessage nextElem() throws IllegalAccessException {
         if (queue.isEmpty()) {

@@ -378,7 +378,7 @@ public class DataDaoImpl implements DataDao {
             }
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETREIVE_DATA, e);
+            throw new SQLException(CANNOT_RETRIEVE_DATA_FROM_DATABASE, e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -453,7 +453,7 @@ public class DataDaoImpl implements DataDao {
             return DataUtil.makeDataList(rs);
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETREIVE_DATA, e);
+            throw new SQLException(CANNOT_RETRIEVE_DATA_FROM_DATABASE, e);
         } finally {
             stmt.close();
             dao.closeConnection(con);
@@ -476,7 +476,7 @@ public class DataDaoImpl implements DataDao {
             return dataValueList;
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETREIVE_DATA, e);
+            throw new SQLException(CANNOT_RETRIEVE_DATA_FROM_DATABASE, e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -499,7 +499,7 @@ public class DataDaoImpl implements DataDao {
             return DataUtil.makeDataList(rs);
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETREIVE_DATA, e);
+            throw new SQLException(CANNOT_RETRIEVE_DATA_FROM_DATABASE, e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -522,7 +522,7 @@ public class DataDaoImpl implements DataDao {
             return DataUtil.makeDataList(rs);
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETREIVE_DATA, e);
+            throw new SQLException(CANNOT_RETRIEVE_DATA_FROM_DATABASE, e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -574,7 +574,7 @@ public class DataDaoImpl implements DataDao {
             return DataUtil.makeDataList(rs);
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETREIVE_DATA, e);
+            throw new SQLException(CANNOT_RETRIEVE_DATA_FROM_DATABASE, e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -605,7 +605,7 @@ public class DataDaoImpl implements DataDao {
             return DataUtil.makeDataList(rs);
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETREIVE_DATA, e);
+            throw new SQLException(CANNOT_RETRIEVE_DATA_FROM_DATABASE, e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -651,7 +651,7 @@ public class DataDaoImpl implements DataDao {
             return DataUtil.makeDataList(rs);
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETREIVE_DATA, e);
+            throw new SQLException(CANNOT_RETRIEVE_DATA_FROM_DATABASE, e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);

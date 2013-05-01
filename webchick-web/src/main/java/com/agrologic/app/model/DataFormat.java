@@ -29,10 +29,10 @@ public class DataFormat {
     public static final int DEC_4              = 8;
     public static final int DEC_5              = 10;
     public static final int DEC_11             = 11;
-    public static final String DOT_DELIMETER   = ".";
-    public static final String EMPTY_DELIMETER = "";
-    public static final String DATE_DELIMETER  = "/";
-    public static final String TIME_DELIMETER  = ":";
+    public static final String DOT_DELIMITER   = ".";
+    public static final String EMPTY_DELIMITER = "";
+    public static final String TIME_DELIMITER  = ":";
+    public static final String DATE_DELIMITER  = "/";
     /**
      * Map of Strings to GraphType objects.
      */
@@ -85,7 +85,7 @@ public class DataFormat {
     public static String formatToStringValue(int format, long value) {
         try {
             StringBuilder sb = new StringBuilder();
-            String delim = EMPTY_DELIMETER;
+            String delim = EMPTY_DELIMITER;
 
             sb.append(Long.toString(value));
 
@@ -99,7 +99,7 @@ public class DataFormat {
                     break;
 
                 case DEC_1:
-                    delim = DOT_DELIMETER;     // xxx.x
+                    delim = DOT_DELIMITER;     // xxx.x
                     position = (sb.length() >= 2)
                             ? sb.length() - DEC_1
                             : -1;
@@ -119,7 +119,7 @@ public class DataFormat {
                     break;
 
                 case DEC_2:
-                    delim = DOT_DELIMETER;        // xx.xx
+                    delim = DOT_DELIMITER;        // xx.xx
 
                     if (len < DEC_2 + 1) {
                         len = DEC_2 - len + 1;
@@ -136,7 +136,7 @@ public class DataFormat {
                     break;
 
                 case DEC_3:
-                    delim = DOT_DELIMETER;        // xx.xxx
+                    delim = DOT_DELIMITER;        // xx.xxx
 
                     if (len < DEC_3 + 1) {
                         len = DEC_3 - len + 1;
@@ -156,7 +156,7 @@ public class DataFormat {
                     break;
 
                 case TIME:
-                    delim = TIME_DELIMETER;       // hh:mm
+                    delim = TIME_DELIMITER;       // hh:mm
                     while (len < 4) {
                         sb.insert(0, "0");
                         len++;
@@ -168,7 +168,7 @@ public class DataFormat {
                     break;
 
                 case TIME_SEC:
-                    delim = TIME_DELIMETER;    // hh:mm:ss
+                    delim = TIME_DELIMITER;    // hh:mm:ss
                     position = sb.length() - 2;
                     sb.insert(position, delim).insert(position - 2, delim);
 
@@ -181,7 +181,7 @@ public class DataFormat {
                     int years = ((vl >> 12) & 0xF) * 1000 + ((vl >> 8) & 0xF) * 100 + ((vl >> 4) & 0xF) * 10 + (vl & 0xF);
 
                     sb = new StringBuilder();
-                    sb.append(days).append(DATE_DELIMETER).append(months).append(DATE_DELIMETER).append(years);
+                    sb.append(days).append(DATE_DELIMITER).append(months).append(DATE_DELIMITER).append(years);
 
                     break;
 
@@ -200,7 +200,7 @@ public class DataFormat {
                         b_d = b_d + (((val % 1000) % 100) / 10);
                     int a_d = (((val % 1000) % 100) % 10);
                         sb = new StringBuilder();
-                        sb.append(b_d).append(DOT_DELIMETER).append(a_d);
+                        sb.append(b_d).append(DOT_DELIMITER).append(a_d);
 
                     break;
                 default:

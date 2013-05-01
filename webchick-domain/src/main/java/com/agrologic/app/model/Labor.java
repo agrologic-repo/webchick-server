@@ -1,14 +1,5 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
 
-/**
- *
- * @author JanL
- */
 public class Labor {
     private Long    id;
     private String  date;
@@ -18,7 +9,6 @@ public class Labor {
     private Long    flockId;
 
     public Labor() {
-        
     }
 
     public String getDate() {

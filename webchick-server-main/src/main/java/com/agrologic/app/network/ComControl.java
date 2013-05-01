@@ -90,7 +90,7 @@ public class ComControl {
 
             synchronized (lock) {
                 while (!stop) {
-                    if (in.available() >= CellinkVersion.headerBytesByVers(cellinkVers)) {
+                    if (in.available() >= CellinkVersion.headerBytesByVersion(cellinkVers)) {
                         readBuffer.readHead(in, cellinkVers);
                         readBuffer.readData(in);
                     }

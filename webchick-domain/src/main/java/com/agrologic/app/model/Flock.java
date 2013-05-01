@@ -1,13 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.model;
 
 import com.agrologic.app.util.MathUtil;
+
 import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -510,28 +505,28 @@ public class Flock implements Serializable {
         costPerKg = calcTotalExpenses() / getTotalChicks();
         return Math.round(costPerKg);
     }
-
-    public void setHistoryData(List<Data> dataList) {
-        int length = dataList.size();
-        for (int i = 0; i < length; i++) {
-            Data d = dataList.get(i);
-            if (historySetting.containsKey(d.getId()) == false) {
-                historySetting.put(d.getId(), new HistoryDataSetting(d.getId(), "unchecked"));
-            }
-        }
-    }
-
-    public String getHistoryDataSetting(Long id) {
-        return (String) ((HistoryDataSetting) historySetting.get(id)).isChecked();
-    }
-
-    public void setHistoryDataSetting(Data data, String checked) {
-        if (historySetting.get(data.getId()) == null) {
-            historySetting.put(data.getId(), new HistoryDataSetting(data.getId(), checked));
-        } else {
-            historySetting.get(data.getId()).setChecked(checked);
-        }
-    }
+    // TODO : delete if code is unused
+//    public void setHistoryData(List<Data> dataList) {
+//        int length = dataList.size();
+//        for (int i = 0; i < length; i++) {
+//            Data d = dataList.get(i);
+//            if (historySetting.containsKey(d.getId()) == false) {
+//                historySetting.put(d.getId(), new HistoryDataSetting(d.getId(), "unchecked"));
+//            }
+//        }
+//    }
+//
+//    public String getHistoryDataSetting(Long id) {
+//        return (String) ((HistoryDataSetting) historySetting.get(id)).isChecked();
+//    }
+//
+//    public void setHistoryDataSetting(Data data, String checked) {
+//        if (historySetting.get(data.getId()) == null) {
+//            historySetting.put(data.getId(), new HistoryDataSetting(data.getId(), checked));
+//        } else {
+//            historySetting.get(data.getId()).setChecked(checked);
+//        }
+//    }
 
     public void setControllerName(String controllerName) {
         this.controllerName = controllerName;
@@ -544,29 +539,29 @@ public class Flock implements Serializable {
     /**
      * Inner class for using to incapsulate data id and state checked/unchecked
      *
-     * @param <Long>
+     * @param <Data>
      * @param <String>
      */
-    static class HistoryDataSetting<DataDto, String> {
+    static class HistoryDataSetting<Data, String> {
 
-        DataDto data;
+        Data data;
         String checked;
 
-        HistoryDataSetting(DataDto data, String checked) {
+        HistoryDataSetting(Data data, String checked) {
             this.data = data;
             this.checked = checked;
         }
-
-        public DataDto getData() {
-            return data;
-        }
-
-        public String isChecked() {
-            return checked;
-        }
-
-        public void setChecked(String checked) {
-            this.checked = checked;
-        }
+        // TODO : delete if code is unused
+//        public Data getData() {
+//            return data;
+//        }
+//
+//        public String isChecked() {
+//            return checked;
+//        }
+//
+//        public void setChecked(String checked) {
+//            this.checked = checked;
+//        }
     }
 }

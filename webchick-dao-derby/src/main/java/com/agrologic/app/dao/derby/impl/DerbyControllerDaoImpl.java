@@ -5,8 +5,6 @@
  */
 package com.agrologic.app.dao.derby.impl;
 
-
-
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
@@ -20,16 +18,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-
-
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
 public class DerbyControllerDaoImpl extends ControllerDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
     public DerbyControllerDaoImpl(DaoFactory daoFactory) {
