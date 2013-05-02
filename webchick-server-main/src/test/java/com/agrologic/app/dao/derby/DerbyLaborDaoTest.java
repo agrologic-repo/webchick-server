@@ -43,7 +43,7 @@ public class DerbyLaborDaoTest {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getLaborDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(LaborDao.class);
     }
 
     @Test

@@ -5,7 +5,6 @@ import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.dao.service.DatabaseLoadAccessor;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.except.ObjectDoesNotExist;
-import com.agrologic.app.except.SerialPortControlFailure;
 import com.agrologic.app.gui.rxtx.StatusPanel;
 import com.agrologic.app.gui.rxtx.WCSLWindow;
 import com.agrologic.app.messaging.*;
@@ -43,14 +42,6 @@ public final class SocketThread extends Observable implements Runnable, Network 
     private boolean DEBUG = false;
     private Logger logger = Logger.getLogger(SocketThread.class);
 
-    /**
-     *
-     * @param wcsl
-     * @param dbManager
-     * @throws SerialPortControlFailure
-     * @throws NumberFormatException
-     * @throws ObjectDoesNotExist
-     */
     public SocketThread(WCSLWindow wcsl, DatabaseManager dbManager)
             throws NumberFormatException, ObjectDoesNotExist {
         super();

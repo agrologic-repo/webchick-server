@@ -5,22 +5,22 @@
 package com.agrologic.app.dao.service;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DataDao;
-
-import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.except.ObjectDoesNotExist;
 import com.agrologic.app.model.Cellink;
-//import com.agrologic.app.model.Configuration;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.User;
 import com.agrologic.app.util.PropertyFileUtil;
+import org.junit.*;
+
 import java.sql.SQLException;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
-import org.junit.*;
+
+//import com.agrologic.app.model.Configuration;
 
 /**
  *
@@ -64,11 +64,11 @@ public class DatabaseManagerTest {
     public void doLoadTableDataTest() throws SQLException, ObjectDoesNotExist {
         dbManager.doLoadTableData(config.getUserId(), config.getCellinkId());
 
-        User user = DbImplDecider.getDaoFactory(DaoType.DERBY).getUserDao().getById(userId);
-        Cellink cellink = DbImplDecider.getDaoFactory(DaoType.DERBY).getCellinkDao().getById(cellinkId);
+        User user = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class).getById(userId);
+        Cellink cellink = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class).getById(cellinkId);
         user.addCellink(cellink);
 
-        List<Controller> controllers = (List<Controller>) DbImplDecider.getDaoFactory(DaoType.DERBY).getControllerDao().getActiveCellinkControllers(cellinkId);
+        List<Controller> controllers = (List<Controller>) DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class).getActiveCellinkControllers(cellinkId);
         cellink.setControllers(controllers);
 
         assertEquals("getUser()", user, dbManager.getDatabaseLoader().getUser());

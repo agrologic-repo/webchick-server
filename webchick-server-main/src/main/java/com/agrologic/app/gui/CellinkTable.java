@@ -6,13 +6,16 @@
 package com.agrologic.app.gui;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.mysql.impl.CellinkDaoImpl;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
-import java.awt.Font;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -22,11 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.SwingWorker;
-import javax.swing.Timer;
-import org.apache.log4j.Logger;
 
 /**
  * Title: CellinkTable <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
@@ -110,12 +108,6 @@ public final class CellinkTable extends JTable {
 
             @Override
             protected void done() {
-                // this in the other hand will always be executed on the EDT.
-                // This has to be done in the EDT because currently JTableBinding
-                // is not smart enough to realize that the notification comes in another
-                // thread and do a SwingUtilities.invokeLater. So we are force to execute this
-                // in the EDT. Seee http://markmail.org/thread/6ehh76zt27qc5fis and
-                // https://beansbinding.dev.java.net/issues/show_bug.cgi?id=60
                 if (cellinkModel.size() == 0) {
                     cellinkModel.addAll(retrieveCellinks());
                 } else {
@@ -148,7 +140,7 @@ public final class CellinkTable extends JTable {
      */
     private Collection<Cellink> retrieveCellinks() {
         if (cellinkDao == null) {
-            cellinkDao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getCellinkDao();
+            cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         }
 
         try {
@@ -163,7 +155,7 @@ public final class CellinkTable extends JTable {
     /**
      * Set state of specified cellink by using on selected event in table
      *
-     * @param row the selected row
+     * @param row   the selected row
      * @param state the cellink state to change
      */
     public void setState(int row, int state) {
@@ -192,7 +184,7 @@ public final class CellinkTable extends JTable {
     /**
      * Set with logging field by using on selected event in table
      *
-     * @param row the selected row
+     * @param row         the selected row
      * @param withLogging the true or false value
      */
     public void setWithLogging(int row, boolean withLogging) {

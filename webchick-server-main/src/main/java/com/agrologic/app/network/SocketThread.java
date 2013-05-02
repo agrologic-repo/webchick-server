@@ -29,23 +29,20 @@ import java.util.List;
  *
  * @version 1.0 <br>
  */
-public class SocketThread extends Thread implements Network {
+public class SocketThread implements Runnable, Network {
+    public static final int ONE_MINUTE = 60000;
     public static final int BUFFER_SIZE = 256;
     public static final int SLEEP_TIME_BEFORE_CLOSE_SOCKET = 5000;
     private List<MessageManager> contMsgManager;
     private Cellink cellink;
     private CellinkDao cellinkDao;
     private ControllerDao controllerDao;
-    private DaoFactory daoFactory = DbImplDecider.getDaoFactory(DaoType.MYSQL);
     private Message sendMessage;
     private ResponseMessage responseMessage;
     private ResponseMessageMap responseMessageMap;
     private RequestMessageQueue requestQueue;
     private ServerUI serverFacade;
     private final ClientSessions clientSessions;
-    /**
-     * communication
-     */
     private ComControl comControl;
     private int sotDelay;
     private int eotDelay;
@@ -57,8 +54,6 @@ public class SocketThread extends Thread implements Network {
     private boolean stopThread = false;
     private Logger logger = LoggerFactory.getLogger(SocketThread.class);
     private NetworkState networkState = NetworkState.STATE_ACCEPT_KEEP_ALIVE;
-    private static final int ONE_MINUTE = 60000;
-
 
     public SocketThread(Cellink cellink) {
         this.cellink = cellink;
@@ -66,9 +61,9 @@ public class SocketThread extends Thread implements Network {
     }
 
     public SocketThread(ClientSessions clientSessions, Socket socket, Configuration configuration) throws IOException {
+        this.cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+        this.controllerDao =DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
         this.comControl = new ComControl(socket);
-        this.cellinkDao = daoFactory.getCellinkDao();
-        this.controllerDao = daoFactory.getControllerDao();
         this.requestQueue = new RequestMessageQueue();
         this.responseMessageMap = new ResponseMessageMap();
         this.reqIndex = new RequestIndex();
@@ -119,7 +114,7 @@ public class SocketThread extends Thread implements Network {
                             break;
 
                         case STATE_READ:
-                            errCount = recvResponseHandler(errCount);
+                            errCount = receiveResponseHandler(errCount);
                             break;
 
                         case STATE_DELAY:
@@ -247,13 +242,13 @@ public class SocketThread extends Thread implements Network {
         setThreadState(NetworkState.STATE_SEND);
     }
 
-    private int recvResponseHandler(int errCount) {
+    private int receiveResponseHandler(int errCount) {
         responseMessage = (ResponseMessage) comControl.read();
         boolean withLogger = getWithLogging();
         if (withLogger) {
             logger.info(cellink.getName() + " sent message [ " + "V" + sendMessage.getIndex()
                     + sendMessage + " ]");
-            logger.info(cellink.getName() + " recieved message [ " + responseMessage + " ]");
+            logger.info(cellink.getName() + " received message [ " + responseMessage + " ]");
             String reqIdx = sendMessage.getIndex();
             String resIdx = responseMessage.getIndex();
             logger.info("Request index : " + reqIdx + "  Response index : " + resIdx);
@@ -294,15 +289,11 @@ public class SocketThread extends Thread implements Network {
         return errCount;
     }
 
-    /**
-     * @throws SQLException
-     * @throws IOException
-     */
     private void sendRequestHandler() throws SQLException, IOException {
         if (isCellinkTimedOut()) {
             logger.info("Disconnecting cellink [" + cellink + "], user activity timeout .");
             networkState = NetworkState.STATE_STOP;
-        } else if (isCellinkStoped()) {
+        } else if (isCellinkStopped()) {
             logger.info("Disconnecting cellink [" + cellink + "], user disconnected .");
             networkState = NetworkState.STATE_STOP;
         } else {
@@ -452,7 +443,7 @@ public class SocketThread extends Thread implements Network {
         return (currentTime.getTime() - updateTime.getTime()) > Cellink.ONLINE_TIMEOUT;
     }
 
-    private boolean isCellinkStoped() throws SQLException {
+    private boolean isCellinkStopped() throws SQLException {
         return cellinkDao.getState(cellink.getId()) == CellinkState.STATE_STOP;
     }
 

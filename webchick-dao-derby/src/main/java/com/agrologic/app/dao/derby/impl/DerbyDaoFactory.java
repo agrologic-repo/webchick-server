@@ -8,9 +8,9 @@ import java.util.List;
 
 public class DerbyDaoFactory extends DaoFactory {
 
-    private static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-    private static final String SCHEMA = "AGRODB";
-    private static final String URL = "jdbc:derby:agrodb;create=true";
+    public static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+    public static final String SCHEMA = "AGRODB";
+    public static final String URL = "jdbc:derby:agrodb;create=true";
     private static DerbyDaoFactory instanceObject = null;
     private static final boolean DEBUG = false;
 

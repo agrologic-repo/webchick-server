@@ -28,5 +28,6 @@
     <bean id="cellinkDao" class="com.agrologic.app.dao.mysql.impl.CellinkDaoImpl" parent="daoParent"/>
     <bean id="medicineDao" class="com.agrologic.app.dao.mysql.impl.MedicineDaoImpl" parent="daoParent"/>
     <bean id="gasDao" class="com.agrologic.app.dao.mysql.impl.GasDaoImpl" parent="daoParent"/>
+    <bean id="versionDao" class="com.agrologic.app.dao.mysql.impl.VersionDaoImpl" parent="daoParent"/>
     <bean id="daoFactory" class="com.agrologic.app.dao.mysql.impl.MySqlDaoFactory" factory-method="instance"/>
 </beans>

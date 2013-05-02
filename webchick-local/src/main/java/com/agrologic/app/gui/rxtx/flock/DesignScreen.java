@@ -27,7 +27,7 @@ public class DesignScreen extends javax.swing.JDialog {
         initComponents();
         Windows.centerOnScreen(DesignScreen.this);
         progressBar.setVisible(false);
-        controllerDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getControllerDao();
+        controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
         try {
             List<Controller> controllers = (List<Controller>) controllerDao.getAll();
             cmbHouses.addItem("");

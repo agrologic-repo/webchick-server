@@ -32,7 +32,7 @@ public class TestRelayDao {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getRelayDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(RelayDao.class);
     }
 
     @After

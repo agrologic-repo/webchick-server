@@ -42,7 +42,7 @@ public class DerbyMedicineDaoTest {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getMedicineDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(MedicineDao.class);
     }
 
     @Test

@@ -43,7 +43,7 @@ public class DerbyGasDaoTest {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getGasDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDao.class);
     }
 
 //    @Test

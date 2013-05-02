@@ -14,7 +14,7 @@ package com.agrologic.app.gui;
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.mysql.impl.MySqlDaoFactory;
+import com.agrologic.app.dao.VersionDao;
 import com.agrologic.app.except.StartProgramException;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
@@ -54,7 +54,8 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
     private JMenuItem startedState;
     private JMenuItem stoppedState;
     private CellinkTable cellinkTable;
-    private static final String ERROR_OPENNING_SOCKET = "Error opening socket \nServerAddress already in use !";
+    private final Logger logger = Logger.getLogger(WCSWindow.class);
+    private static final String ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE = "Error opening socket \nServerAddress already in use !";
     private static final String CANNOT_CREATE_LOCK_FILE = "Can't create Lock File.\nAccess is denied !";
 
     /**
@@ -176,8 +177,9 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         initServerSocketThread();
 
         try {
-            ((MySqlDaoFactory) DbImplDecider.getDaoFactory(DaoType.MYSQL)).getMySQLVersion();
+            String version = DbImplDecider.use(DaoType.MYSQL).getDao(VersionDao.class).getVersion();
         } catch (RuntimeException e) {
+            logger.debug("Cannot get database version ", e);
             openConfiguration();
         }
     }
@@ -193,7 +195,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
             serverThread.start();
             clock.start();
             if (serverSocketThread.getServerState() == ServerActivityStates.ERROR) {
-                JOptionPane.showMessageDialog(WCSWindow.this, ERROR_OPENNING_SOCKET, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(WCSWindow.this, ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE, "Error", JOptionPane.ERROR_MESSAGE);
                 serverSocketThread.setServerActivityState(ServerActivityStates.STOPPED);
             } else {
                 btnStart.setEnabled(false);
@@ -240,7 +242,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
 
                 } finally {
                     if (serverSocketThread.getServerState() == ServerActivityStates.ERROR) {
-                        JOptionPane.showMessageDialog(WCSWindow.this, ERROR_OPENNING_SOCKET, "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(WCSWindow.this, ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE, "Error", JOptionPane.ERROR_MESSAGE);
                         serverSocketThread.setServerActivityState(ServerActivityStates.STOPPED);
                     } else {
                         btnStart.setEnabled(false);

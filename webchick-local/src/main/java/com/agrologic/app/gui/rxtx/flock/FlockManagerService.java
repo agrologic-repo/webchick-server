@@ -43,19 +43,19 @@ public class FlockManagerService {
     public FlockManagerService() {
         Configuration conf = new Configuration();
         cellinkId = Long.parseLong(conf.getCellinkId());
-        fuelDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFuelDao();
-        gasDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getGasDao();
-        spreadDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getSpreadDao();
-        feedDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFeedDao();
-        feedTypeDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFeedTypeDao();
-        workerDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getWorkerDao();
-        laborDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getLaborDao();
-        medicineDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getMedicineDao();
-        transactionDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getTransactionDao();
-        distribDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getDistribDao();
-        dataDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getDataDao();
-        flockDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFlockDao();
-        controllerDao = DbImplDecider.getDaoFactory(DaoType.DERBY).getControllerDao();
+        fuelDao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDao.class);
+        gasDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDao.class);
+        spreadDao = DbImplDecider.use(DaoType.MYSQL).getDao(SpreadDao.class);
+        feedDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedDao.class);
+        feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDao.class);
+        workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDao.class);
+        laborDao = DbImplDecider.use(DaoType.MYSQL).getDao(LaborDao.class);
+        medicineDao = DbImplDecider.use(DaoType.MYSQL).getDao(MedicineDao.class);
+        transactionDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDao.class);
+        distribDao = DbImplDecider.use(DaoType.MYSQL).getDao(DistribDao.class);
+        dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+        flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+        controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
     }
 
     public void addFlock(Flock flock) {

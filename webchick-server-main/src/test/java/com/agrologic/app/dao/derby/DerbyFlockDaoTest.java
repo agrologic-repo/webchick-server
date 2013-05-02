@@ -7,12 +7,14 @@ package com.agrologic.app.dao.derby;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.derby.impl.DerbyFlockDaoImpl;
 import com.agrologic.app.model.Flock;
+import org.junit.*;
+
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import static org.junit.Assert.*;
-import org.junit.*;
 
 /**
  *
@@ -39,7 +41,7 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFlockDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
     }
 
     @After
@@ -145,10 +147,10 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
     public void testCopyFlockHistory() throws SQLException {
         long flockIdMySql = 137;
         long flockIdDerby = 1;
-        dao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getFlockDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
         Map<Integer, String> historyByFlockMySQL = dao.getAllHistoryByFlock(flockIdMySql);
 
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFlockDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
         Map<Integer, String> historyByFlockDerby = dao.getAllHistoryByFlock(flockIdDerby);
 
         Set<Entry<Integer, String>> entries = historyByFlockDerby.entrySet();

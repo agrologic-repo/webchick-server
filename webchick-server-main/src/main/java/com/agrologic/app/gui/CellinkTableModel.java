@@ -9,10 +9,11 @@ package com.agrologic.app.gui;
 
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
+
+import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.swing.table.AbstractTableModel;
 
 /**
  * Title: CellinkTableModel <br> Description: <br> Copyright: Copyright (c) 2009
@@ -134,11 +135,6 @@ public class CellinkTableModel extends AbstractTableModel {
      */
     @Override
     public void setValueAt(Object value, int row, int col) {
-        if (debug) {
-            System.out.println("Setting value at " + row + "," + col + " to " + value + " (an instance of "
-                               + value.getClass() + ")");
-        }
-
         Object[] cellinkObjects = cellinks.toArray();
         Cellink  cellink        = (Cellink) cellinkObjects[row];
 

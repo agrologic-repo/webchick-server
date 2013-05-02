@@ -45,12 +45,7 @@ public class MessageManager implements Observer {
     private Data data;
     private Flock flock;
     private HashMap<Long, Data> onlineDataItems;
-    /**
-     * network objects
-     */
-//    private RequestMessage prevRequestToSend;
     private RequestMessage requestToSend;
-    private RequestMessage oldRequestToSend;
     private RequestPriorityQueue requests;
     private RequestMessageQueueHistory24 requestsHistory24;
     private Logger logger;
@@ -59,27 +54,30 @@ public class MessageManager implements Observer {
     private boolean updatedFlag = true;
 
     /**
-     * Copy constructor
      *
-     * @param controller the object to copy
+     * @param controller
      */
     public MessageManager(Controller controller) {
         this.controller = controller;
         this.requests = new RequestPriorityQueue(controller.getNetName());
-        DaoFactory daoFactory = DbImplDecider.getDaoFactory(DaoType.MYSQL);
-        this.controllerDao = daoFactory.getControllerDao();
-        this.flockDao = daoFactory.getFlockDao();
-        this.dataDao = daoFactory.getDataDao();
+        this.controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+        this.flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+        this.dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
         this.logger = Logger.getLogger(MessageManager.class);
     }
 
-    public MessageManager(Controller controller, DatabaseAccessor dbaccessor) {
+    /**
+     *
+     * @param controller
+     * @param databaseAccessor
+     */
+    public MessageManager(Controller controller, DatabaseAccessor databaseAccessor) {
         this.controller = controller;
         this.requests = new RequestPriorityQueue(controller.getNetName());
-        this.dbaccessor = dbaccessor;
-        this.controllerDao = dbaccessor.getControllerDao();
-        this.flockDao = dbaccessor.getFlockDao();
-        this.dataDao = dbaccessor.getDataDao();
+        this.dbaccessor = databaseAccessor;
+        this.controllerDao = databaseAccessor.getControllerDao();
+        this.flockDao = databaseAccessor.getFlockDao();
+        this.dataDao = databaseAccessor.getDataDao();
         this.onlineDataItems = (HashMap<Long, Data>) controller.getOnlineData();
         this.logger = Logger.getLogger(MessageManager.class);
     }
@@ -140,6 +138,7 @@ public class MessageManager implements Observer {
     }
 
     /**
+     *
      * @param o
      * @throws SQLException
      */

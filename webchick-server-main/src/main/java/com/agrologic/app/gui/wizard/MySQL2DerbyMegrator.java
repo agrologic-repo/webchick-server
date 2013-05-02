@@ -295,10 +295,10 @@ public class MySQL2DerbyMegrator extends javax.swing.JFrame {
                         return;
                     }
                     Long userId = Long.parseLong(txtUserId.getText());
-                    UserDao userDao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getUserDao();
+                    UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
                     User user = userDao.getById(userId);
                     if (user.getValidate() == true) {
-                        CellinkDao cellinkDao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getCellinkDao();
+                        CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                         List<Cellink> cellinks = (List<Cellink>) cellinkDao.getAllUserCellinks(userId);
                         if (cellinks.size() == 0) {
                             lblFindUserStatus.setText(NO_CELLINKS);
@@ -407,11 +407,11 @@ public class MySQL2DerbyMegrator extends javax.swing.JFrame {
     }
 
     public void initLanguage() {
-        LanguageDao langDao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getLanguageDao();
+        LanguageDao langDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
         try {
-            List<Language> langs = (List<Language>) langDao.geAll();
+            List<Language> languages = (List<Language>) langDao.geAll();
             List<LanguageEntry> entries = new ArrayList<LanguageEntry>();
-            for (Language c : langs) {
+            for (Language c : languages) {
                 entries.add(new LanguageEntry(c.getId(), c.getLanguage()));
             }
 

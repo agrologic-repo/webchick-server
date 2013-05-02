@@ -29,5 +29,6 @@
     <bean id="cellinkDao" class="com.agrologic.app.dao.derby.impl.DerbyCellinkDaoImpl" parent="daoParent"/>
     <bean id="medicineDao" class="com.agrologic.app.dao.derby.impl.DerbyMedicineDaoImpl" parent="daoParent"/>
     <bean id="gasDao" class="com.agrologic.app.dao.derby.impl.DerbyGasDaoImpl" parent="daoParent"/>
+    <bean id="versionDao" class="com.agrologic.app.dao.derby.impl.DerbyVersionDaoImpl" parent="daoParent"/>
     <bean id="daoFactory" class="com.agrologic.app.dao.derby.impl.DerbyDaoFactory" factory-method="instance"/>
 </beans>

@@ -37,7 +37,7 @@ public class DerbyDistribDaoTest {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getDistribDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(DistribDao.class);
     }
 
 //    @Test

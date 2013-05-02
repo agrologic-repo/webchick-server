@@ -34,8 +34,7 @@ public class ClientSessions {
     public synchronized SocketThread createSessionWithClient(Socket socket) throws IOException {
         SocketThread newThread = new SocketThread(this, socket, configuration);
         newThread.setServerFacade(serverFacade);
-        newThread.setName("SocketThread-" + socket.getInetAddress());
-        newThread.start();
+        newThread.run();
         return newThread;
     }
 

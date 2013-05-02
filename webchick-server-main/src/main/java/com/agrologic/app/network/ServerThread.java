@@ -1,12 +1,4 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.network;
-
-//~--- non-JDK imports --------------------------------------------------------
-//import com.agrologic.app.model.Configuration;
 
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.CellinkDao;
@@ -26,8 +18,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Observable;
 
-
-
 /**
  * Title: ServerSocketThread <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
  *
@@ -35,31 +25,18 @@ import java.util.Observable;
  * @version 1.1 <br>
  */
 public class ServerThread extends Observable implements Runnable {
-
-    /**
-     * Indicate error received buffer - 3
-     */
-    public static final byte ERROR_BUFFER_TYPE = 3;    // NACK BUFFER
-    /**
-     *
-     */
     public static final int MAX_NUM_SOCKET = 512;
-    public static final int MAX_THREAD_IN_POOL = 512;
-    public static final int SERVER_SOCKET_TIMEOUT = 5000;
     private final Logger logger = Logger.getLogger(ServerThread.class);
     private final CellinkDao cellinkDao;
     private final ClientSessions clientSessions;
     private ServerActivityStates currentState;
-    private Object lock;
     private ServerSocket server;
-    private final ServerUI serverFacade;
     private Configuration configuration;
     private Map<Long, SocketThread> threads;
 
     public ServerThread(Configuration serverPref, ServerUI serverFacade) {
-        cellinkDao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getCellinkDao();
+        cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         this.configuration = serverPref;
-        this.serverFacade = serverFacade;
         this.currentState = ServerActivityStates.IDLE;
         this.clientSessions = new ClientSessions(configuration, serverFacade, cellinkDao);
         this.threads = clientSessions.getSessions();
@@ -106,9 +83,6 @@ public class ServerThread extends Observable implements Runnable {
                         // notify observers
                         setChanged();
                         notifyObservers(newThread);
-                    } catch (SocketTimeoutException ex) {
-                        // ignore
-
                     } catch (SocketException ex) {
                         logger.info("stop server, close server socket.");
                     } catch (IOException ex) {
@@ -165,12 +139,9 @@ public class ServerThread extends Observable implements Runnable {
         try {
             InetAddress ia = InetAddress.getByName(configuration.getIp());
             Integer port = configuration.getPort();
-
             logger.info("Try to open server on port : " + port);
             server = new ServerSocket(port, MAX_NUM_SOCKET, ia);
-            //server.setSoTimeout(5000);
             logger.info("ServerSocket opened on " + server.getLocalSocketAddress());
-
             return true;
         } catch (BindException ex) {
             logger.error("Error opening server.");
@@ -251,7 +222,7 @@ public class ServerThread extends Observable implements Runnable {
 
         // change cellink state to offline
         Logger log = Logger.getLogger(ServerThread.class);
-        CellinkDao cellinkDao = DbImplDecider.getDaoFactory(DaoType.MYSQL).getCellinkDao();
+        CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
 
         try {
             if (cellinkDao != null) {

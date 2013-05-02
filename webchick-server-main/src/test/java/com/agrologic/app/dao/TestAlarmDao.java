@@ -35,7 +35,7 @@ public class TestAlarmDao {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getAlarmDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(AlarmDao.class);
     }
 
     @After

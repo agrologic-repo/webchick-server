@@ -30,7 +30,7 @@ public class ControllerDaoTest {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getControllerDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
     }
 
     @After

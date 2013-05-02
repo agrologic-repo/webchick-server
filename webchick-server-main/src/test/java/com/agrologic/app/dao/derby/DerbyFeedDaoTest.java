@@ -42,7 +42,7 @@ public class DerbyFeedDaoTest {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getFeedDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedDao.class);
     }
 
 //    @Test

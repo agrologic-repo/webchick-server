@@ -35,7 +35,7 @@ public class DerbyProgramDaoTest {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getProgramDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
     }
 
     @Test

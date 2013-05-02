@@ -40,7 +40,7 @@ public class DerbyTransactionDaoTest {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.getDaoFactory(DaoType.DERBY).getTransactionDao();
+        dao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDao.class);
     }
 
     @Test

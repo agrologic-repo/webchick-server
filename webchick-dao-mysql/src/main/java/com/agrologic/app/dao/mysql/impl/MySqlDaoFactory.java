@@ -2,7 +2,8 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,13 +11,13 @@ import java.util.List;
 
 public class MySqlDaoFactory extends DaoFactory {
     private static final Configuration CONFIG = new Configuration();
-    private static final String DRIVER = CONFIG.getDbDriver();
-    private static final String URL = CONFIG.getDbUrl();
-    private static final String USER = CONFIG.getDbUser();
-    private static final String PASS = CONFIG.getDbPassword();
+    public static final String DRIVER = CONFIG.getDbDriver();
+    public static final String URL = CONFIG.getDbUrl();
+    public static final String USER = CONFIG.getDbUser();
+    public static final String PASS = CONFIG.getDbPassword();
     private static final boolean DEBUG = false;
     private static MySqlDaoFactory instance = null;
-    private static Logger logger = Logger.getRootLogger();
+    private static Logger logger = LoggerFactory.getLogger(MySqlDaoFactory.class);
 
     /**
      * This static block causes the class loader to load the jdbcDriver.
@@ -29,7 +30,7 @@ public class MySqlDaoFactory extends DaoFactory {
             Class.forName(DRIVER).newInstance();
         } catch (Exception ex) {
             if (DEBUG) {
-                logger.fatal("jdbc : Driver Class not found, " + ex.getMessage());
+                logger.error("jdbc : Driver Class not found, ", ex.getMessage());
             }
         }
     }
@@ -344,7 +345,7 @@ public class MySqlDaoFactory extends DaoFactory {
 
                     return con;
                 } catch (Exception ex) {
-                    logger.fatal("pool : Cannot establish a connection to the DB. DB URL = " + URL + " DB USER= "
+                    logger.error("pool : Cannot establish a connection to the DB. DB URL = " + URL + " DB USER= "
                             + USER + " DB Password = " + PASS);
 
                     return null;
