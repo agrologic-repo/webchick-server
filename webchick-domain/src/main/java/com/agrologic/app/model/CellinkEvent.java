@@ -1,11 +1,5 @@
 package com.agrologic.app.model;
 
-/**
- * Instances of this class carry information about cellink state model events.
- * Usually the every cellink object listens to such events.
- *
- * @author Valery Manakhimov
- */
 public class CellinkEvent {
     private long         cellinkId;
     private CellinkState newCellinkState;

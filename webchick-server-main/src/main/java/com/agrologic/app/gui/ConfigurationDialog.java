@@ -10,15 +10,13 @@ import com.agrologic.app.config.Protocol;
 import com.agrologic.app.util.SpringUtilities;
 import com.agrologic.app.util.Windows;
 import gnu.io.CommPortIdentifier;
-import java.awt.Cursor;
-import java.awt.Frame;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.*;
-import javax.imageio.ImageIO;
-import javax.swing.*;
+import java.util.List;
 
 /**
  * Server setting dialog is an observer object on ServerPreferences object.

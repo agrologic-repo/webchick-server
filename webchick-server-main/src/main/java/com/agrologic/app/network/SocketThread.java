@@ -4,8 +4,12 @@
  */
 package com.agrologic.app.network;
 
+import com.agrologic.app.common.CommonConstant;
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.CellinkDao;
+import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.gui.ServerUI;
 import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Cellink;
@@ -30,9 +34,6 @@ import java.util.List;
  * @version 1.0 <br>
  */
 public class SocketThread implements Runnable, Network {
-    public static final int ONE_MINUTE = 60000;
-    public static final int BUFFER_SIZE = 256;
-    public static final int SLEEP_TIME_BEFORE_CLOSE_SOCKET = 5000;
     private List<MessageManager> contMsgManager;
     private Cellink cellink;
     private CellinkDao cellinkDao;
@@ -62,7 +63,7 @@ public class SocketThread implements Runnable, Network {
 
     public SocketThread(ClientSessions clientSessions, Socket socket, Configuration configuration) throws IOException {
         this.cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
-        this.controllerDao =DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+        this.controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
         this.comControl = new ComControl(socket);
         this.requestQueue = new RequestMessageQueue();
         this.responseMessageMap = new ResponseMessageMap();
@@ -155,7 +156,7 @@ public class SocketThread implements Runnable, Network {
         } finally {
             if (cellink != null) {
                 logger.info("close connection : " + cellink);
-                Util.sleep(SLEEP_TIME_BEFORE_CLOSE_SOCKET);
+                Util.sleep(CommonConstant.FIVE_SECOND);
                 comControl.close();
                 try {
                     removeControllersData();
@@ -374,7 +375,7 @@ public class SocketThread implements Runnable, Network {
      */
     private boolean isAccessAllowed() {
         try {
-            byte[] buffer = new byte[BUFFER_SIZE];
+            byte[] buffer = new byte[KeepAliveMessage.BUFFER_SIZE];
             if (comControl.read(buffer) == -1) { // try to read
                 logger.info("No available data in stream.");
                 logger.info("The client IP:PORT [ " + comControl.getSocket().getRemoteSocketAddress() + " ]");
@@ -433,14 +434,14 @@ public class SocketThread implements Runnable, Network {
 
     private boolean isKeepAliveTime(long keepAliveOccuredTime) {
         long timeSinceLastKeepalive = System.currentTimeMillis() - keepAliveOccuredTime;
-        int keepAliveInterval = keepAliveTimeout * ONE_MINUTE;
+        int keepAliveInterval = keepAliveTimeout * CommonConstant.ONE_MINUTE;
         return timeSinceLastKeepalive > keepAliveInterval;
     }
 
     private boolean isCellinkTimedOut() throws SQLException {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         Timestamp updateTime = cellinkDao.getUpdatedTime(cellink.getId());
-        return (currentTime.getTime() - updateTime.getTime()) > Cellink.ONLINE_TIMEOUT;
+        return (currentTime.getTime() - updateTime.getTime()) > CommonConstant.ONE_HOUR;
     }
 
     private boolean isCellinkStopped() throws SQLException {

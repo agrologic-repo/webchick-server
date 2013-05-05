@@ -43,7 +43,7 @@ public class CellinkState {
         CELLINK_STATES_MAP.put("Online", STATE_ONLINE);
         CELLINK_STATES_MAP.put("Started", STATE_START);
         CELLINK_STATES_MAP.put("Running", STATE_RUNNING);
-        CELLINK_STATES_MAP.put("Stoped", STATE_STOP);
+        CELLINK_STATES_MAP.put("Stopped", STATE_STOP);
         CELLINK_STATES_MAP.put("Unknown", STATE_UNKNOWN);
         CELLINK_STATES_MAP.put("Restart", STATE_RESTART);
     }
@@ -138,7 +138,7 @@ public class CellinkState {
             return "Running";
 
         case STATE_STOP :
-            return "Stoped";
+            return "Stopped";
 
         case STATE_RESTART :
             return "Restart";

@@ -13,13 +13,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Title: Login - represents all properties of a Login in DBManager application Description: Copyright: Copyright (c)
- * 2008
- *
- * @author Valery Manakhimov
- * @version 1.0
- */
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long   id;

@@ -7,6 +7,7 @@ package com.agrologic.app.gui;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.agrologic.app.common.CommonConstant;
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
@@ -34,7 +35,6 @@ import java.util.concurrent.Executors;
  */
 public final class CellinkTable extends JTable {
 
-    private static final int ONE_SECOND = 1000;
     private static final long serialVersionUID = 1L;
     private Logger logger = Logger.getLogger(CellinkTable.class);
     private transient CellinkDao cellinkDao;
@@ -78,7 +78,7 @@ public final class CellinkTable extends JTable {
     }
 
     public void startMonitoring() {
-        timer = new javax.swing.Timer(ONE_SECOND * 2, new ActionListener() {
+        timer = new javax.swing.Timer(CommonConstant.ONE_SECOND * 2, new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 updateTable();

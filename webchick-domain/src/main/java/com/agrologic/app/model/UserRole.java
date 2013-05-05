@@ -1,14 +1,5 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
 
-/**
- *
- * @author Administrator
- */
 public enum UserRole {
     /**
      * the role is unknown , role value is -1

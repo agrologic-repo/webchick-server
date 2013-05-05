@@ -1,23 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
-
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
-
 import java.util.List;
 
-/**
- * Title: TableDto <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class Table implements Serializable, Comparable<Table> {
     private static final long serialVersionUID = 3L;
     private List<Data>        dataList;

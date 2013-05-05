@@ -1,4 +1,3 @@
-
 package com.agrologic.app.model;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -13,8 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Cellink implements Comparable<Cellink>, Serializable {
-    public static final long ONE_HOUR = 1000 * 60 * 60;
-    public static final long ONLINE_TIMEOUT = ONE_HOUR * 8;
     private static final long serialVersionUID = 1L;
 
     /**

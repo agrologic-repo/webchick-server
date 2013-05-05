@@ -6,6 +6,7 @@ public enum Protocol {
     HIGH_ASCII(1, "9600", "Text 9600 bps"),
     LOW_BINARY(2, "2400", "Binary 2400 bps"),
     HIGH_BINARY(3, "9600", "Binary 9600 bps");
+
     private Integer num;
     private String baud;
     private String text;

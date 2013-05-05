@@ -1,9 +1,5 @@
 package com.agrologic.app.model;
 
-/**
- * If class is dedicated to listen events from Cellink , then it should implement this interface.
- * @author Administrator
- */
 public interface CellinkListener {
 
     /**

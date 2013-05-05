@@ -1,14 +1,5 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
 
-/**
- *
- * @author JanL
- */
 public class Worker {
     private Long   cellinkId;
     private String define;

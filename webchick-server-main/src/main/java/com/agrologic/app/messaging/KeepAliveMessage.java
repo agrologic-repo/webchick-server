@@ -10,6 +10,7 @@ public class KeepAliveMessage {
 
     public static final String BUFFER_MUST_NOT_BE_NULL = "Buffer must not be null";
     public static final String MESSAGE_DOES_NOT_MATCH_THE_REQUIRED_FORMAT = "Message does not match the required format";
+    public static final int BUFFER_SIZE = 256;
     private final String username;
     private final String password;
     private final String version;

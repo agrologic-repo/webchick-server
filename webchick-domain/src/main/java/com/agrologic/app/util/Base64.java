@@ -1,23 +1,3 @@
-/**
- * Base64.java
- *
- * Brazil project web application toolkit, export version: 2.0 Copyright (c) 2000-2002 Sun Microsystems, Inc.
- *
- * Sun Public License Notice
- *
- * The contents of this file are subject to the Sun Public License Version 1.0 (the "License"). You may not use this
- * file except in compliance with the License. A copy of the License is included as the file "license.terms", and also
- * available at http://www.sun.com/
- *
- * The Original Code is from: Brazil project web application toolkit release 2.0. The Initial Developer of the Original
- * Code is: cstevens. Portions created by cstevens are Copyright (C) Sun Microsystems, Inc. All Rights Reserved.
- *
- * Contributor(s): cstevens, suhler.
- *
- * Version: 1.9 Created by cstevens on 00/04/17 Last modified by suhler on 02/07/24 10:49:48
- */
-
-
 package com.agrologic.app.util;
 
 public class Base64 {

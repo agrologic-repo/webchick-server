@@ -140,7 +140,7 @@ public class ServerThread extends Observable implements Runnable {
             InetAddress ia = InetAddress.getByName(configuration.getIp());
             Integer port = configuration.getPort();
             logger.info("Try to open server on port : " + port);
-            server = new ServerSocket(port, MAX_NUM_SOCKET, ia);
+            server = new ServerSocket(port, MAX_NUM_SOCKET, ia) ;
             logger.info("ServerSocket opened on " + server.getLocalSocketAddress());
             return true;
         } catch (BindException ex) {
@@ -150,7 +150,6 @@ public class ServerThread extends Observable implements Runnable {
             return false;
         } catch (IOException ex) {
             logger.error("Error opening server.", ex);
-
             return false;
         }
     }

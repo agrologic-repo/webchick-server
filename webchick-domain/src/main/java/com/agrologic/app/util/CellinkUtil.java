@@ -1,4 +1,3 @@
-
 package com.agrologic.app.util;
 
 import com.agrologic.app.model.Cellink;

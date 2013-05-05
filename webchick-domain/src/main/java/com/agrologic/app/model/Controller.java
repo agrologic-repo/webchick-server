@@ -1,5 +1,6 @@
 package com.agrologic.app.model;
 
+import com.agrologic.app.common.CommonConstant;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -14,10 +15,7 @@ import java.util.Map.Entry;
 public class Controller implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final long ONE_MINUTE = 60 * 1000;
-    public static final long ONE_HOUR = ONE_MINUTE * 60;
-    public static final long ONE_DAY = ONE_HOUR * 24;
-    public static final long OFF_STATE_DELAY = ONE_MINUTE * 10;
+    public static final long OFF_STATE_DELAY = CommonConstant.ONE_MINUTE * 10;
     private boolean on = true;
     private boolean active;
     private Integer area;

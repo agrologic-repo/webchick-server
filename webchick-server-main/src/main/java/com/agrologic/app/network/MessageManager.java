@@ -3,6 +3,7 @@
  */
 package com.agrologic.app.network;
 
+import com.agrologic.app.common.CommonConstant;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.messaging.*;
@@ -23,7 +24,6 @@ import java.util.*;
  * @version 1.0 <br>
  */
 public class MessageManager implements Observer {
-    private static final int DATATABLE_SIZE = 65535;
     private static final int HIGH_16BIT_ON_MASK = 0x8000;
     private static final int HIGH_32BIT_OFF_MASK = 0x0000FFFF;
     private static final int SHIFT_16_BIT = 16;
@@ -251,7 +251,7 @@ public class MessageManager implements Observer {
             return true;
         }
         final long timeSinceUpdated = System.currentTimeMillis() - updateTime.getTime();
-        if (timeSinceUpdated > controller.ONE_HOUR) {
+        if (timeSinceUpdated > CommonConstant.ONE_HOUR) {
             return true;
         }
         return false;
@@ -635,7 +635,7 @@ public class MessageManager implements Observer {
      */
     public SortedMap<Long, Data> getUpdatedOnlineData() {
         SortedMap<Long, Data> updatedValues = new TreeMap<Long, Data>();
-        for (long key = 0; key < DATATABLE_SIZE; key++) {
+        for (long key = 0; key < CommonConstant.DATA_TABLE_SIZE; key++) {
             if (onlineDataItems.containsKey(key)) {
                 Data d = onlineDataItems.get(key);
                 if (d.isUpdated()) {
@@ -762,7 +762,7 @@ public class MessageManager implements Observer {
             return true;
         }
         final long timeSinceUpdated = System.currentTimeMillis() - updateTime.getTime();
-        if (timeSinceUpdated > controller.ONE_HOUR) {
+        if (timeSinceUpdated > CommonConstant.ONE_HOUR) {
             return true;
         }
         return false;

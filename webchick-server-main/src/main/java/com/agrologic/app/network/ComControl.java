@@ -4,11 +4,7 @@
  */
 package com.agrologic.app.network;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import org.apache.log4j.Logger;
+import com.agrologic.app.common.CommonConstant;
 import com.agrologic.app.except.EOTException;
 import com.agrologic.app.except.SOTException;
 import com.agrologic.app.except.TimeoutException;
@@ -16,6 +12,12 @@ import com.agrologic.app.messaging.Message;
 import com.agrologic.app.messaging.ResponseMessage;
 import com.agrologic.app.model.CellinkVersion;
 import com.agrologic.app.util.Util;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 
 /**
  * Title: ComControl <br> Description: <br> Copyright: Copyright (c) 2009 <br> @auhor Valery Manakhimov
@@ -24,12 +26,11 @@ import com.agrologic.app.util.Util;
  */
 public class ComControl {
 
-    public static final int TIME_OUT = 1000;
-    public static final int DELAY_SILENCE_TIME = TIME_OUT * 3;
+    public static final int DELAY_SILENCE_TIME = CommonConstant.ONE_SECOND * 3;// wait 3 seconds
     private Socket socket;
     private InputStream in;
     private OutputStream out;
-    private String cellinkVers;
+    private String cellinkVersion;
     private ResponseMessage response;
     private boolean stop = false;
     private Object lock;
@@ -90,8 +91,8 @@ public class ComControl {
 
             synchronized (lock) {
                 while (!stop) {
-                    if (in.available() >= CellinkVersion.headerBytesByVersion(cellinkVers)) {
-                        readBuffer.readHead(in, cellinkVers);
+                    if (in.available() >= CellinkVersion.headerBytesByVersion(cellinkVersion)) {
+                        readBuffer.readHead(in, cellinkVersion);
                         readBuffer.readData(in);
                     }
                     if (readBuffer.isReady()) {
@@ -252,7 +253,7 @@ public class ComControl {
     }
 
     public synchronized void setCellinkVersion(String cellinkVersion) {
-        this.cellinkVers = cellinkVersion;
+        this.cellinkVersion = cellinkVersion;
     }
 
     @Override

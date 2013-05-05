@@ -28,7 +28,6 @@ import java.sql.Timestamp;
 public class ReadBuffer {
 
     public static final int BUFFER_SIZE = 8000;
-    public static final int DEFAULT_HEAD_BYTES = 3;
     private int i = 0;
     private int bufferIndex;
     private int bufferIsLast;

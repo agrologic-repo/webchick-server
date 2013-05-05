@@ -1,16 +1,7 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
 
-/**
- *
- * @author JanL
- */
 public class Transaction {
-    private Float  expances;
+    private Float expanses;
     private Long   flockId;
     private Long   id;
     private String name;
@@ -27,11 +18,11 @@ public class Transaction {
     }
 
     public Float getExpenses() {
-        return expances;
+        return expanses;
     }
 
     public void setExpenses(Float expances) {
-        this.expances = expances;
+        this.expanses = expances;
     }
 
     public Long getFlockId() {
@@ -90,7 +81,7 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "TransactionDto{" + "id=" + id + "flockId=" + flockId + "revenues=" + revenues + "expances=" + expances
+        return "TransactionDto{" + "id=" + id + "flockId=" + flockId + "revenues=" + revenues + "expanses=" + expanses
                + '}';
     }
 }

@@ -1,19 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
-
 
 import java.io.Serializable;
 
 import java.util.List;
 
-/**
- *
- * @author JanL
- */
 public class Screen implements Serializable, Comparable<Screen> {
     public static final int   COLUMN_NUMBERS   = 4;
     private static final long serialVersionUID = 3L;

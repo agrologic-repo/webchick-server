@@ -18,7 +18,7 @@ public interface TableDao {
      * show screen tables that checked by user the value 2
      */
     public static final int SHOW_CHECKED = 2;
-    /*
+    /**
      * exception messages
      */
     public static final String CANNOT_INSERT_TABLE = "Cannot Insert ScreenTable From DataBase";
