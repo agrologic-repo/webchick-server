@@ -1,7 +1,7 @@
 package com.agrologic.app.common;
 
 
-public class CommonConstant {
+public interface CommonConstant {
     /**
      * time constants
      */
