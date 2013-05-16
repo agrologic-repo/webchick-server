@@ -3,12 +3,9 @@ package com.agrologic.app.dao.service.impl;
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.RemovebleDao;
-import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -27,7 +24,7 @@ public class DatabaseManager {
      * Creates a new {@link DatabaseManager}.
      */
     public DatabaseManager() {
-        this(DaoType.MYSQL);
+        this(DaoType.DERBY);
     }
 
     /**

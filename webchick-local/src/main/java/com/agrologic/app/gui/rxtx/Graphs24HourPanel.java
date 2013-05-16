@@ -35,7 +35,7 @@ public class Graphs24HourPanel extends JPanel {
     private List<ChartPanel> chartPanels;
     private Timer timerDB;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private final static Map<String, Locale> LANGUGES = new HashMap<String, Locale>();
+    private static final Map<String, Locale> LANGUGES = new HashMap<String, Locale>();
 
     static {
         LANGUGES.put("English", Locale.ENGLISH);
@@ -52,8 +52,8 @@ public class Graphs24HourPanel extends JPanel {
     public Graphs24HourPanel(Long controllerId) {
         try {
             initComponents();
-            controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-            dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+            controllerDao = DbImplDecider.use(DaoType.DERBY).getDao(ControllerDao.class);
+            dataDao = DbImplDecider.use(DaoType.DERBY).getDao(DataDao.class);
             chartPanels = new ArrayList<ChartPanel>();
             createGraph(controllerId);
             repaint();

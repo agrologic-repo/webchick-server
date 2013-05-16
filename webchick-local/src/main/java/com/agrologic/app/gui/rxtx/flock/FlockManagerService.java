@@ -6,12 +6,13 @@ package com.agrologic.app.gui.rxtx.flock;
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.*;
+
+import javax.swing.*;
 import java.sql.SQLException;
-import java.util.Map.Entry;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  * {Insert class description here}
@@ -43,19 +44,19 @@ public class FlockManagerService {
     public FlockManagerService() {
         Configuration conf = new Configuration();
         cellinkId = Long.parseLong(conf.getCellinkId());
-        fuelDao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDao.class);
-        gasDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDao.class);
-        spreadDao = DbImplDecider.use(DaoType.MYSQL).getDao(SpreadDao.class);
-        feedDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedDao.class);
-        feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDao.class);
-        workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDao.class);
-        laborDao = DbImplDecider.use(DaoType.MYSQL).getDao(LaborDao.class);
-        medicineDao = DbImplDecider.use(DaoType.MYSQL).getDao(MedicineDao.class);
-        transactionDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDao.class);
-        distribDao = DbImplDecider.use(DaoType.MYSQL).getDao(DistribDao.class);
-        dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-        flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-        controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+        fuelDao = DbImplDecider.use(DaoType.DERBY).getDao(FuelDao.class);
+        gasDao = DbImplDecider.use(DaoType.DERBY).getDao(GasDao.class);
+        spreadDao = DbImplDecider.use(DaoType.DERBY).getDao(SpreadDao.class);
+        feedDao = DbImplDecider.use(DaoType.DERBY).getDao(FeedDao.class);
+        feedTypeDao = DbImplDecider.use(DaoType.DERBY).getDao(FeedTypeDao.class);
+        workerDao = DbImplDecider.use(DaoType.DERBY).getDao(WorkerDao.class);
+        laborDao = DbImplDecider.use(DaoType.DERBY).getDao(LaborDao.class);
+        medicineDao = DbImplDecider.use(DaoType.DERBY).getDao(MedicineDao.class);
+        transactionDao = DbImplDecider.use(DaoType.DERBY).getDao(TransactionDao.class);
+        distribDao = DbImplDecider.use(DaoType.DERBY).getDao(DistribDao.class);
+        dataDao = DbImplDecider.use(DaoType.DERBY).getDao(DataDao.class);
+        flockDao = DbImplDecider.use(DaoType.DERBY).getDao(FlockDao.class);
+        controllerDao = DbImplDecider.use(DaoType.DERBY).getDao(ControllerDao.class);
     }
 
     public void addFlock(Flock flock) {

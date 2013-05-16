@@ -12,7 +12,6 @@ import com.agrologic.app.util.Windows;
 
 import javax.swing.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DesignScreen extends javax.swing.JDialog {
@@ -27,7 +26,7 @@ public class DesignScreen extends javax.swing.JDialog {
         initComponents();
         Windows.centerOnScreen(DesignScreen.this);
         progressBar.setVisible(false);
-        controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+        controllerDao = DbImplDecider.use(DaoType.DERBY).getDao(ControllerDao.class);
         try {
             List<Controller> controllers = (List<Controller>) controllerDao.getAll();
             cmbHouses.addItem("");
