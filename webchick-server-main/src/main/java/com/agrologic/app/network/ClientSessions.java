@@ -40,7 +40,7 @@ public class ClientSessions {
 
     public synchronized void closeDuplicateSession(SocketThread session) {
         SocketThread duplicateSession = sessions.get(session.getCellink().getId());
-        if (duplicateSession != null && !session.getComControl().equals(duplicateSession.getComControl())) {
+        if (duplicateSession != null && !session.getCommControl().equals(duplicateSession.getCommControl())) {
             logger.info("Closing duplicating session [{}]", session.getCellink().getId());
             duplicateSession.stopRunning();//TODO: cover with tests
         }

@@ -7,7 +7,6 @@ package com.agrologic.app.network;
 import com.agrologic.app.common.CommonConstant;
 import com.agrologic.app.except.EOTException;
 import com.agrologic.app.except.SOTException;
-import com.agrologic.app.except.TimeoutException;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.messaging.ResponseMessage;
 import com.agrologic.app.model.CellinkVersion;
@@ -20,11 +19,11 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * Title: ComControl <br> Description: <br> Copyright: Copyright (c) 2009 <br> @auhor Valery Manakhimov
+ * Title: CommControl <br> Description: <br> Copyright: Copyright (c) 2009 <br> @auhor Valery Manakhimov
  *
  * @version 1.0 <br>
  */
-public class ComControl {
+public class CommControl {
 
     public static final int DELAY_SILENCE_TIME = CommonConstant.ONE_SECOND * 3;// wait 3 seconds
     private Socket socket;
@@ -34,7 +33,7 @@ public class ComControl {
     private ResponseMessage response;
     private boolean stop = false;
     private Object lock;
-    public static Logger logger = Logger.getLogger(ComControl.class);
+    public static Logger logger = Logger.getLogger(CommControl.class);
 
     /**
      * Constructor create communication control object
@@ -42,7 +41,7 @@ public class ComControl {
      * @param socket the socket
      * @throws IOException if an I/O error occurs
      */
-    public ComControl(Socket socket) throws IOException {
+    public CommControl(Socket socket) throws IOException {
         this.socket = socket;
         this.socket.setTcpNoDelay(true);
         this.in = socket.getInputStream();
@@ -65,7 +64,7 @@ public class ComControl {
      *
      * @param buffer
      * @return n number of available data
-     * @throws java.io.IOException if an I/O error occurs
+     * @throws IOException if an I/O error occurs
      */
     public int read(byte[] buffer) throws IOException {
         return in.read(buffer);
@@ -80,14 +79,13 @@ public class ComControl {
      */
     public NetworkState doread(int sotdelay, int eotdelay) {
         NetworkState stateResult = NetworkState.STATE_READ;
-        ReadBuffer readBuffer = new ReadBuffer(this);
+        ReadBuffer readBuffer = new ReadBuffer(/*this*/);
         readBuffer.setDelays(sotdelay, eotdelay);
 
         try {
             stop = false;
             logger.debug("++++++++++++++++++++++++++++++++++++++++++++++++++");
             logger.debug("Start read from input stream");
-            response = new ResponseMessage();
 
             synchronized (lock) {
                 while (!stop) {
@@ -97,6 +95,7 @@ public class ComControl {
                     }
                     if (readBuffer.isReady()) {
                         stop = true;
+                        response = new ResponseMessage();
                         response.init(readBuffer.toArray(), readBuffer.getBufferType());
                     } else {
                         readBuffer.checkTimeout();
@@ -109,16 +108,17 @@ public class ComControl {
         } catch (IOException ex) {
             logException(ex);
             stateResult = NetworkState.STATE_ABORT;
-        } catch (TimeoutException ex) {
-            logException(ex);
-            stateResult = NetworkState.STATE_TIMEOUT;
         } catch (SOTException ex) {
+            logger.debug(ex.getMessage(), ex);
             logException(ex);
-            response = new ResponseMessage(Message.SOT_ERROR);
+            response = new ResponseMessage();
+            response.setErrorCode(Message.SOT_ERROR);
             stateResult = NetworkState.STATE_TIMEOUT;
         } catch (EOTException ex) {
+            logger.debug(ex.getMessage(), ex);
             logException(ex);
-            response = new ResponseMessage(Message.EOT_ERROR);
+            response = new ResponseMessage();
+            response.setErrorCode(Message.EOT_ERROR);
             stateResult = NetworkState.STATE_TIMEOUT;
         }
         return stateResult;
@@ -194,7 +194,7 @@ public class ComControl {
     /**
      * This will clear input stream
      *
-     * @throws java.io.IOException if an I/O error occurs.
+     * @throws IOException if an I/O error occurs.
      */
     private void clearInputStream() {
         try {
@@ -264,7 +264,7 @@ public class ComControl {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ComControl other = (ComControl) obj;
+        final CommControl other = (CommControl) obj;
         if (this.socket != other.socket && (this.socket == null || !this.socket.equals(other.socket))) {
             return false;
         }

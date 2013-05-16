@@ -1,11 +1,5 @@
 package com.agrologic.app.messaging;
 
-/**
- * Title: Message <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public interface Message {
 
     /**
@@ -14,29 +8,14 @@ public interface Message {
     static final byte ACK = 6;
 
     /**
-     * bell - 7
-     */
-    static final byte BELL = 7;
-
-    /**
      * check sum error
      */
     static final int CHS_ERROR = 30;
 
     /**
-     * computer packet - 18
-     */
-    static final byte COMPUTER = 18;
-
-    /**
      * skip request error
      */
     static final int CON_ERROR = 40;
-
-    /**
-     * \r
-     */
-    static final byte CR = 13;
 
     /**
      * End of transmission - 4
@@ -52,16 +31,6 @@ public interface Message {
      * Error flag - 25
      */
     static final byte ERROR = 25;
-
-    /**
-     * Indicate error received buffer - 3
-     */
-    static final byte ERROR_BUFFER_TYPE = 3;    // NACK BUFFER
-
-    /**
-     * Exit flag -27
-     */
-    static final byte ESC = 27;
 
     /**
      * End of text - 3
@@ -89,11 +58,6 @@ public interface Message {
     static final byte LAST_TEXT_MESSAGE = 1;
 
     /**
-     * max number of errors
-     */
-    static final int MAX_ERRORS = 3;
-
-    /**
      * Negative acknowledge - 21
      */
     static final byte NACK = 21;
@@ -101,7 +65,6 @@ public interface Message {
     /**
      * Indicate first or middle received buffer - 0
      */
-    static final byte NOT_LAST_MESSAGE = 0;
     static final int  OK               = 0;
 
     /**
@@ -118,11 +81,6 @@ public interface Message {
      * skip request error
      */
     static final int SKP_ERROR = 60;
-
-    /**
-     * Start of header - 1
-     */
-    static final byte SOH = 1;
 
     /**
      * Start of index - 24
@@ -148,11 +106,6 @@ public interface Message {
      * Start of text - 2
      */
     static final byte STX = 2;
-
-    /**
-     * terminal packet - 20
-     */
-    static final byte TERMINAL = 20;
 
     /**
      * timeout error

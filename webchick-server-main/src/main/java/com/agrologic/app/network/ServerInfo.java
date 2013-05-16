@@ -8,10 +8,7 @@ package com.agrologic.app.network;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.gui.ServerUI;
-
 import com.agrologic.app.util.Clock;
-
-
 
 import java.util.Observable;
 import java.util.Observer;
@@ -23,14 +20,14 @@ import java.util.Observer;
  * @version 1.1 <br>
  */
 public class ServerInfo extends Observable implements Observer {
-    private String  ip;
+    private String ip;
     private Integer keepalive;
     private boolean on;
-    private int     onlineCellinks;
+    private int onlineCellinks;
     private Integer port;
     private ServerUI serverFacade;
-    private String   time;
-    private int      totalCellinks;
+    private String time;
+    private int totalCellinks;
 
     public ServerInfo() {
 
@@ -45,8 +42,8 @@ public class ServerInfo extends Observable implements Observer {
 
     public ServerInfo(ServerUI serverFacade) {
         this.serverFacade = serverFacade;
-        onlineCellinks    = serverFacade.getCellinkTable().onlineCellnks();
-        totalCellinks     = serverFacade.getCellinkTable().totalCellnks();
+        onlineCellinks = serverFacade.getCellinkTable().onlineCellnks();
+        totalCellinks = serverFacade.getCellinkTable().totalCellnks();
     }
 
     public String getIp() {
@@ -97,8 +94,8 @@ public class ServerInfo extends Observable implements Observer {
 
     public String getServerStatus() {
         return (isOn())
-               ? "Running"
-               : "Stopped";
+                ? "Running"
+                : "Stopped";
     }
 
     public synchronized Integer getTotalCellinks() {
@@ -115,7 +112,7 @@ public class ServerInfo extends Observable implements Observer {
             setTime(((Clock) o).getTime());
 
             synchronized (this) {
-                totalCellinks  = serverFacade.getCellinkTable().totalCellnks();
+                totalCellinks = serverFacade.getCellinkTable().totalCellnks();
                 onlineCellinks = serverFacade.getCellinkTable().onlineCellnks();
             }
         }

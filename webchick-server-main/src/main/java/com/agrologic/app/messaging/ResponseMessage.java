@@ -5,14 +5,11 @@
  */
 package com.agrologic.app.messaging;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.agrologic.app.except.ReadChecksumException;
+import com.agrologic.app.util.ByteUtil;
 import org.apache.log4j.Logger;
 
 public final class ResponseMessage implements Message {
-    private int errorCode = 0;
-    private Logger logger = Logger.getLogger(ResponseMessage.class);
     /**
      * Message buffer
      */
@@ -26,6 +23,10 @@ public final class ResponseMessage implements Message {
      */
     private int calcCHS;
     /**
+     * Check sum that controller sent in request message
+     */
+    private int recvCHS;
+    /**
      * Response index
      */
     private String index;
@@ -37,14 +38,23 @@ public final class ResponseMessage implements Message {
      * The message type
      */
     private MessageType messageType;
-    /**
-     * Check sum that controller sent in request message
-     */
-    private int recvCHS;
 
+    private int errorCode = 0;
+
+    private Logger logger = Logger.getLogger(ResponseMessage.class);
+
+    /**
+     * Constructor
+     */
     public ResponseMessage() {
+        this(null);
     }
 
+    /**
+     * Constructor
+     *
+     * @param buffer
+     */
     public ResponseMessage(byte[] buffer) {
         if (buffer == null) {
             this.messageType = MessageType.ERROR;
@@ -53,35 +63,61 @@ public final class ResponseMessage implements Message {
             calcCHS = -1;
         } else {
             this.messageType = MessageType.RESPONSE_DATA;
+            this.errorCode = 0;
             this.buffer = buffer;
             init();
         }
     }
 
-    public ResponseMessage(int error) {
-        this.messageType = MessageType.ERROR;
-        errorCode = error;
+//    /**
+//     * Constructor
+//     *
+//     * @param error
+//     */
+//    public ResponseMessage(int error) {
+//        this.messageType = MessageType.ERROR;
+//        errorCode = error;
+//    }
+
+    /**
+     * @param buffer
+     * @param bufferType
+     */
+    public void init(byte[] buffer, final byte bufferType) {
+        this.messageType = MessageType.RESPONSE_DATA;
+        this.errorCode = 0;
+        this.bufferType = bufferType;
+        setBuffer(buffer);
+        init();
     }
 
+    /**
+     *
+     */
     private void init() {
         try {
+            byte[] tempBuffer = getBuffer().clone();
+//            int soiIndex = ByteUtil.lastIndexOf(tempBuffer, Message.SOINDX);
+//            int sotIndex = ByteUtil.lastIndexOf(tempBuffer, Message.SOT);
+            int eotIndex = ByteUtil.lastIndexOf(tempBuffer, Message.EOT);
+
+            String receivedString = new String(tempBuffer, 0, eotIndex + 1);
+            logger.debug(receivedString);
+            int soi = receivedString.indexOf(Message.SOINDX);     // sot of transmission index
+            int sot = receivedString.indexOf(Message.SOT);        // sot of transmission index
+            int eot = receivedString.lastIndexOf(Message.EOT);    // end of transmission index
+
+            // binary message does not have checksum
             if (bufferType == Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE) {
-                byte[] tempBuffer = getBuffer();
-
                 // get begin data and end data without checksum
-                String recievedString = new String(tempBuffer, 0, tempBuffer.length);
-                int soidx = recievedString.indexOf(Message.SOINDX);    // sot of transmision index
-                int sot = recievedString.indexOf(Message.SOT);
-                int eot = recievedString.lastIndexOf(Message.EOT);
-
-                if ((soidx == -1) && (sot == -1)) {
+                if ((soi == -1) && (sot == -1)) {
                     index = "100";
                     messageBody = "-1 ";
                     setMessageType(MessageType.ERROR);
                     setErrorCode(SKP_ERROR);
                 } else {
-                    index = recievedString.substring(soidx + 1, sot);
-                    messageBody = recievedString.substring(sot + 1, eot);
+                    index = receivedString.substring(soi + 1, sot);
+                    messageBody = receivedString.substring(sot + 1, eot);
 
                     if (index.equals("0")) {
                         if (messageBody.equals("-1 ")) {
@@ -106,31 +142,20 @@ public final class ResponseMessage implements Message {
                     }
                 }
             } else {
-                byte[] tempBuffer = getBuffer();
-
                 // get begin data and end data without checksum
-                String recievedString = new String(tempBuffer, 0, tempBuffer.length);
-                int soidx = recievedString.indexOf(Message.SOINDX);       // sot of transmision index
-                int sot = recievedString.indexOf(Message.SOT);          // sot of transmision index
-                int eot = recievedString.lastIndexOf(Message.EOT);      // end of transmision index
-                int space = recievedString.lastIndexOf(Message.SPACE);    // space before check sum
-
-                if ((soidx < 0) && (sot < 0)) {
+                int space = receivedString.lastIndexOf(Message.SPACE);// space before check sum
+                if ((soi < 0) && (sot < 0)) {
                     sot = 0;
                     index = "100";
-                    messageBody = recievedString.substring(sot, space + 1);
-
+                    messageBody = receivedString.substring(sot, space + 1);
                     if ((eot == -1) || messageBody.equals("-1 ")) {
                         setMessageType(MessageType.ERROR);
                         setErrorCode(SKP_ERROR);
                         return;
                     }
-
-                    calcCHS = calcChecksum(buffer, sot + 1, space);
-                    recvCHS = readChecksum(recievedString, space + 1, eot);
                 } else {
-                    index = recievedString.substring(soidx + 1, sot);
-                    messageBody = recievedString.substring(sot + 1, space + 1);
+                    index = receivedString.substring(soi + 1, sot);
+                    messageBody = receivedString.substring(sot + 1, space + 1);
                     if (index.equals("0")) {
                         if (messageBody.equals("-1 ")) {
                             setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
@@ -143,53 +168,39 @@ public final class ResponseMessage implements Message {
                             return;
                         }
                     }
-                    calcCHS = calcChecksum(buffer, sot + 1, space);
-                    recvCHS = readChecksum(recievedString, space + 1, eot);
                 }
-                if (checksumCorrect(sot, space)) {
+                calcCHS = calcChecksum(buffer, sot + 1, space);
+                recvCHS = readChecksum(receivedString, space + 1, eot);
+                logger.debug("Calculated checksum { " + calcCHS + " } ");
+                logger.debug("Received   checksum { " + recvCHS + " }");
+
+                if (!checksumWithOverFlowErrorCorrect(buffer, calcCHS, recvCHS, sot, space)) {
+                    setMessageType(MessageType.ERROR);
+                    setErrorCode(CHS_ERROR);
+                    logger.error("Checksum error detected. Calculated checksum: { " + calcCHS + " } ," +
+                            " Received checksum { " + recvCHS + " } .");
                     return;
                 }
+
                 if (isUnusedResponse()) {
+                    logger.info("This response message was defined as unused.");
                     return;
                 }
             }
         } catch (Exception e) {
+            logger.error("Response message initialisation error ", e);
             return;
         }
-
+        // set parsed data
         setBuffer(messageBody.getBytes());
     }
 
-    public void init(byte[] buf, final byte buftype) {
-        if (buf == null) {
-            this.messageType = MessageType.ERROR;
-            this.errorCode = SOT_ERROR;
-            recvCHS = -1;
-            calcCHS = -1;
-        } else {
-            this.messageType = MessageType.RESPONSE_DATA;
-            this.bufferType = buftype;
-            setBuffer(buf);
-            init();
-        }
-    }
-
-    private boolean checksumCorrect(int sot, int space) {
-
-        System.out.println(new String(buffer, 0, buffer.length));
-
-        if (calcCHS != recvCHS) {
-            calcCHS = overFlowErrorChecksum(buffer, sot + 1, space);
-            if (calcCHS != recvCHS) {
-                logger.info("calculated check sum = " + calcCHS + ", read check sum = " + recvCHS);
-                setMessageType(MessageType.ERROR);
-                setErrorCode(CHS_ERROR);
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /**
+     * Response that indicate that the requested data does not exist . When response message defined as unused , this
+     * means that it no longer will be sent this request to end point.
+     *
+     * @return true if response should be ignored , otherwise return false
+     */
     private boolean isUnusedResponse() {
         if (messageBody.startsWith("-1 ")) {
             setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
@@ -200,13 +211,21 @@ public final class ResponseMessage implements Message {
         return false;
     }
 
-    private int readChecksum(final String recievedString, final int start, final int end) {
+    /**
+     * Constructor
+     *
+     * @param receivedString
+     * @param start
+     * @param end
+     * @return
+     */
+    private int readChecksum(final String receivedString, final int start, final int end) {
         if (start < 0) {
             throw new IllegalArgumentException("Negative SOT index");
         }
 
-        if (end > recievedString.length()) {
-            throw new IllegalArgumentException("EOT index bugger than size of buffer ");
+        if (end > receivedString.length()) {
+            throw new IllegalArgumentException("EOT index size  error : " + end);
         }
 
         if (start > end) {
@@ -214,17 +233,22 @@ public final class ResponseMessage implements Message {
         }
 
         try {
-            return Integer.parseInt(recievedString.substring(start, end));
+            return Integer.parseInt(receivedString.substring(start, end));
         } catch (ReadChecksumException ex) {
-            throw new ReadChecksumException(recievedString.substring(start, end));
+            throw new ReadChecksumException(receivedString.substring(start, end));
         }
     }
 
-
-    private int calcChecksum(final byte[] buffer, int sot, int space) {
+    /**
+     * @param buffer
+     * @param sot
+     * @param len
+     * @return
+     */
+    public static int calcChecksum(final byte[] buffer, int sot, int len) {
         int checksum = 0;
 
-        for (int i = sot; i < space + 1; i++) {
+        for (int i = sot; i < len + 1; i++) {
             checksum += buffer[i];
         }
 
@@ -235,11 +259,30 @@ public final class ResponseMessage implements Message {
         return checksum;
     }
 
-    protected static int overFlowErrorChecksum(final byte[] buffer, int sot, int space) {
+    /**
+     * Constructor
+     *
+     * @param buffer
+     * @param calcCHS
+     * @param recvCHS
+     * @param sot
+     * @return
+     */
+    public static boolean checksumWithOverFlowErrorCorrect(byte[] buffer, int calcCHS, int recvCHS, int sot, int length) {
+        if (calcCHS != recvCHS) {
+            calcCHS = overFlowErrorChecksum(buffer, sot + 1, length);
+            if (calcCHS != recvCHS) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static int overFlowErrorChecksum(final byte[] buffer, int sot, int len) {
         int checksum = 0;
 
-        for (int i = sot; i <= space; i++) {
-            if (((i + 1) <= buffer.length) && (buffer[i] == '-') && (buffer[i + 1] == '1')) {
+        for (int i = sot; i <= len; i++) {
+            if (((i + 3) <= buffer.length) && (buffer[i] == '-') && (buffer[i + 1] == '1' && (buffer[i + 2] == ' '))) {
                 checksum += '6';
                 checksum += '5';
                 checksum += '5';
@@ -275,6 +318,10 @@ public final class ResponseMessage implements Message {
     @Override
     public void setIndex(String index) {
         this.index = index;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
     }
 
     public void setErrorCode(int errorCode) {

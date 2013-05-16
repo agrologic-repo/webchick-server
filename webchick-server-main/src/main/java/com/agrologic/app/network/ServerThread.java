@@ -25,6 +25,7 @@ import java.util.Observable;
  * @version 1.1 <br>
  */
 public class ServerThread extends Observable implements Runnable {
+    public static final int SERVER_SOCKET_TIMEOUT = 5000;
     public static final int MAX_NUM_SOCKET = 512;
     private final Logger logger = Logger.getLogger(ServerThread.class);
     private final CellinkDao cellinkDao;
@@ -40,6 +41,31 @@ public class ServerThread extends Observable implements Runnable {
         this.currentState = ServerActivityStates.IDLE;
         this.clientSessions = new ClientSessions(configuration, serverFacade, cellinkDao);
         this.threads = clientSessions.getSessions();
+    }
+
+    /**
+     * Opening ServerSocket listener.
+     *
+     * @return true if opened successful, false otherwise
+     */
+    private boolean startServer() {
+        try {
+            InetAddress ia = InetAddress.getByName(configuration.getIp());
+            Integer port = configuration.getPort();
+            logger.info("Try to open server on port : " + port);
+            server = new ServerSocket(port, MAX_NUM_SOCKET, ia) ;
+            server.setSoTimeout(SERVER_SOCKET_TIMEOUT);
+            logger.info("ServerSocket opened on " + server.getLocalSocketAddress());
+            return true;
+        } catch (BindException ex) {
+            logger.error("Error opening server.");
+            logger.fatal(ex);
+
+            return false;
+        } catch (IOException ex) {
+            logger.error("Error opening server.", ex);
+            return false;
+        }
     }
 
     @Override
@@ -85,10 +111,12 @@ public class ServerThread extends Observable implements Runnable {
                         notifyObservers(newThread);
                     } catch (SocketException ex) {
                         logger.info("stop server, close server socket.");
+                    }catch (SocketTimeoutException ex) {
+                        logger.trace("socket timeout exception ", ex);
                     } catch (IOException ex) {
-                        logger.fatal("Error occurs while accepting new connection.", ex);
-                    } catch (Error err) {
-                        err.printStackTrace();
+                        logger.trace("Error occurs while accepting new connection.", ex);
+                    } catch (Exception ex) {
+                        logger.trace("Unknown exception.", ex);
                     }
 
                     break;
@@ -127,30 +155,6 @@ public class ServerThread extends Observable implements Runnable {
 
                 break LOOP;
             }
-        }
-    }
-
-    /**
-     * Opening ServerSocket listener.
-     *
-     * @return true if opened successful, false otherwise
-     */
-    private boolean startServer() {
-        try {
-            InetAddress ia = InetAddress.getByName(configuration.getIp());
-            Integer port = configuration.getPort();
-            logger.info("Try to open server on port : " + port);
-            server = new ServerSocket(port, MAX_NUM_SOCKET, ia) ;
-            logger.info("ServerSocket opened on " + server.getLocalSocketAddress());
-            return true;
-        } catch (BindException ex) {
-            logger.error("Error opening server.");
-            logger.fatal(ex);
-
-            return false;
-        } catch (IOException ex) {
-            logger.error("Error opening server.", ex);
-            return false;
         }
     }
 
@@ -195,16 +199,6 @@ public class ServerThread extends Observable implements Runnable {
         currentState = serverState;
         setChanged();
         notifyObservers(serverState);
-    }
-
-    /**
-     * Notify about new connection.
-     *
-     * @param worker
-     */
-    public void newConnection(SocketThread worker) {
-        setChanged();
-        notifyObservers(worker);
     }
 
     /**
@@ -318,26 +312,7 @@ public class ServerThread extends Observable implements Runnable {
             SocketThread snt = entry.getValue();
 
             logger.debug("The cellink id : " + cid + " the socket opened : "
-                    + snt.getComControl().getSocket().toString());
-        }
-    }
-
-    public void clearThreadList() {
-        Iterator<Entry<Long, SocketThread>> entries = threads.entrySet().iterator();
-
-        while (entries.hasNext()) {
-            Entry<Long, SocketThread> entry = entries.next();
-            Long cid = entry.getKey();
-            SocketThread snt = entry.getValue();
-            NetworkState state = snt.getThreadState();
-
-            switch (state) {
-                case STATE_ABORT:
-                    break;
-            }
-
-            logger.debug("The cellink id : " + cid + " the socket opened : "
-                    + snt.getComControl().getSocket().toString());
+                    + snt.getCommControl().getSocket().toString());
         }
     }
 

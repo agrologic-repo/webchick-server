@@ -6,7 +6,6 @@
 package com.agrologic.app.messaging;
 
 import com.agrologic.app.network.CommandType;
-import org.apache.log4j.Logger;
 
 import java.util.Observable;
 import java.util.PriorityQueue;
@@ -27,7 +26,6 @@ public class RequestMessageQueue extends Observable {
      * Queue with requests
      */
     private final PriorityQueue<RequestMessage> queue = new PriorityQueue<RequestMessage>();
-
 
     /**
      * Add request to queue . The request message
@@ -61,7 +59,7 @@ public class RequestMessageQueue extends Observable {
      * @return requestToSend the request message to controller .
      */
     public Message getRequest() {
-        Logger log = Logger.getLogger(RequestMessageQueue.class);
+
         if (replyForPreviousRequestPending) {
             setReplyForPreviousRequestPending(false);
         } else {
@@ -70,7 +68,6 @@ public class RequestMessageQueue extends Observable {
                 notifyObservers(CommandType.CREATE_REQUEST);
             }
             requestToSend = queue.poll();
-            log.debug("Request to send : " + requestToSend);
         }
         return requestToSend;
     }

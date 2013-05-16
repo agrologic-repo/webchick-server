@@ -19,19 +19,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySQL2DerbyMegrator extends javax.swing.JFrame {
+public class WebchickDBCreator extends javax.swing.JFrame {
 
-    private final static String CLEAR_TEXT = "";
-    private final static String NO_CELLINKS = "<html>User exist . But no cellinks found for this user </html>";
-    private final static String CHOOSE_CELLINK = "<html>User exist . Please select farm from list </html>";
-    private final static String USER_NOT_EXIST = "<html>User does not exist </html>";
-    private final static String EMPTY_FIELD = "<html>The user id feild cannot be empty</html>";
+    private static final String CLEAR_TEXT = "";
+    private static final String NO_CELLINKS = "User exist . But no cellinks found for this user ";
+    private static final String CHOOSE_CELLINK = "User exist . Please select farm from list ";
+    private static final String USER_NOT_EXIST = "User does not exist ";
+    private static final String EMPTY_FIELD = "The user id field cannot be empty";
+    private static final String CONNECTING_TO_SERVER = "Connecting to server and loading data from the remote server...";
+    private static final String CREATING_EMBEDDED_DATABASE = "Creating embedded database ...";
+    private static final String START_INSERT_DATA_TO_THE_EMBEDDED_DATABASE ="Insert data to the embedded database ...";
+    private static final String DONE = "Done";
+
     private JFileChooser fileChooser;
 
     /**
      * Creates new form MySQL2DerbyMigrator
      */
-    public MySQL2DerbyMegrator() {
+    public WebchickDBCreator() {
         initComponents();
         initLanguage();
         Windows.centerOnScreen(this);
@@ -73,7 +78,7 @@ public class MySQL2DerbyMegrator extends javax.swing.JFrame {
         jLabel4.setText("jLabel4");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Create Database Ver.0.1");
+        setTitle("Webchick Database Creator Ver.1.0");
         setMinimumSize(new java.awt.Dimension(440, 510));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User and Farm id's"));
@@ -358,21 +363,21 @@ public class MySQL2DerbyMegrator extends javax.swing.JFrame {
                     String path = txtDatabaseDir.getText();
                     delete(new File(path + "\\agrodb"));
                     System.setProperty("derby.system.home", path);
-                    DatabaseManager dbMgr = new DatabaseManager();
+                    DatabaseManager dbMgr = new DatabaseManager(DaoType.MYSQL);
                     String userId = txtUserId.getText();
                     String cellinkId = ((CellinkEntry) cmbFarms.getSelectedItem()).getId().toString();
                     prgBarCreateStatus.setIndeterminate(true);
                     btnCreate.setEnabled(false);
-                    lblCreatingStatus.setText("Connecting to server and loading data from the remote server ... ");
+                    lblCreatingStatus.setText(CONNECTING_TO_SERVER);
                     dbMgr.doLoadTableData(userId, cellinkId);
-                    lblCreatingStatus.setText("Creating embedded database ...  ");
+                    lblCreatingStatus.setText(CREATING_EMBEDDED_DATABASE);
                     dbMgr.runCreateTablesTask();
-                    lblCreatingStatus.setText("Insert data to the embedded database ...");
+                    lblCreatingStatus.setText(START_INSERT_DATA_TO_THE_EMBEDDED_DATABASE);
                     dbMgr.runInsertLoadedData();
                     dbMgr.finish();
                     prgBarCreateStatus.setIndeterminate(false);
                     prgBarCreateStatus.setVisible(false);
-                    lblCreatingStatus.setText("Done !");
+                    lblCreatingStatus.setText(DONE);
                     btnCreate.setEnabled(true);
                     btnCreate.setText("Close");
                 } catch (SQLException ex) {
@@ -528,13 +533,13 @@ public class MySQL2DerbyMegrator extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MySQL2DerbyMegrator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(WebchickDBCreator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MySQL2DerbyMegrator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(WebchickDBCreator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MySQL2DerbyMegrator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(WebchickDBCreator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MySQL2DerbyMegrator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(WebchickDBCreator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -544,7 +549,7 @@ public class MySQL2DerbyMegrator extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new MySQL2DerbyMegrator().setVisible(true);
+                new WebchickDBCreator().setVisible(true);
             }
         });
     }

@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
 
-    protected final Logger log = LoggerFactory.getLogger(DatabaseGeneralService.class);
+    protected final Logger logger = LoggerFactory.getLogger(DatabaseGeneralService.class);
     protected AlarmDao alarmDao;
     protected CellinkDao cellinkDao;
     protected ControllerDao controllerDao;
@@ -58,7 +58,7 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
                 buffer.append("  for derby database ");
                 break;
         }
-        log.info(buffer.toString());
+        logger.info(buffer.toString());
     }
 
     public void setDaoType(DaoType daoType) {
@@ -115,7 +115,7 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
      */
     public void setDatabaseDir(String dir) {
         System.setProperty("derby.system.home", dir);
-        log.info("Derby database path : " + dir);
+        logger.info("Derby database path : " + dir);
     }
 
     public AlarmDao getAlarmDao() {

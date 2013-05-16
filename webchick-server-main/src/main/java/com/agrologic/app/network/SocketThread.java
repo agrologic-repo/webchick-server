@@ -34,7 +34,7 @@ import java.util.List;
  * @version 1.0 <br>
  */
 public class SocketThread implements Runnable, Network {
-    private List<MessageManager> contMsgManager;
+    private List<MessageManager> messageManagers;
     private Cellink cellink;
     private CellinkDao cellinkDao;
     private ControllerDao controllerDao;
@@ -44,7 +44,7 @@ public class SocketThread implements Runnable, Network {
     private RequestMessageQueue requestQueue;
     private ServerUI serverFacade;
     private final ClientSessions clientSessions;
-    private ComControl comControl;
+    private CommControl commControl;
     private int sotDelay;
     private int eotDelay;
     private int nxtDelay;
@@ -64,7 +64,7 @@ public class SocketThread implements Runnable, Network {
     public SocketThread(ClientSessions clientSessions, Socket socket, Configuration configuration) throws IOException {
         this.cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         this.controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-        this.comControl = new ComControl(socket);
+        this.commControl = new CommControl(socket);
         this.requestQueue = new RequestMessageQueue();
         this.responseMessageMap = new ResponseMessageMap();
         this.reqIndex = new RequestIndex();
@@ -74,7 +74,7 @@ public class SocketThread implements Runnable, Network {
         this.maxError = Integer.parseInt(configuration.getMaxErrors());
         this.keepAliveTimeout = configuration.getKeepalive();
         this.clientSessions = clientSessions;
-        this.contMsgManager = new ArrayList<MessageManager>();
+        this.messageManagers = new ArrayList<MessageManager>();
     }
 
     public void setServerFacade(ServerUI serverFacade) {
@@ -111,7 +111,7 @@ public class SocketThread implements Runnable, Network {
                             break;
 
                         case STATE_BUSY:
-                            setThreadState(comControl.doread(sotDelay, eotDelay));
+                            setThreadState(commControl.doread(sotDelay, eotDelay));
                             break;
 
                         case STATE_READ:
@@ -157,7 +157,7 @@ public class SocketThread implements Runnable, Network {
             if (cellink != null) {
                 logger.info("close connection : " + cellink);
                 Util.sleep(CommonConstant.FIVE_SECOND);
-                comControl.close();
+                commControl.close();
                 try {
                     removeControllersData();
                 } catch (SQLException ex) {
@@ -186,10 +186,15 @@ public class SocketThread implements Runnable, Network {
     }
 
     private int timeoutErrorHandler(int errCount) {
-        errCount++;
+
+        responseMessage = (ResponseMessage) commControl.read();
+        if(responseMessage.getErrorCode() == Message.SOT_ERROR) {
+            errCount++;
+        }
+
         if (errCount < maxError) {
             requestQueue.setReplyForPreviousRequestPending(true);
-            responseMessage = (ResponseMessage) comControl.read();
+            responseMessage = (ResponseMessage) commControl.read();
 
         } else {
             errorTimeout(errCount);
@@ -214,7 +219,7 @@ public class SocketThread implements Runnable, Network {
         errCount++;
         if (errCount < maxError) {
             requestQueue.setReplyForPreviousRequestPending(true);
-            responseMessage = (ResponseMessage) comControl.read();
+            responseMessage = (ResponseMessage) commControl.read();
         } else {
             responseMessage = new ResponseMessage(null);
             responseMessage.setMessageType(MessageType.ERROR);
@@ -244,7 +249,7 @@ public class SocketThread implements Runnable, Network {
     }
 
     private int receiveResponseHandler(int errCount) {
-        responseMessage = (ResponseMessage) comControl.read();
+        responseMessage = (ResponseMessage) commControl.read();
         boolean withLogger = getWithLogging();
         if (withLogger) {
             logger.info(cellink.getName() + " sent message [ " + "V" + sendMessage.getIndex()
@@ -300,7 +305,7 @@ public class SocketThread implements Runnable, Network {
         } else {
             sendMessage = requestQueue.getRequest();
             sendMessage.setIndex(reqIndex.getIndex());
-            comControl.write("V" + reqIndex.getIndex(), sendMessage);
+            commControl.write("V" + reqIndex.getIndex(), sendMessage);
             boolean withLogger = getWithLogging();
             if (withLogger) {
                 logger.info(cellink.getName() + " sending message [" + "V" + sendMessage.getIndex()
@@ -320,7 +325,7 @@ public class SocketThread implements Runnable, Network {
         // the observer the manager of messages
         for (Controller c : tempControllers) {
             MessageManager mm = new MessageManager(c);
-            contMsgManager.add(mm);
+            messageManagers.add(mm);
             requestQueue.addObserver(mm);
             responseMessageMap.addObserver(mm);
         }
@@ -328,7 +333,7 @@ public class SocketThread implements Runnable, Network {
         requestQueue.notifyToPrepareRequests();
         setThreadState(NetworkState.STATE_SEND);
         // read header changed by cellink version.
-        comControl.setCellinkVersion(cellink.getVersion());
+        commControl.setCellinkVersion(cellink.getVersion());
     }
 
     private void waitKeepAlive() throws IOException, SQLException {
@@ -338,13 +343,13 @@ public class SocketThread implements Runnable, Network {
             setThreadState(NetworkState.STATE_STARTING);
         } else {
             if (isKeepAliveTime(keepAliveTime)) {
-                if (comControl.availableData() > 0) {
+                if (commControl.availableData() > 0) {
                     setThreadState(NetworkState.STATE_ACCEPT_KEEP_ALIVE);
                 } else {
                     setThreadState(NetworkState.STATE_STOP);
                     cellink.setState(CellinkState.STATE_OFFLINE);
                     cellinkDao.update(cellink);
-                    comControl.close();
+                    commControl.close();
                     stopThread = true;
                 }
             } else {
@@ -363,7 +368,7 @@ public class SocketThread implements Runnable, Network {
         if (isAccessAllowed()) {
             setThreadState(NetworkState.STATE_KEEP_ALIVE_TIMEOUT);
         } else {
-            //comControl.close();
+            //commControl.close();
             stopThread = true;
         }
     }
@@ -376,9 +381,9 @@ public class SocketThread implements Runnable, Network {
     private boolean isAccessAllowed() {
         try {
             byte[] buffer = new byte[KeepAliveMessage.BUFFER_SIZE];
-            if (comControl.read(buffer) == -1) { // try to read
+            if (commControl.read(buffer) == -1) { // try to read
                 logger.info("No available data in stream.");
-                logger.info("The client IP:PORT [ " + comControl.getSocket().getRemoteSocketAddress() + " ]");
+                logger.info("The client IP:PORT [ " + commControl.getSocket().getRemoteSocketAddress() + " ]");
                 return false;
             }
 
@@ -388,18 +393,18 @@ public class SocketThread implements Runnable, Network {
                 logger.debug("Received keep alive [{}]", keepAlive);
             } catch (WrongMessageFormatException e) {
                 logger.info("KeepAlive message validation error.");
-                logger.info("The client IP:PORT [ " + comControl.getSocket().getRemoteSocketAddress() + " ]");
+                logger.info("The client IP:PORT [ " + commControl.getSocket().getRemoteSocketAddress() + " ]");
                 return false;
             }
             cellink = cellinkDao.validate(keepAlive.getUsername(), keepAlive.getPassword());
             if (cellink.getValidate() == true) {
                 RequestMessage msg = new MessageFactory().createKeepAlive(keepAliveTimeout);
-                comControl.write(msg);
+                commControl.write(msg);
                 logger.debug("Sent answer: [{}]", msg);
 
                 clientSessions.closeDuplicateSession(this);
                 // stop running duplicated thread
-                cellink.registrate(comControl.getSocket());
+                cellink.registrate(commControl.getSocket());
                 cellink.setState(CellinkState.STATE_ONLINE);
                 cellink.setVersion(keepAlive.getVersion());
                 cellinkDao.update(cellink);
@@ -408,15 +413,15 @@ public class SocketThread implements Runnable, Network {
                 logger.info("validation cellink ok  [ " + cellink + " ]");
                 return true;
             } else {
-                logger.info("validation cellink failed  [ " + comControl.getSocket().getRemoteSocketAddress() + " ]");
-                comControl.write(new MessageFactory().createErrorMessage());
-                logger.error("The client IP:PORT [ " + comControl.getSocket().getRemoteSocketAddress() + " ]");
+                logger.info("validation cellink failed  [ " + commControl.getSocket().getRemoteSocketAddress() + " ]");
+                commControl.write(new MessageFactory().createErrorMessage());
+                logger.error("The client IP:PORT [ " + commControl.getSocket().getRemoteSocketAddress() + " ]");
                 return false;
             }
 
         } catch (SocketException ex) {
             logger.trace("Client abruptly killed the connection without calling close !");
-            logger.trace("The client IP:PORT [ " + comControl.getSocket().getRemoteSocketAddress() + " ]");
+            logger.trace("The client IP:PORT [ " + commControl.getSocket().getRemoteSocketAddress() + " ]");
             return false;
         } catch (IOException ex) {
             logger.trace(ex.getMessage());
@@ -472,7 +477,7 @@ public class SocketThread implements Runnable, Network {
     }
 
     private void removeControllersData() throws SQLException {
-        for (MessageManager cmm : contMsgManager) {
+        for (MessageManager cmm : messageManagers) {
             controllerDao.resetControllerData(cmm.getController().getId());
         }
     }
@@ -483,7 +488,7 @@ public class SocketThread implements Runnable, Network {
      * @return true if controllers are off, otherwise true
      */
     private boolean allControllersOff() {
-        for (MessageManager cmm : contMsgManager) {
+        for (MessageManager cmm : messageManagers) {
             if (cmm.getController().isOn()) {
                 return false;
             }
@@ -496,7 +501,7 @@ public class SocketThread implements Runnable, Network {
      */
     private void setControllersOn() {
         logger.info("Switch ON controllers");
-        for (MessageManager cmm : contMsgManager) {
+        for (MessageManager cmm : messageManagers) {
             cmm.getController().switchOn();
         }
     }
@@ -512,8 +517,8 @@ public class SocketThread implements Runnable, Network {
         return false;
     }
 
-    public ComControl getComControl() {
-        return comControl;
+    public CommControl getCommControl() {
+        return commControl;
     }
 
     public void setNetworkState(NetworkState networkState) {

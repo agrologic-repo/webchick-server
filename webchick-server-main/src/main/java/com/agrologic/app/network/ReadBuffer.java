@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.network;
 
-//~--- non-JDK imports --------------------------------------------------------
 import com.agrologic.app.except.EOTException;
 import com.agrologic.app.except.SOTException;
 import com.agrologic.app.except.TimeoutException;
@@ -17,46 +16,40 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 
-/**
- * {Insert class description here}
- *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- */
 public class ReadBuffer {
 
     public static final int BUFFER_SIZE = 8000;
-    private int i = 0;
+    private int byteCounter = 0;
     private int bufferIndex;
     private int bufferIsLast;
     private int bufferSize;
     private byte bufferType;
-    private ByteBuffer inputBuffer;
-    private final ComControl readBuffer;
-    private ComControl.ReadState readState;
-    private boolean ready;
     private long eotDelay;
     private long sotDelay;
     private long startTime;
+    private ByteBuffer inputBuffer;
+    private boolean ready;
+//    private final CommControl readBuffer;
+    private CommControl.ReadState readState;
+//    private BufferType bufferType;
+//
+//    public enum BufferType {
+//        TEXT("TEXT", (byte)2), BINARY("BINARY", (byte)1301);
+//
+//        private BufferType(String name, byte id) {
+//            this.name = name;
+//            this.id = id;
+//        }
+//
+//        public final String name;
+//        public final byte id;
+//    }
 
-    public ReadBuffer(final ComControl readBuffer) {
-        this.readBuffer = readBuffer;
+    public ReadBuffer() {
         this.inputBuffer = ByteBuffer.allocate(BUFFER_SIZE);
         this.startTime = System.currentTimeMillis();
         this.ready = false;
-        this.readState = ComControl.ReadState.WAIT_SOT;
-    }
-
-    /**
-     * Read first 3 bytes .
-     *
-     * @param in the InputStream
-     * @throws IOException
-     */
-    public synchronized void readHead(InputStream in) throws IOException {
-        readHead(in, "1");
+        this.readState = CommControl.ReadState.WAIT_SOT;
     }
 
     /**
@@ -84,14 +77,14 @@ public class ReadBuffer {
      * @throws IOException
      * @throws TimeoutException
      */
-    public synchronized void readData(InputStream in) throws IOException, TimeoutException, SOTException, EOTException {
-        try {
+    public synchronized void readData(InputStream in) throws IOException, SOTException, EOTException {
+//        try {
             startTime = System.currentTimeMillis();
-            i = 0;
-            ComControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
-            ComControl.logger.info("Start read buffer " + bufferIndex);
+            byteCounter = 0;
+            CommControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
+            CommControl.logger.debug("Start read buffer " + bufferIndex);
 
-            while (i < bufferSize) {
+            while (byteCounter < bufferSize) {
                 if (in.available() > 0) {
                     byte data = (byte) in.read();
 
@@ -101,8 +94,8 @@ public class ReadBuffer {
                         System.out.println(inputBuffer.position());
                     }
                     startTime = System.currentTimeMillis();
-                    readState = ComControl.ReadState.WAIT_EOT;
-                    i++;
+                    readState = CommControl.ReadState.WAIT_EOT;
+                    byteCounter++;
                 } else {
                     try {
                         wait(1);
@@ -114,68 +107,21 @@ public class ReadBuffer {
                 checkTimeout();
             }
 
-            ComControl.logger.debug("End read buffer " + bufferIndex);
-            ComControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
-        } catch (IOException e) {
-            throw new IOException();
-        } catch (SOTException e) {
-            throw new SOTException("");
-        } catch (EOTException e) {
-            throw new EOTException("");
-        }
-    }
-
-    public synchronized void readDataBuffer(InputStream in)
-            throws IOException, TimeoutException, SOTException, EOTException {
-        try {
-            startTime = System.currentTimeMillis();
-            i = 0;
-            ComControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
-            ComControl.logger.info("Start read buffer " + bufferIndex);
-
-            while (i < bufferSize) {
-                int n = in.available();
-
-                if (n > 0) {
-                    if (i + n >= bufferSize) {
-                        n = bufferSize - i;
-                    }
-
-                    i += n;
-
-                    byte[] buffer = new byte[n];
-
-                    inputBuffer.put(buffer);
-                    startTime = System.currentTimeMillis();
-                    readState = ComControl.ReadState.WAIT_EOT;
-                } else {
-                    try {
-                        wait(10);
-                    } catch (InterruptedException ex) {
-                    }
-                }
-
-                checkTimeout();
-            }
-
-            ComControl.logger.debug("End read buffer " + bufferIndex);
-            ComControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
-        } catch (IOException e) {
-            throw new IOException();
-        } catch (SOTException e) {
-            throw new SOTException("");
-        } catch (EOTException e) {
-            throw new EOTException("");
-        }
+            CommControl.logger.debug("End read buffer " + bufferIndex);
+            CommControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
+//        } catch (IOException e) {
+//            CommControl.logger.debug(e);
+//            throw new IOException();
+//        } catch (SOTException e) {
+//            CommControl.logger.debug(e);
+//            throw new SOTException("");
+//        } catch (EOTException e) {
+//            throw new EOTException("");
+//        }
     }
 
     /**
-     * Return buffer type (asci or binary)
-     *
-     * @return bufferType;
-     */
-    /**
-     * Return buffer type (asci or binary)
+     * Return buffer type (asci or binary) .
      *
      * @return bufferType;
      */
@@ -183,24 +129,8 @@ public class ReadBuffer {
         return bufferType;
     }
 
-    /**
-     * Return true if timed out.
-     *
-     * @return true if time out occurred .
-     */
-    /**
-     * Return true if timed out.
-     *
-     * @return true if time out occurred .
-     */
-    public synchronized boolean timedOut() {
-        long currTime = System.currentTimeMillis();
-
-        if ((startTime + sotDelay + eotDelay) < currTime) {
-            return true;
-        }
-
-        return false;
+    public synchronized void setBufferType(byte bufferType) {
+        this.bufferType = bufferType;
     }
 
     /**
@@ -208,6 +138,14 @@ public class ReadBuffer {
      *
      * @return true if time out occurred .
      */
+    public synchronized boolean timedOut() {
+        long currTime = System.currentTimeMillis();
+        if ((startTime + sotDelay + eotDelay) < currTime) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Return true if timed out.
      *
@@ -256,16 +194,11 @@ public class ReadBuffer {
      *
      * @return true if last buffer received ,false - otherwise.
      */
-    /**
-     * Return true if bufferIsLast equal to ERROR or LAST_COPRESSED.
-     *
-     * @return true if last buffer received ,false - otherwise.
-     */
     public synchronized boolean isReady() {
         if ((bufferIsLast == Message.LAST_COMPRSSED_TEXT_MESSAGE)
                 || (bufferIsLast == Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE)
                 || (bufferIsLast == Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE)) {
-            if (i >= bufferSize) {
+            if (byteCounter >= bufferSize) {
                 ready = true;
             }
         }
@@ -285,28 +218,24 @@ public class ReadBuffer {
         inputBuffer.get(buffer, 0, buffer.length);
 
         synchronized (this) {
-            bufferType = Message.LAST_TEXT_MESSAGE;    // defayult
-
-            // defayult
+            setBufferType(Message.LAST_TEXT_MESSAGE/* default */);
             if (bufferIsLast == Message.LAST_COMPRSSED_TEXT_MESSAGE) {
-                bufferType = Message.LAST_COMPRSSED_TEXT_MESSAGE;
-                buffer = ComControl.Decompressor.decompress(buffer, false);
+                setBufferType(Message.LAST_COMPRSSED_TEXT_MESSAGE);
+                buffer = CommControl.Decompressor.decompress(buffer, false);
             }
 
             if (bufferIsLast == Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE) {
-                bufferType = Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE;
-                buffer = ComControl.Decompressor.decompress(buffer, true);
+                setBufferType(Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE);
+                buffer = CommControl.Decompressor.decompress(buffer, true);
             }
 
             if (bufferIsLast == Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE) {
-                bufferType = Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE;
-                buffer = ComControl.SlipProtocol.parseSlipBuffer(buffer);
-
-                if (ComControl.CRC.crcValue != 0) {
+                setBufferType(Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE);
+                buffer = CommControl.SlipProtocol.parseSlipBuffer(buffer);
+                if (CommControl.CRC.crcValue != 0) {
                     return null;
                 }
-
-                buffer = ComControl.Decompressor.decompressBinary(buffer, true);
+                buffer = CommControl.Decompressor.decompressBinary(buffer, true);
             }
         }
 

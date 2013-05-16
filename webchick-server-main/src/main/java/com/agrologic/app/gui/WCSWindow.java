@@ -55,7 +55,8 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
     private JMenuItem stoppedState;
     private CellinkTable cellinkTable;
     private final Logger logger = Logger.getLogger(WCSWindow.class);
-    private static final String ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE = "Error opening socket \nServerAddress already in use !";
+    private static final String ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE = "Error opening socket \n" +
+            "host or port already in use !";
     private static final String CANNOT_CREATE_LOCK_FILE = "Can't create Lock File.\nAccess is denied !";
 
     /**
@@ -693,7 +694,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
             } else {
                 for (SocketThread nt : deadThreads) {
                     threads.remove(nt.getCellink().getId());
-                    nt.getComControl().close();
+                    nt.getCommControl().close();
                     sb.append("Session with cellink id ").append(nt.getCellink().getId()).append(" closed\n ");
                 }
                 JOptionPane.showMessageDialog(WCSWindow.this, sb.toString());
@@ -711,7 +712,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
             public void run() {
                 Logger logger = Logger.getRootLogger();
                 try {
-                    logger.info("strat server");
+                    logger.info("start server");
                     new WCSWindow().setVisible(true);
                 } catch (StartProgramException e) {
                     logger.error(e);

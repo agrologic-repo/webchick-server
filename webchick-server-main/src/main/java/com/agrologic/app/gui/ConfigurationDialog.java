@@ -28,8 +28,8 @@ public class ConfigurationDialog extends JDialog implements Observer {
     private static final long serialVersionUID = 1L;
     private final Configuration configuration;
     private boolean result = false;
-    public final static int CANCEL = 0;
-    public final static int OK = 1;
+    public static final int CANCEL = 0;
+    public static final int OK = 1;
 
     public ConfigurationDialog() {
         this(null, true);
@@ -120,9 +120,9 @@ public class ConfigurationDialog extends JDialog implements Observer {
      */
     public boolean showDataBaseDialog() {
         JLabel[] lbl = {new JLabel("Driver :", SwingConstants.TRAILING),
-            new JLabel("URL :", SwingConstants.TRAILING),
-            new JLabel("Username :", SwingConstants.TRAILING),
-            new JLabel("Password :", SwingConstants.TRAILING)};
+                new JLabel("URL :", SwingConstants.TRAILING),
+                new JLabel("Username :", SwingConstants.TRAILING),
+                new JLabel("Password :", SwingConstants.TRAILING)};
         int numPairs = lbl.length;
 
         JTextField[] txt = {new JTextField(25), new JTextField(25), new JTextField(25), new JTextField(25)};
@@ -177,7 +177,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
      */
     public boolean showNetworkDialog() {
         JLabel[] lbl = {new JLabel("Server ip :", SwingConstants.TRAILING),
-            new JLabel("Server port :", SwingConstants.TRAILING)};
+                new JLabel("Server port :", SwingConstants.TRAILING)};
         int numPairs = lbl.length;
 
         JTextField[] txt = {new JTextField(25), new JTextField(25), new JTextField(25), new JTextField(25)};
@@ -221,7 +221,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
     /**
      * Reload all dialog fields when data changed in ServerPreferenses
      *
-     * @param o the ServerPreferenses object
+     * @param o   the ServerPreferenses object
      * @param arg
      */
     @Override
@@ -332,7 +332,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
         chboxStartupWithWindows.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 JCheckBox chbox = (JCheckBox) evt.getSource();
-                if(chbox.isSelected() == false ) {
+                if (chbox.isSelected() == false) {
                     configuration.setStartup(false);
                 } else {
                     configuration.setStartup(true);
@@ -348,7 +348,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
         pnlServerStartup.add(jLabel1);
         jLabel1.setBounds(30, 30, 100, 20);
 
-        cmbLanguage.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "English", "Hebrew", "Chinese", "Russian", "French" }));
+        cmbLanguage.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"English", "Hebrew", "Chinese", "Russian", "French"}));
         cmbLanguage.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmbLanguageItemStateChanged(evt);
@@ -358,7 +358,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
         cmbLanguage.setBounds(140, 30, 100, 20);
 
         btnCancel.setText("Cancel");
-        btnCancel.addActionListener( new ActionListener() {
+        btnCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 result = false;
                 setVisible(false);
@@ -368,7 +368,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
         btnOk.setText("OK");
 
         btnApply.setText("Apply");
-        btnApply.addActionListener( new ActionListener() {
+        btnApply.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 configuration.saveUpdatePreferences();
@@ -416,41 +416,41 @@ public class ConfigurationDialog extends JDialog implements Observer {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(spnNext, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
-                    .addComponent(spnSot)
-                    .addComponent(spnEot))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(spnNext, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                                        .addComponent(spnSot)
+                                        .addComponent(spnEot))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel10, jLabel11, jLabel9});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{jLabel10, jLabel11, jLabel9});
 
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(spnSot, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spnEot, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spnNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(13, Short.MAX_VALUE))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(spnSot, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(spnEot, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(spnNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Set IDs"));
@@ -484,28 +484,28 @@ public class ConfigurationDialog extends JDialog implements Observer {
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtUserID, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
-                    .addComponent(txtCellinkID))
-                .addGap(25, 25, 25))
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtUserID, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                                        .addComponent(txtCellinkID))
+                                .addGap(25, 25, 25))
         );
         jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(txtUserID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtCellinkID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15)))
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel16)
+                                        .addComponent(txtUserID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtCellinkID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel15)))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Real Time"));
@@ -522,19 +522,19 @@ public class ConfigurationDialog extends JDialog implements Observer {
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spnErrFaults, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
+                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(spnErrFaults, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(20, 20, 20))
         );
         jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(spnErrFaults, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(spnErrFaults, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pnlServerConfig1.setBorder(javax.swing.BorderFactory.createTitledBorder("Communication"));
@@ -547,10 +547,10 @@ public class ConfigurationDialog extends JDialog implements Observer {
         txtCOMPort.setBounds(140, 50, 40, 20);
 
         btnComport.setText("Select COM");
-        btnComport.addActionListener( new ActionListener() {
+        btnComport.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String comport = showSelectComportDialog();
-                if(comport != null) {
+                if (comport != null) {
                     txtCOMPort.setText(comport);
                     configuration.setComPort(comport);
                     btnApply.setEnabled(true);
@@ -571,7 +571,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
         txtIP.setBounds(80, 140, 100, 20);
 
         btnTCPServer.setText("Change");
-        btnTCPServer.addActionListener( new ActionListener() {
+        btnTCPServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // serverSetting.show();
             }
@@ -627,7 +627,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
         lblPassword.setBounds(15, 80, 60, 20);
 
         btnDBSetting.setText("Change");
-        btnDBSetting.addActionListener( new ActionListener() {
+        btnDBSetting.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //dbSetting.show();
             }
@@ -674,30 +674,31 @@ public class ConfigurationDialog extends JDialog implements Observer {
         spnMinute.setPreferredSize(new java.awt.Dimension(30, 20));
         spnMinute.addInputMethodListener(new java.awt.event.InputMethodListener() {
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-                Integer value = (Integer)((JSpinner)evt.getSource()).getValue();
-                if(value >= 1 && value <= 3) {
+                Integer value = (Integer) ((JSpinner) evt.getSource()).getValue();
+                if (value >= 1 && value <= 3) {
                     configuration.setKeepalive(value);
                 } else {
                     JOptionPane.showMessageDialog(null, "Timeout must be between 1 and 3 minute!",
-                        "Server Setting",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Server Setting",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
+
             public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-                Integer value = (Integer)((JSpinner)evt.getSource()).getValue();
-                if(value >= 1 && value <= 3) {
+                Integer value = (Integer) ((JSpinner) evt.getSource()).getValue();
+                if (value >= 1 && value <= 3) {
                     configuration.setKeepalive(value);
                 } else {
                     JOptionPane.showMessageDialog(null, "Timeout must be between 1 and 3 minute!",
-                        "Server Setting",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Server Setting",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
         spnMinute.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                Integer value = (Integer)((JSpinner)evt.getSource()).getValue();
+                Integer value = (Integer) ((JSpinner) evt.getSource()).getValue();
                 configuration.setKeepalive(value);
             }
         });
@@ -710,7 +711,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
         pnlServerConfig1.add(lblPCComm);
         lblPCComm.setBounds(40, 80, 78, 20);
 
-        cmbBaud.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3" }));
+        cmbBaud.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"0", "1", "2", "3"}));
         cmbBaud.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmbBaudItemStateChanged(evt);
@@ -719,7 +720,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
         pnlServerConfig1.add(cmbBaud);
         cmbBaud.setBounds(140, 80, 40, 20);
 
-        btnOk.addActionListener( new ActionListener() {
+        btnOk.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 configuration.saveUpdatePreferences();
                 result = true;
@@ -731,48 +732,48 @@ public class ConfigurationDialog extends JDialog implements Observer {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 62, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pnlServerConfig1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pnlServerStartup, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(59, 59, 59)
+                                .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnApply, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 62, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(pnlServerConfig1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(pnlServerStartup, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlServerConfig1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlServerStartup, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnOk)
-                    .addComponent(btnCancel)
-                    .addComponent(btnApply))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(pnlServerConfig1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(pnlServerStartup, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(btnOk)
+                                        .addComponent(btnCancel)
+                                        .addComponent(btnApply))
+                                .addContainerGap())
         );
 
         pack();
@@ -782,19 +783,19 @@ public class ConfigurationDialog extends JDialog implements Observer {
         configuration.setSotDelay(spnSot.getValue().toString());
         btnApply.setEnabled(true);
         btnOk.setEnabled(true);
-}//GEN-LAST:event_spnSotStateChanged
+    }//GEN-LAST:event_spnSotStateChanged
 
     private void spnEotStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnEotStateChanged
         configuration.setEotDelay((String) spnEot.getValue().toString());
         btnApply.setEnabled(true);
         btnOk.setEnabled(true);
-}//GEN-LAST:event_spnEotStateChanged
+    }//GEN-LAST:event_spnEotStateChanged
 
     private void spnNextStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnNextStateChanged
         configuration.setNextDelay((String) spnNext.getValue().toString());
         btnApply.setEnabled(true);
         btnOk.setEnabled(true);
-}//GEN-LAST:event_spnNextStateChanged
+    }//GEN-LAST:event_spnNextStateChanged
 
     private void txtCellinkIDFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCellinkIDFocusLost
         Long cellinkId = (txtCellinkID.getText().equals("") == true ? 0 : Long.parseLong(txtCellinkID.getText()));
@@ -891,6 +892,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
         btnApply.setEnabled(true);
         btnOk.setEnabled(true);
     }//GEN-LAST:event_cmbLanguageItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApply;
     private javax.swing.JButton btnCancel;
