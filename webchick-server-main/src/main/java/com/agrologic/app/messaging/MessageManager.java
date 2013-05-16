@@ -1,15 +1,15 @@
 /**
  * To change this template, choose Tools | Templates and open the template in the editor.
  */
-package com.agrologic.app.network;
+package com.agrologic.app.messaging;
 
 import com.agrologic.app.common.CommonConstant;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.service.DatabaseAccessor;
-import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.Flock;
+import com.agrologic.app.network.CommandType;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
@@ -24,39 +24,24 @@ import java.util.*;
  * @version 1.0 <br>
  */
 public class MessageManager implements Observer {
-    private static final int HIGH_16BIT_ON_MASK = 0x8000;
-    private static final int HIGH_32BIT_OFF_MASK = 0x0000FFFF;
-    private static final int SHIFT_16_BIT = 16;
     private static final int REQUEST_CYCLE = 2; //request cycle must be minimum 5
     private static final long SET_CLOCK_DATA_ID = 1309;
     private int histRequestCycle = REQUEST_CYCLE;
     private int hist24RequestCycle = REQUEST_CYCLE;
     private Controller controller;
-    /**
-     * dao objects
-     */
-    private DatabaseAccessor dbaccessor;
     private ControllerDao controllerDao;
     private FlockDao flockDao;
     private DataDao dataDao;
-    /**
-     * model objects
-     */
-    private Data data;
     private Flock flock;
-    private HashMap<Long, Data> onlineDataItems;
+    private MessageParser messageParser;
+    private HashMap<Long, Data> onlineDatatable;
     private RequestMessage requestToSend;
     private RequestPriorityQueue requests;
     private RequestMessageQueueHistory24 requestsHistory24;
     private Logger logger;
-    private boolean debug = false;
-    private boolean justStarted = true;
     private boolean updatedFlag = true;
+    private boolean requestCreated = false;
 
-    /**
-     *
-     * @param controller
-     */
     public MessageManager(Controller controller) {
         this.controller = controller;
         this.requests = new RequestPriorityQueue(controller.getNetName());
@@ -67,6 +52,7 @@ public class MessageManager implements Observer {
     }
 
     /**
+     * This constructor create MessageManager for webchick-local module .
      *
      * @param controller
      * @param databaseAccessor
@@ -74,14 +60,19 @@ public class MessageManager implements Observer {
     public MessageManager(Controller controller, DatabaseAccessor databaseAccessor) {
         this.controller = controller;
         this.requests = new RequestPriorityQueue(controller.getNetName());
-        this.dbaccessor = databaseAccessor;
         this.controllerDao = databaseAccessor.getControllerDao();
         this.flockDao = databaseAccessor.getFlockDao();
         this.dataDao = databaseAccessor.getDataDao();
-        this.onlineDataItems = (HashMap<Long, Data>) controller.getOnlineData();
         this.logger = Logger.getLogger(MessageManager.class);
     }
 
+    private boolean isRequestCreated() {
+        return requestCreated;
+    }
+
+    private void setRequestCreated(boolean requestCreated) {
+        this.requestCreated = requestCreated;
+    }
     /**
      * Method works when observable object MessageManager notify observers.(as specified by {@link Observer#update})
      *
@@ -95,14 +86,18 @@ public class MessageManager implements Observer {
             switch (command) {
                 case CREATE_REQUEST:
                     if (requestShouldBeCreated()) {
-                        createRequestIfNeedTo(o);
+                        createRequest();
+                        if (isRequestCreated()) {
+                            updatedFlag = false;
+                            ((RequestMessageQueue) o).addRequest(requestToSend);
+                        }
                     }
                     break;
 
                 case CREATE_REQUEST_TO_WRITE:
                     if (requestShouldBeCreated()) {
-                        boolean success = createRequestToWrite();
-                        if (success) {
+                        createRequestToWrite();
+                        if (isRequestCreated()) {
                             updatedFlag = false;
                             ((RequestMessageQueue) o).addRequest(requestToSend);
                         }
@@ -111,7 +106,6 @@ public class MessageManager implements Observer {
 
                 case UPDATE:
                     updateDataList((ResponseMessageMap) o);
-                    justStarted = false;
                     break;
 
                 case SKIP_TO_WRITE:
@@ -138,43 +132,32 @@ public class MessageManager implements Observer {
     }
 
     /**
-     *
-     * @param o
-     * @throws SQLException
-     */
-    public void createRequestIfNeedTo(Observable o) throws SQLException {
-        boolean success = createRequest();
-        if (success) {
-            updatedFlag = false;
-            ((RequestMessageQueue) o).addRequest(requestToSend);
-        }
-    }
-
-    /**
      * Creating request and add to queue.
      */
-    private boolean createRequest() throws SQLException {
+    private void createRequest() throws SQLException {
         if (updatedFlag == false) {
-            return false;
+            setRequestCreated(false);
         }
         if (graphsShouldBeRequested() && isSetClockInOnlineData()) {
             //2. create graph request hourly.
             requestToSend = new MessageFactory().createGraphRequest(controller.getNetName());
+            setRequestCreated(true);
         } else if (historyShouldBeRequested()) {
             //3.1. create history daily
             try {
                 requestToSend = createHistoryRequest();
             } catch (IllegalAccessException ex) {
                 controller.switchOff();
-                return false;
+                setRequestCreated(false);
             }
         } else if (history24HourShouldBeRequested()) {
             //3.2. create history 24 hours
             try {
                 requestToSend = create24HourHistoryRequest();
+                setRequestCreated(true);
             } catch (IllegalAccessException ex) {
                 controller.switchOff();
-                return false;
+                setRequestCreated(false);
             }
 ////        } else if (histogramShouldBeRequested()) {
 ////            //3.3. create histogram 24 hours
@@ -183,24 +166,27 @@ public class MessageManager implements Observer {
             //4. create request for one of the next message types
             try {
                 requestToSend = requests.next();
+                setRequestCreated(true);
             } catch (IllegalAccessException ex) {
                 controller.switchOff();
-                return false;
+                setRequestCreated(false);
             }
         }
-        return true;
     }
 
     /**
+     *
      * @return @throws SQLException
      */
-    private boolean createRequestToWrite() throws SQLException {
+    private void createRequestToWrite() throws SQLException {
         if (isAnyDataToChange()) {//1. create request to write if it necessary.
+            Data data = messageParser.getDataToSend();
+            controllerDao.removeChangedValue(controller.getId(), data.getId());
             requestToSend = new MessageFactory().createWriteRequest(controller.getNetName(), data.getType(), data.getValue());
-            data = null;
-            return true;
+            messageParser.setDataToSend(null);
+            setRequestCreated(true);
         }
-        return false;
+        setRequestCreated(false);
     }
 
     /**
@@ -231,9 +217,9 @@ public class MessageManager implements Observer {
      * @throws SQLException
      */
     private boolean isAnyDataToChange() throws SQLException {
-        data = dataDao.getChangedDataValue(controller.getId());
+        Data data = dataDao.getChangedDataValue(controller.getId());
         if (data != null) {
-            controllerDao.removeChangedValue(controller.getId(), data.getId());
+            messageParser.setDataToSend(data);
             return true;
         }
         return false;
@@ -400,49 +386,47 @@ public class MessageManager implements Observer {
             Timestamp currTime = new Timestamp(System.currentTimeMillis());
             switch (msgType) {
                 case REQUEST_TO_WRITE:
-                    updateSingleOnlineData(response, requestToSend);
+                    messageParser.parseShortResponse(response, requestToSend);
                     Long dataId = requestToSend.getDataId();
                     Long dataVal = requestToSend.getValue();
                     controllerDao.updateControllerData(controller.getId(), dataId, dataVal);
                     controllerDao.removeChangedValue(controller.getId(), dataId);
                     break;
                 case REQUEST_CHANGED:
-                    updateOnlineData(response, true);
+                    messageParser.parseResponse(response, true);
                     controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_PANEL:
-                    updateOnlineData(response);
+                    messageParser.parseResponse(response, false);
                     controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_CHICK_SCALE:
-                    updateOnlineData(response);
+                    messageParser.parseResponse(response, false);
                     controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_CONTROLLER:
-                    updateOnlineData(response);
+                    messageParser.parseResponse(response, false);
                     controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_HISTOGRAM:
-                    String datasetHistograsm = new String(response.getBuffer(), 0,
-                            response.getBuffer().length);
+                    String datasetHistogram = new String(response.getBuffer(), 0, response.getBuffer().length);
                     controllerDao.updateControllerHistogram(
-                            controller.getId(), requestToSend.getPlate(), datasetHistograsm,
+                            controller.getId(), requestToSend.getPlate(), datasetHistogram,
                             new Timestamp(System.currentTimeMillis()));
                     controller.setGraphUpdateTime(currTime.getTime());
                     break;
 
                 case REQUEST_EGG_COUNT:
-                    updateOnlineData(response);
+                    messageParser.parseResponse(response, false);
                     controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_GRAPHS:
-                    String values = new String(response.getBuffer(), 0, response.getBuffer().length);
-                    controllerDao.updateControllerGraph(controller.getId(), values, currTime);
+                    controllerDao.updateControllerGraph(controller.getId(), response.toString(), currTime);
                     controller.setGraphUpdateTime(currTime.getTime());
                     break;
 
@@ -480,151 +464,13 @@ public class MessageManager implements Observer {
      * @throws SQLException
      */
     private void createOnlineData() throws SQLException {
-        if (onlineDataItems == null || onlineDataItems.isEmpty()) {
+        if(this.messageParser == null) {
             final Collection<Data> dataItems = dataDao.getAll();
-            onlineDataItems = new HashMap<Long, Data>();
+            onlineDatatable = new HashMap<Long, Data>();
             for (Data d : dataItems) {
-                onlineDataItems.put(d.getId(), (Data) d.clone());
+                onlineDatatable.put(d.getId(), (Data) d.clone());
             }
-        }
-    }
-
-    /**
-     * Update online data.
-     *
-     * @param response the response message
-     */
-    public void updateOnlineData(Message response) {
-        updateOnlineData(response, false);
-    }
-
-    /**
-     * Update online data and skip diagnostic pair that is in last pairs .
-     *
-     * @param response the response message @skipDiagnostic if true , skip last pairs .
-     */
-    private void updateOnlineData(Message response, boolean skipDiagnostic) {
-        byte[] buffer = response.getBuffer();
-        String responseString = new String(buffer, 0, buffer.length);
-        logger.debug(response);
-        StringTokenizer token = new StringTokenizer(responseString, " ");
-        int countTokens = token.countTokens();
-        int count = 0;
-
-        LOOP:
-        while (token.hasMoreTokens()) {// loop for running in
-            if (skipDiagnostic == true && count == countTokens - 2) {
-                String changedData = token.nextToken();
-                String unchangedData = token.nextToken();
-                if (debug) {
-                    logger.debug("======================Diagnostic====================");
-                    logger.debug("Recieved: " + changedData + "; changed : " + unchangedData + ";");
-                    logger.debug("================================================");
-                }
-                break;
-            }
-            try {//
-                String dataIdString = token.nextToken();// get key data
-                if (!token.hasMoreTokens()) {
-                    break LOOP;
-                }
-                count++;
-
-                String valueString = token.nextToken();// get value data
-                count++;
-                long dataId = Long.parseLong(dataIdString);
-                int value = Integer.parseInt(valueString);
-                int type = (int) dataId;// type of value (like 4096)
-                if ((type & 0xC000) != 0xC000) {
-                    dataId = (type & 0xFFF); // remove type to get an index 4096&0xFFF -> 0
-                } else {
-                    dataId = (type & 0xFFFF);
-                }
-
-                if (onlineDataItems.containsKey(dataId)) {
-                    if (onlineDataItems.get(dataId).isDoubleBuffer()) {
-                        token.nextToken();// skip this key
-                        count++;
-                        int highValue = value;
-                        boolean negative = ((highValue & HIGH_16BIT_ON_MASK) == 0) ? false : true;
-                        if (negative) {
-                            // two's compliment action
-                            highValue = twosCompliment(highValue);
-                        }
-                        highValue <<= SHIFT_16_BIT;
-                        valueString = token.nextToken();// get low value
-                        count++;
-                        value = Integer.parseInt(valueString);
-
-                        int lowValue = value;
-                        negative = ((lowValue & HIGH_16BIT_ON_MASK) == 0) ? false : true;
-                        if (negative) {
-                            // two's compliment action
-                            lowValue = twosCompliment(lowValue);
-                        }
-                        value = highValue + lowValue;
-                    }
-                    // here we actually must to update data
-                    try {
-                        // if updated data sent to controller to change than skip update method.
-                        if (data != null && data.getId().equals(dataId)) {
-                            //skip update
-                            if (debug) {
-                                logger.debug("data id to write " + dataId);
-                            }
-                            data = null;
-                        } else {
-                            onlineDataItems.get(dataId).setValue((long) value);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (Exception ex) {
-                logger.error(ex.getMessage(), ex);
-            }
-        }
-    }
-
-    /**
-     * Update online data.
-     *
-     * @param response the response message
-     */
-    public void updateSingleOnlineData(Message response, Message request) {
-        byte[] buffer = response.getBuffer();
-        String worker = new String(buffer, 0, buffer.length);
-        StringTokenizer token = new StringTokenizer(worker, " ");
-
-        LOOP:
-        while (token.hasMoreTokens()) {// loop for running in
-            try {//
-                String dataIdString = token.nextToken();// get key data
-                if (!token.hasMoreTokens()) {
-                    break LOOP;
-                }
-                String valueString = token.nextToken();// get value data
-                long dataId = Long.parseLong(dataIdString);
-                int value = Integer.parseInt(valueString);
-                int type = (int) dataId;// type of value (4096)
-                if ((type & 0xC000) != 0xC000) {
-                    dataId = (type & 0xFFF); // remove type to get an index 4096&0xFFF -> 0
-                } else {
-                    dataId = (type & 0xFFFF);
-                }
-                if (onlineDataItems.containsKey(dataId)) {
-                    int fs = request.toString().indexOf(" ");
-                    int ls = request.toString().lastIndexOf(" ");
-                    String rv = request.toString().substring(fs + 1, ls);
-                    int v = Integer.parseInt(rv);
-                    if (v == value) {
-                        // here we actually must to update data
-                        onlineDataItems.get(dataId).setValue((long) value);
-                    }
-                }
-            } catch (Exception ex) {
-                logger.error("Unknown exception. ", ex);
-            }
+            this.messageParser = new MessageParser(onlineDatatable);
         }
     }
 
@@ -635,9 +481,10 @@ public class MessageManager implements Observer {
      */
     public SortedMap<Long, Data> getUpdatedOnlineData() {
         SortedMap<Long, Data> updatedValues = new TreeMap<Long, Data>();
+        onlineDatatable = messageParser.getParsedDataMap();
         for (long key = 0; key < CommonConstant.DATA_TABLE_SIZE; key++) {
-            if (onlineDataItems.containsKey(key)) {
-                Data d = onlineDataItems.get(key);
+            if (onlineDatatable.containsKey(key)) {
+                Data d = onlineDatatable.get(key);
                 if (d.isUpdated()) {
                     updatedValues.put(key, d);
                     d.setUpdated(false);
@@ -648,46 +495,21 @@ public class MessageManager implements Observer {
     }
 
     /**
-     * Return online data .
-     *
-     * @return the online data.
-     */
-    public HashMap<Long, Data> getOnlineData() {
-        return onlineDataItems;
-    }
-
-    /**
-     * Check the onlineDataItems if the values of data already exist
-     *
-     * @return true if there is values exists, otherwise false
-     */
-    public boolean isOnlineDataReady() {
-        boolean result = true;
-        Iterator<Data> iter = getOnlineData().values().iterator();
-        while (iter.hasNext()) {
-            Data d = (Data) iter.next();
-            if (!d.isDataReady()) {
-                result = false;
-            }
-        }
-        return result;
-    }
-
-    /**
      * Return true if set clock of controller is in online data .
      *
      * @return true if set clock in online data , otherwise false.
      */
     private boolean isSetClockInOnlineData() {
-        if (onlineDataItems == null) {
+        if (messageParser == null) {
             return false;
         }
 
-        if (!onlineDataItems.containsKey(SET_CLOCK_DATA_ID)) {
+        onlineDatatable = messageParser.getParsedDataMap();
+        if (!onlineDatatable.containsKey(SET_CLOCK_DATA_ID)) {
             return false;
         }
 
-        Data d = onlineDataItems.get(SET_CLOCK_DATA_ID);
+        Data d = onlineDatatable.get(SET_CLOCK_DATA_ID);
         if (d.getValue() == null) {
             return false;
         }
@@ -732,24 +554,6 @@ public class MessageManager implements Observer {
      */
     public Controller getController() {
         return controller;
-    }
-
-    /**
-     * Return number after two's compliment for integer type.
-     *
-     * @param val the number
-     * @return number the number after two's compliment
-     */
-    private int twosCompliment(int val) {
-        int tVal = val;
-        if (tVal != -1) {
-            //two's compliment action
-            tVal = Math.abs(tVal);
-            tVal = ~tVal;
-            tVal &= HIGH_32BIT_OFF_MASK;
-            tVal += 1;
-        }
-        return tVal;
     }
 
     /**
