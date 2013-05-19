@@ -2,6 +2,7 @@ package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.AlarmDao;
 import com.agrologic.app.model.Alarm;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class DerbyAlarmDaoImplTest {
     private AlarmDao alarmDao;
 
     @Test
+    @Ignore
     public void testName() throws Exception {
         Alarm alarm = new Alarm();
         alarm.setId(1L);

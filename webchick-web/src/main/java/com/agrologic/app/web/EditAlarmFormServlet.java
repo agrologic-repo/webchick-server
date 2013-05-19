@@ -8,22 +8,20 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.AlarmDao;
-import com.agrologic.app.dao.impl.AlarmDaoImpl;
-import com.agrologic.app.model.AlarmDto;
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Alarm;
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  *
@@ -49,10 +47,10 @@ public class EditAlarmFormServlet extends HttpServlet {
             Long      alarmId       = Long.parseLong(request.getParameter("NalarmId"));
             String    alarmText     = request.getParameter("Ntext");
             Long      translateLang = Long.parseLong(request.getParameter("translateLang"));
-            AlarmDao alarmDao      = new AlarmDaoImpl();
+            AlarmDao alarmDao      = DbImplDecider.use(DaoType.MYSQL).getDao(AlarmDao.class);
 
             try {
-                AlarmDto alarm = alarmDao.getById(alarmId);
+                Alarm alarm = alarmDao.getById(alarmId);
 
                 alarm.setText(alarmText);
                 alarmDao.update(alarm);

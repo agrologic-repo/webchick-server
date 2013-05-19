@@ -8,6 +8,7 @@ screen.ser
 target
 agrodb
 logs
+log
 
 #IntelliJ
 .idea

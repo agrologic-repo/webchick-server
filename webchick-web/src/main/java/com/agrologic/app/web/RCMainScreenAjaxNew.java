@@ -316,10 +316,10 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                     break;
 
                 case DataDto.ALARM:
-                    List<ProgramAlarmDto> alarms = controller.getProgram().getProgramAlarmsByData(data.getId());
+                    List<ProgramAlarm> alarms = controller.getProgram().getProgramAlarmsByData(data.getId());
                     StringBuilder toolTip = new StringBuilder();
 
-                    for (ProgramAlarmDto a : alarms) {
+                    for (ProgramAlarm a : alarms) {
                         toolTip.append("<p>").append(a.getDigitNumber()).append(" - ").append(a.getText()).append("</p>");
                     }
 

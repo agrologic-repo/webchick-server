@@ -8,22 +8,20 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.AlarmDao;
-import com.agrologic.app.dao.impl.AlarmDaoImpl;
-import com.agrologic.app.model.AlarmDto;
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Alarm;
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  *
@@ -57,8 +55,8 @@ public class RemoveAlarmServlet extends HttpServlet {
                 Long alarmId       = Long.parseLong(request.getParameter("alarmId"));
 
                 try {
-                    AlarmDao alarmDao = new AlarmDaoImpl();
-                    AlarmDto  alarm    = alarmDao.getById(alarmId);
+                    AlarmDao alarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(AlarmDao.class);
+                    Alarm  alarm    = alarmDao.getById(alarmId);
 
                     alarmDao.remove(alarm.getId());
                     logger.info("Alarm " + alarm + " successfully removed!");

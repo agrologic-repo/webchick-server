@@ -13,7 +13,7 @@
 <jsp:directive.page import="com.agrologic.app.model.TableDto"/>
 <jsp:directive.page import="com.agrologic.app.model.DataDto"/>
 <jsp:directive.page import="com.agrologic.app.model.ProgramDto"/>
-<jsp:directive.page import="com.agrologic.app.model.ProgramAlarmDto"/>
+<jsp:directive.page import="com.agrologic.app.model.ProgramAlarm"/>
 <jsp:directive.page import="com.agrologic.app.model.ProgramSystemStateDto"/>
 <jsp:directive.page import="com.agrologic.app.model.ProgramRelayDto"/>
 <jsp:directive.page import="com.agrologic.app.web.UserRole"/>
@@ -371,9 +371,9 @@
                                                                                                                                     <%break;
                                                     case DataDto.ALARM:%>
                                                                                                                                     <!--ALARMS-->
-                                                                                                                                    <% List<ProgramAlarmDto> alarms = controller.getProgram().getProgramAlarmsByData(data.getId());%>
+                                                                                                                                    <% List<ProgramAlarm> alarms = controller.getProgram().getProgramAlarmsByData(data.getId());%>
                                                                                                                                     <% StringBuilder toolTip = new StringBuilder();%>
-                                                                                                                                    <% for (ProgramAlarmDto a : alarms) {%>
+                                                                                                                                    <% for (ProgramAlarm a : alarms) {%>
                                                                                                                                     <%toolTip.append("<p>" + a.getDigitNumber() + " - " + a.getText() + "</p>");%>
                                                                                                                                     <%}%>
                                                                                                                                     <tr class="unselected" onmouseover="this.className='selected'" onmouseout="this.className='unselected'">

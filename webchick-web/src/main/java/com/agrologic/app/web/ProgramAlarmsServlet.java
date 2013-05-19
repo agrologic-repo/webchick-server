@@ -6,48 +6,42 @@
 package com.agrologic.app.web;
 
 
-
-import com.agrologic.app.dao.AlarmDao;
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.ProgramAlarmDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.impl.AlarmDaoImpl;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.ProgramAlarmDaoImpl;
 import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.model.AlarmDto;
+import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.DataDto;
-import com.agrologic.app.model.ProgramAlarmDto;
+import com.agrologic.app.model.ProgramAlarm;
 import com.agrologic.app.model.ProgramDto;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+//~--- JDK imports ------------------------------------------------------------
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class ProgramAlarmsServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -68,26 +62,26 @@ public class ProgramAlarmsServlet extends HttpServlet {
 
                 try {
                     ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto  program    = programDao.getById(programId);
+                    ProgramDto program = programDao.getById(programId);
 
                     logger.info("retrieve program!");
 
-                    String[]              empty           = new String[0];
-                    ProgramAlarmDao      programAlarmDao = new ProgramAlarmDaoImpl();
-                    List<ProgramAlarmDto> programAlarms   = programAlarmDao.getAllProgramAlarms(program.getId(), empty);
+                    String[] empty = new String[0];
+                    ProgramAlarmDao programAlarmDao = new ProgramAlarmDaoImpl();
+                    List<ProgramAlarm> programAlarms = programAlarmDao.getAllProgramAlarms(program.getId(), empty);
 
                     program.setProgramAlarms(programAlarms);
                     logger.info("retreive program alarms!");
                     request.getSession().setAttribute("program", program);
 
-                    DataDao      dataDao    = new DataDaoImpl();
+                    DataDao dataDao = new DataDaoImpl();
                     List<DataDto> dataAlarms = dataDao.getAlarms();
 
                     logger.info("retreive program alarms datatypes!");
                     request.getSession().setAttribute("dataAlarms", dataAlarms);
 
-                    AlarmDao      alarmDao   = new AlarmDaoImpl();
-                    List<AlarmDto> alarmNames = alarmDao.getAll();
+                    AlarmDao alarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(AlarmDao.class);
+                    List<Alarm> alarmNames = new ArrayList<Alarm>(alarmDao.getAll());
 
                     logger.info("retreive relay names!");
                     request.getSession().setAttribute("alarmNames", alarmNames);
@@ -109,10 +103,11 @@ public class ProgramAlarmsServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -122,10 +117,11 @@ public class ProgramAlarmsServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -135,6 +131,7 @@ public class ProgramAlarmsServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

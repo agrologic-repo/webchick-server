@@ -2,6 +2,7 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.AlarmDao;
 import com.agrologic.app.dao.DaoFactory;
+import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.ProgramAlarm;
 import com.agrologic.app.util.AlarmUtil;
@@ -13,6 +14,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import java.sql.*;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AlarmDaoImpl implements AlarmDao {
@@ -204,26 +206,11 @@ public class AlarmDaoImpl implements AlarmDao {
     @Override
     public Alarm getById(Long id) throws SQLException {
         String sqlQuery = "select * from alarmnames where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-            ResultSet rs = prepstmt.executeQuery();
-            if (rs.next()) {
-                return AlarmUtil.makeAlarm(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Specified Alarm From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        List<Alarm> alarms = jdbcTemplate.query(sqlQuery, new Object[]{id}, RowMappers.alarm());
+        if (alarms.isEmpty()) {
+            return null;
         }
+        return alarms.get(0);
     }
 
     @Override

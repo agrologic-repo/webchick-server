@@ -32,7 +32,7 @@ public class ProgramDto implements Serializable {
     private Long                        id;
     private String                      modifiedDate;
     private String                      name;
-    private List<ProgramAlarmDto>       programAlarms;
+    private List<ProgramAlarm>       programAlarms;
     private List<ProgramRelayDto>       programRelays;
     private List<ProgramSystemStateDto> programSystemStates;
     private List<ScreenDto>             screens;
@@ -69,11 +69,11 @@ public class ProgramDto implements Serializable {
         this.modifiedDate = modifiedDate;
     }
 
-    public List<ProgramAlarmDto> getProgramAlarms() {
+    public List<ProgramAlarm> getProgramAlarms() {
         return programAlarms;
     }
 
-    public void setProgramAlarms(List<ProgramAlarmDto> programAlarms) {
+    public void setProgramAlarms(List<ProgramAlarm> programAlarms) {
         this.programAlarms = programAlarms;
     }
 
@@ -145,10 +145,10 @@ public class ProgramDto implements Serializable {
         return relayByData;
     }
 
-    public List<ProgramAlarmDto> getProgramAlarmsByData(long dataId) {
-        List<ProgramAlarmDto> alarmsByData = new ArrayList<ProgramAlarmDto>();
+    public List<ProgramAlarm> getProgramAlarmsByData(long dataId) {
+        List<ProgramAlarm> alarmsByData = new ArrayList<ProgramAlarm>();
 
-        for (ProgramAlarmDto e : programAlarms) {
+        for (ProgramAlarm e : programAlarms) {
             if (e.getDataId() == dataId) {
                 alarmsByData.add(e);
             }

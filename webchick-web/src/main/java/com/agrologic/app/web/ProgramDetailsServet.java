@@ -18,7 +18,7 @@ import com.agrologic.app.dao.impl.ProgramDaoImpl;
 import com.agrologic.app.dao.impl.ProgramRelayDaoImpl;
 import com.agrologic.app.dao.impl.ProgramSystemStateDaoImpl;
 import com.agrologic.app.model.DataDto;
-import com.agrologic.app.model.ProgramAlarmDto;
+import com.agrologic.app.model.ProgramAlarm;
 import com.agrologic.app.model.ProgramDto;
 import com.agrologic.app.model.ProgramRelayDto;
 import com.agrologic.app.model.ProgramSystemStateDto;
@@ -82,7 +82,7 @@ public class ProgramDetailsServet extends HttpServlet {
             request.getSession().setAttribute("programRelays", programRelays);
 
             ProgramAlarmDao      programAlarmDao = new ProgramAlarmDaoImpl();
-            List<ProgramAlarmDto> programAlarms   = programAlarmDao.getAllProgramAlarms(program.getId());
+            List<ProgramAlarm> programAlarms   = programAlarmDao.getAllProgramAlarms(program.getId());
 
             request.getSession().setAttribute("programAlarms", programAlarms);
 

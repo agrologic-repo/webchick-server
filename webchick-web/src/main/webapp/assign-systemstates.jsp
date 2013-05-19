@@ -11,7 +11,7 @@
 <jsp:directive.page import="com.agrologic.app.model.SystemStateDto"/>
 <jsp:directive.page import="com.agrologic.app.model.ProgramDto"/>
 <jsp:directive.page import="com.agrologic.app.model.ProgramRelayDto"/>
-<jsp:directive.page import="com.agrologic.app.model.ProgramAlarmDto"/>
+<jsp:directive.page import="com.agrologic.app.model.ProgramAlarm"/>
 <jsp:directive.page import="com.agrologic.app.model.ProgramSystemStateDto"/>
 
 

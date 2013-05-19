@@ -8,10 +8,10 @@
 
 <jsp:directive.page import="com.agrologic.app.model.UserDto"/>
 <jsp:directive.page import="com.agrologic.app.model.DataDto"/>
-<jsp:directive.page import="com.agrologic.app.model.AlarmDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Alarm"/>
 <jsp:directive.page import="com.agrologic.app.model.ProgramDto"/>
 <jsp:directive.page import="com.agrologic.app.model.ProgramRelayDto"/>
-<jsp:directive.page import="com.agrologic.app.model.ProgramAlarmDto"/>
+<jsp:directive.page import="com.agrologic.app.model.ProgramAlarm"/>
 <jsp:directive.page import="com.agrologic.app.model.ProgramSystemStateDto"/>
 
 <%  UserDto user = (UserDto)request.getSession().getAttribute("user");
@@ -21,11 +21,11 @@
     }
     ProgramDto program = (ProgramDto)request.getSession().getAttribute("program");
     List<DataDto> dataAlarms = (List<DataDto>)request.getSession().getAttribute("dataAlarms");
-    List<AlarmDto> alarmNames = (List<AlarmDto>)request.getSession().getAttribute("alarmNames");
+    List<Alarm> alarmNames = (List<Alarm>)request.getSession().getAttribute("alarmNames");
     String datamap;
 %>
-<%! ProgramAlarmDto findAlarm(List<ProgramAlarmDto> dataAlarms,Long alarmType, int digitNumber) {
-        for(ProgramAlarmDto pa:dataAlarms) {
+<%! ProgramAlarm findAlarm(List<ProgramAlarm> dataAlarms,Long alarmType, int digitNumber) {
+        for(ProgramAlarm pa:dataAlarms) {
             if(pa.getDataId().equals(alarmType) && pa.getDigitNumber() == digitNumber) {
                 return pa;
             }
@@ -110,16 +110,16 @@
                         </thead>
                         <tbody>
                         <% int digitNumbers = 10; %>
-                        <% List<ProgramAlarmDto> programAlarms = program.getProgramAlarmsByData(dataAlarm.getId()); %>
+                        <% List<ProgramAlarm> programAlarms = program.getProgramAlarmsByData(dataAlarm.getId()); %>
                         <% for(int digitNumber = 1; digitNumber <= digitNumbers ; digitNumber++){ %>
-                        <% ProgramAlarmDto alarm = findAlarm(programAlarms, dataAlarm.getId(), digitNumber); %>
+                        <% ProgramAlarm alarm = findAlarm(programAlarms, dataAlarm.getId(), digitNumber); %>
                         <tr>
                             <td align="left" width="30px">
                                 <input style="width:30px" type="text" name="digits"  value="<%=digitNumber%>">
                             </td>
                             <td align="left" width="80px">
                                 <select id="alarmnames" name="alarmnames" style="width:auto;">
-                                    <%for(AlarmDto alarmName:alarmNames) {%>
+                                    <%for(Alarm alarmName:alarmNames) {%>
                                         <% if(alarm != null && alarm.getText().equals(alarmName.getText())) {%>
                                             <option value="<%=alarmName.getId()%>" selected><%=alarmName.getText()%></option>
                                         <%} else {%>

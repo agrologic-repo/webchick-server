@@ -8,7 +8,7 @@ package com.agrologic.app.dao.impl;
 
 
 import com.agrologic.app.dao.ProgramAlarmDao;
-import com.agrologic.app.model.ProgramAlarmDto;
+import com.agrologic.app.model.ProgramAlarm;
 
 
 
@@ -32,8 +32,8 @@ import java.util.Set;
  * @version     1.1 <br>
  */
 public class ProgramAlarmDaoImpl extends ConnectorDao implements ProgramAlarmDao {
-    private ProgramAlarmDto makeProgramAlarm(ResultSet rs) throws SQLException {
-        ProgramAlarmDto programAlarm = new ProgramAlarmDto();
+    private ProgramAlarm makeProgramAlarm(ResultSet rs) throws SQLException {
+        ProgramAlarm programAlarm = new ProgramAlarm();
 
         programAlarm.setDataId(rs.getLong("DataID"));
         programAlarm.setDigitNumber(rs.getInt("DigitNumber"));
@@ -48,8 +48,8 @@ public class ProgramAlarmDaoImpl extends ConnectorDao implements ProgramAlarmDao
         return programAlarm;
     }
 
-    private List<ProgramAlarmDto> makeProgramAlarmList(ResultSet rs) throws SQLException {
-        List<ProgramAlarmDto> programAlarms = new ArrayList<ProgramAlarmDto>();
+    private List<ProgramAlarm> makeProgramAlarmList(ResultSet rs) throws SQLException {
+        List<ProgramAlarm> programAlarms = new ArrayList<ProgramAlarm>();
 
         while (rs.next()) {
             programAlarms.add(makeProgramAlarm(rs));
@@ -59,7 +59,7 @@ public class ProgramAlarmDaoImpl extends ConnectorDao implements ProgramAlarmDao
     }
 
     @Override
-    public void insert(ProgramAlarmDto programAlarm) throws SQLException {
+    public void insert(ProgramAlarm programAlarm) throws SQLException {
         String            sqlQuery = "insert into programalrams values (?,?,?,?,?)";
         PreparedStatement prepstmt = null;
         Connection        con      = null;
@@ -85,7 +85,7 @@ public class ProgramAlarmDaoImpl extends ConnectorDao implements ProgramAlarmDao
     }
 
     @Override
-    public void update(ProgramAlarmDto programAlarm) throws SQLException {
+    public void update(ProgramAlarm programAlarm) throws SQLException {
         String sqlQuery =
             "update programrelays set Text=?, alarmTextID=? where DataID=? and DigitNumber=? and ProgramID=?";
         PreparedStatement prepstmt = null;
@@ -189,7 +189,7 @@ public class ProgramAlarmDaoImpl extends ConnectorDao implements ProgramAlarmDao
     }
 
     @Override
-    public List<ProgramAlarmDto> getAllProgramAlarms(Long programId) throws SQLException {
+    public List<ProgramAlarm> getAllProgramAlarms(Long programId) throws SQLException {
         String            sqlQuery = "select * from programalarms where ProgramID=?";
         PreparedStatement prepstmt = null;
         Connection        con      = null;
@@ -214,7 +214,7 @@ public class ProgramAlarmDaoImpl extends ConnectorDao implements ProgramAlarmDao
     }
 
     @Override
-    public List<ProgramAlarmDto> getAllProgramAlarms(Long programId, Long langId) throws SQLException {
+    public List<ProgramAlarm> getAllProgramAlarms(Long programId, Long langId) throws SQLException {
         String sqlQuery =
             "select * from programalarms as progalarm "
             + " join (select AlarmID,LangID,UnicodeName from alarmbylanguage ) "
@@ -250,7 +250,7 @@ public class ProgramAlarmDaoImpl extends ConnectorDao implements ProgramAlarmDao
     }
 
     @Override
-    public List<ProgramAlarmDto> getAllProgramAlarms(Long programId, String[] text) throws SQLException {
+    public List<ProgramAlarm> getAllProgramAlarms(Long programId, String[] text) throws SQLException {
         String sqlQuery = "select * from programalarms where ProgramID=" + programId;
 
         if ((text != null) && (text.length > 0)) {
