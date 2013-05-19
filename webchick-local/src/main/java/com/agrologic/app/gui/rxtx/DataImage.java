@@ -15,22 +15,22 @@ public class DataImage extends JLabel implements DataChangeListener {
 
     static {
         imageIconMap = new HashMap();
-        imageIconMap.put(Type.FAN_ON, imageIcon("/resources/fan-on.gif"));
-        imageIconMap.put(Type.FAN_OFF, imageIcon("/resources/fan-off.gif"));
-        imageIconMap.put(Type.COOL_ON, imageIcon("/resources/coolon.gif"));
-        imageIconMap.put(Type.COOL_OFF, imageIcon("/resources/cooloff.gif"));
-        imageIconMap.put(Type.LIGHT_ON, imageIcon("/resources/lighton.gif"));
-        imageIconMap.put(Type.LIGHT_OFF, imageIcon("/resources/lightoff.png"));
-        imageIconMap.put(Type.AOUGER_ON, imageIcon("/resources/aougeron.gif"));
-        imageIconMap.put(Type.AOUGER_OFF, imageIcon("/resources/aougeroff.gif"));
-        imageIconMap.put(Type.WATER_ON, imageIcon("/resources/wateron.gif"));
-        imageIconMap.put(Type.WATER_OFF, imageIcon("/resources/wateroff.gif"));
-        imageIconMap.put(Type.RELAY_ON, imageIcon("/resources/relayon.gif"));
-        imageIconMap.put(Type.RELAY_OFF, imageIcon("/resources/relayoff.png"));
-        imageIconMap.put(Type.HEATER_ON, imageIcon("/resources/heateron.gif"));
-        imageIconMap.put(Type.HEATER_OFF, imageIcon("/resources/heateroff.gif"));
-        imageIconMap.put(Type.SPARK_ON, imageIcon("/resources/sparkon.gif"));
-        imageIconMap.put(Type.SPARK_OFF, imageIcon("/resources/sparkoff.gif"));
+        imageIconMap.put(Type.FAN_ON, imageIcon("/images/fan-on.gif"));
+        imageIconMap.put(Type.FAN_OFF, imageIcon("/images/fan-off.gif"));
+        imageIconMap.put(Type.COOL_ON, imageIcon("/images/coolon.gif"));
+        imageIconMap.put(Type.COOL_OFF, imageIcon("/images/cooloff.gif"));
+        imageIconMap.put(Type.LIGHT_ON, imageIcon("/images/lighton.gif"));
+        imageIconMap.put(Type.LIGHT_OFF, imageIcon("/images/lightoff.png"));
+        imageIconMap.put(Type.AOUGER_ON, imageIcon("/images/aougeron.gif"));
+        imageIconMap.put(Type.AOUGER_OFF, imageIcon("/images/aougeroff.gif"));
+        imageIconMap.put(Type.WATER_ON, imageIcon("/images/wateron.gif"));
+        imageIconMap.put(Type.WATER_OFF, imageIcon("/images/wateroff.gif"));
+        imageIconMap.put(Type.RELAY_ON, imageIcon("/images/relayon.gif"));
+        imageIconMap.put(Type.RELAY_OFF, imageIcon("/images/relayoff.png"));
+        imageIconMap.put(Type.HEATER_ON, imageIcon("/images/heateron.gif"));
+        imageIconMap.put(Type.HEATER_OFF, imageIcon("/images/heateroff.gif"));
+        imageIconMap.put(Type.SPARK_ON, imageIcon("/images/sparkon.gif"));
+        imageIconMap.put(Type.SPARK_OFF, imageIcon("/images/sparkoff.gif"));
     }
 
     private Integer bitNumber;

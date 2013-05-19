@@ -1,11 +1,15 @@
 package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoFactory;
+import com.agrologic.app.dao.DataDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,160 +129,14 @@ public class MySqlDaoFactory extends DaoFactory {
         return false;
     }
 
-    /**
-     * Retrieve the mysql installed version;
-     *
-     * @return version the of installed mysql
-     */
-    public static String getMySQLVersion() {
-        String sqlQuery = "SELECT VERSION()";
-        Statement stmt = null;
-        Connection con = null;
-        String version = "";
-
-        try {
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/", USER, PASS);
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            if (rs.next()) {
-                version = rs.getString(1);
-            }
-        } catch (SQLException e) {
-            logger.error("Cannot Get MySQL Version", e);
-        } finally {
-            try {
-                stmt.close();
-            } catch (SQLException ex) {
-            }
-
-            try {
-                con.close();
-            } catch (SQLException ex) {
-            }
-        }
-
-        int pidx = version.lastIndexOf(".");
-
-        version = version.substring(0, pidx);
-
-        return version;
-    }
-
-    @Override
-    public SchemaDao getSchemaDao() {
-        return new SchemaDaoImpl(this);
-    }
-
-    @Override
-    public UserDao getUserDao() {
-        return new UserDaoImpl(this);
-    }
-
-    @Override
-    public CellinkDao getCellinkDao() {
-        return new CellinkDaoImpl(this);
-    }
-
     @Override
     public ControllerDao getControllerDao() {
         return new ControllerDaoImpl(this);
     }
 
     @Override
-    public ProgramDao getProgramDao() {
-        return new ProgramDaoImpl(this);
-    }
-
-    @Override
-    public ScreenDao getScreenDao() {
-        return new ScreenDaoImpl(this);
-    }
-
-    @Override
-    public TableDao getTableDao() {
-        return new TableDaoImpl(this);
-    }
-
-    @Override
     public DataDao getDataDao() {
         return new DataDaoImpl(this);
-    }
-
-    @Override
-    public AlarmDao getAlarmDao() {
-        return new AlarmDaoImpl(this);
-    }
-
-    @Override
-    public RelayDao getRelayDao() {
-        return new RelayDaoImpl(this);
-    }
-
-    @Override
-    public SystemStateDao getSystemStateDao() {
-        return new SystemStateDaoImpl(this);
-    }
-
-    @Override
-    public LanguageDao getLanguageDao() {
-        return new LanguageDaoImpl(this);
-    }
-
-    @Override
-    public FlockDao getFlockDao() {
-        return new FlockDaoImpl(this);
-    }
-
-    @Override
-    public DistribDao getDistribDao() {
-        return new DistribDaoImpl(this);
-    }
-
-    @Override
-    public FeedDao getFeedDao() {
-        return new FeedDaoImpl(this);
-    }
-
-    @Override
-    public FeedTypeDao getFeedTypeDao() {
-        return new FeedTypeDaoImpl(this);
-    }
-
-    @Override
-    public FuelDao getFuelDao() {
-        return new FuelDaoImpl(this);
-    }
-
-    @Override
-    public LaborDao getLaborDao() {
-        return new LaborDaoImpl(this);
-    }
-
-    @Override
-    public GasDao getGasDao() {
-        return new GasDaoImpl(this);
-    }
-
-    @Override
-    public MedicineDao getMedicineDao() {
-        return new MedicineDaoImpl(this);
-    }
-
-    @Override
-    public SpreadDao getSpreadDao() {
-        return new SpreadDaoImpl(this);
-    }
-
-    @Override
-    public TransactionDao getTransactionDao() {
-        return new TransactionDaoImpl(this);
-    }
-
-    @Override
-    public WorkerDao getWorkerDao() {
-        return new WorkerDaoImpl(this);
     }
 
     /**

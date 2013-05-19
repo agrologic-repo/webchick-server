@@ -73,50 +73,6 @@ public abstract class DaoFactory {
 
         return false;
     }
-
-    public abstract SchemaDao getSchemaDao();
-
-    public abstract UserDao getUserDao();
-
-    public abstract CellinkDao getCellinkDao();
-
     public abstract ControllerDao getControllerDao();
-
-    public abstract ProgramDao getProgramDao();
-
-    public abstract ScreenDao getScreenDao();
-
-    public abstract TableDao getTableDao();
-
     public abstract DataDao getDataDao();
-
-    public abstract AlarmDao getAlarmDao();
-
-    public abstract RelayDao getRelayDao();
-
-    public abstract SystemStateDao getSystemStateDao();
-
-    public abstract LanguageDao getLanguageDao();
-
-    public abstract FlockDao getFlockDao();
-
-    public abstract DistribDao getDistribDao();
-
-    public abstract FeedDao getFeedDao();
-
-    public abstract FeedTypeDao getFeedTypeDao();
-
-    public abstract FuelDao getFuelDao();
-
-    public abstract LaborDao getLaborDao();
-
-    public abstract GasDao getGasDao();
-
-    public abstract MedicineDao getMedicineDao();
-
-    public abstract SpreadDao getSpreadDao();
-
-    public abstract TransactionDao getTransactionDao();
-
-    public abstract WorkerDao getWorkerDao();
 }

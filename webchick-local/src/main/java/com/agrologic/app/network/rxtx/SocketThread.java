@@ -1,15 +1,16 @@
 package com.agrologic.app.network.rxtx;
 
+
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.dao.service.DatabaseLoadAccessor;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.except.ObjectDoesNotExist;
+import com.agrologic.app.except.SerialPortControlFailure;
 import com.agrologic.app.gui.rxtx.StatusPanel;
 import com.agrologic.app.gui.rxtx.WCSLWindow;
 import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Controller;
-import com.agrologic.app.network.MessageManager;
 import com.agrologic.app.util.LocalUtil;
 import com.agrologic.app.util.StatusChar;
 import org.apache.log4j.Logger;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+
 
 public final class SocketThread extends Observable implements Runnable, Network {
 
@@ -37,7 +39,6 @@ public final class SocketThread extends Observable implements Runnable, Network 
     private ResponseMessageMap responseMessageMap;
     private Message sendMessage;
     private WCSLWindow wcsl;
-    private JLabel statusLabel;
     private StatusPanel statusPanel;
     private boolean DEBUG = false;
     private Logger logger = Logger.getLogger(SocketThread.class);
@@ -63,17 +64,17 @@ public final class SocketThread extends Observable implements Runnable, Network 
         // trying to open comport
         if (com == null) {
             final String comport = configuration.getComPort();
-            //try {
+            try {
                 com = new SerialPortControl(comport, this);
                 logger.info("Communication port opened successfully!");
-            //} catch (SerialPortControlFailure e) {
-            //    logger.error(e);
-                //throw new SerialPortControlFailure(e.getMessage(), e);
-            //}
+            } catch (SerialPortControlFailure e) {
+                logger.error(e);
+//                throw new SerialPortControlFailure(e.getMessage(), e);
+            }
         }
 
         try {
-            // init controller message managers
+            // parsingReceiveBuffer controller message managers
             logger.info("Initialization messages");
             initControllerMessageManagers(configuration);
         } catch (ObjectDoesNotExist e) {
@@ -140,7 +141,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
 
                     case STATE_READ:
 
-                        // check if there is a data to chenge
+                        // check if there is a data to change
                         responseMessage = (ResponseMessage) com.read();
                         logger.info(responseMessage);
                         statusPanel.setReceiveMsg(responseMessage.getIndex() + " " + responseMessage);
@@ -190,7 +191,6 @@ public final class SocketThread extends Observable implements Runnable, Network 
                             responseMessage = new ResponseMessage(null);
                             logger.info("Error count : " + errCount);
                             logger.info("Error [" + responseMessage + "]");
-                            statusLabel.setText("Error [" + responseMessage + "]");
                             statusPanel.setReceiveMsg("" + responseMessage + " " + errCount);
                             errCount = 0;
                             responseMessageMap.put((RequestMessage) sendMessage, responseMessage);

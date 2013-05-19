@@ -338,9 +338,9 @@ public class SocketThread implements Runnable, Network {
 
     private void waitKeepAlive() throws IOException, SQLException {
         int state = cellinkDao.getState(cellink.getId());
-        if (state == CellinkState.STATE_START
-                || state == CellinkState.STATE_RESTART) {
+        if (state == CellinkState.STATE_START  || state == CellinkState.STATE_RESTART) {
             setThreadState(NetworkState.STATE_STARTING);
+
         } else {
             if (isKeepAliveTime(keepAliveTime)) {
                 if (commControl.availableData() > 0) {

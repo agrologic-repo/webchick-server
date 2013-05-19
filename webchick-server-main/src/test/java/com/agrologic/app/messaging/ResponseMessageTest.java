@@ -4,7 +4,7 @@
  */
 package com.agrologic.app.messaging;
 
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -29,23 +29,18 @@ public class ResponseMessageTest {
             "365 0 1366 0 21847 5440 21848 5632 21849 5664 21850 5696 1379 28 1399 0 1533 512 1534 0 1539 0 -23027 3 15" +
             "56 10 1557 0 1600 -1 1601 -1 1602 -1 1603 -1 1604 -1 1605 -1 1606 -1 1607 -1 1608 -1 22089 -1 22090 -1 220" +
             "91 -1 22092 -1 22093 -1 22094 -1 22095 -1 22096 -1 22097 -1 22098 -1 100 7 -1 0 186\u0004";
-
     private ResponseMessage responseMessage;
-
-    @Before
-    public void setUP() {
-    }
 
     @Test
     public void testConstructorWithSingleDataResponse() {
         responseMessage = new ResponseMessage(SINGLE_DATA_RESPONSE.getBytes());
-        String expectedString = "4096 257 ";
-        assertEquals(expectedString, responseMessage.toString());
+        assertEquals("4096 257 ", responseMessage.toString());
     }
 
     @Test
-    public void testConstructorWithGraphDataResponse() {
+    public void responseMessageBodyDoesNotIncludeSpecialCharactersOfGraph() {
         responseMessage = new ResponseMessage(GRAPH_DATA_RESPONSE.getBytes());
+        //get only data without system characters
         String expectedString = GRAPH_DATA_RESPONSE.substring(3, GRAPH_DATA_RESPONSE.length() - 3);
         assertEquals(expectedString, responseMessage.toString());
     }
@@ -76,12 +71,14 @@ public class ResponseMessageTest {
         assertEquals(186, calcCheckSum);
     }
 
+    @Test
+    @Ignore("overflow error checksum is calculated incorrectly")
     public void calcCheckSumLongStringError() {
         int calcCheckSum = ResponseMessage.calcChecksum(MULTI_DATA_RESPONSE.getBytes(), 3,
                 MULTI_DATA_RESPONSE.length() - 5);
-        int calcCheckSum2 = ResponseMessage.overFlowErrorChecksum(MULTI_DATA_RESPONSE.getBytes(), 3,
+        int overflowCheckSum = ResponseMessage.overFlowErrorChecksum(MULTI_DATA_RESPONSE.getBytes(), 3,
                 MULTI_DATA_RESPONSE.length() - 5);
-        assertEquals(calcCheckSum, calcCheckSum2);
+        assertEquals(calcCheckSum, overflowCheckSum);
     }
 
 }

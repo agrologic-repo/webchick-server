@@ -301,7 +301,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         add(tabsPane);
         tabsPane.setBounds(0, 45, 300, 380);
 
-        btnHouseTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/back.png"))); // NOI18N
+        btnHouseTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/back.png"))); // NOI18N
         btnHouseTitle.setText("BACK");
         btnHouseTitle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

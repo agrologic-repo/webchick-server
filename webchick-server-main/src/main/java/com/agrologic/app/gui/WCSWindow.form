@@ -79,7 +79,7 @@
         <Component class="javax.swing.JButton" name="btnStart">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/icons16x16/Play-16x16.png"/>
+              <Image iconType="3" name="/images/Play-16x16.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Run"/>
             <Property name="focusable" type="boolean" value="false"/>
@@ -99,7 +99,7 @@
         <Component class="javax.swing.JButton" name="btnStop">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/icons16x16/Stop-16x16.png"/>
+              <Image iconType="3" name="/images/Stop-16x16.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Stop"/>
             <Property name="focusable" type="boolean" value="false"/>
@@ -119,7 +119,7 @@
         <Component class="javax.swing.JButton" name="btnSetting">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/icons16x16/Settings-16x16.png"/>
+              <Image iconType="3" name="/images/Settings-16x16.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Setting"/>
             <Property name="focusable" type="boolean" value="false"/>
@@ -140,7 +140,7 @@
         <Component class="javax.swing.JButton" name="btnLogFile">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/icons16x16/note.gif"/>
+              <Image iconType="3" name="/images/note.gif"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Log"/>
             <Property name="focusable" type="boolean" value="false"/>
@@ -157,7 +157,7 @@
         <Component class="javax.swing.JButton" name="btnExit">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/icons16x16/Log-Out-16x16.png"/>
+              <Image iconType="3" name="/images/Log-Out-16x16.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Exit"/>
             <Property name="focusable" type="boolean" value="false"/>
@@ -177,7 +177,7 @@
         <Component class="javax.swing.JButton" name="btnWizardDB">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/icons16x16/database_gear.png"/>
+              <Image iconType="3" name="/images/database_gear.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value=" Database Wizard"/>
             <Property name="focusable" type="boolean" value="false"/>

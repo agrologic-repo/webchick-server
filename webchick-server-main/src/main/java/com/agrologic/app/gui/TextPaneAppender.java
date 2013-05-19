@@ -7,21 +7,19 @@ package com.agrologic.app.gui;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import java.awt.Color;
-import java.awt.Image;
-import java.awt.Toolkit;
+import org.apache.log4j.*;
+import org.apache.log4j.helpers.QuietWriter;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
+
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
-import javax.swing.ImageIcon;
-import javax.swing.JTextPane;
-import javax.swing.text.*;
-import org.apache.log4j.*;
-import org.apache.log4j.helpers.QuietWriter;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.ThrowableInformation;
 
 /**
  * <b>Experimental</b> TextPaneAppender. <br> Created: Sat Feb 26 18:50:27 2000 <br>
@@ -133,13 +131,12 @@ public class TextPaneAppender extends AppenderSkeleton {
         setIcons(new Hashtable());
 
         try {
-            getIcons().put(Level.FATAL, new ImageIcon(loadIcon("/icons/red.gif")));
-            getIcons().put(Level.ERROR, new ImageIcon(loadIcon("/icons/red.gif")));
-            getIcons().put(Level.WARN, new ImageIcon(loadIcon("/icons/yellow.gif")));
-            getIcons().put(Level.INFO, new ImageIcon(loadIcon("/icons/green.gif")));
-            getIcons().put(Level.DEBUG, new ImageIcon(loadIcon("/icons/black.gif")));
+            getIcons().put(Level.FATAL, new ImageIcon(loadIcon("/images/red.gif")));
+            getIcons().put(Level.ERROR, new ImageIcon(loadIcon("/images/red.gif")));
+            getIcons().put(Level.WARN, new ImageIcon(loadIcon("/images/yellow.gif")));
+            getIcons().put(Level.INFO, new ImageIcon(loadIcon("/images/green.gif")));
+            getIcons().put(Level.DEBUG, new ImageIcon(loadIcon("/images/black.gif")));
         } catch (NullPointerException e) {
-
             // System.out.println("TextPaneAppender: Unable to load icons");
         }
     }

@@ -70,7 +70,7 @@ public class ProgramAlarmPopup extends JDialog {
 
     private static JButton createCloseButton() {
         final JButton button = new JButton();
-        button.setIcon(new javax.swing.ImageIcon(button.getClass().getResource("/help/examples/close.png")));
+        button.setIcon(new javax.swing.ImageIcon(button.getClass().getResource("/icons/close.png")));
         button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button.setOpaque(false);
         return button;

@@ -101,7 +101,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
 
         Windows.setWindowsLAF(WCSWindow.this);
         Windows.centerOnScreen(WCSWindow.this);
-        Windows.setIconImage(WCSWindow.this, "/server-16x16.png");
+        Windows.setIconImage(WCSWindow.this, "/images/server-16x16.png");
 
         // start running network communication
         ActionListener start = new ActionListener() {
@@ -422,7 +422,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         ToolBar.setMinimumSize(new java.awt.Dimension(250, 25));
         ToolBar.setPreferredSize(new java.awt.Dimension(250, 25));
 
-        btnStart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons16x16/Play-16x16.png"))); // NOI18N
+        btnStart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Play-16x16.png"))); // NOI18N
         btnStart.setToolTipText("Run");
         btnStart.setFocusable(false);
         btnStart.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -432,7 +432,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         btnStart.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         ToolBar.add(btnStart);
 
-        btnStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons16x16/Stop-16x16.png"))); // NOI18N
+        btnStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Stop-16x16.png"))); // NOI18N
         btnStop.setToolTipText("Stop");
         btnStop.setFocusable(false);
         btnStop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -442,7 +442,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         btnStop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         ToolBar.add(btnStop);
 
-        btnSetting.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons16x16/Settings-16x16.png"))); // NOI18N
+        btnSetting.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Settings-16x16.png"))); // NOI18N
         btnSetting.setToolTipText("Setting");
         btnSetting.setFocusable(false);
         btnSetting.setMaximumSize(new java.awt.Dimension(32, 32));
@@ -455,7 +455,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         });
         ToolBar.add(btnSetting);
 
-        btnLogFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons16x16/note.gif"))); // NOI18N
+        btnLogFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/note.gif"))); // NOI18N
         btnLogFile.setToolTipText("Log");
         btnLogFile.setFocusable(false);
         btnLogFile.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -464,7 +464,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         btnLogFile.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         ToolBar.add(btnLogFile);
 
-        btnExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons16x16/Log-Out-16x16.png"))); // NOI18N
+        btnExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Log-Out-16x16.png"))); // NOI18N
         btnExit.setToolTipText("Exit");
         btnExit.setFocusable(false);
         btnExit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -474,7 +474,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         btnExit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         ToolBar.add(btnExit);
 
-        btnWizardDB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons16x16/database_gear.png"))); // NOI18N
+        btnWizardDB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/database_gear.png"))); // NOI18N
         btnWizardDB.setToolTipText(" Database Wizard");
         btnWizardDB.setFocusable(false);
         btnWizardDB.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

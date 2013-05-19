@@ -23,27 +23,13 @@ public class ReadBuffer {
     private int bufferIndex;
     private int bufferIsLast;
     private int bufferSize;
-    private byte bufferType;
+    private byte bufferFormat;
     private long eotDelay;
     private long sotDelay;
     private long startTime;
     private ByteBuffer inputBuffer;
     private boolean ready;
-//    private final CommControl readBuffer;
     private CommControl.ReadState readState;
-//    private BufferType bufferType;
-//
-//    public enum BufferType {
-//        TEXT("TEXT", (byte)2), BINARY("BINARY", (byte)1301);
-//
-//        private BufferType(String name, byte id) {
-//            this.name = name;
-//            this.id = id;
-//        }
-//
-//        public final String name;
-//        public final byte id;
-//    }
 
     public ReadBuffer() {
         this.inputBuffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -78,7 +64,6 @@ public class ReadBuffer {
      * @throws TimeoutException
      */
     public synchronized void readData(InputStream in) throws IOException, SOTException, EOTException {
-//        try {
             startTime = System.currentTimeMillis();
             byteCounter = 0;
             CommControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
@@ -109,28 +94,19 @@ public class ReadBuffer {
 
             CommControl.logger.debug("End read buffer " + bufferIndex);
             CommControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
-//        } catch (IOException e) {
-//            CommControl.logger.debug(e);
-//            throw new IOException();
-//        } catch (SOTException e) {
-//            CommControl.logger.debug(e);
-//            throw new SOTException("");
-//        } catch (EOTException e) {
-//            throw new EOTException("");
-//        }
     }
 
     /**
      * Return buffer type (asci or binary) .
      *
-     * @return bufferType;
+     * @return bufferFormat;
      */
-    public synchronized byte getBufferType() {
-        return bufferType;
+    public synchronized byte getBufferFormat() {
+        return bufferFormat;
     }
 
-    public synchronized void setBufferType(byte bufferType) {
-        this.bufferType = bufferType;
+    public synchronized void setBufferFormat(byte bufferFormat) {
+        this.bufferFormat = bufferFormat;
     }
 
     /**
@@ -218,19 +194,19 @@ public class ReadBuffer {
         inputBuffer.get(buffer, 0, buffer.length);
 
         synchronized (this) {
-            setBufferType(Message.LAST_TEXT_MESSAGE/* default */);
+            setBufferFormat(Message.LAST_TEXT_MESSAGE/* default */);
             if (bufferIsLast == Message.LAST_COMPRSSED_TEXT_MESSAGE) {
-                setBufferType(Message.LAST_COMPRSSED_TEXT_MESSAGE);
+                setBufferFormat(Message.LAST_COMPRSSED_TEXT_MESSAGE);
                 buffer = CommControl.Decompressor.decompress(buffer, false);
             }
 
             if (bufferIsLast == Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE) {
-                setBufferType(Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE);
+                setBufferFormat(Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE);
                 buffer = CommControl.Decompressor.decompress(buffer, true);
             }
 
             if (bufferIsLast == Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE) {
-                setBufferType(Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE);
+                setBufferFormat(Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE);
                 buffer = CommControl.SlipProtocol.parseSlipBuffer(buffer);
                 if (CommControl.CRC.crcValue != 0) {
                     return null;

@@ -19,7 +19,10 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 /**
- * Title: CommControl <br> Description: <br> Copyright: Copyright (c) 2009 <br> @auhor Valery Manakhimov
+ * Title: CommControl
+ * <br> Description:
+ * <br> Copyright: Copyright (c) 2009
+ * <br> @auhor Valery Manakhimov
  *
  * @version 1.0 <br>
  */
@@ -96,7 +99,7 @@ public class CommControl {
                     if (readBuffer.isReady()) {
                         stop = true;
                         response = new ResponseMessage();
-                        response.init(readBuffer.toArray(), readBuffer.getBufferType());
+                        response.parsingReceiveBuffer(readBuffer);
                     } else {
                         readBuffer.checkTimeout();
                     }
@@ -196,7 +199,7 @@ public class CommControl {
      *
      * @throws IOException if an I/O error occurs.
      */
-    private void clearInputStream() {
+    public void clearInputStream() {
         try {
             int len = in.available();
             in.read(new byte[len]);
@@ -307,7 +310,7 @@ public class CommControl {
         return cleanBuffer;
     }
 
-    static class Decompressor {
+    public static class Decompressor {
 
         /**
          * Static method that takes compressed buffer and return decompressed buffer.

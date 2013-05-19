@@ -1,8 +1,12 @@
 package com.agrologic.app.dao.derby.impl;
 
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoFactory;
+import com.agrologic.app.dao.DataDao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,156 +128,14 @@ public class DerbyDaoFactory extends DaoFactory {
         return false;
     }
 
-    /**
-     * Retrieve the mysql installed version.
-     *
-     * @return version the of installed mysql
-     */
-    public static String getMySQLVersion() {
-        String sqlQuery = "SELECT VERSION()";
-        Statement stmt = null;
-        Connection con = null;
-        String version = "";
-
-        try {
-            con = DriverManager.getConnection("jdbc:derby:test;create=true");
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            if (rs.next()) {
-                version = rs.getString(1);
-            }
-        } catch (SQLException e) {
-            System.out.println("Cannot Get MySQL Version" + e.getMessage());
-        } finally {
-            try {
-                stmt.close();
-                con.close();
-            } catch (SQLException ex) {
-            }
-        }
-
-        int pidx = version.lastIndexOf(".");
-
-        version = version.substring(0, pidx);
-
-        return version;
-    }
-
-    @Override
-    public SchemaDao getSchemaDao() {
-        return new DerbySchemaDaoImpl(this);
-    }
-
-    @Override
-    public UserDao getUserDao() {
-        return new DerbyUserDaoImpl(this);
-    }
-
-    @Override
-    public CellinkDao getCellinkDao() {
-        return new DerbyCellinkDaoImpl(this);
-    }
-
     @Override
     public ControllerDao getControllerDao() {
         return new DerbyControllerDaoImpl(this);
     }
 
     @Override
-    public ProgramDao getProgramDao() {
-        return new DerbyProgramDaoImpl(this);
-    }
-
-    @Override
-    public ScreenDao getScreenDao() {
-        return new DerbyScreenDaoImpl(this);
-    }
-
-    @Override
-    public TableDao getTableDao() {
-        return new DerbyTableDaoImpl(this);
-    }
-
-    @Override
     public DataDao getDataDao() {
         return new DerbyDataDaoImpl(this);
-    }
-
-    @Override
-    public AlarmDao getAlarmDao() {
-        return new DerbyAlarmDaoImpl(this);
-    }
-
-    @Override
-    public RelayDao getRelayDao() {
-        return new DerbyRelayDaoImpl(this);
-    }
-
-    @Override
-    public SystemStateDao getSystemStateDao() {
-        return new DerbySystemStateDaoImpl(this);
-    }
-
-    @Override
-    public LanguageDao getLanguageDao() {
-        return new DerbyLanguageDaoImpl(this);
-    }
-
-    @Override
-    public FlockDao getFlockDao() {
-        return new DerbyFlockDaoImpl(this);
-    }
-
-    @Override
-    public DistribDao getDistribDao() {
-        return new DerbyDistribDaoImpl(this);
-    }
-
-    @Override
-    public FeedDao getFeedDao() {
-        return new DerbyFeedDaoImpl(this);
-    }
-
-    @Override
-    public FeedTypeDao getFeedTypeDao() {
-        return new DerbyFeedTypeDaoImpl(this);
-    }
-
-    @Override
-    public FuelDao getFuelDao() {
-        return new DerbyFuelDaoImpl(this);
-    }
-
-    @Override
-    public LaborDao getLaborDao() {
-        return new DerbyLaborDaoImpl(this);
-    }
-
-    @Override
-    public GasDao getGasDao() {
-        return new DerbyGasDaoImpl(this);
-    }
-
-    @Override
-    public MedicineDao getMedicineDao() {
-        return new DerbyMedicineDaoImpl(this);
-    }
-
-    @Override
-    public SpreadDao getSpreadDao() {
-        return new DerbySpreadDaoImpl(this);
-    }
-
-    @Override
-    public TransactionDao getTransactionDao() {
-        return new DerbyTransactionDaoImpl(this);
-    }
-
-    @Override
-    public WorkerDao getWorkerDao() {
-        return new DerbyWorkerDaoImpl(this);
     }
 
     /**

@@ -6,6 +6,7 @@
 package com.agrologic.app.messaging;
 
 import com.agrologic.app.except.ReadChecksumException;
+import com.agrologic.app.network.ReadBuffer;
 import com.agrologic.app.util.ByteUtil;
 import org.apache.log4j.Logger;
 
@@ -15,9 +16,9 @@ public final class ResponseMessage implements Message {
      */
     private byte[] buffer;
     /**
-     * Tells which format controller sent the requested message
+     * Tells which format controller sent the requested message binary or text (ascii)
      */
-    private byte bufferType;
+    private Format format;
     /**
      * Calculated checksum receiving message
      */
@@ -43,6 +44,10 @@ public final class ResponseMessage implements Message {
 
     private Logger logger = Logger.getLogger(ResponseMessage.class);
 
+    public enum Format {
+        BINARY, TEXT
+    }
+
     /**
      * Constructor
      */
@@ -50,75 +55,62 @@ public final class ResponseMessage implements Message {
         this(null);
     }
 
-    /**
-     * Constructor
-     *
-     * @param buffer
-     */
     public ResponseMessage(byte[] buffer) {
+        this(buffer, Format.TEXT);
+    }
+
+    public ResponseMessage(byte[] buffer, Format format) {
         if (buffer == null) {
             this.messageType = MessageType.ERROR;
             this.errorCode = SOT_ERROR;
+            this.format = Format.TEXT;
             recvCHS = -1;
             calcCHS = -1;
         } else {
             this.messageType = MessageType.RESPONSE_DATA;
             this.errorCode = 0;
             this.buffer = buffer;
-            init();
+            this.format = format;
+            parsingReceiveBuffer();
         }
     }
 
-//    /**
-//     * Constructor
-//     *
-//     * @param error
-//     */
-//    public ResponseMessage(int error) {
-//        this.messageType = MessageType.ERROR;
-//        errorCode = error;
-//    }
-
-    /**
-     * @param buffer
-     * @param bufferType
-     */
-    public void init(byte[] buffer, final byte bufferType) {
+    public void parsingReceiveBuffer(ReadBuffer readBuffer) {
         this.messageType = MessageType.RESPONSE_DATA;
         this.errorCode = 0;
-        this.bufferType = bufferType;
-        setBuffer(buffer);
-        init();
+        this.setFormat(readBuffer.getBufferFormat());
+        setBuffer(readBuffer.toArray());
+        parsingReceiveBuffer();
     }
 
     /**
      *
      */
-    private void init() {
+    private void parsingReceiveBuffer() {
         try {
             byte[] tempBuffer = getBuffer().clone();
-//            int soiIndex = ByteUtil.lastIndexOf(tempBuffer, Message.SOINDX);
-//            int sotIndex = ByteUtil.lastIndexOf(tempBuffer, Message.SOT);
             int eotIndex = ByteUtil.lastIndexOf(tempBuffer, Message.EOT);
 
             String receivedString = new String(tempBuffer, 0, eotIndex + 1);
             logger.debug(receivedString);
-            int soi = receivedString.indexOf(Message.SOINDX);     // sot of transmission index
-            int sot = receivedString.indexOf(Message.SOT);        // sot of transmission index
-            int eot = receivedString.lastIndexOf(Message.EOT);    // end of transmission index
+            int soi = receivedString.indexOf(Message.SOINDX);     // soi - start of index index
+            int sot = receivedString.indexOf(Message.SOT);        // sot - start of transmission index
+            int eot = receivedString.lastIndexOf(Message.EOT);    // end - end of transmission index
 
             // binary message does not have checksum
-            if (bufferType == Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE) {
+            if (getFormat() == Format.BINARY) {
                 // get begin data and end data without checksum
+                // controller responded data without request index
                 if ((soi == -1) && (sot == -1)) {
                     index = "100";
-                    messageBody = "-1 ";
+                    messageBody = receivedString;
                     setMessageType(MessageType.ERROR);
                     setErrorCode(SKP_ERROR);
                 } else {
                     index = receivedString.substring(soi + 1, sot);
                     messageBody = receivedString.substring(sot + 1, eot);
-
+                    // if controller does not responded for some reson
+                    // 4 0 0 8 (soi)24 0 (sot) 22 -1 0 7f 4
                     if (index.equals("0")) {
                         if (messageBody.equals("-1 ")) {
                             setMessageType(MessageType.ERROR);
@@ -144,7 +136,8 @@ public final class ResponseMessage implements Message {
             } else {
                 // get begin data and end data without checksum
                 int space = receivedString.lastIndexOf(Message.SPACE);// space before check sum
-                if ((soi < 0) && (sot < 0)) {
+                // controller responded data without request index
+                if ((soi == -1) && (sot == -1)) {
                     sot = 0;
                     index = "100";
                     messageBody = receivedString.substring(sot, space + 1);
@@ -156,6 +149,8 @@ public final class ResponseMessage implements Message {
                 } else {
                     index = receivedString.substring(soi + 1, sot);
                     messageBody = receivedString.substring(sot + 1, space + 1);
+                    // if controller does not responded for some reson
+                    // 3 0 0 8 (soi)24 0 (sot) 22 -1 0 7f 4
                     if (index.equals("0")) {
                         if (messageBody.equals("-1 ")) {
                             setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
@@ -193,6 +188,23 @@ public final class ResponseMessage implements Message {
         }
         // set parsed data
         setBuffer(messageBody.getBytes());
+    }
+
+    private void setFormat(byte bufferType) {
+        switch (bufferType) {
+            default:
+            case Message.LAST_COMPRSSED_TEXT_MESSAGE:
+            case Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE:
+                format = Format.TEXT;
+                break;
+            case Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE:
+                format = Format.BINARY;
+                break;
+        }
+    }
+
+    private Format getFormat() {
+        return format;
     }
 
     /**

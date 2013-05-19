@@ -5,8 +5,6 @@
  */
 package com.agrologic.app.gui.rxtx;
 
-//~--- non-JDK imports --------------------------------------------------------
-
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.model.*;
 import com.agrologic.app.model.rxtx.DataController;
@@ -332,7 +330,7 @@ public class DataComponent {
     private static JButton createHelpButton() {
         final JButton button = new JButton();
 
-        button.setIcon(new javax.swing.ImageIcon(button.getClass().getResource("/help/examples/help.gif")));
+        button.setIcon(new javax.swing.ImageIcon(button.getClass().getResource("/images/help.gif")));
         button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button.setOpaque(true);
         button.setBorder(null);
@@ -340,6 +338,3 @@ public class DataComponent {
         return button;
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com
