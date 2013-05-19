@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
-    <bean id="daoParent" abstract="true">
-        <constructor-arg type="com.agrologic.app.dao.DaoFactory" ref="daoFactory"/>
-    </bean>
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <bean id="alarmDao" class="com.agrologic.app.dao.derby.impl.DerbyAlarmDaoImpl" parent="daoParent"/>
+    <bean id="alarmDao" class="com.agrologic.app.dao.derby.impl.DerbyAlarmDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
     <bean id="controllerDao" class="com.agrologic.app.dao.derby.impl.DerbyControllerDaoImpl" parent="daoParent"/>
     <bean id="dataDao" class="com.agrologic.app.dao.derby.impl.DerbyDataDaoImpl" parent="daoParent"/>
     <bean id="distribDao" class="com.agrologic.app.dao.derby.impl.DerbyDistribDaoImpl" parent="daoParent"/>
@@ -31,4 +33,17 @@
     <bean id="gasDao" class="com.agrologic.app.dao.derby.impl.DerbyGasDaoImpl" parent="daoParent"/>
     <bean id="versionDao" class="com.agrologic.app.dao.derby.impl.DerbyVersionDaoImpl" parent="daoParent"/>
     <bean id="daoFactory" class="com.agrologic.app.dao.derby.impl.DerbyDaoFactory" factory-method="instance"/>
+
+    <aop:config>
+        <aop:pointcut id="defaultTxPointcut" expression="within(com.agrologic.app.dao.AlarmDao+)"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut"/>
+    </aop:config>
+
+    <context:property-placeholder properties-ref="jdbcProps"/>
+    <util:properties id="jdbcProps">
+        <prop key="jdbc.driver">org.apache.derby.jdbc.EmbeddedDriver</prop>
+        <prop key="jdbc.url">jdbc:derby:agrodb;create=true</prop>
+        <prop key="jdbc.user"/>
+        <prop key="jdbc.password"/>
+    </util:properties>
 </beans>

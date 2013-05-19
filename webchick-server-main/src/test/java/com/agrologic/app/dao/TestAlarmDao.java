@@ -6,17 +6,18 @@ package com.agrologic.app.dao;
 
 import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.ProgramAlarm;
+import com.agrologic.app.util.PropertyFileUtil;
+import org.junit.*;
+
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
-import org.junit.*;
+
 import static org.junit.Assert.assertEquals;
 
 /**
- *
  * @author Administrator
  */
-@Ignore
 public class TestAlarmDao {
     long programId = 83901;
     long langId = 2;
@@ -27,6 +28,7 @@ public class TestAlarmDao {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        System.setProperty("derby.system.home", PropertyFileUtil.getProgramPath());
     }
 
     @AfterClass
@@ -35,7 +37,7 @@ public class TestAlarmDao {
 
     @Before
     public void setUp() {
-        dao = DbImplDecider.use(DaoType.MYSQL).getDao(AlarmDao.class);
+        dao = DbImplDecider.use(DaoType.DERBY).getDao(AlarmDao.class);
     }
 
     @After
@@ -43,12 +45,21 @@ public class TestAlarmDao {
     }
 
     @Test
+    @Ignore
     public void testGetAll() throws SQLException {
 
         Collection<Alarm> translatedAlarms = dao.getAllWithTranslation();
-        assertEquals(209,translatedAlarms.size());
+        assertEquals(287, translatedAlarms.size());
 
         List<ProgramAlarm> alarms = (List<ProgramAlarm>) dao.getSelectedProgramAlarms(programId, langId);
         assertEquals(14, alarms.size());
     }
+
+    @Test
+    public void getAllAlarms() throws SQLException {
+        Collection<Alarm> translatedAlarms = dao.getAllWithTranslation();
+        assertEquals(287, translatedAlarms.size());
+        assertEquals(65, dao.getAll().size());
+    }
+
 }

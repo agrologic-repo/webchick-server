@@ -2,13 +2,27 @@ package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.AlarmDaoImpl;
+import com.agrologic.app.model.Alarm;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import java.sql.*;
+import java.util.Collection;
 
 public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
 
-    public DerbyAlarmDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyAlarmDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
+    }
+
+    @Override
+    public void insert(Alarm alarm) {
+        super.insert(alarm);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void insert(Collection<Alarm> alarmList) throws SQLException {
+        super.insert(alarmList);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override

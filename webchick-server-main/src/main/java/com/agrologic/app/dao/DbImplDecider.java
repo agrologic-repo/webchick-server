@@ -18,7 +18,7 @@ public class DbImplDecider {
         return daoType == DaoType.MYSQL ? mysqlInstance : derbyInstance;
     }
 
-    private static DbImplDecider mysqlInstance = new DbImplDecider(new ClassPathXmlApplicationContext("/mysql-dao-context.xml"));
-    private static DbImplDecider derbyInstance = new DbImplDecider(new ClassPathXmlApplicationContext("/derby-dao-context.xml"));
+    private static DbImplDecider mysqlInstance = new DbImplDecider(new ClassPathXmlApplicationContext("/common-dao-context.xml", "/mysql-dao-context.xml"));
+    private static DbImplDecider derbyInstance = new DbImplDecider(new ClassPathXmlApplicationContext("/common-dao-context.xml", "/derby-dao-context.xml"));
     private final ApplicationContext daoContext;
 }

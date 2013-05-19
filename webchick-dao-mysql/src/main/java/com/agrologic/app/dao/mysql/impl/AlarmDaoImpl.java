@@ -5,82 +5,44 @@ import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.ProgramAlarm;
 import com.agrologic.app.util.AlarmUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.*;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AlarmDaoImpl implements AlarmDao {
-    protected DaoFactory dao;
+    private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
+    protected final DaoFactory dao;
 
-    public AlarmDaoImpl(DaoFactory daoFactory) {
-        dao = daoFactory;
+    public AlarmDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsert.setTableName("alarmnames");
+        this.dao = dao;
     }
 
     @Override
-    public void insert(Alarm alarm) throws SQLException {
-        String sqlQuery = "insert into alarmnames values (?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, alarm.getId());
-            prepstmt.setString(2, alarm.getText());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Insert Alarms To The DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+    public void insert(Alarm alarm) {
+        logger.debug("Creating alarm with id [{}]", alarm.getId());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("id", alarm.getId());
+        valuesToInsert.put("name", alarm.getText());
+        jdbcInsert.execute(valuesToInsert);
     }
 
     @Override
     public void insert(Collection<Alarm> alarmList) throws SQLException {
-
         // there is duplicate alarm elements in alarmList we need only unique elements
         Collection<Alarm> uniqueAlarmList = AlarmUtil.getUniqueElements(alarmList);
-        String sqlQuery = "INSERT INTO ALARMNAMES (ID, NAME) VALUES(?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            // turn off autocommit
-            con.setAutoCommit(false);
-            int i = 0;
-            prepstmt = con.prepareStatement(sqlQuery);
-            for (Alarm alarm : uniqueAlarmList) {
-                prepstmt.setLong(1, alarm.getId());
-                prepstmt.setString(2, alarm.getText());
-                prepstmt.addBatch();
-                if ((i + 1) % 200 == 0) {
-                    prepstmt.executeBatch();    // Execute every 200 items.
-                    System.out.print(".");
-                }
-                i++;
-            }
-            prepstmt.executeBatch();
-            con.commit();
-            con.setAutoCommit(true);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    dao.printSQLException(ex);
-
-                    throw new SQLException("Cannot Insert Alarm Name. Transaction is being rolled back");
-                }
-            }
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        for (Alarm alarm : uniqueAlarmList) {
+            insert(alarm);
         }
     }
 

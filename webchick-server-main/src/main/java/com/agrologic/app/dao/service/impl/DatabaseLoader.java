@@ -67,6 +67,8 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
                 }
             }
 
+            System.out.println("Alarm size : " + dba.getAlarmDao().getAll().size());
+
             user = dba.getUserDao().getById(userId);
             if (cellinkId == -1) {
                 // get cellinks and add to user cellink list
