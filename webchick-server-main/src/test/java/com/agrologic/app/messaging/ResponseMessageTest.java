@@ -34,22 +34,23 @@ public class ResponseMessageTest {
     @Test
     public void testConstructorWithSingleDataResponse() {
         responseMessage = new ResponseMessage(SINGLE_DATA_RESPONSE.getBytes());
-        assertEquals("4096 257 ", responseMessage.toString());
+        String expected = SINGLE_DATA_RESPONSE.substring(3,SINGLE_DATA_RESPONSE.length()-4);
+        assertEquals(expected, responseMessage.toString());
     }
 
     @Test
     public void responseMessageBodyDoesNotIncludeSpecialCharactersOfGraph() {
         responseMessage = new ResponseMessage(GRAPH_DATA_RESPONSE.getBytes());
         //get only data without system characters
-        String expectedString = GRAPH_DATA_RESPONSE.substring(3, GRAPH_DATA_RESPONSE.length() - 3);
-        assertEquals(expectedString, responseMessage.toString());
+        String expected = GRAPH_DATA_RESPONSE.substring(3, GRAPH_DATA_RESPONSE.length() - 3);
+        assertEquals(expected, responseMessage.toString());
     }
 
     @Test
     public void testConstructorWithMultiDataResponse() {
         responseMessage = new ResponseMessage(MULTI_DATA_RESPONSE.getBytes());
-        String expectedString = MULTI_DATA_RESPONSE.substring(3, MULTI_DATA_RESPONSE.length() - 4);
-        assertEquals(expectedString, responseMessage.toString());
+        String expected = MULTI_DATA_RESPONSE.substring(3, MULTI_DATA_RESPONSE.length() - 4);
+        assertEquals(expected, responseMessage.toString());
     }
 
     @Test
