@@ -15,7 +15,7 @@ import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
 import com.agrologic.app.model.Controller;
-import com.agrologic.app.util.Util;
+import com.agrologic.app.util.RestartApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,7 +156,7 @@ public class SocketThread implements Runnable, Network {
         } finally {
             if (cellink != null) {
                 logger.info("close connection : " + cellink);
-                Util.sleep(CommonConstant.FIVE_SECOND);
+                RestartApplication.sleep(CommonConstant.FIVE_SECOND);
                 commControl.close();
                 try {
                     removeControllersData();
@@ -188,7 +188,7 @@ public class SocketThread implements Runnable, Network {
     private int timeoutErrorHandler(int errCount) {
 
         responseMessage = (ResponseMessage) commControl.read();
-        if(responseMessage.getErrorCode() == Message.SOT_ERROR) {
+        if (responseMessage.getErrorCode() == Message.SOT_ERROR) {
             errCount++;
         }
 
@@ -244,7 +244,7 @@ public class SocketThread implements Runnable, Network {
     }
 
     private void waitDelayTime() {
-        Util.sleep(nxtDelay);
+        RestartApplication.sleep(nxtDelay);
         setThreadState(NetworkState.STATE_SEND);
     }
 
@@ -338,7 +338,7 @@ public class SocketThread implements Runnable, Network {
 
     private void waitKeepAlive() throws IOException, SQLException {
         int state = cellinkDao.getState(cellink.getId());
-        if (state == CellinkState.STATE_START  || state == CellinkState.STATE_RESTART) {
+        if (state == CellinkState.STATE_START || state == CellinkState.STATE_RESTART) {
             setThreadState(NetworkState.STATE_STARTING);
 
         } else {
@@ -361,7 +361,7 @@ public class SocketThread implements Runnable, Network {
                 }
             }
         }
-        Util.sleep(100);
+        RestartApplication.sleep(100);
     }
 
     private void acceptCellink() {

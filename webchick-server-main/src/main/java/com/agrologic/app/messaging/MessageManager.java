@@ -73,6 +73,7 @@ public class MessageManager implements Observer {
     private void setRequestCreated(boolean requestCreated) {
         this.requestCreated = requestCreated;
     }
+
     /**
      * Method works when observable object MessageManager notify observers.(as specified by {@link Observer#update})
      *
@@ -175,7 +176,6 @@ public class MessageManager implements Observer {
     }
 
     /**
-     *
      * @return @throws SQLException
      */
     private void createRequestToWrite() throws SQLException {
@@ -238,6 +238,7 @@ public class MessageManager implements Observer {
         }
         final long timeSinceUpdated = System.currentTimeMillis() - updateTime.getTime();
         if (timeSinceUpdated > CommonConstant.ONE_HOUR) {
+
             return true;
         }
         return false;
@@ -464,7 +465,7 @@ public class MessageManager implements Observer {
      * @throws SQLException
      */
     private void createOnlineData() throws SQLException {
-        if(this.messageParser == null) {
+        if (this.messageParser == null) {
             final Collection<Data> dataItems = dataDao.getAll();
             onlineDatatable = new HashMap<Long, Data>();
             for (Data d : dataItems) {

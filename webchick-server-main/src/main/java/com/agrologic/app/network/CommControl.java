@@ -7,10 +7,11 @@ package com.agrologic.app.network;
 import com.agrologic.app.common.CommonConstant;
 import com.agrologic.app.except.EOTException;
 import com.agrologic.app.except.SOTException;
+import com.agrologic.app.except.TimeoutException;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.messaging.ResponseMessage;
 import com.agrologic.app.model.CellinkVersion;
-import com.agrologic.app.util.Util;
+import com.agrologic.app.util.RestartApplication;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -103,7 +104,7 @@ public class CommControl {
                     } else {
                         readBuffer.checkTimeout();
                     }
-                    Util.sleep(1);
+                    RestartApplication.sleep(1);
                 }
             }
             logger.debug("End read from input stream");
@@ -122,6 +123,12 @@ public class CommControl {
             logException(ex);
             response = new ResponseMessage();
             response.setErrorCode(Message.EOT_ERROR);
+            stateResult = NetworkState.STATE_TIMEOUT;
+        } catch (TimeoutException ex) {
+            logger.debug(ex.getMessage(), ex);
+            logException(ex);
+            response = new ResponseMessage();
+            response.setErrorCode(Message.TMO_ERROR);
             stateResult = NetworkState.STATE_TIMEOUT;
         }
         return stateResult;
@@ -143,7 +150,7 @@ public class CommControl {
      * response time was expire)
      *
      * @param index
-     * @param msg the message to write.
+     * @param msg   the message to write.
      * @throws IOException if an I/O error occurs
      */
     public void write(String index, Message msg) throws IOException {
@@ -174,7 +181,7 @@ public class CommControl {
     /**
      * Returns request in byte buffer with request index .
      *
-     * @param index the index
+     * @param index  the index
      * @param buffer the request buffer
      * @return sendBuffer the buffer with request index
      */
@@ -315,7 +322,7 @@ public class CommControl {
         /**
          * Static method that takes compressed buffer and return decompressed buffer.
          *
-         * @param buffer the compressed buffer.
+         * @param buffer     the compressed buffer.
          * @param indexExist response with comes with index of request.
          * @return newBuffer the decompressed buffer.
          */
@@ -323,7 +330,7 @@ public class CommControl {
             byte[] newBuffer = new byte[(buffer.length) * 4];// ? danger multiply
             int high, low, count = 0;
 
-            for (int i = 0; i < buffer.length;) {
+            for (int i = 0; i < buffer.length; ) {
 
                 if (indexExist) {
 
@@ -371,7 +378,7 @@ public class CommControl {
         /**
          * Static method that takes compressed buffer and return decompressed buffer. [binary to asci ]
          *
-         * @param buffer the compressed buffer.
+         * @param buffer     the compressed buffer.
          * @param indexExist response with comes with index of request.
          * @return newBuffer the decompressed buffer.
          */
@@ -381,7 +388,7 @@ public class CommControl {
 
             ParseState parseState = ParseState.START;
 
-            for (int i = 0; i < buffer.length;) {
+            for (int i = 0; i < buffer.length; ) {
                 switch (parseState) {
                     case START:
                         newBuffer[newBufCnt++] = Message.SOINDX;
@@ -442,7 +449,6 @@ public class CommControl {
          * @return rxBuffer the after parsing
          */
         public static byte[] parseSlipBuffer(byte[] buffer) {
-
 
 
             int rxPtr = 0;

@@ -1,8 +1,4 @@
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.messaging;
 
 import com.agrologic.app.except.ReadChecksumException;
@@ -48,9 +44,6 @@ public final class ResponseMessage implements Message {
         BINARY, TEXT
     }
 
-    /**
-     * Constructor
-     */
     public ResponseMessage() {
         this(null);
     }
@@ -83,9 +76,6 @@ public final class ResponseMessage implements Message {
         parsingReceiveBuffer();
     }
 
-    /**
-     *
-     */
     private void parsingReceiveBuffer() {
         try {
             byte[] tempBuffer = getBuffer().clone();
@@ -186,6 +176,8 @@ public final class ResponseMessage implements Message {
             logger.error("Response message initialisation error ", e);
             return;
         }
+
+        Integer.parseInt("1");
         // set parsed data
         setBuffer(messageBody.getBytes());
     }
@@ -223,14 +215,6 @@ public final class ResponseMessage implements Message {
         return false;
     }
 
-    /**
-     * Constructor
-     *
-     * @param receivedString
-     * @param start
-     * @param end
-     * @return
-     */
     private int readChecksum(final String receivedString, final int start, final int end) {
         if (start < 0) {
             throw new IllegalArgumentException("Negative SOT index");
@@ -251,12 +235,6 @@ public final class ResponseMessage implements Message {
         }
     }
 
-    /**
-     * @param buffer
-     * @param sot
-     * @param len
-     * @return
-     */
     public static int calcChecksum(final byte[] buffer, int sot, int len) {
         int checksum = 0;
 
@@ -271,15 +249,6 @@ public final class ResponseMessage implements Message {
         return checksum;
     }
 
-    /**
-     * Constructor
-     *
-     * @param buffer
-     * @param calcCHS
-     * @param recvCHS
-     * @param sot
-     * @return
-     */
     public static boolean checksumWithOverFlowErrorCorrect(byte[] buffer, int calcCHS, int recvCHS, int sot, int length) {
         if (calcCHS != recvCHS) {
             calcCHS = overFlowErrorChecksum(buffer, sot + 1, length);

@@ -15,13 +15,14 @@ import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.VersionDao;
+import com.agrologic.app.except.JarFileWasNotFound;
 import com.agrologic.app.except.StartProgramException;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
 import com.agrologic.app.network.*;
 import com.agrologic.app.util.Clock;
 import com.agrologic.app.util.ProgramInstanceLocker;
-import com.agrologic.app.util.Util;
+import com.agrologic.app.util.RestartApplication;
 import com.agrologic.app.util.Windows;
 import org.apache.log4j.Logger;
 
@@ -29,18 +30,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
-/**
- * Copyright: Copyright (c) 2008 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version V0.0.13 <br>
- */
 public class WCSWindow extends JFrame implements Observer, ServerUI {
 
     private static final long serialVersionUID = 1L;
@@ -69,14 +62,16 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         try {
             ProgramInstanceLocker.lockFile();
         } catch (RuntimeException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(),
-                    CANNOT_CREATE_LOCK_FILE, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), CANNOT_CREATE_LOCK_FILE, JOptionPane.ERROR_MESSAGE);
+            logger.error("Cannot create lock file . Check security configuration in OS ");
+            logger.info("Program exit");
             System.exit(0);
         }
 
         initComponents();
-        cellinkTable = new CellinkTable();
+
         JScrollPane cellinkTableScrolPane = new JScrollPane();
+        cellinkTable = new CellinkTable();
         cellinkTableScrolPane.setViewportView(cellinkTable);
         paneServer.addTab("Cellink List", cellinkTableScrolPane);
         popupTableMenu = new JPopupMenu();
@@ -88,6 +83,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
                 cellinkTable.setState(row, CellinkState.STATE_START);
             }
         });
+
         popupTableMenu.add(startedState);
         stoppedState = new JMenuItem("Stop");
         stoppedState.addActionListener(new ActionListener() {
@@ -101,7 +97,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
 
         Windows.setWindowsLAF(WCSWindow.this);
         Windows.centerOnScreen(WCSWindow.this);
-        Windows.setIconImage(WCSWindow.this, "/images/server-16x16.png");
+        Windows.setIconImage(WCSWindow.this, "/images/server.png");
 
         // start running network communication
         ActionListener start = new ActionListener() {
@@ -367,11 +363,11 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
             } else {
                 configDialog.show();
             }
-            Util.restartApplicationss();
-        } catch (URISyntaxException ex) {
-            java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);
+            RestartApplication.restartUsingFileClassAndProcessBuilder();
+        } catch (JarFileWasNotFound ex) {
+            logger.error("Cannot restart application . URI does not correct.", ex);
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage(), ex);
         }
     }
 
@@ -422,7 +418,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         ToolBar.setMinimumSize(new java.awt.Dimension(250, 25));
         ToolBar.setPreferredSize(new java.awt.Dimension(250, 25));
 
-        btnStart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Play-16x16.png"))); // NOI18N
+        btnStart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/play.png"))); // NOI18N
         btnStart.setToolTipText("Run");
         btnStart.setFocusable(false);
         btnStart.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -432,7 +428,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         btnStart.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         ToolBar.add(btnStart);
 
-        btnStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Stop-16x16.png"))); // NOI18N
+        btnStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/stop.png"))); // NOI18N
         btnStop.setToolTipText("Stop");
         btnStop.setFocusable(false);
         btnStop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -442,7 +438,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         btnStop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         ToolBar.add(btnStop);
 
-        btnSetting.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Settings-16x16.png"))); // NOI18N
+        btnSetting.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/settings.png"))); // NOI18N
         btnSetting.setToolTipText("Setting");
         btnSetting.setFocusable(false);
         btnSetting.setMaximumSize(new java.awt.Dimension(32, 32));
@@ -464,7 +460,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         btnLogFile.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         ToolBar.add(btnLogFile);
 
-        btnExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Log-Out-16x16.png"))); // NOI18N
+        btnExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/logout.png"))); // NOI18N
         btnExit.setToolTipText("Exit");
         btnExit.setFocusable(false);
         btnExit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -474,7 +470,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         btnExit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         ToolBar.add(btnExit);
 
-        btnWizardDB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/database_gear.png"))); // NOI18N
+        btnWizardDB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/database.png"))); // NOI18N
         btnWizardDB.setToolTipText(" Database Wizard");
         btnWizardDB.setFocusable(false);
         btnWizardDB.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

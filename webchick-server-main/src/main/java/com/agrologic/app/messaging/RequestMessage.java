@@ -4,7 +4,6 @@
  */
 package com.agrologic.app.messaging;
 
-import com.agrologic.app.util.StringUtil;
 import java.util.Arrays;
 
 /**
@@ -64,7 +63,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
 
     public RequestMessage(final MessageType type, final int keepAlive) {
         this.messageType = type;
-        this.keepAlive   = StringUtil.intToString(keepAlive);
+        this.keepAlive = Integer.toString(keepAlive);
         initialize();
     }
 
@@ -449,16 +448,24 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
 
     public static enum Priority {
 
-        /** highest priority {changing data on controllers} */
+        /**
+         * highest priority {changing data on controllers}
+         */
         URGENT,
 
-        /** high priority {almost for all request} */
+        /**
+         * high priority {almost for all request}
+         */
         HIGH,
 
-        /** medium priority {not in use} */
+        /**
+         * medium priority {not in use}
+         */
         MEDIUM,
 
-        /** low priority {request changed data} */
+        /**
+         * low priority {request changed data}
+         */
         LOW
     }
 }

@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Controls sessions between our server and client robots.
  */
-
 public class ClientSessions {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Configuration configuration;

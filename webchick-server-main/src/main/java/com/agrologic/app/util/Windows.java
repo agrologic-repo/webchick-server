@@ -12,21 +12,13 @@ package com.agrologic.app.util;
  * @author Valery Manakhimov <br>
  * @version 0.1.1.1 <br>
  */
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.image.BufferedImage;
-
-import java.io.IOException;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Windows {
 
@@ -72,16 +64,6 @@ public class Windows {
     public static Dimension screenResolution() {
         return Toolkit.getDefaultToolkit().getScreenSize();
     }
-
-//    public static void setIconImage(Window window, String imageName) {
-//        BufferedImage image = null;
-//        try {
-//            image = ImageIO.read(window.getClass().getResource("settings.png"));
-//            window.setIconImage(image);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
 
 

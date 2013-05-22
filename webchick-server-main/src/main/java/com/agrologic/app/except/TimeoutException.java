@@ -9,18 +9,24 @@ package com.agrologic.app.except;
  * Title: TimeoutException <br>
  * Description: <br>
  * Copyright:   Copyright (c) 2009 <br>
- * @version     1.0 <br>
+ *
+ * @version 1.0 <br>
  */
 public class TimeoutException extends Exception {
-    String message;
 
-    public TimeoutException(String method) {
-        message = "Method timed out: " + method;
+    final static String TIME_OUT_ERROR = "Receiving the response timed out ";
+
+    public TimeoutException() {
+        this(TIME_OUT_ERROR);
+    }
+
+    public TimeoutException(String message) {
+        super(message);
     }
 
     @Override
     public String toString() {
-        return message;
+        return super.toString();
     }
 }
 

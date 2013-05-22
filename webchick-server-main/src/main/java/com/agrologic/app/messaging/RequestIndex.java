@@ -5,8 +5,6 @@
  */
 package com.agrologic.app.messaging;
 
-import com.agrologic.app.util.StringUtil;
-
 public class RequestIndex {
 
     /**
@@ -30,9 +28,9 @@ public class RequestIndex {
      */
     public final String getIndex() {
         if (index < 10) {
-            return "0".concat(StringUtil.intToString(index));
+            return "0".concat(Integer.toString(index));
         } else {
-            return StringUtil.intToString(index);
+            return Integer.toString(index);
         }
     }
 

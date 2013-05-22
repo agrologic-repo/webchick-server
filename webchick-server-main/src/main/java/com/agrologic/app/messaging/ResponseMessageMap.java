@@ -57,7 +57,6 @@ public class ResponseMessageMap extends Observable {
                     break;
 
                 default:
-
                     // unkown error
                     break;
             }

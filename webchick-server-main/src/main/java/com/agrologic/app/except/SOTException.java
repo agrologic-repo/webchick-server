@@ -5,13 +5,17 @@
  */
 package com.agrologic.app.except;
 
-/**
- *
- * @author Administrator
- */
+
 public class SOTException extends Exception {
-    public SOTException(String method) {
-        super("SOT error  : " + method);
+    final static String START_OF_TRANSMISSION_ERROR = "Start of transmission character was not received during reading " +
+            "response bytes ";
+
+    public SOTException() {
+        this(START_OF_TRANSMISSION_ERROR);
+    }
+
+    public SOTException(String message) {
+        super(message);
     }
 
     @Override

@@ -5,15 +5,15 @@
  */
 package com.agrologic.app.except;
 
-/**
- *
- * @author Administrator
- */
 public class EOTException extends Exception {
-    private static final long serialVersionUID = 1L;
+    final static String EOT_ERROR = "End of transmission character was not received during reading response bytes.";
 
-    public EOTException(String method) {
-        super("EOT error  : " + method);
+    public EOTException() {
+        this(EOT_ERROR);
+    }
+
+    public EOTException(String message) {
+        super(message);
     }
 
     @Override

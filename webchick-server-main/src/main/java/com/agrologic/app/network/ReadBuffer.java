@@ -10,6 +10,7 @@ import com.agrologic.app.except.SOTException;
 import com.agrologic.app.except.TimeoutException;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.model.CellinkVersion;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.BufferOverflowException;
@@ -41,7 +42,7 @@ public class ReadBuffer {
     /**
      * Read first n bytes . The n bytes depending on version
      *
-     * @param in the InputStream
+     * @param in      the InputStream
      * @param version the Version
      * @throws IOException
      */
@@ -63,37 +64,37 @@ public class ReadBuffer {
      * @throws IOException
      * @throws TimeoutException
      */
-    public synchronized void readData(InputStream in) throws IOException, SOTException, EOTException {
-            startTime = System.currentTimeMillis();
-            byteCounter = 0;
-            CommControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
-            CommControl.logger.debug("Start read buffer " + bufferIndex);
+    public synchronized void readData(InputStream in) throws IOException, SOTException, EOTException, TimeoutException {
+        startTime = System.currentTimeMillis();
+        byteCounter = 0;
+        CommControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
+        CommControl.logger.debug("Start read buffer " + bufferIndex);
 
-            while (byteCounter < bufferSize) {
-                if (in.available() > 0) {
-                    byte data = (byte) in.read();
+        while (byteCounter < bufferSize) {
+            if (in.available() > 0) {
+                byte data = (byte) in.read();
 
-                    try {
-                        inputBuffer.put(data);
-                    } catch (BufferOverflowException e) {
-                        System.out.println(inputBuffer.position());
-                    }
-                    startTime = System.currentTimeMillis();
-                    readState = CommControl.ReadState.WAIT_EOT;
-                    byteCounter++;
-                } else {
-                    try {
-                        wait(1);
-                    } catch (InterruptedException ex) {
-
-                    }
+                try {
+                    inputBuffer.put(data);
+                } catch (BufferOverflowException e) {
+                    System.out.println(inputBuffer.position());
                 }
+                startTime = System.currentTimeMillis();
+                readState = CommControl.ReadState.WAIT_EOT;
+                byteCounter++;
+            } else {
+                try {
+                    wait(1);
+                } catch (InterruptedException ex) {
 
-                checkTimeout();
+                }
             }
 
-            CommControl.logger.debug("End read buffer " + bufferIndex);
-            CommControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
+            checkTimeout();
+        }
+
+        CommControl.logger.debug("End read buffer " + bufferIndex);
+        CommControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
     }
 
     /**
@@ -127,7 +128,7 @@ public class ReadBuffer {
      *
      * @return true if time out occurred .
      */
-    public synchronized void checkTimeout() throws SOTException, EOTException {
+    public synchronized void checkTimeout() throws SOTException, EOTException, TimeoutException {
         long currTime = System.currentTimeMillis();
         Timestamp currT = new Timestamp(currTime);
         Timestamp sotT = new Timestamp(startTime);
@@ -135,16 +136,16 @@ public class ReadBuffer {
         switch (readState) {
             case WAIT_SOT:
                 if ((startTime + sotDelay) < currTime) {
-                    throw new SOTException("Current time : " + currT.toString() + " Start time : " + sotT.toString());
+                    throw new SOTException();
                 }
 
                 break;
 
             case WAIT_EOT:
-                Timestamp delT = new Timestamp(startTime + sotDelay);
+                Timestamp delta = new Timestamp(startTime + sotDelay);
                 if ((startTime + sotDelay + eotDelay) < currTime) {
                     throw new EOTException("Current time : " + currT.toString() + " Start time : " + sotT.toString()
-                            + " Delay time : " + delT.toString());
+                            + " Delay time : " + delta.toString());
                 }
 
                 break;
