@@ -3,7 +3,7 @@ package com.agrologic.app.dao.mysql.impl;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.ScreenDao;
 import com.agrologic.app.model.Screen;
-import com.agrologic.app.util.ScreenUtil;
+import com.agrologic.app.dao.mappers.ScreenUtil;
 
 import java.sql.*;
 import java.util.Collection;

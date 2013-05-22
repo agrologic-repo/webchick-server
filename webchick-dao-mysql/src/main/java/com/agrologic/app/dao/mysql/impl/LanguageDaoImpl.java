@@ -3,7 +3,7 @@ package com.agrologic.app.dao.mysql.impl;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.LanguageDao;
 import com.agrologic.app.model.Language;
-import com.agrologic.app.util.LanguageUtil;
+import com.agrologic.app.dao.mappers.LanguageUtil;
 
 import java.sql.*;
 import java.util.Collection;

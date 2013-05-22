@@ -5,7 +5,7 @@ import com.agrologic.app.dao.RelayDao;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.ProgramRelay;
 import com.agrologic.app.model.Relay;
-import com.agrologic.app.util.RelayUtil;
+import com.agrologic.app.dao.mappers.RelayUtil;
 
 import java.sql.*;
 import java.util.Collection;

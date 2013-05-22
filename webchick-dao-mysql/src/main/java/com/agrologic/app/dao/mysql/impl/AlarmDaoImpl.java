@@ -5,7 +5,7 @@ import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.ProgramAlarm;
-import com.agrologic.app.util.AlarmUtil;
+import com.agrologic.app.dao.mappers.AlarmUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;

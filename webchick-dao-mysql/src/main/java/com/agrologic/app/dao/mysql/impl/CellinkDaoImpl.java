@@ -3,7 +3,7 @@ package com.agrologic.app.dao.mysql.impl;
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.model.Cellink;
-import com.agrologic.app.util.CellinkUtil;
+import com.agrologic.app.dao.mappers.CellinkUtil;
 
 import java.sql.*;
 import java.util.Collection;

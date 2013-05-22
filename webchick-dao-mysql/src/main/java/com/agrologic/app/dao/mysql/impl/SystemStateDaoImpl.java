@@ -4,7 +4,7 @@ import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.SystemStateDao;
 import com.agrologic.app.model.ProgramSystemState;
 import com.agrologic.app.model.SystemState;
-import com.agrologic.app.util.SystemStateUtil;
+import com.agrologic.app.dao.mappers.SystemStateUtil;
 
 import java.sql.*;
 import java.util.Collection;

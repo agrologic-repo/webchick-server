@@ -1,9 +1,7 @@
 package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DataDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,15 +127,15 @@ public class MySqlDaoFactory extends DaoFactory {
         return false;
     }
 
-    @Override
-    public ControllerDao getControllerDao() {
-        return new ControllerDaoImpl(this);
-    }
+//    @Override
+//    public ControllerDao getControllerDao() {
+//        return new ControllerDaoImpl(this);
+//    }
 
-    @Override
-    public DataDao getDataDao() {
-        return new DataDaoImpl(this);
-    }
+//    @Override
+//    public DataDao getDataDao() {
+//        return new DataDaoImpl(this);
+//    }
 
     /**
      * The ConnectionPool class is an inner static class implements which is a Singleton class that manages the

@@ -4,7 +4,7 @@ import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
-import com.agrologic.app.util.ControllerUtil;
+import com.agrologic.app.dao.mappers.ControllerUtil;
 
 import java.sql.*;
 import java.util.*;

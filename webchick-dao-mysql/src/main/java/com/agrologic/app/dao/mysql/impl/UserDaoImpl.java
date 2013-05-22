@@ -3,7 +3,7 @@ package com.agrologic.app.dao.mysql.impl;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.User;
-import com.agrologic.app.util.UserUtil;
+import com.agrologic.app.dao.mappers.UserUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
