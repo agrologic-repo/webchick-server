@@ -1,8 +1,6 @@
 package com.agrologic.app.dao.derby.impl;
 
-import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoFactory;
-import com.agrologic.app.dao.DataDao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -128,15 +126,15 @@ public class DerbyDaoFactory extends DaoFactory {
         return false;
     }
 
-    @Override
-    public ControllerDao getControllerDao() {
-        return new DerbyControllerDaoImpl(this);
-    }
-
-    @Override
-    public DataDao getDataDao() {
-        return new DerbyDataDaoImpl(this);
-    }
+//    @Override
+//    public ControllerDao getControllerDao() {
+//        return new DerbyControllerDaoImpl(this);
+//    }
+//
+//    @Override
+//    public DataDao getDataDao() {
+//        return new DerbyDataDaoImpl(this);
+//    }
 
     /**
      * The ConnectionPool class is an inner static class implements which is a
