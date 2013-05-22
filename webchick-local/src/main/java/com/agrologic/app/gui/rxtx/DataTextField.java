@@ -5,11 +5,11 @@
  */
 package com.agrologic.app.gui.rxtx;
 
+import com.agrologic.app.dao.mappers.DataFormatUtil;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.rxtx.DataChangeEvent;
 import com.agrologic.app.model.rxtx.DataChangeListener;
-import com.agrologic.app.util.DataFormatUtil;
 
 import javax.swing.*;
 import java.awt.event.FocusEvent;

@@ -5,8 +5,8 @@
 
 package com.agrologic.app.gui.rxtx.flock;
 
+import com.agrologic.app.dao.mappers.DataFormatUtil;
 import com.agrologic.app.model.DataFormat;
-import com.agrologic.app.util.DataFormatUtil;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -14,10 +14,10 @@ import java.awt.event.KeyEvent;
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class FlockGUIUtil {
 

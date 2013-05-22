@@ -34,6 +34,7 @@ public class DataImage extends JLabel implements DataChangeListener {
     }
 
     private Integer bitNumber;
+
     private Type currType;
 
     public enum Type {
@@ -87,5 +88,3 @@ public class DataImage extends JLabel implements DataChangeListener {
     }
 }
 
-
-//~ Formatted by Jindent --- http://www.jindent.com
