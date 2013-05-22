@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 public abstract class DaoFactory {
     private DataSource dataSource;
+
     /**
      * Returns a connection to the DB from the connection pool.
      *
@@ -25,7 +26,7 @@ public abstract class DaoFactory {
     public abstract void closeConnection(Connection con);
 
     /**
-     *  Close all connection that in connection pool
+     * Close all connection that in connection pool
      */
     public abstract void closeAllConnection();
 
@@ -78,6 +79,4 @@ public abstract class DaoFactory {
 
         return false;
     }
-    public abstract ControllerDao getControllerDao();
-    public abstract DataDao getDataDao();
 }

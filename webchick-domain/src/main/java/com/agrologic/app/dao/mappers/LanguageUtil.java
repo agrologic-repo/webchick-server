@@ -1,4 +1,4 @@
-package com.agrologic.app.util;
+package com.agrologic.app.dao.mappers;
 
 import com.agrologic.app.model.Language;
 

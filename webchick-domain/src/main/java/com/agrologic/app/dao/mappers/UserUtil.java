@@ -1,6 +1,7 @@
-package com.agrologic.app.util;
+package com.agrologic.app.dao.mappers;
 
 import com.agrologic.app.model.User;
+import com.agrologic.app.util.Base64;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

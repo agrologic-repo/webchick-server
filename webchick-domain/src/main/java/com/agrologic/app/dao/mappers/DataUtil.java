@@ -1,6 +1,7 @@
-package com.agrologic.app.util;
+package com.agrologic.app.dao.mappers;
 
 import com.agrologic.app.model.Data;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -25,10 +26,16 @@ public class DataUtil {
         }
 
         // if position doesn't occur in result set ignore
-        try { data.setPosition(rs.getInt("Position")); } catch (SQLException ex) {}
+        try {
+            data.setPosition(rs.getInt("Position"));
+        } catch (SQLException ex) {
+        }
 
         // if position doesn't occur in result set ignore
-        try { data.setDisplay(rs.getString("DisplayOnTable")); } catch (SQLException ex) {}
+        try {
+            data.setDisplay(rs.getString("DisplayOnTable"));
+        } catch (SQLException ex) {
+        }
 
         try {
             data.setLangId(rs.getLong("LangID"));

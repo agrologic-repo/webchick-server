@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RowMappers {
+
     public static AlarmMapper alarm() {
         return new AlarmMapper();
     }
