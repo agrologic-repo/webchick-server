@@ -176,7 +176,10 @@ public class MessageManager implements Observer {
     }
 
     /**
-     * @return @throws SQLException
+     * Create request to change data in controller.The request creates if there any data to change in database.
+     * Get from database the data and also remove to avoid creating request with same data .
+     *
+     * @return @throws SQLException if failed to get data
      */
     private void createRequestToWrite() throws SQLException {
         if (isAnyDataToChange()) {//1. create request to write if it necessary.
@@ -212,10 +215,10 @@ public class MessageManager implements Observer {
     }
 
     /**
-     * Test if there is any new data value in database.
+     * Return true if there is any new data value in database.
      *
      * @return true if controller data should be changes
-     * @throws SQLException
+     * @throws SQLException if failed to get data from database
      */
     private boolean isAnyDataToChange() throws SQLException {
         Data data = dataDao.getChangedDataValue(controller.getId());
