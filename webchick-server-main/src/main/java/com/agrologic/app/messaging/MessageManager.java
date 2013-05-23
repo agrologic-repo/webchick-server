@@ -185,8 +185,9 @@ public class MessageManager implements Observer {
             requestToSend = new MessageFactory().createWriteRequest(controller.getNetName(), data.getType(), data.getValue());
             messageParser.setDataToSend(null);
             setRequestCreated(true);
+        } else {
+            setRequestCreated(false);
         }
-        setRequestCreated(false);
     }
 
     /**
