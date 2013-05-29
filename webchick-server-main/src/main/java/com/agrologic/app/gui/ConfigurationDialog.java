@@ -31,10 +31,6 @@ public class ConfigurationDialog extends JDialog implements Observer {
     public static final int CANCEL = 0;
     public static final int OK = 1;
 
-    public ConfigurationDialog() {
-        this(null, true);
-    }
-
     /**
      * Creates new form SettingDialog
      */
@@ -348,7 +344,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
         pnlServerStartup.add(jLabel1);
         jLabel1.setBounds(30, 30, 100, 20);
 
-        cmbLanguage.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"English", "Hebrew", "Chinese", "Russian", "French"}));
+        cmbLanguage.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"English", "Hebrew", "Chinese", "Russian", "French", "German"}));
         cmbLanguage.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmbLanguageItemStateChanged(evt);
