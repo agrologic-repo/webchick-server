@@ -9,17 +9,20 @@ import com.agrologic.app.gui.rxtx.graph.AbstractGraph;
 import com.agrologic.app.gui.rxtx.graph.Graph24FWI;
 import com.agrologic.app.gui.rxtx.graph.Graph24IOH;
 import com.agrologic.app.gui.rxtx.graph.GraphType;
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
 import org.jfree.chart.ChartPanel;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -35,16 +38,6 @@ public class Graphs24HourPanel extends JPanel {
     private List<ChartPanel> chartPanels;
     private Timer timerDB;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private static final Map<String, Locale> LANGUGES = new HashMap<String, Locale>();
-
-    static {
-        LANGUGES.put("English", Locale.ENGLISH);
-        LANGUGES.put("Hebrew", new Locale("iw", "IL"));
-        LANGUGES.put("Russian", new Locale("ru", "RU"));
-        LANGUGES.put("Chinese", new Locale("zh", "CN"));
-        LANGUGES.put("French", new Locale("fr", "FR"));
-        LANGUGES.put("Germany", Locale.GERMANY);
-    }
 
     /**
      * Creates new form Graphs24HourPanel
@@ -77,8 +70,7 @@ public class Graphs24HourPanel extends JPanel {
         if (values != null && values.length() >= AbstractGraph.LENGHT) {
             AbstractGraph graph;
 
-            Locale locale = getLocal();
-
+            Locale locale = getCurrentLocale();
             if (setClock == null || setClock.getValue() == null) {
                 graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
                 createAndAddChartPanel(graph);
@@ -94,9 +86,11 @@ public class Graphs24HourPanel extends JPanel {
         }
     }
 
-    public Locale getLocal() {
+    public Locale getCurrentLocale() {
         Configuration configuration = new Configuration();
-        return LANGUGES.get(configuration.getLanguage());
+        LocaleManager localeManager = new LocaleManager();
+        localeManager.setCurrentLanguage(configuration.getLanguage());
+        return localeManager.getCurrentLocale();
     }
 
     /**

@@ -7,11 +7,6 @@ package com.agrologic.app.gui.rxtx.graph;
 
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.util.DateLocal;
-import java.awt.Color;
-import java.awt.Font;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.DateAxis;
@@ -31,35 +26,31 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.util.UnitType;
 
+import java.awt.*;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class Graph24FWI extends AbstractGraph {
-
-    private int resetTime;
-
-    public Graph24FWI(GraphType type, String values, Long currentTime) {
-        super(type, values);
-        this.currentTime = currentTime;
-
-        // chart = createChart();
-    }
 
     public Graph24FWI(GraphType type, String values, Long currentTime, Locale locale) {
         super(type, values);
         this.currentTime = currentTime;
         this.locale = locale;
-        initLaguage();
+        initLanguage();
     }
 
     @Override
     public final JFreeChart createChart() {
         if (!isEmpty()) {
-            DateAxis dateaxis = new DateAxis(dictinary.get("graph.fw.axis.time"));
+            DateAxis dateaxis = new DateAxis(dictionary.get("graph.fw.axis.time"));
             dateaxis.setDateFormatOverride(new SimpleDateFormat("HH"));
             dateaxis.setLabelPaint(Color.BLACK);
             dateaxis.setLabelFont(new Font("Dialog", Font.PLAIN, 16));
             dateaxis.setTickLabelFont(new Font("Dialog", Font.BOLD, 12));
             dateaxis.setVerticalTickLabels(false);
 
-            NumberAxis numberaxis = new NumberAxis(dictinary.get("graph.fw.axis.feed"));
+            NumberAxis numberaxis = new NumberAxis(dictionary.get("graph.fw.axis.feed"));
             numberaxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
             numberaxis.setAutoRangeIncludesZero(true);
             numberaxis.setLabelPaint(Color.RED);
@@ -71,7 +62,7 @@ public class Graph24FWI extends AbstractGraph {
             SimpleDateFormat dateFormat = new SimpleDateFormat();
             StandardXYToolTipGenerator ttg =
                     new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT, dateFormat,
-                    NumberFormat.getInstance());
+                            NumberFormat.getInstance());
             TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(dateFormat, "", "series", "values");
             StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg,
                     urlg);
@@ -83,7 +74,7 @@ public class Graph24FWI extends AbstractGraph {
             // renderer.setSeriesPaint(0, Color.BLUE);
             renderer.setSeriesPaint(0, Color.RED);
 
-            NumberAxis waterAxis = new NumberAxis(dictinary.get("graph.fw.axis.water"));
+            NumberAxis waterAxis = new NumberAxis(dictionary.get("graph.fw.axis.water"));
 
             numberaxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
             waterAxis.setAutoRangeIncludesZero(true);
@@ -122,7 +113,7 @@ public class Graph24FWI extends AbstractGraph {
             plot.setBackgroundPaint(Color.WHITE);
 
             // set tooltip
-            chart = new JFreeChart(dictinary.get("graph.fw.title"), JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+            chart = new JFreeChart(dictionary.get("graph.fw.title"), JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             chart.setBorderPaint(Color.BLACK);
             chart.setBackgroundPaint(java.awt.Color.LIGHT_GRAY);
 
@@ -141,7 +132,7 @@ public class Graph24FWI extends AbstractGraph {
             xyplot.setRangeCrosshairVisible(true);
             xyplot.setDomainPannable(true);
             xyplot.setRangePannable(true);
-            chart = new JFreeChart(dictinary.get("graph.fw.title"), JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
+            chart = new JFreeChart(dictionary.get("graph.fw.title"), JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
         }
 
         return chart;
@@ -159,7 +150,7 @@ public class Graph24FWI extends AbstractGraph {
         Day today = new Day(SerialDate.createInstance(day, month, year));
         Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
         final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
-        final TimeSeries feedSeries = new TimeSeries(dictinary.get("graph.fw.series.feed"));
+        final TimeSeries feedSeries = new TimeSeries(dictionary.get("graph.fw.series.feed"));
         int hr = (int) (currentTime / 100) - 1;
 
         for (int i = FEED_INDEX + DAY_HOURS - 1; i >= FEED_INDEX; i--, hr--) {
@@ -197,7 +188,7 @@ public class Graph24FWI extends AbstractGraph {
         Day today = new Day(SerialDate.createInstance(day, month, year));
         Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
         final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
-        final TimeSeries timeseries1 = new TimeSeries(dictinary.get("graph.fw.series.water"));
+        final TimeSeries timeseries1 = new TimeSeries(dictionary.get("graph.fw.series.water"));
 
         resetMinMaxY();
 

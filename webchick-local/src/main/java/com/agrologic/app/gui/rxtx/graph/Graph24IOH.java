@@ -6,13 +6,9 @@
 package com.agrologic.app.gui.rxtx.graph;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.util.DateLocal;
-import java.awt.Color;
-import java.awt.Font;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.DateAxis;
@@ -38,6 +34,11 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.util.UnitType;
 
+import java.awt.*;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class Graph24IOH extends AbstractGraph {
 
     int rendi, seri;
@@ -52,7 +53,7 @@ public class Graph24IOH extends AbstractGraph {
         super(type, values);
         this.currentTime = currnetTime;
         this.locale = locale;
-        initLaguage();
+        initLanguage();
 
         // chart = createChart();
     }
@@ -60,14 +61,14 @@ public class Graph24IOH extends AbstractGraph {
     @Override
     public final JFreeChart createChart() {
         if (!isEmpty()) {
-            DateAxis dateaxis = new DateAxis(dictinary.get("graph.ioh.axis.time"));
+            DateAxis dateaxis = new DateAxis(dictionary.get("graph.ioh.axis.time"));
             dateaxis.setDateFormatOverride(new SimpleDateFormat("HH"));
             dateaxis.setLabelPaint(Color.BLACK);
             dateaxis.setLabelFont(new Font("Dialog", Font.PLAIN, 16));
             dateaxis.setTickLabelFont(new Font("Dialog", Font.BOLD, 12));
             dateaxis.setVerticalTickLabels(false);
 
-            NumberAxis tempAxis = new NumberAxis(dictinary.get("graph.ioh.axis.temperature"));
+            NumberAxis tempAxis = new NumberAxis(dictionary.get("graph.ioh.axis.temperature"));
             tempAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
             tempAxis.setAutoRangeIncludesZero(true);
             tempAxis.setLabelPaint(Color.RED);
@@ -79,7 +80,7 @@ public class Graph24IOH extends AbstractGraph {
             SimpleDateFormat dateFormat = new SimpleDateFormat();
             StandardXYToolTipGenerator ttg =
                     new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT, dateFormat,
-                    NumberFormat.getInstance());
+                            NumberFormat.getInstance());
             TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(dateFormat, "", "series", "values");
             StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg,
                     urlg);
@@ -90,7 +91,7 @@ public class Graph24IOH extends AbstractGraph {
             renderer.setSeriesPaint(1, Color.BLUE);
 
             // ////////////////////////////////////////////////////
-            NumberAxis humidityAxis = new NumberAxis(dictinary.get("graph.ioh.axis.humidity"));
+            NumberAxis humidityAxis = new NumberAxis(dictionary.get("graph.ioh.axis.humidity"));
 
             humidityAxis.setAutoRangeIncludesZero(true);
             humidityAxis.setLabelFont(new Font("Dialog", Font.PLAIN, 16));
@@ -129,7 +130,7 @@ public class Graph24IOH extends AbstractGraph {
             plot.setBackgroundPaint(Color.WHITE);
 
             // set tooltip
-            chart = new JFreeChart(dictinary.get("graph.ioh.title"), JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+            chart = new JFreeChart(dictionary.get("graph.ioh.title"), JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             chart.setBorderPaint(Color.BLACK);
             chart.setBackgroundPaint(java.awt.Color.LIGHT_GRAY);
 
@@ -148,7 +149,7 @@ public class Graph24IOH extends AbstractGraph {
             xyplot.setRangeCrosshairVisible(true);
             xyplot.setDomainPannable(true);
             xyplot.setRangePannable(true);
-            chart = new JFreeChart(dictinary.get("graph.ioh.title"), JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
+            chart = new JFreeChart(dictionary.get("graph.ioh.title"), JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
         }
 
         // hideSeries(1, 0);
@@ -158,9 +159,9 @@ public class Graph24IOH extends AbstractGraph {
     /**
      * Set color of series.
      *
-     * @param chart JFreeChart.
+     * @param chart       JFreeChart.
      * @param seriesIndex Index of series to set color of (0 = first series)
-     * @param color New color to set.
+     * @param color       New color to set.
      */
     public void setSeriesColor(JFreeChart chart, int seriesIndex, Color color) {
         if (chart != null) {
@@ -207,7 +208,7 @@ public class Graph24IOH extends AbstractGraph {
                 Day today = new Day(SerialDate.createInstance(now.getDate(), now.getMonth(), now.getYear()));
                 Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
                 int hour = getHour();
-                final TimeSeries insideseries = new TimeSeries(dictinary.get("graph.ioh.series.inside"));
+                final TimeSeries insideseries = new TimeSeries(dictionary.get("graph.ioh.series.inside"));
 
                 for (int i = IN_TEMP_INDEX + DAY_HOURS - 1; i >= IN_TEMP_INDEX; i--, hour--) {
                     String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
@@ -235,7 +236,7 @@ public class Graph24IOH extends AbstractGraph {
                 // testing
                 hour = getHour();
 
-                final TimeSeries outsideseries = new TimeSeries(dictinary.get("graph.ioh.series.outside"));
+                final TimeSeries outsideseries = new TimeSeries(dictionary.get("graph.ioh.series.outside"));
                 for (int i = OUT_TEMP_INDEX + DAY_HOURS - 1; i >= OUT_TEMP_INDEX; i--, hour--) {
                     String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
                     float floatValue = Float.valueOf(value);
@@ -283,7 +284,7 @@ public class Graph24IOH extends AbstractGraph {
 
             // testing
             int hr = (int) (currentTime / 100) - 1;
-            final TimeSeries humidityseries = new TimeSeries(dictinary.get("graph.ioh.series.humidity"));
+            final TimeSeries humidityseries = new TimeSeries(dictionary.get("graph.ioh.series.humidity"));
 
             for (int i = HUMIDITY_INDEX + DAY_HOURS - 1; i >= HUMIDITY_INDEX; i--, hr--) {
                 String value = DataFormat.formatToStringValue(DataFormat.HUMIDITY, Long.valueOf(datasetString[i]));

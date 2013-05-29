@@ -5,15 +5,11 @@
  */
 package com.agrologic.app.gui.rxtx.graph;
 
+import com.agrologic.app.i18n.LocaleManager;
 import org.jfree.chart.JFreeChart;
 
-
-
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public abstract class AbstractGraph implements Graph {
 
@@ -27,7 +23,7 @@ public abstract class AbstractGraph implements Graph {
     protected JFreeChart chart;
     protected Long currentTime;
     protected String[] datasetString;
-    protected Map<String, String> dictinary;
+    protected Map<String, String> dictionary;
     protected boolean empty;
     protected Locale locale;
     protected int maxY;
@@ -42,24 +38,9 @@ public abstract class AbstractGraph implements Graph {
         setEmpty();
     }
 
-    protected void initLaguage() {
-        dictinary = new HashMap<String, String>();
-        ResourceBundle bundle = ResourceBundle.getBundle("MessagesBundle", locale);
-        for (Enumeration<String> e = bundle.getKeys(); e.hasMoreElements();) {
-            String key = e.nextElement();
-            if (key.startsWith("graph")) {
-                String value = bundle.getString(key);
-                dictinary.put(key, value);
-            }
-        }
-    }
-
-    public void setDataSet(String values) {
-        this.datasetString = values.split(" ", -1);
-    }
-
-    public GraphType getType() {
-        return type;
+    protected void initLanguage() {
+        LocaleManager localeManager = new LocaleManager();
+        dictionary = localeManager.getDictionary(LocaleManager.GRAPH_RESOURCE, locale);
     }
 
     protected void resetMinMaxY() {
