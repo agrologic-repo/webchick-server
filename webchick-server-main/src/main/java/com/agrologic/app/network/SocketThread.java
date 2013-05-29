@@ -4,7 +4,6 @@
  */
 package com.agrologic.app.network;
 
-import com.agrologic.app.common.CommonConstant;
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.ControllerDao;
@@ -27,6 +26,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Title: ServerNetThread <br> Description: <br> Copyright: Copyright (c) 2009 <br>
@@ -156,7 +156,7 @@ public class SocketThread implements Runnable, Network {
         } finally {
             if (cellink != null) {
                 logger.info("close connection : " + cellink);
-                RestartApplication.sleep(CommonConstant.FIVE_SECOND);
+                RestartApplication.sleep(TimeUnit.SECONDS.toMillis(5));
                 commControl.close();
                 try {
                     removeControllersData();
@@ -439,14 +439,15 @@ public class SocketThread implements Runnable, Network {
 
     private boolean isKeepAliveTime(long keepAliveOccuredTime) {
         long timeSinceLastKeepalive = System.currentTimeMillis() - keepAliveOccuredTime;
-        int keepAliveInterval = keepAliveTimeout * CommonConstant.ONE_MINUTE;
+
+        int keepAliveInterval = (int) (keepAliveTimeout * TimeUnit.SECONDS.toMinutes(11));
         return timeSinceLastKeepalive > keepAliveInterval;
     }
 
     private boolean isCellinkTimedOut() throws SQLException {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         Timestamp updateTime = cellinkDao.getUpdatedTime(cellink.getId());
-        return (currentTime.getTime() - updateTime.getTime()) > CommonConstant.ONE_HOUR;
+        return (currentTime.getTime() - updateTime.getTime()) > TimeUnit.SECONDS.toHours(11);
     }
 
     private boolean isCellinkStopped() throws SQLException {

@@ -4,7 +4,6 @@
  */
 package com.agrologic.app.network;
 
-import com.agrologic.app.common.CommonConstant;
 import com.agrologic.app.except.EOTException;
 import com.agrologic.app.except.SOTException;
 import com.agrologic.app.except.TimeoutException;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Title: CommControl
@@ -29,7 +29,7 @@ import java.net.Socket;
  */
 public class CommControl {
 
-    public static final int DELAY_SILENCE_TIME = CommonConstant.ONE_SECOND * 3;// wait 3 seconds
+    public static final int DELAY_SILENCE_TIME = (int) TimeUnit.SECONDS.toMillis(3);// wait 3 seconds
     private Socket socket;
     private InputStream in;
     private OutputStream out;

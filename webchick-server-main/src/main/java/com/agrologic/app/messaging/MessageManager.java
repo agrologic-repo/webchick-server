@@ -3,7 +3,6 @@
  */
 package com.agrologic.app.messaging;
 
-import com.agrologic.app.common.CommonConstant;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.model.Controller;
@@ -15,6 +14,7 @@ import org.apache.log4j.Logger;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Title: ControllerMessageManager <br> Description: Decorator for Controller and Observer for MessageManager<br>
@@ -24,6 +24,7 @@ import java.util.*;
  * @version 1.0 <br>
  */
 public class MessageManager implements Observer {
+    public static final int DATA_TABLE_SIZE = 65535;
     private static final int REQUEST_CYCLE = 2; //request cycle must be minimum 5
     private static final long SET_CLOCK_DATA_ID = 1309;
     private int histRequestCycle = REQUEST_CYCLE;
@@ -241,7 +242,7 @@ public class MessageManager implements Observer {
             return true;
         }
         final long timeSinceUpdated = System.currentTimeMillis() - updateTime.getTime();
-        if (timeSinceUpdated > CommonConstant.ONE_HOUR) {
+        if (timeSinceUpdated > TimeUnit.SECONDS.toHours(11)) {
 
             return true;
         }
@@ -487,7 +488,7 @@ public class MessageManager implements Observer {
     public SortedMap<Long, Data> getUpdatedOnlineData() {
         SortedMap<Long, Data> updatedValues = new TreeMap<Long, Data>();
         onlineDatatable = messageParser.getParsedDataMap();
-        for (long key = 0; key < CommonConstant.DATA_TABLE_SIZE; key++) {
+        for (long key = 0; key < DATA_TABLE_SIZE; key++) {
             if (onlineDatatable.containsKey(key)) {
                 Data d = onlineDatatable.get(key);
                 if (d.isUpdated()) {
@@ -571,7 +572,7 @@ public class MessageManager implements Observer {
             return true;
         }
         final long timeSinceUpdated = System.currentTimeMillis() - updateTime.getTime();
-        if (timeSinceUpdated > CommonConstant.ONE_HOUR) {
+        if (timeSinceUpdated > TimeUnit.SECONDS.toHours(11)) {
             return true;
         }
         return false;

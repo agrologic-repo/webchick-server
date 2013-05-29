@@ -1,9 +1,7 @@
 package com.agrologic.app.model;
 
-import com.agrologic.app.common.CommonConstant;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -11,11 +9,12 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 public class Controller implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final long OFF_STATE_DELAY = CommonConstant.ONE_MINUTE * 10;
+    public static final long OFF_STATE_DELAY = TimeUnit.SECONDS.toMinutes(10);
     private boolean on = true;
     private boolean active;
     private Integer area;
@@ -42,7 +41,7 @@ public class Controller implements Serializable {
     }
 
     public boolean isNetworkOkCounter() {
-        return networkOkCount == 0 ? true:false;
+        return networkOkCount == 0 ? true : false;
     }
 
     public Long getId() {
