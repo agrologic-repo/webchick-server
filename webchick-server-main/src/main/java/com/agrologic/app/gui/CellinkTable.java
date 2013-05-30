@@ -26,7 +26,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public final class CellinkTable extends JTable {
-    private static final long serialVersionUID = 1234123412341234L;
+    private static final long serialVersionUID = 1234432112344321L;
     private Logger logger = Logger.getLogger(CellinkTable.class);
     private transient CellinkDao cellinkDao;
     private ScheduledExecutorService executor;
