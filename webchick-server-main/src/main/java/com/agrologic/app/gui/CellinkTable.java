@@ -16,30 +16,20 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Title: CellinkTable <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public final class CellinkTable extends JTable {
-
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1234123412341234L;
     private Logger logger = Logger.getLogger(CellinkTable.class);
     private transient CellinkDao cellinkDao;
-    private Timer timer;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private ScheduledExecutorService executor;
 
     public CellinkTable() {
         this(new CellinkTableModel());
@@ -78,59 +68,39 @@ public final class CellinkTable extends JTable {
     }
 
     public void startMonitoring() {
-        timer = new javax.swing.Timer((int) TimeUnit.SECONDS.toMillis(2), new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                updateTable();
-            }
-        });
-        timer.start();
-    }
+        if (executor == null || executor.isShutdown()) {
+            /**
+             * Update cellink list in CellinkTableModel task.
+             */
+            Runnable task = new Runnable() {
 
-    public void stopMonitoring() {
-        timer.stop();
-    }
+                private CellinkTableModel cellinkModel;
 
-    /**
-     * Update cellink list in CellinkTableModel .
-     */
-    public void updateTable() {
-        Runnable task = new SwingWorker() {
+                public void run() {
+                    cellinkModel = ((CellinkTableModel) getModel());
+                    if (cellinkModel.size() == 0) {
+                        cellinkModel.addAll(retrieveCellinks());
+                    } else {
+                        List<Cellink> cellinkListTemp = (List<Cellink>) retrieveCellinks();
+                        int length = (cellinkModel.size() < cellinkListTemp.size())
+                                ? cellinkModel.size()
+                                : cellinkListTemp.size();
 
-            private CellinkTableModel cellinkModel;
+                        if (cellinkModel.size() < cellinkListTemp.size()) {
+                            System.out.println();
+                        }
 
-            @Override
-            protected Object doInBackground() throws Exception {
-                cellinkModel = ((CellinkTableModel) getModel());
-
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                if (cellinkModel.size() == 0) {
-                    cellinkModel.addAll(retrieveCellinks());
-                } else {
-                    List<Cellink> cellinkListTemp = (List<Cellink>) retrieveCellinks();
-                    int length = (cellinkModel.size() < cellinkListTemp.size())
-                            ? cellinkModel.size()
-                            : cellinkListTemp.size();
-
-                    if (cellinkModel.size() < cellinkListTemp.size()) {
-                        System.out.println();
+                        cellinkModel.addAndRemoveAbsent(cellinkListTemp);
+                        cellinkModel.setReloadChanges(length, cellinkListTemp);
                     }
-
-                    cellinkModel.addAndRemoveAbsent(cellinkListTemp);
-                    cellinkModel.setReloadChanges(length, cellinkListTemp);
+                    repaint();
+                    invalidate();
                 }
-
-
-                repaint();
-                invalidate();
-            }
-        };
-
-        executorService.execute(task);
+            };
+            executor = Executors.newSingleThreadScheduledExecutor();
+            executor.scheduleAtFixedRate(task, 1, 1, TimeUnit.SECONDS);
+        }
     }
 
     /**
@@ -174,39 +144,7 @@ public final class CellinkTable extends JTable {
                     JOptionPane.showMessageDialog(CellinkTable.this, "Database Error\nFor details check log file .");
                     logger.error(e);
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(CellinkTable.this, "Uknown Error\nFor details check log file .");
-                    logger.error(e);
-                }
-            }
-        }
-    }
-
-    /**
-     * Set with logging field by using on selected event in table
-     *
-     * @param row         the selected row
-     * @param withLogging the true or false value
-     */
-    public void setWithLogging(int row, boolean withLogging) {
-        if (withLogging == true) {
-            System.out.println();
-        }
-
-        CellinkTableModel ctb = ((CellinkTableModel) getModel());
-        List<Cellink> list = ctb.getData();
-
-        for (int i = 0; i < list.size(); i++) {
-            if (i == row) {
-                try {
-                    Cellink c = list.get(i);
-
-                    c.setWithLogging(withLogging);
-                    System.out.println("Celink set withlogging : " + withLogging);
-                    list.get(i).setWithLogging(withLogging);
-
-                    break;
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(CellinkTable.this, "Uknown Error\nFor details check log file .");
+                    JOptionPane.showMessageDialog(CellinkTable.this, "Unknown Error\nFor details check log file .");
                     logger.error(e);
                 }
             }
@@ -218,7 +156,7 @@ public final class CellinkTable extends JTable {
      *
      * @return onlineCount the online counter.
      */
-    public int onlineCellnks() {
+    public int onlineCellinks() {
         int onlineCount = 0;
         CellinkTableModel ctb = ((CellinkTableModel) getModel());
 
@@ -238,15 +176,11 @@ public final class CellinkTable extends JTable {
      *
      * @return totalCellinks the total cellinks .
      */
-    public int totalCellnks() {
-        int totalCellinks = 0;
+    public int totalCellinks() {
         CellinkTableModel ctb = ((CellinkTableModel) getModel());
-
         synchronized (ctb.getData()) {
-            totalCellinks = ctb.getData().size();
+            return ctb.getData().size();
         }
-
-        return totalCellinks;
     }
 
     public Iterator<Cellink> iterator() {

@@ -3,7 +3,7 @@ package com.agrologic.app.dao;
 import java.sql.SQLException;
 
 public interface RemovebleDao {
-    static final String CANNOT_REMOVE_TABLE  = "Cannot Remove Table";
+    static final String CANNOT_DELETE_DATA_FROM_TABLE = "Cannot Delete Rows From Table";
 
     /**
      * Check if table exist in database
