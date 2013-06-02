@@ -28,11 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Title: ServerNetThread <br> Description: <br> Copyright: Copyright (c) 2009 <br>
- *
- * @version 1.0 <br>
- */
 public class SocketThread implements Runnable, Network {
     private List<MessageManager> messageManagers;
     private Cellink cellink;
@@ -200,7 +195,7 @@ public class SocketThread implements Runnable, Network {
             errorTimeout(errCount);
             errCount = 0;
             // we need at least one controller in on state
-            // otherwise we well set all controllres on
+            // otherwise we well set all controllers on
             if (allControllersOff()) {
                 setControllersOn();
             }
@@ -244,51 +239,57 @@ public class SocketThread implements Runnable, Network {
     }
 
     private void waitDelayTime() {
-        RestartApplication.sleep(nxtDelay);
+        try {
+            Thread.sleep(nxtDelay);
+        } catch (InterruptedException e) {
+        }
         setThreadState(NetworkState.STATE_SEND);
     }
 
     private int receiveResponseHandler(int errCount) {
         responseMessage = (ResponseMessage) commControl.read();
         boolean withLogger = getWithLogging();
+        // if checkbox with logger checked the send receive messages are shown in traffic log
         if (withLogger) {
-            logger.info(cellink.getName() + " sent message [ " + "V" + sendMessage.getIndex()
-                    + sendMessage + " ]");
+            logger.info(cellink.getName() + " sent message [ V" + sendMessage.getIndex() + sendMessage + " ]");
             logger.info(cellink.getName() + " received message [ " + responseMessage + " ]");
             String reqIdx = sendMessage.getIndex();
             String resIdx = responseMessage.getIndex();
             logger.info("Request index : " + reqIdx + "  Response index : " + resIdx);
         }
+        //
         if (responseMessage.getMessageType() == MessageType.ERROR) {
             MessageType sendMessageType = sendMessage.getMessageType();
+
             if (sendMessageType == MessageType.REQUEST_TO_WRITE) {
                 responseMessage.setMessageType(MessageType.SKIP_RESPONSE_TO_WRITE);
                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
                 setThreadState(NetworkState.STATE_DELAY);
+
             } else if (sendMessageType == MessageType.REQUEST_EGG_COUNT
                     || sendMessageType == MessageType.REQUEST_CHICK_SCALE
                     || sendMessageType == MessageType.REQUEST_CHANGED) {
+
                 responseMessage.setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
                 setThreadState(NetworkState.STATE_DELAY);
+
             } else {
                 setThreadState(NetworkState.STATE_ERROR);
             }
         } else {
-            if (sendMessage.getIndex().equals(responseMessage.getIndex())
-                    || sendMessage.getIndex().equals("100")) {
-                errCount = 0;
-
-                if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY
-                        || sendMessage.getMessageType() == MessageType.REQUEST_HISTORY_24_HOUR) {
+            if (sendMessage.getIndex().equals(responseMessage.getIndex()) || sendMessage.getIndex().equals("100")) {
+                if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY || sendMessage.getMessageType() == MessageType.REQUEST_HISTORY_24_HOUR) {
                     responseMessage.setMessageType(MessageType.RESPONSE_DATA);
                 }
                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
+                errCount = 0;
                 setThreadState(NetworkState.STATE_DELAY);
             } else {
                 if (withLogger) {
                     logger.error(cellink.getName() + " [response index error]");
                 }
+                commControl.clearInputStreamWithDelayForSilence();
                 setThreadState(NetworkState.STATE_ERROR);
             }
         }
@@ -308,8 +309,7 @@ public class SocketThread implements Runnable, Network {
             commControl.write("V" + reqIndex.getIndex(), sendMessage);
             boolean withLogger = getWithLogging();
             if (withLogger) {
-                logger.info(cellink.getName() + " sending message [" + "V" + sendMessage.getIndex()
-                        + sendMessage + "]");
+                logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
             }
             setThreadState(NetworkState.STATE_BUSY);
         }
@@ -368,7 +368,6 @@ public class SocketThread implements Runnable, Network {
         if (isAccessAllowed()) {
             setThreadState(NetworkState.STATE_KEEP_ALIVE_TIMEOUT);
         } else {
-            //commControl.close();
             stopThread = true;
         }
     }
@@ -440,14 +439,16 @@ public class SocketThread implements Runnable, Network {
     private boolean isKeepAliveTime(long keepAliveOccuredTime) {
         long timeSinceLastKeepalive = System.currentTimeMillis() - keepAliveOccuredTime;
 
-        int keepAliveInterval = (int) (keepAliveTimeout * TimeUnit.SECONDS.toMinutes(11));
+        int keepAliveInterval = (int) (keepAliveTimeout * TimeUnit.MINUTES.toMillis(1L));
         return timeSinceLastKeepalive > keepAliveInterval;
     }
 
     private boolean isCellinkTimedOut() throws SQLException {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         Timestamp updateTime = cellinkDao.getUpdatedTime(cellink.getId());
-        return (currentTime.getTime() - updateTime.getTime()) > TimeUnit.SECONDS.toHours(11);
+        long oneHour = TimeUnit.HOURS.toMillis(1L);
+        long diff = currentTime.getTime() - updateTime.getTime();
+        return (diff > oneHour);
     }
 
     private boolean isCellinkStopped() throws SQLException {

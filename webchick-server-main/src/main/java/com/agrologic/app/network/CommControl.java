@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.network;
 
 import com.agrologic.app.except.EOTException;
@@ -10,7 +6,6 @@ import com.agrologic.app.except.TimeoutException;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.messaging.ResponseMessage;
 import com.agrologic.app.model.CellinkVersion;
-import com.agrologic.app.util.RestartApplication;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -19,17 +14,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Title: CommControl
- * <br> Description:
- * <br> Copyright: Copyright (c) 2009
- * <br> @auhor Valery Manakhimov
- *
- * @version 1.0 <br>
- */
 public class CommControl {
-
-    public static final int DELAY_SILENCE_TIME = (int) TimeUnit.SECONDS.toMillis(3);// wait 3 seconds
     private Socket socket;
     private InputStream in;
     private OutputStream out;
@@ -82,9 +67,10 @@ public class CommControl {
      * @return the state of thread
      */
     public NetworkState doread(int sotdelay, int eotdelay) {
-        NetworkState stateResult = NetworkState.STATE_READ;
+        NetworkState networkState = NetworkState.STATE_READ;
         ReadBuffer readBuffer = new ReadBuffer(/*this*/);
         readBuffer.setDelays(sotdelay, eotdelay);
+        response = new ResponseMessage();
 
         try {
             stop = false;
@@ -99,39 +85,37 @@ public class CommControl {
                     }
                     if (readBuffer.isReady()) {
                         stop = true;
-                        response = new ResponseMessage();
+
                         response.parsingReceiveBuffer(readBuffer);
                     } else {
                         readBuffer.checkTimeout();
                     }
-                    RestartApplication.sleep(1);
+                    Thread.sleep(1);
                 }
             }
             logger.debug("End read from input stream");
             logger.debug("++++++++++++++++++++++++++++++++++++++++++++++++++");
         } catch (IOException ex) {
             logException(ex);
-            stateResult = NetworkState.STATE_ABORT;
+            networkState = NetworkState.STATE_ABORT;
         } catch (SOTException ex) {
-            logger.debug(ex.getMessage(), ex);
             logException(ex);
-            response = new ResponseMessage();
             response.setErrorCode(Message.SOT_ERROR);
-            stateResult = NetworkState.STATE_TIMEOUT;
+            networkState = NetworkState.STATE_TIMEOUT;
         } catch (EOTException ex) {
-            logger.debug(ex.getMessage(), ex);
             logException(ex);
-            response = new ResponseMessage();
             response.setErrorCode(Message.EOT_ERROR);
-            stateResult = NetworkState.STATE_TIMEOUT;
+            networkState = NetworkState.STATE_TIMEOUT;
         } catch (TimeoutException ex) {
-            logger.debug(ex.getMessage(), ex);
             logException(ex);
-            response = new ResponseMessage();
             response.setErrorCode(Message.TMO_ERROR);
-            stateResult = NetworkState.STATE_TIMEOUT;
+            networkState = NetworkState.STATE_TIMEOUT;
+        } catch (InterruptedException ex) {
+            logException(ex);
+            response.setErrorCode(Message.TMO_ERROR);
+            networkState = NetworkState.STATE_TIMEOUT;
         }
-        return stateResult;
+        return networkState;
     }
 
     /**
@@ -154,6 +138,7 @@ public class CommControl {
      * @throws IOException if an I/O error occurs
      */
     public void write(String index, Message msg) throws IOException {
+        final int DELAY_SILENCE_TIME = (int) TimeUnit.SECONDS.toMillis(3);// wait 3 seconds
         // wait for silence
         while (availableData() > 0) {
             synchronized (this) {
@@ -210,6 +195,24 @@ public class CommControl {
         try {
             int len = in.available();
             in.read(new byte[len]);
+        } catch (IOException ex) {
+            logException(ex);
+        }
+    }
+
+    public void clearInputStreamWithDelayForSilence() {
+        final int DELAY_SILENCE_TIME = (int) TimeUnit.SECONDS.toMillis(5);// wait 3 seconds
+        // wait for silence
+        try {
+            while (availableData() > 0) {
+                synchronized (this) {
+                    try {
+                        clearInputStream();
+                        wait(DELAY_SILENCE_TIME);
+                    } catch (InterruptedException ex) {
+                    }
+                }
+            }
         } catch (IOException ex) {
             logException(ex);
         }
