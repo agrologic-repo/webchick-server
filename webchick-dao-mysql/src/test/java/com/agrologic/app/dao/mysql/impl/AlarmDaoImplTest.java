@@ -10,6 +10,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -23,13 +26,28 @@ public class AlarmDaoImplTest {
     @Test
     public void getCanFindRecordsAfterInsert() throws Exception {
         Alarm expected = new Alarm();
-        expected.setId(1L);
+        expected.setId(100L);
         expected.setText("text");
-        alarmDao.insert(expected);
         expected.setUnicodeText("text");
         expected.setLangId(1L);
+        alarmDao.insert(expected);
 
-        Alarm actual = alarmDao.getById(1L);
+        Alarm actual = alarmDao.getById(100L);
         assertReflectionEquals(expected, actual);
+    }
+
+    @Test
+    public void getCanFindRecordsAfterInsertCollection() throws Exception {
+        Collection<Alarm> expectedAlarms = new ArrayList<Alarm>();
+        Alarm alarm = new Alarm();
+        alarm.setId(100L);
+        alarm.setText("text1");
+        alarm.setUnicodeText("text1");
+        alarm.setLangId(1L);
+        expectedAlarms.add(alarm);
+        alarmDao.insert(expectedAlarms);
+
+        Collection<Alarm> actualAlarms = alarmDao.getAll();
+        assertReflectionEquals(expectedAlarms, actualAlarms);
     }
 }

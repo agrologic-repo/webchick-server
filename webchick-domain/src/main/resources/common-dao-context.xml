@@ -28,10 +28,9 @@
         <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut"/>
     </aop:config>
 
-
     <!--We're wrapping our underlying data source with lazy one so that connection is not retrieved from the pool unless-->
     <!--it's really necessary. E.g. if Hibernate hits only cache, there is no need to fetch connection, but without lazy-->
-    <!--data source, it will be actually fetched if service methods are marked with @Transactional-->
+    <!--data source, it will be actually fetched if i18n methods are marked with @Transactional-->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
         <property name="defaultTransactionIsolationName" value="TRANSACTION_READ_COMMITTED"/>
         <property name="defaultAutoCommit" value="false"/>

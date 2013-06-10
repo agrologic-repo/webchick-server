@@ -1,6 +1,9 @@
 package com.agrologic.app.dao.derby.impl;
 
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.CreatebleDao;
+import com.agrologic.app.dao.DaoFactory;
+import com.agrologic.app.dao.DropableDao;
+import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.AlarmDaoImpl;
 import com.agrologic.app.model.Alarm;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,21 +13,29 @@ import java.util.Collection;
 
 public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-
     public DerbyAlarmDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
         super(jdbcTemplate, daoFactory);
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void insert(Alarm alarm) {
         super.insert(alarm);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
-    public void insert(Collection<Alarm> alarmList) throws SQLException {
+    public void insert(Collection<Alarm> alarmList) {
         super.insert(alarmList);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public boolean tableExist() throws SQLException {
         Connection con = null;
@@ -59,6 +70,9 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
         return true;
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public void createTable() throws SQLException {
         createTableAlarm();
@@ -66,6 +80,9 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
         createTableAlarmByProgram();
     }
 
+    /**
+     * {@inheritDoc }
+     */
     private void createTableAlarm() throws SQLException {
         String sqlQuery = "CREATE TABLE ALARMNAMES " + "(ID INT NOT NULL , " + "NAME VARCHAR(100) NOT NULL, "
                 + "PRIMARY KEY (ID))";
@@ -142,7 +159,7 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE FROM APP.ALARM ";
         Statement stmt = null;
         Connection con = null;
@@ -160,6 +177,3 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
         }
     }
 }
-
-
-

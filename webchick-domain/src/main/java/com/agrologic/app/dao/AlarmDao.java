@@ -3,9 +3,16 @@ package com.agrologic.app.dao;
 
 import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.ProgramAlarm;
+
 import java.sql.SQLException;
 import java.util.Collection;
 
+/**
+ * DAO for the {@link  com.agrologic.app.model.Alarm}. It provides all CRUD operations to work with
+ * {@link com.agrologic.app.model.Alarm} objects.
+ *
+ * @author Valery Manakhimov
+ */
 public interface AlarmDao {
 
     /**
@@ -27,8 +34,8 @@ public interface AlarmDao {
     /**
      * Insert alarm translation row to alarm by language table. <br> This is a dictionary of alarm types .
      *
-     * @param alarmId the id of alarms
-     * @param langId the id of language
+     * @param alarmId     the id of alarms
+     * @param langId      the id of language
      * @param translation the translation text
      * @throws SQLException if failed to insert to the alarm by language table
      */
@@ -121,7 +128,7 @@ public interface AlarmDao {
     /**
      * Retrieves selected program alarm by program id and language id.
      *
-     * @param langId the language id
+     * @param langId    the language id
      * @param programId the program id
      * @return Collection of ProgramAlarm object , each object reflects a row in table programalarms
      * @throws SQLException if failed to retrieve all program relays from the database

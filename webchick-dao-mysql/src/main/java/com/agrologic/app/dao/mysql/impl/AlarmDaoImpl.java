@@ -3,33 +3,38 @@ package com.agrologic.app.dao.mysql.impl;
 import com.agrologic.app.dao.AlarmDao;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.mappers.RowMappers;
+import com.agrologic.app.dao.mappers.Util;
 import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.ProgramAlarm;
-import com.agrologic.app.dao.mappers.AlarmUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.*;
 
 public class AlarmDaoImpl implements AlarmDao {
+    protected final DaoFactory dao;
     private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    protected final DaoFactory dao;
+    private final SimpleJdbcInsert jdbcInsertTranslate;
 
     public AlarmDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        jdbcInsert.setTableName("alarmnames");
+        this.jdbcInsert.setTableName("alarmnames");
+        this.jdbcInsertTranslate = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsertTranslate.setTableName("alarmbylanguage");
         this.dao = dao;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insert(Alarm alarm) {
         logger.debug("Creating alarm with id [{}]", alarm.getId());
@@ -39,172 +44,84 @@ public class AlarmDaoImpl implements AlarmDao {
         jdbcInsert.execute(valuesToInsert);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void insert(Collection<Alarm> alarmList) throws SQLException {
+    public void insert(Collection<Alarm> alarmList) {
         // there is duplicate alarm elements in alarmList we need only unique elements
-        Collection<Alarm> uniqueAlarmList = AlarmUtil.getUniqueElements(alarmList);
-        for (Alarm alarm : uniqueAlarmList) {
+        Collection<Alarm> alarmCollection = Util.getUniqueElements(alarmList);
+        for (Alarm alarm : alarmCollection) {
             insert(alarm);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void insertTranslation(Long alarmId, Long langId, String translation) throws SQLException {
+    public void insertTranslation(Long alarmId, Long langId, String translation) {
+        logger.debug("Creating alarm translation with id [{}] and language id [{}] ", alarmId, langId);
         String sqlQuery =
                 "insert into alarmbylanguage values (?,?,?) on duplicate key update UnicodeName=values(UnicodeName)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, alarmId);
-            prepstmt.setLong(2, langId);
-            prepstmt.setString(3, translation);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Insert Alarm Translation To DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.update(sqlQuery, new Object[]{alarmId, langId, translation});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void insertTranslation(Collection<Alarm> alarmList) throws SQLException {
-        String sqlQuery = "insert into alarmbylanguage values (?,?,?) ";
-        // + "on duplicate key update UnicodeName=values(UnicodeName)";
-        // INSERT INTO alarmbylanguage (?,?,UnicodeName) (SELECT '?' FROM alarmbylanguage WHERE UnicodeName = '?' HAVING count(*)=0)
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            // turn off autocommit
-            con.setAutoCommit(false);
-            int i = 0;
-            prepstmt = con.prepareStatement(sqlQuery);
-            for (Alarm alarm : alarmList) {
-                prepstmt.setLong(1, alarm.getId());
-                prepstmt.setLong(2, alarm.getLangId());
-                prepstmt.setString(3, alarm.getUnicodeText());
-                prepstmt.addBatch();
-                if ((i + 1) % 200 == 0) {
-                    prepstmt.executeBatch();    // Execute every 200 items.
-                    System.out.print(".");
-                }
-
-                i++;
-            }
-
-            System.out.print("");
-            prepstmt.executeBatch();
-            con.commit();
-            con.setAutoCommit(true);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    dao.printSQLException(ex);
-                    throw new SQLException("Cannot Insert Alarm Name Translation. Transaction is being rolled back",
-                            ex);
-                }
-            }
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+    public void insertTranslation(final Collection<Alarm> alarms) {
+        List<Alarm> alarmList = new ArrayList(alarms);
+        List<Object[]> batch = new ArrayList<Object[]>();
+        for (Alarm alarm : alarmList) {
+            Object[] values = new Object[]{
+                    alarm.getId(),
+                    alarm.getLangId(),
+                    alarm.getUnicodeText()};
+            batch.add(values);
         }
+        jdbcTemplate.batchUpdate("insert into alarmbylanguage values (?,?,?) ", batch);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insertProgramAlarms(Collection<ProgramAlarm> programAlarms) throws SQLException {
-        String sqlQuery = "insert into programalarms values (?,?,?,?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            con.setAutoCommit(false);
-            prepstmt = con.prepareStatement(sqlQuery);
-
-            for (ProgramAlarm programAlarm : programAlarms) {
-                prepstmt.setLong(1, programAlarm.getDataId());
-                prepstmt.setInt(2, programAlarm.getDigitNumber());
-                prepstmt.setString(3, programAlarm.getText());
-                prepstmt.setLong(4, programAlarm.getProgramId());
-                prepstmt.setInt(5, programAlarm.getDigitNumber());
-                prepstmt.setLong(6, programAlarm.getAlarmTextId());
-                prepstmt.addBatch();
-            }
-
-            prepstmt.executeBatch();
-            con.commit();
-            con.setAutoCommit(true);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    dao.printSQLException(ex);
-
-                    throw new SQLException("Transaction is being rolled back", ex);
-                }
-            }
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        List<ProgramAlarm> programAlarmList = new ArrayList(programAlarms);
+        List<Object[]> batch = new ArrayList<Object[]>();
+        for (ProgramAlarm programAlarm : programAlarmList) {
+            Object[] values = new Object[]{
+                    programAlarm.getDataId(),
+                    programAlarm.getDigitNumber(),
+                    programAlarm.getText(),
+                    programAlarm.getProgramId(),
+                    programAlarm.getDigitNumber(),
+                    programAlarm.getAlarmTextId()
+            };
+            batch.add(values);
         }
+        jdbcTemplate.batchUpdate("insert into programalarms values (?,?,?,?,?,?)", batch);
     }
 
     @Override
     public void update(Alarm alarm) throws SQLException {
+        logger.debug("Update alarm with id [{}]", alarm.getId());
         String sqlQuery = "update alarmnames set Name=? where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, alarm.getText());
-            prepstmt.setLong(2, alarm.getId());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Update Alarm In DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.update(sqlQuery, new Object[]{alarm.getText(), alarm.getId()});
     }
 
     @Override
-    public void remove(Long id) throws SQLException {
+    public void remove(Long id) {
+        logger.debug("Delete alarm with id [{}]", id);
         String sqlQuery = "delete from alarmnames where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException("Cannot Remove Alarm From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.update(sqlQuery, new Object[]{id});
     }
 
     @Override
     public Alarm getById(Long id) throws SQLException {
+        logger.debug("Get alarm with id [{}]", id);
         String sqlQuery = "select * from alarmnames where ID=?";
         List<Alarm> alarms = jdbcTemplate.query(sqlQuery, new Object[]{id}, RowMappers.alarm());
         if (alarms.isEmpty()) {
@@ -215,135 +132,75 @@ public class AlarmDaoImpl implements AlarmDao {
 
     @Override
     public Collection<Alarm> getAll() throws SQLException {
-        String sqlQuery = "select * from alarmnames order by ID,Name";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            return AlarmUtil.makeAlarmList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve All Alarms From DataBase", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Get all alarm names ");
+        String sqlQuery = "select * from alarmnames order by id,name";
+        List<Alarm> alarms = jdbcTemplate.query(sqlQuery, RowMappers.alarm());
+        return alarms;
     }
 
     @Override
     public Collection<Alarm> getAll(Long langId) throws SQLException {
-        String sqlQuery = "select a1.id, a1.name, a2.alarmid, a2.langid, a2.unicodename from alarmnames a1 "
-                + "left join alarmbylanguage a2 on a1.id=a2.alarmid and langid=" + langId;
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            return AlarmUtil.makeAlarmList(rs);
-        } catch (SQLException e) {
-            throw new SQLException("Cannot Retrieve All Alarms By Specified Language From DataBase", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Get all alarm names of given language id ");
+        String sqlQuery = "select alarmnames.id, alarmnames.name, alarmbylanguage.alarmid, alarmbylanguage.langid, " +
+                "alarmbylanguage.unicodename from alarmnames  left join alarmbylanguage  " +
+                "on alarmnames.id=alarmbylanguage.alarmid and alarmbylanguage.langid=" + langId;
+        List<Alarm> alarms = jdbcTemplate.query(sqlQuery, RowMappers.alarm());
+        return alarms;
     }
 
     @Override
     public Collection<Alarm> getAllWithTranslation() throws SQLException {
+        logger.debug("Get all alarm names with translation in all languages ");
         String sqlQuery = "select * from alarmnames "
                 + "join alarmbylanguage on alarmnames.id=alarmbylanguage.alarmid "
                 + "order by alarmbylanguage.langid , alarmbylanguage.alarmid ";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-            return AlarmUtil.makeAlarmList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Alarms With Translation From DataBase", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        List<Alarm> alarms = jdbcTemplate.query(sqlQuery, RowMappers.alarm());
+        return alarms;
     }
 
     @Override
-    public Collection<ProgramAlarm> getAllProgramAlarms(Long programId) throws SQLException {
-        String sqlQuery = "select * from programalarms where ProgramID=? ";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, programId);
-            return AlarmUtil.makeProgramAlarmList(prepstmt.executeQuery());
-        } catch (SQLException e) {
-            throw new SQLException("Cannot Retrieve ProgramAlarm From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+    public Collection<ProgramAlarm> getAllProgramAlarms(final Long programId) throws SQLException {
+        logger.debug("Get all program alarms of given program id ");
+        String sqlQuery = "select * from programalarms where ProgramID=?";
+        List<ProgramAlarm> programAlarms = jdbcTemplate.query(sqlQuery, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setLong(1, programId);
+            }
+        }, RowMappers.programAlarm());
+        return programAlarms;
     }
 
     @Override
-    public Collection<ProgramAlarm> getSelectedProgramAlarms(Long programId) throws SQLException {
+    public Collection<ProgramAlarm> getSelectedProgramAlarms(final Long programId) throws SQLException {
+        logger.debug("Get all program alarms of given program id that was selected");
         String sqlQuery = "select * from programalarms where ProgramID=? and TEXT not Like '%None%' "
                 + "and Text not Like '%Damy%' order by DataID,AlarmNumber";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, programId);
-            return AlarmUtil.makeProgramAlarmList(prepstmt.executeQuery());
-        } catch (SQLException e) {
-            throw new SQLException("Cannot Retrieve ProgramAlarm From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        List<ProgramAlarm> programAlarms = jdbcTemplate.query(sqlQuery, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setLong(1, programId);
+            }
+        }, RowMappers.programAlarm());
+        return programAlarms;
     }
 
     @Override
-    public Collection<ProgramAlarm> getSelectedProgramAlarms(Long programId, Long langId) throws SQLException {
-        String sqlQuery = "select * from programalarms as pa inner join  alarmbylanguage abl on "
-                + "abl.alarmid = pa.alarmtextid and abl.LangID=? and pa.programid=? and pa.text not Like '%None%' "
-                + "and pa.text not Like '%Damy%' order by pa.dataid,pa.digitnumber";
+    public Collection<ProgramAlarm> getSelectedProgramAlarms(final Long programId, final Long langId) throws SQLException {
+        logger.debug("Get all program alarms of given program id and given language id  that was selected");
+        String sqlQuery = "select * from programalarms inner join alarmbylanguage on " +
+                "alarmbylanguage.alarmid = programalarms.alarmtextid " +
+                "and alarmbylanguage.langid=? and programalarms.programid=? and programalarms.text not Like '%None%' " +
+                "and programalarms.text not Like '%Damy%' order by programalarms.dataid, programalarms.digitnumber";
 
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, langId);
-            prepstmt.setLong(2, programId);
-            return AlarmUtil.makeProgramAlarmList(prepstmt.executeQuery());
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve ProgramAlarm From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-
-        }
+        List<ProgramAlarm> programAlarms = jdbcTemplate.query(sqlQuery, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setLong(1, langId);
+                ps.setLong(2, programId);
+            }
+        }, RowMappers.programAlarm());
+        return programAlarms;
     }
 }
 
