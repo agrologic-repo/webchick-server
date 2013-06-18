@@ -68,19 +68,18 @@ public class ListAlarms extends HttpServlet {
 
                     LanguageDao langDao = new LanguageDaoImpl();
                     List<LanguageDto> languages = langDao.geAll();
-
-                    logger.info("retreive alarm names!");
                     request.getSession().setAttribute("languages", languages);
+                    logger.debug("retrieved languages!");
 
                     AlarmDao alarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(AlarmDao.class);
                     List<Alarm> alarmNames = new ArrayList<Alarm>(alarmDao.getAll(translateLang));
-
-                    logger.info("retreive alarm names!");
                     request.getSession().setAttribute("alarmNames", alarmNames);
+                    logger.info("retrieved alarm names!");
+
                     response.sendRedirect("./all-alarms.jsp?translateLang=" + translateLang);
                 } catch (SQLException ex) {
-                    logger.info("Error occurs while retreive program alarms!", ex);
-                    request.getSession().setAttribute("message", "Error occurs while retreive program alarms!");
+                    logger.info("Error occurs while retrieve program alarms!", ex);
+                    request.getSession().setAttribute("message", ex.getMessage());
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
                 }
             }

@@ -6,55 +6,26 @@
 package com.agrologic.app.web;
 
 
-
-import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.LanguageDao;
-import com.agrologic.app.dao.ProgSysStateDao;
-import com.agrologic.app.dao.ProgramAlarmDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.ProgramRelayDao;
-import com.agrologic.app.dao.ScreenDao;
-import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
-import com.agrologic.app.dao.impl.ProgramAlarmDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.dao.impl.ProgramRelayDaoImpl;
-import com.agrologic.app.dao.impl.ProgramSystemStateDaoImpl;
-import com.agrologic.app.dao.impl.ScreenDaoImpl;
-import com.agrologic.app.dao.impl.TableDaoImpl;
-import com.agrologic.app.model.CellinkDto;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.DataDto;
-import com.agrologic.app.model.ProgramDto;
-import com.agrologic.app.model.ScreenDto;
-import com.agrologic.app.model.TableDto;
-
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.impl.*;
+import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class RCMainScreenServlet extends HttpServlet {
@@ -62,10 +33,11 @@ public class RCMainScreenServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -78,10 +50,10 @@ public class RCMainScreenServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            long   userId    = Long.parseLong(request.getParameter("userId"));
-            long   cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-            long   screenId  = Long.parseLong(request.getParameter("screenId"));
-            String lang      = (String) request.getSession().getAttribute("lang");
+            long userId = Long.parseLong(request.getParameter("userId"));
+            long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+            long screenId = Long.parseLong(request.getParameter("screenId"));
+            String lang = (String) request.getSession().getAttribute("lang");
 
             if ((lang == null) || lang.equals("")) {
                 lang = "en";
@@ -91,7 +63,7 @@ public class RCMainScreenServlet extends HttpServlet {
 
             try {
                 CellinkDao cellinkDao = new CellinkDaoImpl();
-                CellinkDto  cellink    = cellinkDao.getById(cellinkId);
+                CellinkDto cellink = cellinkDao.getById(cellinkId);
 
                 if (cellink.getState() == CellinkState.STATE_ONLINE) {
                     cellink.setState(CellinkState.STATE_START);
@@ -104,19 +76,20 @@ public class RCMainScreenServlet extends HttpServlet {
                 request.getSession().setAttribute("cellink", cellink);
 
                 LanguageDao languageDao = new LanguageDaoImpl();
-                long         langId      = languageDao.getLanguageId(lang);    // get language id
+                long langId = languageDao.getLanguageId(lang);    // get language id
 
                 // get all controllers connected to cellink
-                ControllerDao         controllerDao         = new ControllerDaoImpl();
-                List<ControllerDto>    controllers           = controllerDao.getAllByCellinkId(new Long(cellinkId));
-                final DataDao         dataDao               = new DataDaoImpl();
-                final TableDao        tableDao              = new TableDaoImpl();
-                final ScreenDao       screenDao             = new ScreenDaoImpl();
-                final ProgramDao      programDao            = new ProgramDaoImpl();
-                final ProgramRelayDao programRelayDao       = new ProgramRelayDaoImpl();
-                final ProgramAlarmDao programAlarmDao       = new ProgramAlarmDaoImpl();
+                ControllerDao controllerDao = new ControllerDaoImpl();
+                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(new Long(cellinkId));
+                final DataDao dataDao = new DataDaoImpl();
+                final TableDao tableDao = new TableDaoImpl();
+                final ScreenDao screenDao = new ScreenDaoImpl();
+                final ProgramDao programDao = new ProgramDaoImpl();
+                final ProgramRelayDao programRelayDao = new ProgramRelayDaoImpl();
+                final ProgramAlarmDao programAlarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramAlarmDao.class);
+
                 final ProgSysStateDao programSystemStateDao = new ProgramSystemStateDaoImpl();
-                Map<Long, Long>        nextScrIdsByCntrl     = new HashMap<Long, Long>();
+                Map<Long, Long> nextScrIdsByCntrl = new HashMap<Long, Long>();
 
                 for (ControllerDto controller : controllers) {
 
@@ -161,12 +134,12 @@ public class RCMainScreenServlet extends HttpServlet {
                 }
 
                 request.getSession().setAttribute("controllers", controllers);
-                logger.info("retreive controllers!");
+                logger.info("retrieve controllers!");
                 request.getSession().setAttribute("dataRelays", dataDao.getRelays());
-                logger.info("retreive program data relay!");
+                logger.info("retrieve program data relay!");
                 request.getSession().setAttribute("nextScrIdsByCntrl", nextScrIdsByCntrl);
                 request.getRequestDispatcher("./rmctrl-main-screen.jsp?lang=" + lang + "&userId" + userId
-                                             + "&screenId=" + screenId).forward(request, response);
+                        + "&screenId=" + screenId).forward(request, response);
             } catch (SQLException ex) {
 
                 // error page
@@ -184,9 +157,9 @@ public class RCMainScreenServlet extends HttpServlet {
      * @param request the request object
      */
     private void checkRealTimeSessionTimeout(HttpServletRequest request, Logger logger) {
-        String  doResetTimeout = request.getParameter("doResetTimeout");
+        String doResetTimeout = request.getParameter("doResetTimeout");
         Integer newConnTimeout = 0;
-        Long    startConnTime  = null;
+        Long startConnTime = null;
 
         logger.info("refresh executed");
 
@@ -233,10 +206,11 @@ public class RCMainScreenServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -246,10 +220,11 @@ public class RCMainScreenServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -259,6 +234,7 @@ public class RCMainScreenServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

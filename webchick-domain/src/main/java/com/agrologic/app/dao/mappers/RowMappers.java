@@ -24,6 +24,10 @@ public class RowMappers {
         return new ProgramAlarmMapper();
     }
 
+    public static ProgramRelayMapper programRelay() {
+        return new ProgramRelayMapper();
+    }
+
     public static ProgramMapper program() {
         return new ProgramMapper();
     }
@@ -120,6 +124,7 @@ public class RowMappers {
             programAlarm.setDigitNumber(rs.getInt("DigitNumber"));
             programAlarm.setText(rs.getString("Text"));
             programAlarm.setProgramId(rs.getLong("ProgramID"));
+            programAlarm.setAlarmTextId(rs.getLong("AlarmTextID"));
             try {
                 programAlarm.setText(rs.getString("UnicodeName"));
             } catch (SQLException ex) {    /* ignore */
@@ -129,4 +134,23 @@ public class RowMappers {
         }
     }
 
+    private static class ProgramRelayMapper implements RowMapper<ProgramRelay> {
+        @Override
+        public ProgramRelay mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ProgramRelay programRelay = new ProgramRelay();
+
+            programRelay.setDataId(rs.getLong("DataID"));
+            programRelay.setBitNumber(rs.getInt("BitNumber"));
+            programRelay.setText(rs.getString("Text"));
+            programRelay.setProgramId(rs.getLong("ProgramID"));
+            programRelay.setRelayNumber(rs.getInt("RelayNumber"));
+            programRelay.setRelayTextId(rs.getLong("RelayTextID"));
+            try {
+                programRelay.setUnicodeText(rs.getString("UnicodeText"));
+            } catch (SQLException ex) {
+                programRelay.setUnicodeText(programRelay.getText());
+            }
+            return programRelay;
+        }
+    }
 }

@@ -33,6 +33,9 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
     protected WorkerDao workerDao;
     protected LanguageDao languageDao;
     protected ProgramDao programDao;
+    protected ProgramAlarmDao programAlarmDao;
+    protected ProgramRelayDao programRelayDao;
+    protected ProgramSysStateDao programSystemStateDao;
     protected RelayDao relayDao;
     protected SchemaDao schemaDao;
     protected ScreenDao screenDao;
@@ -76,6 +79,9 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
         controllerDao = DbImplDecider.use(daoType).getDao(ControllerDao.class);
         flockDao = DbImplDecider.use(daoType).getDao(FlockDao.class);
         programDao = DbImplDecider.use(daoType).getDao(ProgramDao.class);
+        programAlarmDao = DbImplDecider.use(daoType).getDao(ProgramAlarmDao.class);
+        //programRelayDao = DbImplDecider.use(daoType).getDao(ProgramRelayDao.class);
+//        programSystemStateDao = DbImplDecider.use(daoType).getDao(ProgramSysStateDao.class);
         screenDao = DbImplDecider.use(daoType).getDao(ScreenDao.class);
         tableDao = DbImplDecider.use(daoType).getDao(TableDao.class);
         dataDao = DbImplDecider.use(daoType).getDao(DataDao.class);
@@ -175,6 +181,11 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
     @Override
     public void setProgramDao(ProgramDao programDao) {
         this.programDao = programDao;
+    }
+
+    @Override
+    public ProgramAlarmDao getProgramAlarmDao() {
+        return programAlarmDao;
     }
 
     @Override

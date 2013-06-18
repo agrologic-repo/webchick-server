@@ -8,7 +8,6 @@ package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ProgramAlarmDaoImpl;
 import com.agrologic.app.dao.impl.ProgramDaoImpl;
 import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.DataDto;
@@ -67,30 +66,30 @@ public class ProgramAlarmsServlet extends HttpServlet {
                     logger.info("retrieve program!");
 
                     String[] empty = new String[0];
-                    ProgramAlarmDao programAlarmDao = new ProgramAlarmDaoImpl();
+                    ProgramAlarmDao programAlarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramAlarmDao.class);
                     List<ProgramAlarm> programAlarms = programAlarmDao.getAllProgramAlarms(program.getId(), empty);
 
                     program.setProgramAlarms(programAlarms);
-                    logger.info("retreive program alarms!");
+                    logger.info("retrieve program alarms!");
                     request.getSession().setAttribute("program", program);
 
                     DataDao dataDao = new DataDaoImpl();
                     List<DataDto> dataAlarms = dataDao.getAlarms();
 
-                    logger.info("retreive program alarms datatypes!");
+                    logger.info("retrieve program alarms datatypes!");
                     request.getSession().setAttribute("dataAlarms", dataAlarms);
 
                     AlarmDao alarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(AlarmDao.class);
                     List<Alarm> alarmNames = new ArrayList<Alarm>(alarmDao.getAll());
 
-                    logger.info("retreive relay names!");
+                    logger.info("retrieve relay names!");
                     request.getSession().setAttribute("alarmNames", alarmNames);
                     request.getRequestDispatcher("./assign-alarms.jsp").forward(request, response);
 
                     // request.getRequestDispatcher("./program-alarms.jsp").forward(request, response);
                 } catch (SQLException ex) {
-                    logger.info("Error occurs while retreive program alarms!");
-                    request.getSession().setAttribute("message", "Error occurs while retreive program alarms!");
+                    logger.info("Error occurs while retrieve program alarms!");
+                    request.getSession().setAttribute("message", "Error occurs while retrieve program alarms!");
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
                 }
             }

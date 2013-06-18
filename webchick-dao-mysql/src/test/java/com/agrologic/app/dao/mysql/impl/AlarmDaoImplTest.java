@@ -20,6 +20,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @TransactionConfiguration
 @Transactional
 public class AlarmDaoImplTest {
+
     @Autowired
     private AlarmDao alarmDao;
 
@@ -46,7 +47,6 @@ public class AlarmDaoImplTest {
         alarm.setLangId(1L);
         expectedAlarms.add(alarm);
         alarmDao.insert(expectedAlarms);
-
         Collection<Alarm> actualAlarms = alarmDao.getAll();
         assertReflectionEquals(expectedAlarms, actualAlarms);
     }

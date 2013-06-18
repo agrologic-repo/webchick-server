@@ -13,6 +13,8 @@ public interface DatabaseAccessor {
 
     void setAlarmDao(AlarmDao alarmDao);
 
+    ProgramAlarmDao getProgramAlarmDao();
+
     CellinkDao getCellinkDao();
 
     void setCellinkDao(CellinkDao cellinkDao);

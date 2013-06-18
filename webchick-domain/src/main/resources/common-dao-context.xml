@@ -24,9 +24,15 @@
     </tx:advice>
 
     <aop:config>
-        <aop:pointcut id="defaultTxPointcut" expression="within(com.agrologic.app.dao.AlarmDao+)"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="defaultTxPointcut"/>
+        <aop:pointcut id="alarmTxPointcut" expression="within(com.agrologic.app.dao.AlarmDao+)"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="alarmTxPointcut"/>
     </aop:config>
+
+    <aop:config>
+        <aop:pointcut id="programAlarmTxPointcut" expression="within(com.agrologic.app.dao.ProgramAlarmDao+)"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="programAlarmTxPointcut"/>
+    </aop:config>
+
 
     <!--We're wrapping our underlying data source with lazy one so that connection is not retrieved from the pool unless-->
     <!--it's really necessary. E.g. if Hibernate hits only cache, there is no need to fetch connection, but without lazy-->

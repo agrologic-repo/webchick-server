@@ -39,6 +39,7 @@ public class DatabaseCreator implements DatabaseCreatable {
 
     private void initCreatableList() {
         createbleList.add(dba.getProgramDao());
+        createbleList.add(dba.getProgramAlarmDao());
         createbleList.add(dba.getScreenDao());
         createbleList.add(dba.getTableDao());
         createbleList.add(dba.getDataDao());
@@ -111,7 +112,7 @@ public class DatabaseCreator implements DatabaseCreatable {
                 Object dropper = iter.next();
                 if (((RemovebleDao) dropper).tableExist()) {
                     logger.info("Drop " + dropper.getClass().getName() + " table ... ");
-                    ((RemovebleDao) dropper).removeFromTable();
+                    ((RemovebleDao) dropper).deleteFromTable();
                 }
             } catch (SQLException ex) {
                 logger.info("Error during remove all data from tables ", ex);

@@ -29,6 +29,7 @@ public class DatabaseManager {
 
     /**
      * Creates a new {@link DatabaseManager}.
+     *
      * @param daoType the dao type
      */
     public DatabaseManager(DaoType daoType) {
@@ -76,9 +77,9 @@ public class DatabaseManager {
 
     public synchronized void runRemoveOldData() {
         try {
-            ((RemovebleDao) databaseGeneralService.getControllerDao()).removeFromTable();
-            ((RemovebleDao) databaseGeneralService.getCellinkDao()).removeFromTable();
-            ((RemovebleDao) databaseGeneralService.getUserDao()).removeFromTable();
+            ((RemovebleDao) databaseGeneralService.getControllerDao()).deleteFromTable();
+            ((RemovebleDao) databaseGeneralService.getCellinkDao()).deleteFromTable();
+            ((RemovebleDao) databaseGeneralService.getUserDao()).deleteFromTable();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

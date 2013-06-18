@@ -57,7 +57,6 @@ public class AddAlarmtranslationForm extends HttpServlet {
 
                 try {
                     AlarmDao alarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(AlarmDao.class);
-
                     alarmDao.insertTranslation(alarmId, langId, translate);
                 } catch (SQLException ex) {
 

@@ -10,7 +10,8 @@ import com.agrologic.app.dao.AlarmDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Alarm;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,7 +40,7 @@ public class EditAlarmFormServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        final Logger logger = Logger.getLogger(AddAlarmFormServlet.class);
+        final Logger logger = LoggerFactory.getLogger(AddAlarmFormServlet.class);
         PrintWriter out = response.getWriter();
 
         try {
@@ -53,14 +54,14 @@ public class EditAlarmFormServlet extends HttpServlet {
 
                 alarm.setText(alarmText);
                 alarmDao.update(alarm);
-                logger.info("Alarm " + alarm.getText() + "  successfully updated");
+                logger.info("Alarm [{}] successfully updated", alarm.getText());
                 alarmDao.insertTranslation(alarm.getId(), translateLang, alarm.getText());
                 request.getSession().setAttribute("message",
                         "Alarm <b style=\"color:gray\"> " + alarm.getText()
                                 + " </b> successfully  updated");
                 request.getSession().setAttribute("error", false);
             } catch (SQLException ex) {
-                logger.error("Error occurs during editiing alarm ", ex);
+                logger.error("Error occurs during editing alarm ", ex);
                 request.getSession().setAttribute("message", "Error occurs during editing alarm ");
                 request.getSession().setAttribute("error", true);
             }
