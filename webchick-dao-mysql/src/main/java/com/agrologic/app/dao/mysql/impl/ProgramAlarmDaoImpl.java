@@ -19,15 +19,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import java.sql.SQLException;
 import java.util.*;
 
-/**
- * Title: ProgramAlarmDaoImpl <br>
- * Decription: <br>
- * Copyright:   Copyright (c) 2009 <br>
- * Company:     Agro Logic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class ProgramAlarmDaoImpl implements ProgramAlarmDao {
     protected final DaoFactory dao;
     private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
@@ -49,14 +40,13 @@ public class ProgramAlarmDaoImpl implements ProgramAlarmDao {
      */
     @Override
     public void insert(ProgramAlarm programAlarm) throws SQLException {
-        logger.debug("Creating program alarm with id [{}]", programAlarm.getProgramId());
+        logger.debug("Creating program alarm [{}] [{}]", programAlarm, programAlarm.getAlarmTextId());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("digitnumber", programAlarm.getDigitNumber());
         valuesToInsert.put("text", programAlarm.getText());
         valuesToInsert.put("programid", programAlarm.getProgramId());
         valuesToInsert.put("alarmtextid", programAlarm.getAlarmTextId());
         jdbcInsert.execute(valuesToInsert);
-
     }
 
     /**
@@ -76,7 +66,7 @@ public class ProgramAlarmDaoImpl implements ProgramAlarmDao {
      */
     @Override
     public void remove(Long dataId, Integer digitNumber, Long programId) throws SQLException {
-        String sqlQuery = "delete from programrelays where DataId=? and DigitNumber=? and ProgramID=?";
+        String sqlQuery = "delete from programalarms where DataId=? and DigitNumber=? and ProgramID=?";
         Validate.notNull(dataId, "Data id  can not be null");
         Validate.notNull(digitNumber, "Digit number  can not be null");
         Validate.notNull(programId, "Program id can not be null");
@@ -97,10 +87,10 @@ public class ProgramAlarmDaoImpl implements ProgramAlarmDao {
         int relayIndex = 0, alarmNumber = 0;
         List<Object[]> batch = new ArrayList<Object[]>();
         for (Long dataId : dataIdList) {
-            Map<Integer, String> alarmDigitMaps = alarmMap.get(dataId);
-            Set<Integer> digits = alarmDigitMaps.keySet();
+            Map<Integer, String> alarmDigitMap = alarmMap.get(dataId);
+            Set<Integer> digits = alarmDigitMap.keySet();
             for (Integer digit : digits) {
-                String alarmText = alarmDigitMaps.get(digit);
+                String alarmText = alarmDigitMap.get(digit);
                 Pair<Long, String> pair = parseAlarmText(alarmText);
                 alarmNumber = relayIndex * digitsBits + digit;
                 Object[] values = new Object[]{
@@ -156,19 +146,10 @@ public class ProgramAlarmDaoImpl implements ProgramAlarmDao {
      */
     @Override
     public List<ProgramAlarm> getAllProgramAlarms(Long programId, Long langId) throws SQLException {
-        String sqlQuery =
-                "select * from programalarms " +
-                        "left join alarmbylanguage on alarmbylanguage.AlarmID = programalarms.AlarmTextID " +
-                        "and alarmbylanguage.LangID=? " +
-                        "where programalarms.ProgramID=?";//as progalarm ";
-//                        + " join (select AlarmID,LangID,UnicodeName from alarmbylanguage ) "
-//                        + " as abl where abl.AlarmID = progalarm.AlarmTextID and abl.LangID=? and ProgramID=? order by DataID,DigitNumber";
-//        String[] strings = new String[]{"None", "Damy"};
-//
-//        for (int i = 0; i < strings.length; i++) {
-//            sqlQuery = "select * from (" + sqlQuery + ") as a where a.Text not Like '%" + strings[i]
-//                    + "%' order by a.DataID,a.DigitNumber ";
-//        }
+        String sqlQuery = "select * from programalarms left join alarmbylanguage " +
+                "on alarmbylanguage.AlarmID = programalarms.AlarmTextID and alarmbylanguage.LangID=?  " +
+                "where programalarms.ProgramID=? and programalarms.Text not Like '%None%' " +
+                "and  programalarms.Text not Like '%Damy%'";
         logger.debug("Get all program alarms with given language id ");
         return jdbcTemplate.query(sqlQuery, new Object[]{langId, programId}, RowMappers.programAlarm());
     }

@@ -5,32 +5,15 @@
  */
 package com.agrologic.app.dao.impl;
 
-
-
 import com.agrologic.app.dao.TableDao;
 import com.agrologic.app.model.TableDto;
 
-
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Title: TableDaoImpl <br>
- * Description: <br>
- * Copyright:   Copyright (c) 2009 <br>
- * Company:     AgroLogic LTD. <br>
- * @author      Valery Manakhimov <br>
- * @version     1.1 <br>
- */
 public class TableDaoImpl extends ConnectorDao implements TableDao {
     private TableDto makeTable(ResultSet rs) throws SQLException {
         TableDto table = new TableDto();
@@ -68,12 +51,12 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
 
     @Override
     public void insert(TableDto table) throws SQLException {
-        String            sqlQuery = "insert into screentable values (?,?,?,?,?,?)";
+        String sqlQuery = "insert into screentable values (?,?,?,?,?,?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setObject(1, null);
             prepstmt.setLong(2, table.getScreenId());
@@ -95,12 +78,12 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
 
     @Override
     public void update(TableDto table) throws SQLException {
-        String            sqlQuery = "update screentable set Title=? , Position=? ,ScreenID=? where TableID=? and ProgramID=?";
+        String sqlQuery = "update screentable set Title=? , Position=? ,ScreenID=? where TableID=? and ProgramID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setString(1, table.getTitle());
             prepstmt.setInt(2, table.getPosition());
@@ -121,12 +104,12 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
 
     @Override
     public void remove(Long programId, Long screenId, Long tableId) throws SQLException {
-        String            sqlQuery = "delete from screentable where TableID=? and ScreenID=? and ProgramID=? ";
+        String sqlQuery = "delete from screentable where TableID=? and ScreenID=? and ProgramID=? ";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, tableId);
             prepstmt.setLong(2, screenId);
@@ -145,12 +128,12 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
 
     @Override
     public void insertExsitTable(TableDto table) throws SQLException {
-        String            sqlQuery = "insert into screentable values (?,?,?,?,?,?)";
+        String sqlQuery = "insert into screentable values (?,?,?,?,?,?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, table.getId());
             prepstmt.setLong(2, table.getScreenId());
@@ -172,12 +155,12 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
 
     @Override
     public TableDto getById(Long programId, Long screenId, Long tableId) throws SQLException {
-        String            sqlQuery = "select * from screentable where TableID=? and ScreenID=? and ProgramID=?";
+        String sqlQuery = "select * from screentable where TableID=? and ScreenID=? and ProgramID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, tableId);
             prepstmt.setLong(2, screenId);
@@ -202,12 +185,12 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
 
     @Override
     public List<TableDto> getAll() throws SQLException {
-        String     sqlQuery = "select * from screentable";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select * from screentable";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = getConnection();
+            con = getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -226,12 +209,12 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
     @Override
     public List<TableDto> getAllScreenTables(String screenIdList) throws SQLException {
         String sqlQuery = "select * from screentable where screenid in (" + screenIdList
-                          + ") order by ScreenId,Position";
-        Statement  stmt = null;
-        Connection con  = null;
+                + ") order by ScreenId,Position";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = getConnection();
+            con = getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -265,11 +248,11 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
 
         sqlQuery = "select * from (" + sqlQuery + ") as b order by Position";
 
-        Statement  stmt = null;
-        Connection con  = null;
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = getConnection();
+            con = getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -303,14 +286,14 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
         }
 
         sqlQuery = "select * from ( " + sqlQuery
-                   + " ) as t left join (select UnicodeTitle,TableID from tablebylanguage where LangID =" + langId
-                   + ")" + " as tl  where t.TableID=tl.TableID and DisplayOnScreen='yes' order by Position ";
+                + " ) as t left join (select UnicodeTitle,TableID from tablebylanguage where LangID =" + langId
+                + ")" + " as tl  where t.TableID=tl.TableID and DisplayOnScreen='yes' order by Position ";
 
-        Statement  stmt = null;
-        Connection con  = null;
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = getConnection();
+            con = getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -330,8 +313,8 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
     public List<TableDto> getScreenTables(Long programId, Long screenId, Long langId, boolean showAll)
             throws SQLException {
         String sqlQuery = "select * from screentable"
-                          + " left join tablebylanguage on tablebylanguage.tableid=screentable.tableid"
-                          + " and tablebylanguage.langid=?" + " where programid=? and screenid=?";
+                + " left join tablebylanguage on tablebylanguage.tableid=screentable.tableid"
+                + " and tablebylanguage.langid=?" + " where programid=? and screenid=?";
 
         if (!showAll) {
             sqlQuery = sqlQuery.concat(" and DisplayOnScreen='yes'");
@@ -340,10 +323,10 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
         sqlQuery = sqlQuery.concat(" order by Position");
 
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, langId);
             prepstmt.setLong(2, programId);
@@ -365,13 +348,13 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
     @Override
     public void insertDefaultTables(Long programId, Long selectedProgramId) throws SQLException {
         String sqlQuery =
-            "insert into screentable (TableID, ScreenID,ProgramID, Title, DisplayOnScreen, Position ) "
-            + "(select TableID, ScreenID, ?, Title, DisplayOnScreen, Position from screentable where ProgramID=?)";
+                "insert into screentable (TableID, ScreenID,ProgramID, Title, DisplayOnScreen, Position ) "
+                        + "(select TableID, ScreenID, ?, Title, DisplayOnScreen, Position from screentable where ProgramID=?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, programId);
             prepstmt.setLong(2, selectedProgramId);
@@ -390,12 +373,12 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
     @Override
     public void insertTableTranslation(Long tableId, Long langId, String translation) throws SQLException {
         String sqlQuery =
-            "insert into tablebylanguage values (?,?,?)on duplicate key update UnicodeTitle=values(UnicodeTitle)";
+                "insert into tablebylanguage values (?,?,?)on duplicate key update UnicodeTitle=values(UnicodeTitle)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, tableId);
             prepstmt.setLong(2, langId);
@@ -412,12 +395,12 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
     @Override
     public void moveTable(TableDto table, Long oldScreenId) throws SQLException {
         String sqlQuery = "update screentable set Title=? , Position=? ,ScreenID=? "
-                          + "where TableID=? and ScreenID=? and ProgramID=?";
+                + "where TableID=? and ScreenID=? and ProgramID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setString(1, table.getTitle());
             prepstmt.setInt(2, table.getPosition());
@@ -438,9 +421,9 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
     public void saveChanges(Map<Long, String> showMap, Map<Long, Integer> positionMap, Long screenId, Long programId)
             throws SQLException {
         String sqlQuery =
-            "update screentable set DisplayOnScreen=?, Position=? where TableID=? and ScreenID=? and ProgramID=?";
+                "update screentable set DisplayOnScreen=?, Position=? where TableID=? and ScreenID=? and ProgramID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
             con = getConnection();
@@ -451,7 +434,7 @@ public class TableDaoImpl extends ConnectorDao implements TableDao {
 
             for (Long tableId : keys) {
                 final String show = showMap.get(tableId);
-                Integer      pos  = positionMap.get(tableId);
+                Integer pos = positionMap.get(tableId);
 
                 prepstmt.setString(1, show);
                 prepstmt.setInt(2, pos);

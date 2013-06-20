@@ -40,6 +40,8 @@ public class DatabaseCreator implements DatabaseCreatable {
     private void initCreatableList() {
         createbleList.add(dba.getProgramDao());
         createbleList.add(dba.getProgramAlarmDao());
+        createbleList.add(dba.getProgramRelayDao());
+        createbleList.add(dba.getProgramSystemStateDao());
         createbleList.add(dba.getScreenDao());
         createbleList.add(dba.getTableDao());
         createbleList.add(dba.getDataDao());

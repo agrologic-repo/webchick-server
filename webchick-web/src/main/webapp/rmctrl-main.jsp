@@ -4,38 +4,41 @@
     Author     : JanL
 --%>
 
-<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ include file="disableCaching.jsp" %>
-<%@ page errorPage="anerrorpage.jsp"%>
-<%@ page import="java.util.List"%>
+<%@ page errorPage="anerrorpage.jsp" %>
+<%@ page import="com.agrologic.app.model.CellinkDto" %>
 
 <jsp:directive.page import="com.agrologic.app.model.UserDto"/>
-<jsp:directive.page import="com.agrologic.app.model.CellinkDto"/>
-<jsp:directive.page import="com.agrologic.app.web.UserRole"/>
 
-<%  UserDto user = (UserDto)request.getSession().getAttribute("user");
-    if(user == null) {
+<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+    if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    CellinkDto cellink = (CellinkDto)request.getSession().getAttribute("cellink");
+    CellinkDto cellink = (CellinkDto) request.getSession().getAttribute("cellink");
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
-    <head>
-    <title>Cellink remote control - <%=cellink.getName()%></title>
+<head>
+    <title>Cellink remote control - <%=cellink.getName()%>
+    </title>
     <script language="JavaScript">
         if (window.name == "body" && window != parent) parent.location.replace(window.location);
     </script>
     <LINK REL="SHORTCUT ICON" HREF="img/favicon5.ico" TITLE="AgroLogic Tm.">
 
-    <link rel="shortcut icon" href="img/favicon1.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="img/favicon1.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="favicon.ico">
-    </head>
-    <frameset cols="180px,*">
-        <frame name="menuFrame" height="100%" id="menuFrame" src="rmctrl-menu.jsp?userId=<%=user.getId()%>&cellinkId=<%=cellink.getId()%>" scrolling="no" border="0" frameborder="0" framespacing="0" marginheight="0" marginwidth="0"/>
-        <frame name="body" width="100%" height="100%" src="rmctrl-main-screen-ajax.jsp?userId=<%=user.getId()%>&cellinkId=<%=cellink.getId()%>&screenId=1" border="0" frameborder="0" framespacing="0" marginwidth="0" marginheight="0" scrolling="auto"/>
+</head>
+<frameset cols="180px,*">
+    <frame name="menuFrame" height="100%" id="menuFrame"
+           src="rmctrl-menu.jsp?userId=<%=user.getId()%>&cellinkId=<%=cellink.getId()%>" scrolling="no" border="0"
+           frameborder="0" framespacing="0" marginheight="0" marginwidth="0"/>
+    <frame name="body" width="100%" height="100%"
+           src="rmctrl-main-screen-ajax.jsp?userId=<%=user.getId()%>&cellinkId=<%=cellink.getId()%>&screenId=1"
+           border="0" frameborder="0" framespacing="0" marginwidth="0" marginheight="0" scrolling="auto"/>
     <!--body style="margin: 0 0 0 0px">
         <table cellpadding=0 cellspacing=0 style="width: 100%; height: 100%">
         <tr>
@@ -48,5 +51,5 @@
         </tr>
         </table>
     </body-->
-    </frameset>
+</frameset>
 </html>

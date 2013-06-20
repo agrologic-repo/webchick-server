@@ -33,6 +33,26 @@
         <aop:advisor advice-ref="txAdvice" pointcut-ref="programAlarmTxPointcut"/>
     </aop:config>
 
+    <aop:config>
+        <aop:pointcut id="relayTxPointcut" expression="within(com.agrologic.app.dao.RelayDao+)"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="relayTxPointcut"/>
+    </aop:config>
+
+    <aop:config>
+        <aop:pointcut id="programRelayTxPointcut" expression="within(com.agrologic.app.dao.ProgramRelayDao+)"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="programRelayTxPointcut"/>
+    </aop:config>
+
+    <aop:config>
+        <aop:pointcut id="systemStateTxPointcut" expression="within(com.agrologic.app.dao.SystemStateDao+)"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="systemStateTxPointcut"/>
+    </aop:config>
+
+    <aop:config>
+        <aop:pointcut id="programSystemStateTxPointcut"
+                      expression="within(com.agrologic.app.dao.ProgramSystemStateDao+)"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="programSystemStateTxPointcut"/>
+    </aop:config>
 
     <!--We're wrapping our underlying data source with lazy one so that connection is not retrieved from the pool unless-->
     <!--it's really necessary. E.g. if Hibernate hits only cache, there is no need to fetch connection, but without lazy-->

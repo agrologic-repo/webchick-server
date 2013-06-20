@@ -6,36 +6,35 @@
 package com.agrologic.app.model;
 
 
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Title: ProgramDto <br>
  * Description: <br>
  * Copyright:   Copyright (c) 2009 <br>
  * Company:     AgroLogic LTD. <br>
- * @author      Valery Manakhimov <br>
- * @version     1.1 <br>
+ *
+ * @author Valery Manakhimov <br>
+ * @version 1.1 <br>
  */
 public class ProgramDto implements Serializable {
-    private static final long           serialVersionUID = 2L;
-    private String                      createdDate;
-    private Long                        id;
-    private String                      modifiedDate;
-    private String                      name;
-    private List<ProgramAlarm>       programAlarms;
-    private List<ProgramRelayDto>       programRelays;
-    private List<ProgramSystemStateDto> programSystemStates;
-    private List<ScreenDto>             screens;
+    private static final long serialVersionUID = 2L;
+    private String createdDate;
+    private Long id;
+    private String modifiedDate;
+    private String name;
+    private List<ProgramAlarm> programAlarms;
+    private List<ProgramRelay> programRelays;
+    private List<ProgramSystemState> programSystemStates;
+    private List<ScreenDto> screens;
 
     public Long getId() {
         return id;
@@ -77,26 +76,26 @@ public class ProgramDto implements Serializable {
         this.programAlarms = programAlarms;
     }
 
-    public List<ProgramRelayDto> getProgramRelays() {
+    public List<ProgramRelay> getProgramRelays() {
         return programRelays;
     }
 
-    public void setProgramRelays(List<ProgramRelayDto> programRelays) {
+    public void setProgramRelays(List<ProgramRelay> programRelays) {
         this.programRelays = programRelays;
     }
 
-    public List<ProgramSystemStateDto> getProgramSystemStates() {
+    public List<ProgramSystemState> getProgramSystemStates() {
         return programSystemStates;
     }
 
-    public void setProgramSystemStates(List<ProgramSystemStateDto> programSystemStates) {
+    public void setProgramSystemStates(List<ProgramSystemState> programSystemStates) {
         this.programSystemStates = programSystemStates;
     }
 
-    public ProgramSystemStateDto getSystemStateByNumber(long number) {
+    public ProgramSystemState getSystemStateByNumber(long number) {
         int systemStateNumber = (int) number;
 
-        for (ProgramSystemStateDto ps : programSystemStates) {
+        for (ProgramSystemState ps : programSystemStates) {
             if (ps.getSystemStateNumber().equals(systemStateNumber)) {
                 return ps;
             } else {
@@ -104,7 +103,7 @@ public class ProgramDto implements Serializable {
             }
         }
 
-        return new ProgramSystemStateDto();
+        return new ProgramSystemState();
     }
 
     public List<ScreenDto> getScreens() {
@@ -133,10 +132,10 @@ public class ProgramDto implements Serializable {
         return null;
     }
 
-    public List<ProgramRelayDto> getProgramRelayByData(long dataId) {
-        List<ProgramRelayDto> relayByData = new ArrayList<ProgramRelayDto>();
+    public List<ProgramRelay> getProgramRelayByData(long dataId) {
+        List<ProgramRelay> relayByData = new ArrayList<ProgramRelay>();
 
-        for (ProgramRelayDto e : programRelays) {
+        for (ProgramRelay e : programRelays) {
             if (e.getDataId() == dataId) {
                 relayByData.add(e);
             }
@@ -157,10 +156,10 @@ public class ProgramDto implements Serializable {
         return alarmsByData;
     }
 
-    public List<ProgramSystemStateDto> getProgramSystemStateByData(long dataId) {
-        List<ProgramSystemStateDto> systemStateByData = new ArrayList<ProgramSystemStateDto>();
+    public List<ProgramSystemState> getProgramSystemStateByData(long dataId) {
+        List<ProgramSystemState> systemStateByData = new ArrayList<ProgramSystemState>();
 
-        for (ProgramSystemStateDto e : programSystemStates) {
+        for (ProgramSystemState e : programSystemStates) {
             if (e.getDataId() == dataId) {
                 systemStateByData.add(e);
             }

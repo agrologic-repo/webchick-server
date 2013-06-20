@@ -95,27 +95,6 @@ public class AlarmDaoImpl implements AlarmDao {
         jdbcTemplate.batchUpdate("insert into alarmbylanguage values (?,?,?) ", batch);
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void insert(Collection<ProgramAlarm> programAlarms) throws SQLException {
-//        List<ProgramAlarm> programAlarmList = new ArrayList(programAlarms);
-//        List<Object[]> batch = new ArrayList<Object[]>();
-//        for (ProgramAlarm programAlarm : programAlarmList) {
-//            Object[] values = new Object[]{
-//                    programAlarm.getDataId(),
-//                    programAlarm.getDigitNumber(),
-//                    programAlarm.getText(),
-//                    programAlarm.getProgramId(),
-//                    programAlarm.getDigitNumber(),
-//                    programAlarm.getAlarmTextId()
-//            };
-//            batch.add(values);
-//        }
-//        jdbcTemplate.batchUpdate("insert into programalarms values (?,?,?,?,?,?)", batch);
-//    }
-
     @Override
     public Alarm getById(Long id) throws SQLException {
         logger.debug("Get alarm with id [{}]", id);
@@ -151,51 +130,6 @@ public class AlarmDaoImpl implements AlarmDao {
                 + "order by alarmbylanguage.langid , alarmbylanguage.alarmid ";
         return jdbcTemplate.query(sqlQuery, RowMappers.alarm());
     }
-
-//    @Override
-//    public Collection<ProgramAlarm> getAllProgramAlarms(final Long programId) throws SQLException {
-//        logger.debug("Get all program alarms of given program id ");
-//        String sqlQuery = "select * from programalarms where ProgramID=?";
-//        List<ProgramAlarm> programAlarms = jdbcTemplate.query(sqlQuery, new PreparedStatementSetter() {
-//            @Override
-//            public void setValues(PreparedStatement ps) throws SQLException {
-//                ps.setLong(1, programId);
-//            }
-//        }, RowMappers.programAlarm());
-//        return programAlarms;
-//    }
-//
-//    @Override
-//    public Collection<ProgramAlarm> getSelectedProgramAlarms(final Long programId) throws SQLException {
-//        logger.debug("Get all program alarms of given program id that was selected");
-//        String sqlQuery = "select * from programalarms where ProgramID=? and TEXT not Like '%None%' "
-//                + "and Text not Like '%Damy%' order by DataID,AlarmNumber";
-//        List<ProgramAlarm> programAlarms = jdbcTemplate.query(sqlQuery, new PreparedStatementSetter() {
-//            @Override
-//            public void setValues(PreparedStatement ps) throws SQLException {
-//                ps.setLong(1, programId);
-//            }
-//        }, RowMappers.programAlarm());
-//        return programAlarms;
-//    }
-//
-//    @Override
-//    public Collection<ProgramAlarm> getSelectedProgramAlarms(final Long programId, final Long langId) throws SQLException {
-//        logger.debug("Get all program alarms of given program id and given language id  that was selected");
-//        String sqlQuery = "select * from programalarms inner join alarmbylanguage on " +
-//                "alarmbylanguage.alarmid = programalarms.alarmtextid " +
-//                "and alarmbylanguage.langid=? and programalarms.programid=? and programalarms.text not Like '%None%' " +
-//                "and programalarms.text not Like '%Damy%' order by programalarms.dataid, programalarms.digitnumber";
-//
-//        List<ProgramAlarm> programAlarms = jdbcTemplate.query(sqlQuery, new PreparedStatementSetter() {
-//            @Override
-//            public void setValues(PreparedStatement ps) throws SQLException {
-//                ps.setLong(1, langId);
-//                ps.setLong(2, programId);
-//            }
-//        }, RowMappers.programAlarm());
-//        return programAlarms;
-//    }
 }
 
 

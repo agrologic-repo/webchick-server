@@ -6,20 +6,11 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.dao.impl.UserDaoImpl;
 import com.agrologic.app.model.UserDto;
 import com.agrologic.app.utils.Base64;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -27,24 +18,28 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class UserLoginFormServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private ServletContext    ctx;
+    private ServletContext ctx;
 
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
      * <code>POST</code> methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -53,19 +48,19 @@ public class UserLoginFormServlet extends HttpServlet {
          * Logger for this class and subclasses
          */
         final Logger logger = Logger.getLogger(UserLoginFormServlet.class);
-        String       name   = request.getParameter("name");
-        String       pass   = request.getParameter("password");
-        String       reme   = request.getParameter("remember");
+        String name = request.getParameter("name");
+        String pass = request.getParameter("password");
+        String reme = request.getParameter("remember");
 
         ctx = getServletContext();
         response.setContentType("text/html;charset=UTF-8");
 
-        PrintWriter out     = response.getWriter();
-        UserDao    userDao = new UserDaoImpl();
+        PrintWriter out = response.getWriter();
+        UserDao userDao = new UserDaoImpl();
 
         try {
-            String  encpsswd = Base64.encode(pass);
-            UserDto user     = userDao.validate(name, encpsswd);
+            String encpsswd = Base64.encode(pass);
+            UserDto user = userDao.validate(name, encpsswd);
 
             user.setPassword(pass);
             logger.info("login user : " + name);
@@ -82,7 +77,6 @@ public class UserLoginFormServlet extends HttpServlet {
                 }
 
                 logger.info(user + " , successfully logged in system .");
-
 //              ctx.setAttribute("user", user);
 //              ctx.setAttribute("access", "admin");
                 logger.warn("User tried to bypass login. remote IP = " + request.getRemoteHost());
@@ -91,25 +85,25 @@ public class UserLoginFormServlet extends HttpServlet {
                 logger.info(request.getServerName());
 
                 switch (user.getRole()) {
-                case UserRole.REGULAR :
-                    response.sendRedirect(getURLWithContextPath(request) + "/my-farms.html?userId=" + user.getId());
+                    case UserRole.REGULAR:
+                        response.sendRedirect(getURLWithContextPath(request) + "/my-farms.html?userId=" + user.getId());
 
-                    break;
+                        break;
 
-                case UserRole.ADVANCED :
-                    response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
+                    case UserRole.ADVANCED:
+                        response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
 
-                    break;
+                        break;
 
-                case UserRole.ADMINISTRATOR :
-                    response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
+                    case UserRole.ADMINISTRATOR:
+                        response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
 
-                    break;
+                        break;
 
-                default :
-                    response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
+                    default:
+                        response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
 
-                    break;
+                        break;
                 }
             }
         } catch (SQLException ex) {
@@ -123,7 +117,7 @@ public class UserLoginFormServlet extends HttpServlet {
 
     public static String getURLWithContextPath(HttpServletRequest request) {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-               + request.getContextPath();
+                + request.getContextPath();
     }
 
     public void setCookies(boolean remember, String user, String pass, HttpServletResponse response) {
@@ -156,10 +150,10 @@ public class UserLoginFormServlet extends HttpServlet {
      * Handles the HTTP
      * <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -171,10 +165,10 @@ public class UserLoginFormServlet extends HttpServlet {
      * Handles the HTTP
      * <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

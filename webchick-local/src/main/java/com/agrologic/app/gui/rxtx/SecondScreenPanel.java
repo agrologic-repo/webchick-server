@@ -5,7 +5,8 @@ import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.model.*;
 import com.agrologic.app.model.rxtx.DataController;
 import com.agrologic.app.util.Windows;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -28,10 +29,9 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
     private Controller controller;
     private TreeMap<Screen, TreeMap<Table, List<DataController>>> screenTableDataMap;
     private Timer timerDB;
-    private static Logger logger = Logger.getLogger(SecondScreenPanel.class);
+    private static Logger logger = LoggerFactory.getLogger(SecondScreenPanel.class);
 
     /**
-     *
      * @param dbManager
      * @param controller
      */
@@ -71,7 +71,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         logger.info("Initialization second screen ");
 
         DatabaseAccessor dbaccess = dbManager.getDatabaseGeneralService();
-        if(screenTableDataMap != null) {
+        if (screenTableDataMap != null) {
             return;
         }
         screenTableDataMap = new TreeMap<Screen, TreeMap<Table, List<DataController>>>();
@@ -90,9 +90,12 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                                 DataController newData = new DataController(d);
                                 if (program.getProgramRelays() == null) {
                                     try {
-                                        List<ProgramRelay> programRelays = (List<ProgramRelay>) dbaccess.getRelayDao().getSelectedProgramRelays(program.getId(), dbManager.getDatabaseLoader().getLangId());
+                                        List<ProgramRelay> programRelays = dbaccess.getProgramRelayDao()
+                                                .getAllProgramRelays(program.getId(),
+                                                        dbManager.getDatabaseLoader().getLangId());
                                         program.setProgramRelays(programRelays);
-                                        List<ProgramAlarm> programAlarms = (List<ProgramAlarm>) dbaccess.getAlarmDao().getSelectedProgramAlarms(program.getId(), dbManager.getDatabaseLoader().getLangId());
+                                        List<ProgramAlarm> programAlarms = dbaccess.getProgramAlarmDao().getAllProgramAlarms(program.getId(),
+                                                dbManager.getDatabaseLoader().getLangId());
                                         program.setProgramAlarms(programAlarms);
                                     } catch (SQLException ex) {
                                         ex.printStackTrace();
@@ -117,7 +120,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                             tableDataMap.put(table, dataControllerList);
                         }
                     } catch (NullPointerException e) {
-                        logger.info("NPE",e);
+                        logger.info("NPE", e);
                         e.printStackTrace();
                     }
                     screenTableDataMap.put(screen, tableDataMap);
@@ -140,6 +143,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
             int maxWidth = 0;
             JPanel screenPanel = new JPanel(null);
             if (screen.getTitle().equals("Graphs")) {
+                logger.info("Initialization screen with graphs {} ", screen);
                 screenPanel = new Graphs24HourPanel(controller.getId());
                 screenPanel.setPreferredSize(new Dimension(screenPanel.getWidth(), screenPanel.getHeight()));
                 JScrollPane scrollPane = new JScrollPane(screenPanel);
@@ -150,6 +154,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                 Dimension dim = Windows.screenResolution();
                 tabsPane.setSize(dim.width - 10, dim.height - 140);
             } else {
+                logger.info("Initialization screen without graphs {} ", screen);
                 TreeMap<Table, List<DataController>> tableDataMap = screenTableDataMap.get(screen);
                 try {
                     Iterator<Table> iterTable = tableDataMap.keySet().iterator();
@@ -317,6 +322,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         stopTimerThread();
         mainScreenPanel.showMainScreen();
     }//GEN-LAST:event_showMainScreenPanel
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHouseTitle;
     private javax.swing.JLabel lblTitle;
@@ -352,7 +358,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                 //thread and do a SwingUtilities.invokeLater. So we are force to execute this
                 // in the EDT. Seee http://markmail.org/thread/6ehh76zt27qc5fis and
                 // https://beansbinding.dev.java.net/issues/show_bug.cgi?id=60
-                if(screenTableDataMap == null) {
+                if (screenTableDataMap == null) {
                     return;
                 }
 

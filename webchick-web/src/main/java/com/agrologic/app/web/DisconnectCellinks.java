@@ -6,37 +6,33 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.impl.CellinkDaoImpl;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author Administrator
  */
 public class DisconnectCellinks extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -45,10 +41,10 @@ public class DisconnectCellinks extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            CellinkDao cellinkDao        = new CellinkDaoImpl();
-            Long        userId            = Long.parseLong(request.getParameter("userId"));
-            String      cellinkIds        = request.getParameter("cellinkIds");
-            String[]    cellinkIdsStrings = null;
+            CellinkDao cellinkDao = new CellinkDaoImpl();
+            Long userId = Long.parseLong(request.getParameter("userId"));
+            String cellinkIds = request.getParameter("cellinkIds");
+            String[] cellinkIdsStrings = null;
 
             cellinkIdsStrings = cellinkIds.split("and");
 
@@ -83,10 +79,11 @@ public class DisconnectCellinks extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -96,10 +93,11 @@ public class DisconnectCellinks extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -109,6 +107,7 @@ public class DisconnectCellinks extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

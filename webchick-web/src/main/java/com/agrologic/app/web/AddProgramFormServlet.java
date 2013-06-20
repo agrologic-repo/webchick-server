@@ -6,7 +6,6 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.dao.ScreenDao;
@@ -17,33 +16,30 @@ import com.agrologic.app.dao.impl.ScreenDaoImpl;
 import com.agrologic.app.dao.impl.TableDaoImpl;
 import com.agrologic.app.model.ProgramDto;
 import com.agrologic.app.utils.DateLocal;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class AddProgramFormServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -60,9 +56,9 @@ public class AddProgramFormServlet extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                String name              = request.getParameter("Nname");
-                Long   programId         = Long.parseLong(request.getParameter("Nprogramid"));
-                Long   selectedProgramId = Long.parseLong(request.getParameter("Selectedprogramid"));
+                String name = request.getParameter("Nname");
+                Long programId = Long.parseLong(request.getParameter("Nprogramid"));
+                Long selectedProgramId = Long.parseLong(request.getParameter("Selectedprogramid"));
 
                 try {
                     ProgramDto newProgram = new ProgramDto();
@@ -117,10 +113,11 @@ public class AddProgramFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -130,10 +127,11 @@ public class AddProgramFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -143,6 +141,7 @@ public class AddProgramFormServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

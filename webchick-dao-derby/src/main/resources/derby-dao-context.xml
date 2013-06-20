@@ -9,7 +9,29 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:property-placeholder location="/derby.properties"/>
+
     <bean id="alarmDao" class="com.agrologic.app.dao.derby.impl.DerbyAlarmDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="programAlarmDao" class="com.agrologic.app.dao.derby.impl.DerbyProgramAlarmDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="relayDao" class="com.agrologic.app.dao.derby.impl.DerbyRelayDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="programRelayDao" class="com.agrologic.app.dao.derby.impl.DerbyProgramRelayDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="systemStateDao" class="com.agrologic.app.dao.derby.impl.DerbySystemStateDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="programSystemStateDao" class="com.agrologic.app.dao.derby.impl.DerbyProgramSystemStateDaoImpl"
+          parent="daoParent">
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
@@ -26,8 +48,6 @@
     <bean id="screenDao" class="com.agrologic.app.dao.derby.impl.DerbyScreenDaoImpl" parent="daoParent"/>
     <bean id="tableDao" class="com.agrologic.app.dao.derby.impl.DerbyTableDaoImpl" parent="daoParent"/>
     <bean id="schemaDao" class="com.agrologic.app.dao.derby.impl.DerbySchemaDaoImpl" parent="daoParent"/>
-    <bean id="relayDao" class="com.agrologic.app.dao.derby.impl.DerbyRelayDaoImpl" parent="daoParent"/>
-    <bean id="systemStateDao" class="com.agrologic.app.dao.derby.impl.DerbySystemStateDaoImpl" parent="daoParent"/>
     <bean id="languageDao" class="com.agrologic.app.dao.derby.impl.DerbyLanguageDaoImpl" parent="daoParent"/>
     <bean id="spreadDao" class="com.agrologic.app.dao.derby.impl.DerbySpreadDaoImpl" parent="daoParent"/>
     <bean id="transactionDao" class="com.agrologic.app.dao.derby.impl.DerbyTransactionDaoImpl" parent="daoParent"/>

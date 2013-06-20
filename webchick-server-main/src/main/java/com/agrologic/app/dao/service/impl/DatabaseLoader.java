@@ -89,12 +89,11 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
                     Program program = dba.getProgramDao().getById(controller.getProgramId());
                     controller.setProgram(program);
                     // get program relays and add to program object
-                    program.setProgramRelays((List) dba.getRelayDao().getSelectedProgramRelays(controller.getProgramId(), langId));
+                    program.setProgramRelays((List) dba.getProgramRelayDao().getAllProgramRelays(controller.getProgramId(), langId));
                     // get program alarms and add to program object
                     program.setProgramAlarms((List) dba.getProgramAlarmDao().getAllProgramAlarms(controller.getProgramId(), langId));
-//                    prog.setProgramAlarms((List) dba.getAlarmDao().getSelectedProgramAlarms(controller.getProgramId(), langId));
                     // get program system states and add to program object
-                    program.setProgramSystemStates((List) dba.getSystemStateDao().getAllProgramSystemStates(controller.getProgramId(), langId));
+                    program.setProgramSystemStates((List) dba.getProgramSystemStateDao().getAllProgramSystemStates(controller.getProgramId(), langId));
                     // get program screens and add to program object
                     Collection<Screen> screenList = dba.getScreenDao().getAllProgramScreens(controller.getProgramId(), langId);
                     program.setScreens((List<Screen>) screenList);

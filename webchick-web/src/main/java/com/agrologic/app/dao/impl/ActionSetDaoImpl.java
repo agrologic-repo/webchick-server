@@ -1,32 +1,14 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.dao.impl;
-
-
 
 import com.agrologic.app.dao.ActionSetDao;
 import com.agrologic.app.model.ActionSetDto;
 
-
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- *
- * @author Administrator
- */
 public class ActionSetDaoImpl extends ConnectorDao implements ActionSetDao {
     private ActionSetDto makeActionSet(ResultSet rs) throws SQLException {
         ActionSetDto actionSet = new ActionSetDto();
@@ -84,12 +66,12 @@ public class ActionSetDaoImpl extends ConnectorDao implements ActionSetDao {
 
     @Override
     public ActionSetDto getById(Long valueId) throws SQLException {
-        String            sqlQuery = "select * from actionset where ValueID=?";
+        String sqlQuery = "select * from actionset where ValueID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, valueId);
 
@@ -142,12 +124,12 @@ public class ActionSetDaoImpl extends ConnectorDao implements ActionSetDao {
 
     @Override
     public List<ActionSetDto> getAll() throws SQLException {
-        String     sqlQuery = "select * from actionset";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select * from actionset";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = getConnection();
+            con = getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -173,14 +155,14 @@ public class ActionSetDaoImpl extends ConnectorDao implements ActionSetDao {
     @Override
     public List<ActionSetDto> getAll(Long programId, Long langId) throws SQLException {
         String sqlQuery = "select * from actionset as actset " + "left join programactionset as progactset "
-                          + "on actset.ValueID=progactset.ValueID left join actionsetbylanguage "
-                          + "on actionsetbylanguage.ValueID=actset.ValueID and actionsetbylanguage.langid=? "
-                          + "where programid=?";
+                + "on actset.ValueID=progactset.ValueID left join actionsetbylanguage "
+                + "on actionsetbylanguage.ValueID=actset.ValueID and actionsetbylanguage.langid=? "
+                + "where programid=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, langId);
             prepstmt.setLong(2, programId);
@@ -234,15 +216,15 @@ public class ActionSetDaoImpl extends ConnectorDao implements ActionSetDao {
     @Override
     public List<ActionSetDto> getAllOnScreen(Long programId, Long langId) throws SQLException {
         String sqlQuery =
-            "select * from actionset as actset "
-            + "left join programactionset as progactset on actset.ValueID=progactset.ValueID "
-            + "left join actionsetbylanguage on actionsetbylanguage.ValueID=actset.ValueID and actionsetbylanguage.langid=? "
-            + "where programid=? and actset.ValueID=progactset.ValueID and progactset.DisplayOnPage='yes'";
+                "select * from actionset as actset "
+                        + "left join programactionset as progactset on actset.ValueID=progactset.ValueID "
+                        + "left join actionsetbylanguage on actionsetbylanguage.ValueID=actset.ValueID and actionsetbylanguage.langid=? "
+                        + "where programid=? and actset.ValueID=progactset.ValueID and progactset.DisplayOnPage='yes'";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, langId);
             prepstmt.setLong(2, programId);
@@ -263,9 +245,9 @@ public class ActionSetDaoImpl extends ConnectorDao implements ActionSetDao {
     @Override
     public void insertActionSetList(List<ActionSetDto> actionsetList, Long programId) throws SQLException {
         String sqlQuery =
-            "insert into programactionset (DataID, ValueID, ScreenID, ProgramID, Position, DisplayOnPage) VALUES (?,?,?,?,?,?) on duplicate key update ValueID=values(ValueID)";
+                "insert into programactionset (DataID, ValueID, ScreenID, ProgramID, Position, DisplayOnPage) VALUES (?,?,?,?,?,?) on duplicate key update ValueID=values(ValueID)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
             con = getConnection();
@@ -319,9 +301,9 @@ public class ActionSetDaoImpl extends ConnectorDao implements ActionSetDao {
     @Override
     public void saveChanges(Map<Long, String> showMap, Map<Long, Integer> positionMap, Long programId)
             throws SQLException {
-        String            sqlQuery = "update programactionset set DisplayOnPage=?, Position=? where ValueID=? and ProgramID=?";
+        String sqlQuery = "update programactionset set DisplayOnPage=?, Position=? where ValueID=? and ProgramID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
             con = getConnection();
@@ -332,7 +314,7 @@ public class ActionSetDaoImpl extends ConnectorDao implements ActionSetDao {
 
             for (Long screenId : keys) {
                 final String show = showMap.get(screenId);
-                Integer      pos  = positionMap.get(screenId);
+                Integer pos = positionMap.get(screenId);
 
                 prepstmt.setString(1, show);
                 prepstmt.setInt(2, pos);
@@ -357,9 +339,9 @@ public class ActionSetDaoImpl extends ConnectorDao implements ActionSetDao {
     @Override
     public void saveChanges(Long programId, Long screenId, Map<Long, String> showMap, Map<Long, Integer> posMap)
             throws SQLException {
-        String            sqlQuery = "update programactionset set DisplayOnPage=?, Position=? where ValueID=? and ProgramID=?";
+        String sqlQuery = "update programactionset set DisplayOnPage=?, Position=? where ValueID=? and ProgramID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
             con = getConnection();
@@ -370,7 +352,7 @@ public class ActionSetDaoImpl extends ConnectorDao implements ActionSetDao {
 
             for (Long valueId : keys) {
                 final String show = showMap.get(valueId);
-                Integer      pos  = posMap.get(valueId);
+                Integer pos = posMap.get(valueId);
 
                 prepstmt.setString(1, show);
                 prepstmt.setInt(2, pos);
@@ -395,12 +377,12 @@ public class ActionSetDaoImpl extends ConnectorDao implements ActionSetDao {
     @Override
     public void insertActionSetTranslation(Long valueId, Long langId, String translate) throws SQLException {
         String sqlQuery =
-            "insert into actionsetbylanguage values (?,?,?) on duplicate key update UnicodeText=values(UnicodeText)";
+                "insert into actionsetbylanguage values (?,?,?) on duplicate key update UnicodeText=values(UnicodeText)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, valueId);
             prepstmt.setLong(2, langId);

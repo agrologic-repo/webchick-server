@@ -6,28 +6,23 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.dao.impl.UserDaoImpl;
 import com.agrologic.app.model.UserDto;
 import com.agrologic.app.utils.Base64;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class EditUserFormServlet extends HttpServlet {
@@ -35,10 +30,11 @@ public class EditUserFormServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -54,22 +50,22 @@ public class EditUserFormServlet extends HttpServlet {
             logger.error("Unauthorized access!");
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
-            UserDto currUser    = (UserDto) request.getSession().getAttribute("user");
-            UserDto user        = new UserDto();
-            String  forwardLink = "";
+            UserDto currUser = (UserDto) request.getSession().getAttribute("user");
+            UserDto user = new UserDto();
+            String forwardLink = "";
 
             if (currUser.getRole() == UserRole.ADMINISTRATOR) {
-                Long    userId             = Long.parseLong(request.getParameter("Nuserid"));
-                String  login              = request.getParameter("Nusername");
-                String  password           = request.getParameter("Npassword");
-                String  firstName          = request.getParameter("Nfname");
-                String  lastName           = request.getParameter("Nlname");
-                String  phoneNumber        = request.getParameter("Nphone");
-                String  email              = request.getParameter("Nemail");
-                Integer role               = Integer.parseInt(request.getParameter("Nrole"));
-                String  newCompanyList     = request.getParameter("Ncompanylist");
-                String  newCompany         = request.getParameter("Ncompany");
-                String  newCompanyCheckBox = request.getParameter("newCompany");
+                Long userId = Long.parseLong(request.getParameter("Nuserid"));
+                String login = request.getParameter("Nusername");
+                String password = request.getParameter("Npassword");
+                String firstName = request.getParameter("Nfname");
+                String lastName = request.getParameter("Nlname");
+                String phoneNumber = request.getParameter("Nphone");
+                String email = request.getParameter("Nemail");
+                Integer role = Integer.parseInt(request.getParameter("Nrole"));
+                String newCompanyList = request.getParameter("Ncompanylist");
+                String newCompany = request.getParameter("Ncompany");
+                String newCompanyCheckBox = request.getParameter("newCompany");
 
                 user.setId(userId);
                 user.setLogin(login);
@@ -91,11 +87,11 @@ public class EditUserFormServlet extends HttpServlet {
 
                 forwardLink = "./all-users.html";
             } else {
-                String password    = request.getParameter("Npassword");
-                String firstName   = request.getParameter("Nfname");
-                String lastName    = request.getParameter("Nlname");
+                String password = request.getParameter("Npassword");
+                String firstName = request.getParameter("Nfname");
+                String lastName = request.getParameter("Nlname");
                 String phoneNumber = request.getParameter("Nphone");
-                String email       = request.getParameter("Nemail");
+                String email = request.getParameter("Nemail");
 
                 user = currUser;
 
@@ -134,10 +130,11 @@ public class EditUserFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -147,10 +144,11 @@ public class EditUserFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -160,6 +158,7 @@ public class EditUserFormServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

@@ -6,22 +6,17 @@
 package com.agrologic.app.dao.impl;
 
 
-
 import com.agrologic.app.dao.GasDao;
 import com.agrologic.app.model.GasDto;
-
-
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author JanL
  */
 public class GasDaoImpl extends ConnectorDao implements GasDao {
@@ -51,12 +46,12 @@ public class GasDaoImpl extends ConnectorDao implements GasDao {
 
     @Override
     public void insert(GasDto gas) throws SQLException {
-        String            sqlQuery = "insert into gas values (?,?,?,?,?,?,?)";
+        String sqlQuery = "insert into gas values (?,?,?,?,?,?,?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setObject(1, null);
             prepstmt.setLong(2, gas.getFlockId());
@@ -78,12 +73,12 @@ public class GasDaoImpl extends ConnectorDao implements GasDao {
 
     @Override
     public void remove(Long id) throws SQLException {
-        String            sqlQuery = "delete from gas where ID=?";
+        String sqlQuery = "delete from gas where ID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, id);
             prepstmt.executeUpdate();
@@ -99,12 +94,12 @@ public class GasDaoImpl extends ConnectorDao implements GasDao {
 
     @Override
     public GasDto getById(Long id) throws SQLException {
-        String            sqlQuery = "select * from gas where ID=?";
+        String sqlQuery = "select * from gas where ID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, id);
 
@@ -127,12 +122,12 @@ public class GasDaoImpl extends ConnectorDao implements GasDao {
 
     @Override
     public List<GasDto> getAllByFlockId(Long flockId) throws SQLException {
-        String            sqlQuery = "select * from gas where FlockID=?";
+        String sqlQuery = "select * from gas where FlockID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, flockId);
 

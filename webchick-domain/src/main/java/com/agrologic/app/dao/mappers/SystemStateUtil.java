@@ -6,7 +6,10 @@ import com.agrologic.app.model.SystemState;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class SystemStateUtil {
     public static SystemState makeSystemState(ResultSet rs) throws SQLException {
@@ -18,7 +21,6 @@ public class SystemStateUtil {
         try {
             systemState.setLangId(rs.getLong("LangID"));
         } catch (SQLException ex) {
-
             // by default language  id is english
             systemState.setLangId((long) 1);
         }
@@ -32,7 +34,7 @@ public class SystemStateUtil {
         return systemState;
     }
 
-    public static Collection<SystemState> makeSystemStateList(ResultSet rs) throws SQLException {
+    public static List<SystemState> makeSystemStateList(ResultSet rs) throws SQLException {
         List<SystemState> systemStates = new ArrayList<SystemState>();
 
         while (rs.next()) {
@@ -70,13 +72,11 @@ public class SystemStateUtil {
         return programAlarms;
     }
 
-    public static Collection<SystemState> getUniqueElements(Collection<SystemState> systemStateItems) {
+    public static Set<SystemState> getUniqueElements(List<SystemState> systemStateItems) {
         Set<SystemState> uniqueAlarmItems = new HashSet<SystemState>();
-
         for (SystemState systemState : systemStateItems) {
             uniqueAlarmItems.add(systemState);
         }
-
         return uniqueAlarmItems;
     }
 }

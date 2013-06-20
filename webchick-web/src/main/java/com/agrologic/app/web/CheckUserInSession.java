@@ -6,14 +6,13 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.model.UserDto;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Title: CheckUserInSession <br> Decription: <br> Copyright: Copyright (c) 2009 <br> Company: Agro Logic LTD. <br>
@@ -24,7 +23,7 @@ import javax.servlet.http.HttpSession;
 public class CheckUserInSession {
     public static boolean isUserInSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        UserDto     user    = (UserDto) session.getAttribute("user");
+        UserDto user = (UserDto) session.getAttribute("user");
 
         return user != null;
     }

@@ -3,6 +3,11 @@ package com.agrologic.app.dao;
 
 import java.sql.SQLException;
 
+/**
+ * DAO for objects that will create tables
+ *
+ * @author Valery Manakhimov
+ */
 public interface CreatebleDao {
     static final String CANNOT_EXECUTE_QUERY = "Cannot Execute Query";
     static final String CANNOT_CREATE_TABLE = "Cannot Create New Table";

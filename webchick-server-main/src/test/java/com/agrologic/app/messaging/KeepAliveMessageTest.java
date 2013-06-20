@@ -1,15 +1,17 @@
 package com.agrologic.app.messaging;
 
 import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 
 public class KeepAliveMessageTest {
 
-    private final static byte[] PAY_LOAD = new byte[]{Message.STX, 'c', 't', 'b',
-        Message.RS, 'c', 't', 'b',
-        Message.RS, '5', '.', '0', '1', 'W', 'e', '*',
-        Message.RS, Message.ETX};
-    private final static byte[] WRONG_FORMAT_PAY_LOAD = new byte[]{Message.STX, 'c', 't', 'b', 'c', 't', 'b', Message.ETX};
+    private final static byte[] PAY_LOAD = new byte[]{Message.ProtocolBytes.STX.getValue(), 'c', 't', 'b',
+            Message.ProtocolBytes.RS.getValue(), 'c', 't', 'b',
+            Message.ProtocolBytes.RS.getValue(), '5', '.', '0', '1', 'W', 'e', '*',
+            Message.ProtocolBytes.RS.getValue(), Message.ProtocolBytes.ETX.getValue()};
+    private final static byte[] WRONG_FORMAT_PAY_LOAD = new byte[]{Message.ProtocolBytes.STX.getValue(),
+            'c', 't', 'b', 'c', 't', 'b', Message.ProtocolBytes.ETX.getValue()};
 
     @Test
     public void testParseIncomingBytes() throws Exception {

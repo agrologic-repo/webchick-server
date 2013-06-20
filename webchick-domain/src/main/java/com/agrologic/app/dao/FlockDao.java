@@ -1,10 +1,17 @@
 package com.agrologic.app.dao;
 
 import com.agrologic.app.model.Flock;
+
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * DAO for the {@link  com.agrologic.app.model.Flock}. It provides all CRUD operations to work with
+ * {@link com.agrologic.app.model.Flock} objects.
+ *
+ * @author Valery Manakhimov
+ */
 public interface FlockDao {
 
     void insert(Flock flock) throws SQLException;

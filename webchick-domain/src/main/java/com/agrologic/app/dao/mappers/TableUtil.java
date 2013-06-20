@@ -44,7 +44,6 @@ public class TableUtil {
         while (rs.next()) {
             tables.add(makeTable(rs));
         }
-
         return tables;
     }
 }

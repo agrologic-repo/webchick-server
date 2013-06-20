@@ -6,7 +6,6 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.dao.ScreenDao;
 import com.agrologic.app.dao.impl.ProgramDaoImpl;
@@ -14,33 +13,30 @@ import com.agrologic.app.dao.impl.ScreenDaoImpl;
 import com.agrologic.app.model.ProgramDto;
 import com.agrologic.app.model.ScreenDto;
 import com.agrologic.app.utils.DateLocal;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class AddScreenFormServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -57,14 +53,14 @@ public class AddScreenFormServlet extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                Long   programId      = Long.parseLong(request.getParameter("programId"));
-                String screenTitle    = (String) request.getParameter("NscreenTitle");
+                Long programId = Long.parseLong(request.getParameter("programId"));
+                String screenTitle = (String) request.getParameter("NscreenTitle");
                 String screenDescript = (String) request.getParameter("NscreenDescript");
 
                 try {
                     ScreenDao screenDao = new ScreenDaoImpl();
-                    int        size      = screenDao.getNextScreenPosByProgramId(programId);
-                    ScreenDto  screen    = new ScreenDto();
+                    int size = screenDao.getNextScreenPosByProgramId(programId);
+                    ScreenDto screen = new ScreenDto();
 
                     screen.setProgramId(programId);
                     screen.setTitle(screenTitle);
@@ -75,14 +71,14 @@ public class AddScreenFormServlet extends HttpServlet {
                     logger.info("New screen successfully added !");
 
                     ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto  program    = programDao.getById(programId);
+                    ProgramDto program = programDao.getById(programId);
 
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
                     request.getSession().setAttribute("message", "screen successfully added !");
                     request.getSession().setAttribute("error", false);
                     request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
-                                                 response);
+                            response);
                 } catch (SQLException ex) {
 
                     // error page
@@ -90,7 +86,7 @@ public class AddScreenFormServlet extends HttpServlet {
                     request.getSession().setAttribute("message", "Error occurs while adding table!");
                     request.getSession().setAttribute("error", true);
                     request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
-                                                 response);
+                            response);
                 }
             }
         } finally {
@@ -102,10 +98,11 @@ public class AddScreenFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -115,10 +112,11 @@ public class AddScreenFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -128,6 +126,7 @@ public class AddScreenFormServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

@@ -6,31 +6,25 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.impl.CellinkDaoImpl;
 import com.agrologic.app.model.CellinkDto;
 import com.agrologic.app.model.UserDto;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class UserLogoutServlet extends HttpServlet {
@@ -41,10 +35,10 @@ public class UserLogoutServlet extends HttpServlet {
      * <code>GET</code> and
      * <code>POST</code> methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -62,7 +56,7 @@ public class UserLogoutServlet extends HttpServlet {
             logger.error("Unauthorized access!");
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
-            UserDto     user       = (UserDto) request.getSession().getAttribute("user");
+            UserDto user = (UserDto) request.getSession().getAttribute("user");
             CellinkDao cellinkDao = new CellinkDaoImpl();
 
             try {
@@ -97,10 +91,10 @@ public class UserLogoutServlet extends HttpServlet {
      * Handles the HTTP
      * <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -112,10 +106,10 @@ public class UserLogoutServlet extends HttpServlet {
      * Handles the HTTP
      * <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

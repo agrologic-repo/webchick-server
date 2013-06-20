@@ -9,19 +9,19 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.impl.*;
 import com.agrologic.app.model.*;
+import org.apache.log4j.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
 
 /**
- *
  * @author Administrator
  */
 public class RCMainScreenAjaxNew extends HttpServlet {
@@ -41,10 +41,10 @@ public class RCMainScreenAjaxNew extends HttpServlet {
      * <code>GET</code> and
      * <code>POST</code> methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -93,13 +93,16 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                     final ProgramDao programDao = new ProgramDaoImpl();
 
                     // get program relays
-                    final ProgramRelayDao programRelayDao = new ProgramRelayDaoImpl();
+                    final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL)
+                            .getDao(ProgramRelayDao.class);
 
                     // get program alarms
-                    final ProgramAlarmDao programAlarmDao = new ProgramAlarmDaoImpl();
+                    final ProgramAlarmDao programAlarmDao = DbImplDecider.use(DaoType.MYSQL)
+                            .getDao(ProgramAlarmDao.class);
 
                     // get program system states
-                    final ProgSysStateDao programSystemStateDao = new ProgramSystemStateDaoImpl();
+                    final ProgramSystemStateDao programSystemStateDao = DbImplDecider.use(DaoType.MYSQL)
+                            .getDao(ProgramSystemStateDao.class);
 
                     // get program screens
                     final ScreenDao screenDao = new ScreenDaoImpl();
@@ -115,7 +118,6 @@ public class RCMainScreenAjaxNew extends HttpServlet {
 
                         // get asigned to controller program
                         ProgramDto program = programDao.getById(controller.getProgramId());
-
                         controller.setProgram(program);
                         program.setProgramRelays(programRelayDao.getAllProgramRelays(program.getId(), langId));
                         program.setProgramAlarms(programAlarmDao.getAllProgramAlarms(program.getId(), langId));
@@ -238,10 +240,10 @@ public class RCMainScreenAjaxNew extends HttpServlet {
         }
     }
 
-    private List<ProgramRelayDto> getProgramRelaysByRelayType(List<ProgramRelayDto> dataRelays, Long relayType) {
-        List<ProgramRelayDto> relayList = new ArrayList<ProgramRelayDto>();
+    private List<ProgramRelay> getProgramRelaysByRelayType(List<ProgramRelay> dataRelays, Long relayType) {
+        List<ProgramRelay> relayList = new ArrayList<ProgramRelay>();
 
-        for (ProgramRelayDto pr : dataRelays) {
+        for (ProgramRelay pr : dataRelays) {
             if (pr.getDataId().equals(relayType)) {
                 relayList.add(pr);
             }
@@ -272,7 +274,7 @@ public class RCMainScreenAjaxNew extends HttpServlet {
     }
 
     private void createDataTable(ControllerDto controller, ScreenDto screen, DataDto data, HttpServletRequest request,
-            PrintWriter out) {
+                                 PrintWriter out) {
         if (!data.isStatus()) {
             out.println("<tr class='' onmouseover=\"this.className='selected'\" onmouseout=\"this.className=''\">");
             out.println("<td class='label' nowrap>");
@@ -283,16 +285,16 @@ public class RCMainScreenAjaxNew extends HttpServlet {
             if (!data.isReadonly()) {
                 out.println(
                         "<input type='text' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeypress=\"keyPress(event, this, "
-                        + controller.getId() + "," + data.getId()
-                        + " );\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
-                        + data.getFormat()
-                        + "')\" size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
-                        + data.getFormatedValue() + ">");
+                                + controller.getId() + "," + data.getId()
+                                + " );\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
+                                + data.getFormat()
+                                + "')\" size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
+                                + data.getFormatedValue() + ">");
             } else {
                 out.println(
                         "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6'"
-                        + " style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
-                        + data.getFormatedValue() + "'>");
+                                + " style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
+                                + data.getFormatedValue() + "'>");
             }
 
             out.println("</td>");
@@ -308,8 +310,8 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                     out.println("<td class='value'>");
                     out.println(
                             "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' "
-                            + "style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
-                            + data.getFormatedValue() + "'>");
+                                    + "style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
+                                    + data.getFormatedValue() + "'>");
                     out.println("</td>");
                     out.println("</tr>");
 
@@ -367,11 +369,11 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                     out.println("<td class='value'>");
                     out.println(
                             "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' "
-                            + "style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
-                            + data.getFormatedValue() + "'>");
+                                    + "style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
+                                    + data.getFormatedValue() + "'>");
                     out.println(
                             "<span class=\"formHelpLink\" style=\"color : #0000FF;font-weight: "
-                            + "bold;font-size:1px;padding:0px 0px 0px 1px;margin:0px;cursor:help;\"");
+                                    + "bold;font-size:1px;padding:0px 0px 0px 1px;margin:0px;cursor:help;\"");
                     out.println("valign='middle' align='left' onclick=\"ShowHelp(event, \'  " + toolTip.toString()
                             + " \' , HLP_SHOW_POS_MOUSE ,200,350,'" + controller.getId() + data.getId() + "')\">");
                     out.println("<img src='img/help1.gif'>");
@@ -382,15 +384,15 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                     break;
 
                 case DataDto.RELAY:
-                    List<ProgramRelayDto> programRelays = controller.getProgram().getProgramRelays();
-                    List<ProgramRelayDto> relayList = getProgramRelaysByRelayType(programRelays, data.getId());
+                    List<ProgramRelay> programRelays = controller.getProgram().getProgramRelays();
+                    List<ProgramRelay> relayList = getProgramRelaysByRelayType(programRelays, data.getId());
 
                     if (relayList.size() > 0) {
-                        for (ProgramRelayDto relay : relayList) {
+                        for (ProgramRelay relay : relayList) {
                             if (relay.getRelayNumber() != 0) {
                                 out.println(
                                         "<tr class='' onmouseover=\"this.className='selected'\" "
-                                        + "onmouseout=\"this.className=''\">");
+                                                + "onmouseout=\"this.className=''\">");
                                 out.println("<td class=\"label\" nowrap>");
                                 out.println(relay.getUnicodeText());
                                 out.println("</td>");
@@ -462,7 +464,7 @@ public class RCMainScreenAjaxNew extends HttpServlet {
 
                 case DataDto.SYSTEM_STATE:
                     out.println("<tr class='' onmouseover=\"this.className='selected'\" onmouseout=\"this.className=''\">");
-                    ProgramSystemStateDto programSystemState = controller.getProgram().getSystemStateByNumber(data.getValue());
+                    ProgramSystemState programSystemState = controller.getProgram().getSystemStateByNumber(data.getValue());
 
                     out.println("<td class='label' nowrap>");
                     out.println(data.getUnicodeLabel());
@@ -479,14 +481,15 @@ public class RCMainScreenAjaxNew extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP
      * <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -498,10 +501,10 @@ public class RCMainScreenAjaxNew extends HttpServlet {
      * Handles the HTTP
      * <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

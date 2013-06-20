@@ -6,40 +6,36 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
 import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.model.ControllerDto;
 import com.agrologic.app.model.DataDto;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author Administrator
  */
 public class RCChangeActionsetValue extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -49,11 +45,11 @@ public class RCChangeActionsetValue extends HttpServlet {
 
         response.setContentType("text/html;charset=UTF-8");
 
-        PrintWriter out          = response.getWriter();
-        long        userId       = Long.parseLong(request.getParameter("userId"));
-        long        cellinkId    = Long.parseLong(request.getParameter("cellinkId"));
-        long        controllerId = Long.parseLong(request.getParameter("controllerId"));
-        long        screenId     = Long.parseLong(request.getParameter("screenId"));
+        PrintWriter out = response.getWriter();
+        long userId = Long.parseLong(request.getParameter("userId"));
+        long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+        long controllerId = Long.parseLong(request.getParameter("controllerId"));
+        long screenId = Long.parseLong(request.getParameter("screenId"));
 
         try {
             String info = request.getPathInfo();
@@ -61,33 +57,33 @@ public class RCChangeActionsetValue extends HttpServlet {
             logger.debug(info);
             info = request.getRequestURI();
 
-            StringBuffer sb     = request.getRequestURL();
-            long         dataId = Long.parseLong(request.getParameter("dataId"));
-            String       svalue = request.getParameter("Nvalue");
-            Long         value  = null;
+            StringBuffer sb = request.getRequestURL();
+            long dataId = Long.parseLong(request.getParameter("dataId"));
+            String svalue = request.getParameter("Nvalue");
+            Long value = null;
 
-            if ((svalue != null) &&!svalue.equals("")) {
+            if ((svalue != null) && !svalue.equals("")) {
                 svalue = clearDots(svalue);
-                value  = Long.parseLong(svalue);
+                value = Long.parseLong(svalue);
 
                 ControllerDao controllerDao = new ControllerDaoImpl();
-                ControllerDto  controller    = controllerDao.getById(controllerId);
-                DataDao       dataDao       = new DataDaoImpl();
-                DataDto        data          = dataDao.getById(dataId);
+                ControllerDto controller = controllerDao.getById(controllerId);
+                DataDao dataDao = new DataDaoImpl();
+                DataDto data = dataDao.getById(dataId);
 
                 data.setValueToChange(value);
                 controllerDao.sendNewDataValueToController(controller.getId(), data.getId(), data.getValue());
                 controllerDao.saveNewDataValueOnController(controller.getId(), data.getId(), data.getValue());
                 logger.info("Data successfully changed :" + data);
                 response.sendRedirect("./rmtctrl-actionset.html?userId=" + userId + "&cellinkId=" + cellinkId
-                                      + "&controllerId=" + controllerId + "&screenId=" + screenId);
+                        + "&controllerId=" + controllerId + "&screenId=" + screenId);
             }
         } catch (SQLException ex) {
 
             // error page
             logger.info("Error occurs while changing data", ex);
             response.sendRedirect("./rmtctrl-actionset.html?userId=" + userId + "&cellinkId=" + cellinkId
-                                  + "&controllerId=" + controllerId + "&screenId=" + screenId);
+                    + "&controllerId=" + controllerId + "&screenId=" + screenId);
         } finally {
             out.close();
         }
@@ -106,10 +102,11 @@ public class RCChangeActionsetValue extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -119,10 +116,11 @@ public class RCChangeActionsetValue extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -132,6 +130,7 @@ public class RCChangeActionsetValue extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

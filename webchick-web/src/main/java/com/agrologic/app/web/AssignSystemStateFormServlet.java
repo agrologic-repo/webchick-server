@@ -1,46 +1,31 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-
-import com.agrologic.app.dao.ProgSysStateDao;
-import com.agrologic.app.dao.impl.ProgramSystemStateDaoImpl;
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.ProgramSystemStateDao;
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
 
-/**
- *
- * @author JanL
- */
 public class AssignSystemStateFormServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -57,14 +42,14 @@ public class AssignSystemStateFormServlet extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                Long                                  programId               = Long.parseLong(request.getParameter("programId"));
-                String                                dataSystemStateMapParam = request.getParameter("datamap");
-                SortedMap<Integer, String>            numbersTextMap          = new TreeMap<Integer, String>();
-                SortedMap<Long, Map<Integer, String>> dataSystemStateMap      = new TreeMap<Long, Map<Integer, String>>();
-                int                                   numberCount             = 0,
-                                                      maxNumbers              = 10;
-                long                                  dataId                  = 0;
-                StringTokenizer                       numbersTextToken        = new StringTokenizer(dataSystemStateMapParam, ";");
+                Long programId = Long.parseLong(request.getParameter("programId"));
+                String dataSystemStateMapParam = request.getParameter("datamap");
+                SortedMap<Integer, String> numbersTextMap = new TreeMap<Integer, String>();
+                SortedMap<Long, Map<Integer, String>> dataSystemStateMap = new TreeMap<Long, Map<Integer, String>>();
+                int numberCount = 0,
+                        maxNumbers = 10;
+                long dataId = 0;
+                StringTokenizer numbersTextToken = new StringTokenizer(dataSystemStateMapParam, ";");
 
                 while (numbersTextToken.hasMoreTokens()) {
                     StringTokenizer numbersToken = new StringTokenizer(numbersTextToken.nextToken(), ",");
@@ -75,8 +60,8 @@ public class AssignSystemStateFormServlet extends HttpServlet {
                         dataId = Long.parseLong(token);
                     }
 
-                    int    number = Integer.parseInt(numbersToken.nextToken().trim());
-                    String text   = numbersToken.nextToken();
+                    int number = Integer.parseInt(numbersToken.nextToken().trim());
+                    String text = numbersToken.nextToken();
 
                     numbersTextMap.put(number, text);
                     numberCount++;
@@ -88,14 +73,15 @@ public class AssignSystemStateFormServlet extends HttpServlet {
                 }
 
                 try {
-                    ProgSysStateDao programSystemStateDao = new ProgramSystemStateDaoImpl();
+                    ProgramSystemStateDao programSystemStateDao = DbImplDecider.use(DaoType.MYSQL)
+                            .getDao(ProgramSystemStateDao.class);
 
-                    programSystemStateDao.insertSystemStates(programId, dataSystemStateMap);
+                    programSystemStateDao.assignSystemStateToGivenProgram(programId, dataSystemStateMap);
                     logger.info("Relays successfuly added!");
                     request.getRequestDispatcher("./program-systemstates.html?programId=" + programId).forward(request,
-                                                 response);
+                            response);
                 } catch (SQLException ex) {
-                    logger.info("Error occurs while retreive controller details!");
+                    logger.info("Error occurs while retrieve controller details!");
                     request.getRequestDispatcher("./program-systemstates.html").forward(request, response);
                 }
 
@@ -110,10 +96,11 @@ public class AssignSystemStateFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -123,10 +110,11 @@ public class AssignSystemStateFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -136,6 +124,7 @@ public class AssignSystemStateFormServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

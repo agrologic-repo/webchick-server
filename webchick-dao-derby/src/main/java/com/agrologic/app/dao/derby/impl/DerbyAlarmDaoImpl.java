@@ -5,32 +5,14 @@ import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.AlarmDaoImpl;
-import com.agrologic.app.model.Alarm;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
-import java.util.Collection;
 
 public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
     public DerbyAlarmDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
         super(jdbcTemplate, daoFactory);
-    }
-
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public void insert(Alarm alarm) {
-        super.insert(alarm);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public void insert(Collection<Alarm> alarmList) {
-        super.insert(alarmList);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     /**
@@ -56,11 +38,6 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
                 return false;
             }
 
-            rs = dbmd.getTables(null, "APP", "PROGRAMALARMS", null);
-
-            if (!rs.next()) {
-                return false;
-            }
         } catch (SQLException e) {
             throw new SQLException("Cannot get table ALARMNAMES from DataBase", e);
         } finally {
@@ -77,7 +54,6 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
     public void createTable() throws SQLException {
         createTableAlarm();
         createTableAlarmByLang();
-        createTableAlarmByProgram();
     }
 
     /**
@@ -113,26 +89,6 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
             stmt.execute(sqlQuery);
         } catch (Exception e) {
             throw new SQLException("Cannot create new ALARMBYLANGUAGE Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    private void createTableAlarmByProgram() throws SQLException {
-        String sqlQuery = "CREATE TABLE PROGRAMALARMS " + "(" + "DATAID INT NOT NULL , "
-                + "DIGITNUMBER INT NOT NULL , " + "TEXT VARCHAR(200) NOT NULL, "
-                + "PROGRAMID INT NOT NULL , " + "ALARMNUMBER INT NOT NULL , " + "ALARMTEXTID INT NOT NULL , "
-                + "PRIMARY KEY (DATAID,DIGITNUMBER,PROGRAMID)" + ")";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (Exception e) {
-            throw new SQLException("Cannot create new ALARMBYPROGRAM Table", e);
         } finally {
             stmt.close();
             dao.closeConnection(con);

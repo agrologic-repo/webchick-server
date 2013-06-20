@@ -6,42 +6,36 @@
 package com.agrologic.app.web;
 
 
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.LanguageDao;
 import com.agrologic.app.dao.RelayDao;
 import com.agrologic.app.dao.impl.LanguageDaoImpl;
-import com.agrologic.app.dao.impl.RelayDaoImpl;
 import com.agrologic.app.model.LanguageDto;
-import com.agrologic.app.model.RelayDto;
-
+import com.agrologic.app.model.Relay;
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
- *
  * @author Administrator
  */
 public class ListRelays extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -67,21 +61,21 @@ public class ListRelays extends HttpServlet {
                         translateLang = 1;    // default program
                     }
 
-                    LanguageDao      langDao   = new LanguageDaoImpl();
+                    LanguageDao langDao = new LanguageDaoImpl();
                     List<LanguageDto> languages = langDao.geAll();
 
-                    logger.info("retreive relay names!");
+                    logger.info("retrieve relay names!");
                     request.getSession().setAttribute("languages", languages);
 
-                    RelayDao      relayDao   = new RelayDaoImpl();
-                    List<RelayDto> relayNames = relayDao.getAll(translateLang);
+                    RelayDao relayDao = DbImplDecider.use(DaoType.MYSQL).getDao(RelayDao.class);
+                    List<Relay> relayNames = (List<Relay>) relayDao.getAll(translateLang);
 
-                    logger.info("retreive relay names!");
+                    logger.info("retrieve relay names!");
                     request.getSession().setAttribute("relayNames", relayNames);
                     response.sendRedirect("./all-relays.jsp?translateLang=" + translateLang);
                 } catch (SQLException ex) {
-                    logger.info("Error occurs while retreive program relays!");
-                    request.getSession().setAttribute("message", "Error occurs while retreive program relays!");
+                    logger.info("Error occurs while retrieve program relays!");
+                    request.getSession().setAttribute("message", "Error occurs while retrieve program relays!");
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
                 }
             }
@@ -94,10 +88,11 @@ public class ListRelays extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -107,10 +102,11 @@ public class ListRelays extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -120,6 +116,7 @@ public class ListRelays extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

@@ -2,8 +2,8 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.model.Program;
 import com.agrologic.app.dao.mappers.ProgramUtil;
+import com.agrologic.app.model.Program;
 
 import java.sql.*;
 import java.util.Collection;

@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
@@ -64,11 +63,11 @@ public class DatabaseInsertion implements DatabaseInsertable {
                 if (!dba.getProgramDao().programExist(program.getId())) {
                     dba.getProgramDao().insert(program);
                     logger.info("the data inserted successfully to the program table");
-                    dba.getAlarmDao().insertProgramAlarms(program.getProgramAlarms());
+                    dba.getProgramAlarmDao().insert(program.getProgramAlarms());
                     logger.info("the program alarms inserted successfully to the programalarm table");
-                    dba.getRelayDao().insertProgramRelays(program.getProgramRelays());
+                    dba.getProgramRelayDao().insert(program.getProgramRelays());
                     logger.info("the program relay inserted successfully to the programrelay table");
-                    dba.getSystemStateDao().insertProgramSystemState(program.getProgramSystemStates());
+                    dba.getProgramSystemStateDao().insertProgramSystemState(program.getProgramSystemStates());
                     logger.info("the program system state inserted successfully to the programsysstate table");
 
                     Collection<Screen> screenList = program.getScreens();
@@ -104,7 +103,7 @@ public class DatabaseInsertion implements DatabaseInsertable {
         try {
             dba.getCellinkDao().insert(cellink);
         } catch (Exception e) {
-            logger.info("Cannot insert cellink to the database ",e);
+            logger.info("Cannot insert cellink to the database ", e);
         }
     }
 
@@ -113,7 +112,7 @@ public class DatabaseInsertion implements DatabaseInsertable {
         try {
             dba.getControllerDao().insert(c);
         } catch (Exception e) {
-            logger.info("Cannot insert controller to the database ",e);
+            logger.info("Cannot insert controller to the database ", e);
         }
     }
 }

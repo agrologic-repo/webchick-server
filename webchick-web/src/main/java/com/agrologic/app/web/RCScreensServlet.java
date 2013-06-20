@@ -6,30 +6,24 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.impl.*;
 import com.agrologic.app.model.*;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class RCScreensServlet extends HttpServlet {
@@ -40,10 +34,10 @@ public class RCScreensServlet extends HttpServlet {
      * <code>GET</code> and
      * <code>POST</code> methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -58,11 +52,11 @@ public class RCScreensServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            long   userId       = Long.parseLong(request.getParameter("userId"));
-            long   cellinkId    = Long.parseLong(request.getParameter("cellinkId"));
-            long   controllerId = Long.parseLong(request.getParameter("controllerId"));
-            long   screenId     = Long.parseLong(request.getParameter("screenId"));
-            String lang         = (String) request.getSession().getAttribute("lang");
+            long userId = Long.parseLong(request.getParameter("userId"));
+            long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+            long controllerId = Long.parseLong(request.getParameter("controllerId"));
+            long screenId = Long.parseLong(request.getParameter("screenId"));
+            String lang = (String) request.getSession().getAttribute("lang");
 
             if ((lang == null) || lang.equals("")) {
                 lang = "en";
@@ -76,47 +70,48 @@ public class RCScreensServlet extends HttpServlet {
 //              UserDto user = userDao.getById(userId);
 //              request.getSession().setAttribute("user", user);
                 CellinkDao cellinkDao = new CellinkDaoImpl();
-                CellinkDto  cellink    = cellinkDao.getById(cellinkId);
+                CellinkDto cellink = cellinkDao.getById(cellinkId);
 
                 // cellink.setTime(new Timestamp(System.currentTimeMillis()));
                 cellinkDao.update(cellink);
 
-                LanguageDao        languageDao     = new LanguageDaoImpl();
-                long                langId          = languageDao.getLanguageId(lang);
-                ControllerDao      controllerDao   = new ControllerDaoImpl();
-                List<ControllerDto> controllers     = controllerDao.getAllByCellinkId(cellinkId);
-                ProgramDao         programDao      = new ProgramDaoImpl();
-                ProgramRelayDao    programRelayDao = new ProgramRelayDaoImpl();
-                ScreenDao          screenDao       = new ScreenDaoImpl();
-                TableDao           tableDao        = new TableDaoImpl();
-                DataDao            dataDao         = new DataDaoImpl();
+                LanguageDao languageDao = new LanguageDaoImpl();
+                long langId = languageDao.getLanguageId(lang);
+                ControllerDao controllerDao = new ControllerDaoImpl();
+                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                ProgramDao programDao = new ProgramDaoImpl();
+                final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
+
+                ScreenDao screenDao = new ScreenDaoImpl();
+                TableDao tableDao = new TableDaoImpl();
+                DataDao dataDao = new DataDaoImpl();
 
                 for (ControllerDto controller : controllers) {
                     if (controller.getId() == controllerId) {
-                        ProgramDto            program       = programDao.getById(controller.getProgramId());
-                        List<ProgramRelayDto> programRelays = programRelayDao.getAllProgramRelays(program.getId());
+                        ProgramDto program = programDao.getById(controller.getProgramId());
+                        List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId());
 
                         program.setProgramRelays(programRelays);
 
                         List<ScreenDto> screens = screenDao.getAllScreensByProgramAndLang(program.getId(), langId,
-                                                      false);
+                                false);
 
                         for (ScreenDto screen : screens) {
                             if (screen.getId() == screenId) {
                                 List<TableDto> tables = tableDao.getScreenTables(program.getId(), screen.getId(),
-                                                            langId, false);
+                                        langId, false);
 
                                 for (TableDto table : tables) {
                                     List<DataDto> dataList = dataDao.getOnlineTableDataList(program.getId(),
-                                                                 controller.getId(), screen.getId(), table.getId(),
-                                                                 langId);
+                                            controller.getId(), screen.getId(), table.getId(),
+                                            langId);
 
                                     // List<DataDto> dataList = dataDao.getOnlineTableDataList(program.getId(),controller.getId(), table.getId(),langId);
                                     table.setDataList(dataList);
                                 }
 
                                 screen.setTables(tables);
-                                logger.info("retreive screen tables and data");
+                                logger.info("retrieve screen tables and data");
                             }
                         }
 
@@ -129,24 +124,24 @@ public class RCScreensServlet extends HttpServlet {
 
                 List<DataDto> dataRelays = dataDao.getRelays();
 
-                logger.info("retreive program data relay!");
+                logger.info("retrieve program data relay!");
                 request.getSession().setAttribute("dataRelays", dataRelays);
                 request.getSession().setAttribute("controllers", controllers);
                 request.getRequestDispatcher("./rmctrl-controller-screens.jsp?userId" + userId + "&cellinkId="
-                                             + cellinkId + "&screenId=" + screenId).forward(request, response);
+                        + cellinkId + "&screenId=" + screenId).forward(request, response);
             } catch (SQLException ex) {
 
                 // error page
-                logger.info("retreive program data relay!", ex);
+                logger.info("retrieve program data relay!", ex);
                 request.getRequestDispatcher("./rmctrl-controller-screens.jsp?userId" + userId + "&cellinkId="
-                                             + cellinkId + "&screenId=" + screenId).forward(request, response);
+                        + cellinkId + "&screenId=" + screenId).forward(request, response);
             } catch (Exception ex) {
 
                 // error page
                 ex.printStackTrace();
-                logger.info("retreive program data relay!");
+                logger.info("retrieve program data relay!");
                 request.getRequestDispatcher("./rmctrl-controller-screens.jsp?userId" + userId + "&cellinkId="
-                                             + cellinkId + "&screenId=" + screenId).forward(request, response);
+                        + cellinkId + "&screenId=" + screenId).forward(request, response);
             }
         } finally {
             out.close();
@@ -160,9 +155,9 @@ public class RCScreensServlet extends HttpServlet {
      * @param request the request object
      */
     private void checkRealTimeSessionTimeout(HttpServletRequest request, Logger logger) {
-        String  doResetTimeout = request.getParameter("doResetTimeout");
+        String doResetTimeout = request.getParameter("doResetTimeout");
         Integer newConnTimeout = 0;
-        Long    startConnTime  = null;
+        Long startConnTime = null;
 
         logger.info("refresh executed");
 
@@ -211,10 +206,10 @@ public class RCScreensServlet extends HttpServlet {
      * Handles the HTTP
      * <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -226,10 +221,10 @@ public class RCScreensServlet extends HttpServlet {
      * Handles the HTTP
      * <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

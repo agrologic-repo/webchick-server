@@ -10,21 +10,30 @@ package com.agrologic.app.web;
  * Decription: <br>
  * Copyright:   Copyright (c) 2009 <br>
  * Company:     Agro Logic LTD. <br>
- * @author      Valery Manakhimov <br>
- * @version     1.1 <br>
+ *
+ * @author Valery Manakhimov <br>
+ * @version 1.1 <br>
  */
 public interface UserRole {
 
-    /** an administrator */
+    /**
+     * an administrator
+     */
     public static int ADMINISTRATOR = 1;
 
-    /** a basic */
+    /**
+     * a basic
+     */
     public static int ADVANCED = 3;
 
-    /** a regular */
+    /**
+     * a regular
+     */
     public static int ALL = 0;
 
-    /** a regular */
+    /**
+     * a regular
+     */
     public static int REGULAR = 2;
 }
 

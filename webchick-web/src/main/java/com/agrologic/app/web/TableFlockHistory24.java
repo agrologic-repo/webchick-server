@@ -6,45 +6,36 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.excel.DataForExcelCreator;
-
+import com.agrologic.app.model.DataFormat;
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author Administrator
  */
 public class TableFlockHistory24 extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static String     outfile;
+    private static String outfile;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -63,21 +54,21 @@ public class TableFlockHistory24 extends HttpServlet {
             Locale locale = Locale.ENGLISH;
 
             try {
-                long          flockId = Long.parseLong(request.getParameter("flockId"));
-                int           fromDay = -1;
-                int           toDay   = -1;
-                StringBuilder range   = new StringBuilder();
+                long flockId = Long.parseLong(request.getParameter("flockId"));
+                int fromDay = -1;
+                int toDay = -1;
+                StringBuilder range = new StringBuilder();
 
                 try {
                     fromDay = Integer.parseInt(request.getParameter("fromDay"));
-                    toDay   = Integer.parseInt(request.getParameter("toDay"));
+                    toDay = Integer.parseInt(request.getParameter("toDay"));
 
                     if ((fromDay != -1) && (toDay != -1)) {
                         range.append("( From ").append(fromDay).append(" to ").append(toDay).append(" grow day )");
                     }
                 } catch (Exception ex) {
                     fromDay = -1;
-                    toDay   = -1;
+                    toDay = -1;
                 }
 
                 int growDay = 1;
@@ -88,8 +79,8 @@ public class TableFlockHistory24 extends HttpServlet {
                     growDay = 1;
                 }
 
-                FlockDao flockDao  = new FlockDaoImpl();
-                Long      resetTime = new Long(flockDao.getResetTime(flockId, growDay));
+                FlockDao flockDao = new FlockDaoImpl();
+                Long resetTime = new Long(flockDao.getResetTime(flockId, growDay));
 
                 if (resetTime != null) {
                     resetTime = DataFormat.convertToTimeFormat(resetTime);
@@ -113,13 +104,13 @@ public class TableFlockHistory24 extends HttpServlet {
                 values4 = getDefaultValuesIfEmpty(values4);
                 values5 = getDefaultValuesIfEmpty(values5);
 
-                String               title1          = flockDao.getDNHistory24("D18");
-                String               title2          = flockDao.getDNHistory24("D19");
-                String               title3          = flockDao.getDNHistory24("D20");
-                String               title4          = flockDao.getDNHistory24("D21");
-                String               title5          = flockDao.getDNHistory24("D72");
+                String title1 = flockDao.getDNHistory24("D18");
+                String title2 = flockDao.getDNHistory24("D19");
+                String title3 = flockDao.getDNHistory24("D20");
+                String title4 = flockDao.getDNHistory24("D21");
+                String title5 = flockDao.getDNHistory24("D72");
                 Map<Integer, String> history24ByHour = parseHistory24(resetTime, values1);
-                List<List<String>>   history24Data   = new ArrayList<List<String>>();
+                List<List<String>> history24Data = new ArrayList<List<String>>();
 
                 history24Data.add((DataForExcelCreator.createDataList(history24ByHour.keySet())));
                 history24ByHour = parseHistory24(resetTime, values1);
@@ -143,7 +134,7 @@ public class TableFlockHistory24 extends HttpServlet {
                 columnTitles.add(title5);
                 out.println("<p>");
                 out.println(
-                    "<table class=table-list cellpadding=1 cellspacing=1 border=1 style=behavior:url(tablehl.htc) url(sort.htc);>");
+                        "<table class=table-list cellpadding=1 cellspacing=1 border=1 style=behavior:url(tablehl.htc) url(sort.htc);>");
                 out.println("<tr>");
 
                 for (String title : columnTitles) {
@@ -155,7 +146,7 @@ public class TableFlockHistory24 extends HttpServlet {
                 Iterator hourIter = history24ByHour.keySet().iterator();
 
                 while (hourIter.hasNext()) {
-                    Integer                hour        = (Integer) hourIter.next();
+                    Integer hour = (Integer) hourIter.next();
                     Iterator<List<String>> historyIter = history24Data.iterator();
 
                     out.println("<tr>");
@@ -163,7 +154,7 @@ public class TableFlockHistory24 extends HttpServlet {
                     while (historyIter.hasNext()) {
                         try {
                             List<String> interestData = historyIter.next();
-                            String       data         = interestData.get(hour);
+                            String data = interestData.get(hour);
 
                             out.println("<td align=center>" + data + "</td>");
                         } catch (Exception e) {
@@ -185,10 +176,11 @@ public class TableFlockHistory24 extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -198,10 +190,11 @@ public class TableFlockHistory24 extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -211,6 +204,7 @@ public class TableFlockHistory24 extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
@@ -227,9 +221,9 @@ public class TableFlockHistory24 extends HttpServlet {
     }
 
     private Map<Integer, String> parseHistory24(long resetTime, String values) {
-        String[]             valueList = values.split(" ");
+        String[] valueList = values.split(" ");
         Map<Integer, String> valuesMap = new TreeMap<Integer, String>();
-        int                  j         = (int) resetTime / 100;
+        int j = (int) resetTime / 100;
 
         for (int i = 0; i < 24; i++) {
             if (j == 24) {

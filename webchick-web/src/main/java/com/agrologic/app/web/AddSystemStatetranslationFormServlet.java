@@ -6,36 +6,31 @@
 package com.agrologic.app.web;
 
 
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.SystemStateDao;
-import com.agrologic.app.dao.impl.SystemStateDaoImpl;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
 
 /**
- *
  * @author Administrator
  */
 public class AddSystemStatetranslationFormServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -52,14 +47,14 @@ public class AddSystemStatetranslationFormServlet extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                Long   systemstateId = Long.parseLong(request.getParameter("systemstateId"));
-                Long   langId        = Long.parseLong(request.getParameter("langId"));
-                String translate     = request.getParameter("Ntranslate");
+                Long systemstateId = Long.parseLong(request.getParameter("systemstateId"));
+                Long langId = Long.parseLong(request.getParameter("langId"));
+                String translate = request.getParameter("Ntranslate");
 
                 try {
-                    SystemStateDao systemstateDao = new SystemStateDaoImpl();
+                    SystemStateDao systemStateDao = DbImplDecider.use(DaoType.MYSQL).getDao(SystemStateDao.class);
+                    systemStateDao.insertTranslation(systemstateId, langId, translate);
 
-                    systemstateDao.insertTranslation(systemstateId, langId, translate);
                 } catch (SQLException ex) {
 
                     // error page
@@ -77,10 +72,11 @@ public class AddSystemStatetranslationFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -90,10 +86,11 @@ public class AddSystemStatetranslationFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -103,6 +100,7 @@ public class AddSystemStatetranslationFormServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

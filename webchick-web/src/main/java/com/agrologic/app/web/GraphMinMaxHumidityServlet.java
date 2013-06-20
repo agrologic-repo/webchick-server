@@ -6,43 +6,39 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataDto;
 import com.agrologic.app.graph.CombinedXYGraph;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
-
+import com.agrologic.app.model.DataDto;
 import org.apache.log4j.Logger;
-
 import org.jfree.chart.ChartUtilities;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.OutputStream;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+//~--- JDK imports ------------------------------------------------------------
 
 public class GraphMinMaxHumidityServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -59,29 +55,29 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                long          flockId = Long.parseLong(request.getParameter("flockId"));
-                int           fromDay = -1;
-                int           toDay   = -1;
-                StringBuilder range   = new StringBuilder();
+                long flockId = Long.parseLong(request.getParameter("flockId"));
+                int fromDay = -1;
+                int toDay = -1;
+                StringBuilder range = new StringBuilder();
 
                 try {
                     fromDay = Integer.parseInt(request.getParameter("fromDay"));
-                    toDay   = Integer.parseInt(request.getParameter("toDay"));
+                    toDay = Integer.parseInt(request.getParameter("toDay"));
 
                     if ((fromDay != -1) && (toDay != -1)) {
                         range.append("( From ").append(fromDay).append(" to ").append(toDay).append(" grow day .)");
                     }
                 } catch (Exception ex) {
                     fromDay = -1;
-                    toDay   = -1;
+                    toDay = -1;
                 }
 
                 try {
-                    DataDao              dataDao          = new DataDaoImpl();
-                    DataDto               data             = dataDao.getById(Long.valueOf(3002));
-                    FlockDao             flockDao         = new FlockDaoImpl();
-                    Map<Integer, String>  historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    Map<Integer, DataDto> interestData     = createDataSet(historyByGrowDay, data);
+                    DataDao dataDao = new DataDaoImpl();
+                    DataDto data = dataDao.getById(Long.valueOf(3002));
+                    FlockDao flockDao = new FlockDaoImpl();
+                    Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
+                    Map<Integer, DataDto> interestData = createDataSet(historyByGrowDay, data);
 
                     data = dataDao.getById(Long.valueOf(3003));
 
@@ -94,13 +90,13 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
                     data = dataDao.getById(Long.valueOf(3005));
 
                     Map<Integer, DataDto> interestData4 = createDataSet(historyByGrowDay, data);
-                    CombinedXYGraph       combGraph     = new CombinedXYGraph();
+                    CombinedXYGraph combGraph = new CombinedXYGraph();
 
                     combGraph.createFirstNextPlot("Maximum and Minimum Inside Temperature", "Grow Day[Day]",
-                                                  "Temperature[C�]", data, 0, interestData,
-                                                  interestData2 /* , interestData3,interestData4 */);
+                            "Temperature[C�]", data, 0, interestData,
+                            interestData2 /* , interestData3,interestData4 */);
                     combGraph.createNextPlot("Maximum and Minimum Outside Temperature", "Grow Day[Day]",
-                                             "Temperature[C�]", data, 0, interestData3, interestData4);
+                            "Temperature[C�]", data, 0, interestData3, interestData4);
                     data = dataDao.getById(Long.valueOf(3006));
 
                     Map<Integer, DataDto> interestData5 = createDataSet(historyByGrowDay, data);
@@ -110,7 +106,7 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
                     Map<Integer, DataDto> interestData6 = createDataSet(historyByGrowDay, data);
 
                     combGraph.createNextPlot("Humidity", "Grow Day[Day]", "Humidity[%]", data, 1, interestData5,
-                                             interestData6);
+                            interestData6);
                     combGraph.createChart("In\\Out Min\\Max Temperature And Humidity Graph", range.toString());
                     request.getSession().setAttribute("fromDay", fromDay);
                     request.getSession().setAttribute("toDay", toDay);
@@ -138,10 +134,11 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -151,10 +148,11 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -164,6 +162,7 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
@@ -172,24 +171,23 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
     }    // </editor-fold>
 
     /**
-     *
      * @param historyByGrowDay
      * @param data
      * @return
      */
     private Map<Integer, DataDto> createDataSet(final Map<Integer, String> historyByGrowDay, final DataDto data) {
         Map<Integer, DataDto> dataSet = new HashMap<Integer, DataDto>();
-        Iterator              iter    = historyByGrowDay.keySet().iterator();
+        Iterator iter = historyByGrowDay.keySet().iterator();
 
         while (iter.hasNext()) {
-            Integer         key   = (Integer) iter.next();
-            String          value = historyByGrowDay.get(key);
-            StringTokenizer st    = new StringTokenizer(value, " ");
+            Integer key = (Integer) iter.next();
+            String value = historyByGrowDay.get(key);
+            StringTokenizer st = new StringTokenizer(value, " ");
 
             while (st.hasMoreElements()) {
                 try {
                     String dataElem = (String) st.nextElement();
-                    String valElem  = (String) st.nextElement();
+                    String valElem = (String) st.nextElement();
                     String dataType = data.getType().toString();
 
                     if (dataElem.equals(dataType) && (valElem.indexOf('-') == -1)) {

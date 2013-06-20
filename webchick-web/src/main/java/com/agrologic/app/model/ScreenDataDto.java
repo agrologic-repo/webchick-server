@@ -5,21 +5,19 @@
  */
 package com.agrologic.app.model;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.io.Serializable;
 
 /**
- *
  * @author JanL
  */
 public class ScreenDataDto implements Serializable {
     private static final long serialVersionUID = 5L;
-    private Long              dataId;
-    private Long              gprsId;
-    private Long              screenId;
+    private Long dataId;
+    private Long gprsId;
+    private Long screenId;
 
-    public ScreenDataDto() {}
+    public ScreenDataDto() {
+    }
 
     public Long getDataId() {
         return dataId;

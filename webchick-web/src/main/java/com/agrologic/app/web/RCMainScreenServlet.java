@@ -85,10 +85,10 @@ public class RCMainScreenServlet extends HttpServlet {
                 final TableDao tableDao = new TableDaoImpl();
                 final ScreenDao screenDao = new ScreenDaoImpl();
                 final ProgramDao programDao = new ProgramDaoImpl();
-                final ProgramRelayDao programRelayDao = new ProgramRelayDaoImpl();
+                final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
                 final ProgramAlarmDao programAlarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramAlarmDao.class);
 
-                final ProgSysStateDao programSystemStateDao = new ProgramSystemStateDaoImpl();
+                final ProgramSystemStateDao programSystemStateDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramSystemStateDao.class);
                 Map<Long, Long> nextScrIdsByCntrl = new HashMap<Long, Long>();
 
                 for (ControllerDto controller : controllers) {
@@ -121,7 +121,6 @@ public class RCMainScreenServlet extends HttpServlet {
 
                     // get screen tables
                     List<TableDto> tables = tableDao.getScreenTables(program.getId(), screen.getId(), langId, false);
-
                     for (TableDto table : tables) {
                         table.setDataList(dataDao.getOnlineTableDataList(program.getId(), controller.getId(),
                                 screen.getId(), table.getId(), langId));

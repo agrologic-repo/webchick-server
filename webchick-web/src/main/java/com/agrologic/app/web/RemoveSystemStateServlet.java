@@ -1,42 +1,31 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.SystemStateDao;
-import com.agrologic.app.dao.impl.SystemStateDaoImpl;
-import com.agrologic.app.model.SystemStateDto;
-
+import com.agrologic.app.model.SystemState;
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
 
 /**
- *
  * @author Administrator
  */
 public class RemoveSystemStateServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -57,17 +46,16 @@ public class RemoveSystemStateServlet extends HttpServlet {
                 Long systemstateId = Long.parseLong(request.getParameter("systemstateId"));
 
                 try {
-                    SystemStateDao systemstateDao = new SystemStateDaoImpl();
-                    SystemStateDto  systemstate    = systemstateDao.getById(systemstateId);
-
-                    systemstateDao.remove(systemstate.getId());
+                    SystemStateDao systemStateDao = DbImplDecider.use(DaoType.MYSQL).getDao(SystemStateDao.class);
+                    SystemState systemstate = systemStateDao.getById(systemstateId);
+                    systemStateDao.remove(systemstate.getId());
                     logger.info("SystemState " + systemstate + " successfully removed!");
                     request.getSession().setAttribute("message",
-                                                      "SystemState <b style=\"color:gray\"> " + systemstate.getText()
-                                                      + " </b> successfully  removed !");
+                            "SystemState <b style=\"color:gray\"> " + systemstate.getText()
+                                    + " </b> successfully  removed !");
                     request.getSession().setAttribute("error", false);
                     request.getRequestDispatcher("./all-systemstates.html?translateLang="
-                                                 + translateLang).forward(request, response);
+                            + translateLang).forward(request, response);
                 } catch (SQLException ex) {
 
                     // error page
@@ -86,10 +74,11 @@ public class RemoveSystemStateServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -99,10 +88,11 @@ public class RemoveSystemStateServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -112,6 +102,7 @@ public class RemoveSystemStateServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

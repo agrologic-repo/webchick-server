@@ -6,20 +6,18 @@ import com.agrologic.app.model.CellinkDto;
 import com.agrologic.app.model.ControllerDto;
 import com.agrologic.app.model.UserDto;
 import com.agrologic.app.utils.Base64;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Connection;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Title: UserDaoImpl - Encapsulate all SQL queries to database that are related to USERS<br>
  * Description: Contains 3 types of SQL methods:<ul>
- *                        <li>regular jdbc statements</li>
- *                        <li>prepared statements<br></li></ul>
+ * <li>regular jdbc statements</li>
+ * <li>prepared statements<br></li></ul>
  * Copyright:    Copyright (c) 2007
+ *
  * @author Valery Manakhimov
  * @version 1.0
  */
@@ -27,7 +25,8 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Help to create user from result set .
-     * @param rs    a result set
+     *
+     * @param rs a result set
      * @return user an objects that encapsulates a user attributes
      * @throws java.sql.SQLException
      */
@@ -51,7 +50,8 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Help to create vector of users from result set
-     * @param rs        a result set
+     *
+     * @param rs a result set
      * @return users    a vector of UserDto objects
      * @throws java.sql.SQLException
      */
@@ -65,6 +65,7 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Help to create user from result set .
+     *
      * @param rs a result set
      * @return user an objects that encapsulates a user attributes
      * @throws java.sql.SQLException
@@ -84,6 +85,7 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Help to create cellink from result set .
+     *
      * @param rs a result set
      * @return cellink an objects that encapsulates a cellink attributes
      * @throws java.sql.SQLException
@@ -106,6 +108,7 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Help to create controller from result set
+     *
      * @param rs a result set
      * @return controller an object that encapsulate a cellink attributes
      * @throws java.sql.SQLException
@@ -123,6 +126,7 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Help to create vector of users from result set
+     *
      * @param rs a result set
      * @return users a vector of User objects
      * @throws java.sql.SQLException
@@ -173,6 +177,7 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Inserts a new user row to table user
+     *
      * @param user an objects that encapsulates a user attributes
      * @throws SQLException if failed to insert new user to the database
      */
@@ -207,7 +212,8 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Updates an existing user row in table user
-     * @param newUser an object that encapsulates a user attributes
+     *
+     * @param user an object that encapsulates a user attributes
      * @throws SQLException if failed to update the user in the database
      */
     @Override
@@ -240,8 +246,9 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Removes a user from the database
-     * @param userId        the id of the user to be removed from the database
-     * @throws SQLException    if failed to remove the user from the database
+     *
+     * @param userId the id of the user to be removed from the database
+     * @throws SQLException if failed to remove the user from the database
      */
     @Override
     public void remove(Long userId) throws SQLException {
@@ -265,8 +272,9 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Gets the number of Users
+     *
      * @return countRows    the number of users in database
-     * @throws SQLException    if failed to get the number of users from the database
+     * @throws SQLException if failed to get the number of users from the database
      */
     @Override
     public Integer getTotalNumUsers() throws SQLException {
@@ -296,9 +304,10 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Gets user by it id
-     * @param userId        an user id
+     *
+     * @param userId an user id
      * @return user         an objects that encapsulates a user attributes
-     * @throws SQLException    if failed to retrive user from the database
+     * @throws SQLException if failed to retrive user from the database
      */
     @Override
     public UserDto getById(Long userId) throws SQLException {
@@ -326,8 +335,9 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Checks a user login and returns the user from the database
+     *
      * @param loginName     login name of the user
-     * @param password      login password of the user
+     * @param loginPassword login password of the user
      * @return User         an User object that encapsulate the user attribute or null
      * @throws SQLException if failed to check user login
      */
@@ -385,8 +395,9 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Retrieves all users in no special order
+     *
      * @return users        a vector of User objects, each object reflects a row in table users
-     * @throws SQLException    if failed to retrieve all users from the database
+     * @throws SQLException if failed to retrieve all users from the database
      */
     @Override
     public List<UserDto> getAll() throws SQLException {
@@ -410,8 +421,9 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Retrieves all users in no special order
+     *
      * @return users        a vector of User objects, each object reflects a row in table users
-     * @throws SQLException    if failed to retrieve all users from the database
+     * @throws SQLException if failed to retrieve all users from the database
      */
     @Override
     public List<UserDto> getAll(Integer role, String company, String searchText) throws SQLException {
@@ -447,9 +459,10 @@ public class UserDaoImpl extends ConnectorDao implements UserDao {
 
     /**
      * Retrieves all users by group level in no special order
-     * @param groupLevel    a group level of user
-     * @return users        a vector of User objects, each object reflects a row in table users
-     * @throws SQLException    if failed to retrieve all users from the database
+     *
+     * @param role a group level of user
+     * @return users  a vector of User objects, each object reflects a row in table users
+     * @throws SQLException if failed to retrieve all users from the database
      */
     @Override
     public List<UserDto> getAllByRole(Integer role) throws SQLException {

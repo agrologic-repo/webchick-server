@@ -19,6 +19,19 @@
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
+    <bean id="programRelayDao" class="com.agrologic.app.dao.mysql.impl.ProgramRelayDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="systemStateDao" class="com.agrologic.app.dao.mysql.impl.SystemStateDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="programSystemStateDao" class="com.agrologic.app.dao.mysql.impl.ProgramSystemStateDaoImpl"
+          parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
     <bean id="controllerDao" class="com.agrologic.app.dao.mysql.impl.ControllerDaoImpl" parent="daoParent"/>
     <bean id="dataDao" class="com.agrologic.app.dao.mysql.impl.DataDaoImpl" parent="daoParent"/>
     <bean id="distribDao" class="com.agrologic.app.dao.mysql.impl.DistribDaoImpl" parent="daoParent"/>
@@ -32,7 +45,7 @@
     <bean id="screenDao" class="com.agrologic.app.dao.mysql.impl.ScreenDaoImpl" parent="daoParent"/>
     <bean id="tableDao" class="com.agrologic.app.dao.mysql.impl.TableDaoImpl" parent="daoParent"/>
     <bean id="schemaDao" class="com.agrologic.app.dao.mysql.impl.SchemaDaoImpl" parent="daoParent"/>
-    <bean id="systemStateDao" class="com.agrologic.app.dao.mysql.impl.SystemStateDaoImpl" parent="daoParent"/>
+    <!--<bean id="systemStateDao" class="com.agrologic.app.dao.mysql.impl.SystemStateDaoImpl" parent="daoParent"/>-->
     <bean id="languageDao" class="com.agrologic.app.dao.mysql.impl.LanguageDaoImpl" parent="daoParent"/>
     <bean id="spreadDao" class="com.agrologic.app.dao.mysql.impl.SpreadDaoImpl" parent="daoParent"/>
     <bean id="transactionDao" class="com.agrologic.app.dao.mysql.impl.TransactionDaoImpl" parent="daoParent"/>

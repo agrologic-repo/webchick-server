@@ -6,7 +6,6 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.TransactionDao;
@@ -16,35 +15,31 @@ import com.agrologic.app.dao.impl.TransactionDaoImpl;
 import com.agrologic.app.model.ControllerDto;
 import com.agrologic.app.model.FlockDto;
 import com.agrologic.app.model.TransactionDto;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class RemoveTransactServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -57,25 +52,25 @@ public class RemoveTransactServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            Long cellinkId  = Long.parseLong(request.getParameter("cellinkId"));
-            Long flockId    = Long.parseLong(request.getParameter("flockId"));
+            Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+            Long flockId = Long.parseLong(request.getParameter("flockId"));
             Long transactId = Long.parseLong(request.getParameter("transactId"));
 
             try {
                 TransactionDao transactDao = new TransactionDaoImpl();
-                TransactionDto  transact    = transactDao.getById(transactId);
+                TransactionDto transact = transactDao.getById(transactId);
 
                 if (transact == null) {
                     logger.info("Transaction " + transactId + " can't be removed");
                     request.getRequestDispatcher("./rmctrl-add-transact.jsp?celinkId=" + cellinkId + "&flockId="
-                                                 + flockId).forward(request, response);
+                            + flockId).forward(request, response);
                 } else {
                     transactDao.remove(transact.getId());
                     logger.info("Transaction removed successfully from the datebase");
 
                     List<TransactionDto> transacts = transactDao.getAllByFlockId(flockId);
-                    float                expenses  = 0;
-                    float                revenues  = 0;
+                    float expenses = 0;
+                    float revenues = 0;
 
                     for (TransactionDto t : transacts) {
                         expenses += t.getExpenses();
@@ -83,14 +78,14 @@ public class RemoveTransactServlet extends HttpServlet {
                     }
 
                     FlockDao flockDao = new FlockDaoImpl();
-                    FlockDto  flock    = flockDao.getById(flockId);
+                    FlockDto flock = flockDao.getById(flockId);
 
                     flock.setExpenses(expenses);
                     flock.setRevenues(revenues);
                     flockDao.update(flock);
 
-                    ControllerDao      controllerDao = new ControllerDaoImpl();
-                    List<ControllerDto> controllers   = controllerDao.getAllByCellinkId(cellinkId);
+                    ControllerDao controllerDao = new ControllerDaoImpl();
+                    List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
 
                     for (ControllerDto controller : controllers) {
                         List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
@@ -100,12 +95,12 @@ public class RemoveTransactServlet extends HttpServlet {
 
                     request.getSession().setAttribute("controllers", controllers);
                     request.getRequestDispatcher("./rmctrl-add-transaction.jsp?celinkId=" + cellinkId + "&flockId="
-                                                 + flockId).forward(request, response);
+                            + flockId).forward(request, response);
                 }
             } catch (SQLException ex) {
                 logger.info("Error occurs durring removing transact");
                 request.getRequestDispatcher("./rmctrl-add-transaction.jsp?celinkId=" + cellinkId + "&flockId="
-                                             + flockId).forward(request, response);
+                        + flockId).forward(request, response);
             }
         } finally {
             out.close();
@@ -116,10 +111,11 @@ public class RemoveTransactServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -129,10 +125,11 @@ public class RemoveTransactServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -142,6 +139,7 @@ public class RemoveTransactServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

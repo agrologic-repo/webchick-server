@@ -6,54 +6,34 @@
 package com.agrologic.app.web;
 
 
-
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.LanguageDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.ProgramRelayDao;
-import com.agrologic.app.dao.ScreenDao;
-import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.dao.impl.ProgramRelayDaoImpl;
-import com.agrologic.app.dao.impl.ScreenDaoImpl;
-import com.agrologic.app.dao.impl.TableDaoImpl;
-import com.agrologic.app.model.DataDto;
-import com.agrologic.app.model.LanguageDto;
-import com.agrologic.app.model.ProgramDto;
-import com.agrologic.app.model.ProgramRelayDto;
-import com.agrologic.app.model.ScreenDto;
-import com.agrologic.app.model.TableDto;
-
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.impl.*;
+import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class ViewResultServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -95,25 +75,25 @@ public class ViewResultServlet extends HttpServlet {
                 }
 
                 try {
-                    ProgramDao      programDao = new ProgramDaoImpl();
-                    List<ProgramDto> programs   = programDao.getAll();
-                    ProgramDto       program    = programDao.getById(programId);
-                    ScreenDao       screenDao  = new ScreenDaoImpl();
-                    List<ScreenDto>  screens    = screenDao.getAllScreensByProgramAndLang(programId, translateLang, false);
+                    ProgramDao programDao = new ProgramDaoImpl();
+                    List<ProgramDto> programs = programDao.getAll();
+                    ProgramDto program = programDao.getById(programId);
+                    ScreenDao screenDao = new ScreenDaoImpl();
+                    List<ScreenDto> screens = screenDao.getAllScreensByProgramAndLang(programId, translateLang, false);
 
                     program.setScreens(screens);
 
                     TableDao tableDao = new TableDaoImpl();
-                    DataDao  dataDao  = new DataDaoImpl();
+                    DataDao dataDao = new DataDaoImpl();
 
                     for (ScreenDto s : screens) {
                         if (s.getId().equals(screenId)) {
                             List<TableDto> tables = tableDao.getScreenTables(s.getProgramId(), s.getId(),
-                                                        translateLang, false);
+                                    translateLang, false);
 
                             for (TableDto table : tables) {
                                 List<DataDto> dataList = dataDao.getTableDataList(s.getProgramId(), s.getId(),
-                                                             table.getId(), translateLang, "yes");
+                                        table.getId(), translateLang, "yes");
 
                                 table.setDataList(dataList);
                             }
@@ -124,22 +104,23 @@ public class ViewResultServlet extends HttpServlet {
                         }
                     }
 
-                    ProgramRelayDao      programRelayDao = new ProgramRelayDaoImpl();
-                    List<ProgramRelayDto> programRelays   = programRelayDao.getAllProgramRelays(program.getId());
+                    final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
+
+                    List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId());
 
                     program.setProgramRelays(programRelays);
 
-                    List<DataDto>     dataRelays  = dataDao.getRelays();
-                    LanguageDao      languageDao = new LanguageDaoImpl();
-                    List<LanguageDto> langList    = languageDao.geAll();
+                    List<DataDto> dataRelays = dataDao.getRelays();
+                    LanguageDao languageDao = new LanguageDaoImpl();
+                    List<LanguageDto> langList = languageDao.geAll();
 
-                    logger.info("retreive program data relay!");
+                    logger.info("retrieve program data relay!");
                     request.getSession().setAttribute("dataRelays", dataRelays);
                     request.getSession().setAttribute("program", program);
                     request.getSession().setAttribute("programs", programs);
                     request.getSession().setAttribute("languages", langList);
                     request.getRequestDispatcher("./view-result.jsp?programId=" + programId + "&screenId=" + screenId
-                                                 + "&screenLangId=" + translateLang).forward(request, response);
+                            + "&screenLangId=" + translateLang).forward(request, response);
                 } catch (SQLException ex) {
 
                     // error page
@@ -154,10 +135,11 @@ public class ViewResultServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -167,10 +149,11 @@ public class ViewResultServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -180,6 +163,7 @@ public class ViewResultServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

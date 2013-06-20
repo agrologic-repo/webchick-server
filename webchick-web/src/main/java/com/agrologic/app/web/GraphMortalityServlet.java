@@ -6,49 +6,39 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.LanguageDao;
 import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.dao.impl.LanguageDaoImpl;
-import com.agrologic.app.model.DataDto;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.graph.history.HistoryGraph;
-
+import com.agrologic.app.model.DataDto;
 import org.apache.log4j.Logger;
-
 import org.jfree.chart.ChartUtilities;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.OutputStream;
-
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.*;
+
+//~--- JDK imports ------------------------------------------------------------
 
 public class GraphMortalityServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -65,34 +55,34 @@ public class GraphMortalityServlet extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                long          flockId = Long.parseLong(request.getParameter("flockId"));
-                int           fromDay = -1;
-                int           toDay   = -1;
-                StringBuilder range   = new StringBuilder();
+                long flockId = Long.parseLong(request.getParameter("flockId"));
+                int fromDay = -1;
+                int toDay = -1;
+                StringBuilder range = new StringBuilder();
 
                 try {
                     fromDay = Integer.parseInt(request.getParameter("fromDay"));
-                    toDay   = Integer.parseInt(request.getParameter("toDay"));
+                    toDay = Integer.parseInt(request.getParameter("toDay"));
 
                     if ((fromDay != -1) && (toDay != -1)) {
                         range.append("( From ").append(fromDay).append(" to ").append(toDay).append(" grow day .)");
                     }
                 } catch (Exception ex) {
                     fromDay = -1;
-                    toDay   = -1;
+                    toDay = -1;
                 }
 
                 try {
-                    FlockDao                   flockDao         = new FlockDaoImpl();
-                    Map<Integer, String>        historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
+                    FlockDao flockDao = new FlockDaoImpl();
+                    Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
                     List<Map<Integer, DataDto>> dataHistroryList = new ArrayList<Map<Integer, DataDto>>();
-                    List<String>                axisTitles       = new ArrayList<String>();
-                    Locale                      currLocale       = (Locale) request.getSession().getAttribute("currLocale");
-                    String                      lang             = currLocale.toString().substring(0, 2);
-                    LanguageDao                languageDao      = new LanguageDaoImpl();
-                    long                        langId           = languageDao.getLanguageId(lang);
-                    DataDao                    dataDao          = new DataDaoImpl();
-                    DataDto                     data1            = dataDao.getById(Long.valueOf(3017));
+                    List<String> axisTitles = new ArrayList<String>();
+                    Locale currLocale = (Locale) request.getSession().getAttribute("currLocale");
+                    String lang = currLocale.toString().substring(0, 2);
+                    LanguageDao languageDao = new LanguageDaoImpl();
+                    long langId = languageDao.getLanguageId(lang);
+                    DataDao dataDao = new DataDaoImpl();
+                    DataDto data1 = dataDao.getById(Long.valueOf(3017));
 
 //                  String realPath = getFilePath(currLocale);
 //                  String toJavaString = Unicode2ASCII.fromHTMLToJava(data1.getUnicodeLabel());
@@ -116,11 +106,11 @@ public class GraphMortalityServlet extends HttpServlet {
                     axisTitles.add(data3.getLabel());
                     dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data3));
 
-                    HashMap<String, String> dictinary      = createDictionary(currLocale);
-                    String                  title          = dictinary.get("graph.mrt.title");    // "Daily Mortality";
-                    String                  xAxisTitle     = dictinary.get("graph.mrt.axis.growday");    // "Grow Day[Day]";
-                    String                  yAxisTitle     = dictinary.get("graph.mrt.axis.birds");    // "Birds";
-                    HistoryGraph            mortalityGraph = new HistoryGraph();
+                    HashMap<String, String> dictinary = createDictionary(currLocale);
+                    String title = dictinary.get("graph.mrt.title");    // "Daily Mortality";
+                    String xAxisTitle = dictinary.get("graph.mrt.axis.growday");    // "Grow Day[Day]";
+                    String yAxisTitle = dictinary.get("graph.mrt.axis.birds");    // "Birds";
+                    HistoryGraph mortalityGraph = new HistoryGraph();
 
                     mortalityGraph.setDataHistoryList(dataHistroryList);
                     mortalityGraph.createChart(title, xAxisTitle, yAxisTitle);
@@ -147,7 +137,7 @@ public class GraphMortalityServlet extends HttpServlet {
 
     protected HashMap<String, String> createDictionary(Locale locale) {
         HashMap<String, String> dictinary = new HashMap<String, String>();
-        ResourceBundle          bundle    = ResourceBundle.getBundle("MessagesBundle", locale);
+        ResourceBundle bundle = ResourceBundle.getBundle("MessagesBundle", locale);
 
         for (Enumeration<String> e = bundle.getKeys(); e.hasMoreElements(); ) {
             String key = e.nextElement();
@@ -176,10 +166,11 @@ public class GraphMortalityServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -189,10 +180,11 @@ public class GraphMortalityServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -202,6 +194,7 @@ public class GraphMortalityServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

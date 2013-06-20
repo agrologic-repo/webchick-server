@@ -2,8 +2,13 @@ package com.agrologic.app.dao;
 
 import java.sql.SQLException;
 
+/**
+ * DAO for objects that will drop tables
+ *
+ * @author Valery Manakhimov
+ */
 public interface DropableDao {
-    static final String CANNOT_DROP_TABLE  = "Cannot Drop Table";
+    static final String CANNOT_DROP_TABLE = "Cannot Drop Table";
 
     /**
      * Check if table exist in database

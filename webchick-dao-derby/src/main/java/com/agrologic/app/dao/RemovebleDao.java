@@ -2,6 +2,12 @@ package com.agrologic.app.dao;
 
 import java.sql.SQLException;
 
+/**
+ * DAO for objects that will remove all data from table
+ *
+ * @author Valery Manakhimov
+ */
+
 public interface RemovebleDao {
     static final String CANNOT_DELETE_DATA_FROM_TABLE = "Cannot Delete Rows From Table";
 
@@ -18,5 +24,5 @@ public interface RemovebleDao {
      *
      * @throws SQLException if failed to execute statement.
      */
-    abstract void removeFromTable() throws SQLException;
+    abstract void deleteFromTable() throws SQLException;
 }

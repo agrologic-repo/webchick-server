@@ -6,27 +6,26 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataFormat;
-import com.agrologic.app.model.FlockDto;
 import com.agrologic.app.graph.daily.Graph;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.Graph24FWI;
 import com.agrologic.app.graph.daily.GraphType;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Locale;
+import com.agrologic.app.model.DataFormat;
+import com.agrologic.app.model.FlockDto;
+import org.apache.log4j.Logger;
+import org.jfree.chart.ChartUtilities;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
-import org.jfree.chart.ChartUtilities;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Locale;
 
 /**
- *
  * @author JanL
  */
 public class Graph24HourFWServlet extends HttpServlet {
@@ -36,10 +35,11 @@ public class Graph24HourFWServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -49,9 +49,9 @@ public class Graph24HourFWServlet extends HttpServlet {
 
         response.setContentType("text/html;charset=UTF-8");
 
-        OutputStream  out     = response.getOutputStream();
-        long          flockId = Long.parseLong(request.getParameter("flockId"));
-        int           growDay;
+        OutputStream out = response.getOutputStream();
+        long flockId = Long.parseLong(request.getParameter("flockId"));
+        int growDay;
         StringBuilder range = new StringBuilder();
 
         try {
@@ -64,9 +64,9 @@ public class Graph24HourFWServlet extends HttpServlet {
         }
 
         try {
-            FlockDao flockDao  = new FlockDaoImpl();
-            FlockDto  flock     = flockDao.getById(flockId);
-            Long      resetTime = new Long(flockDao.getResetTime(flockId, growDay));
+            FlockDao flockDao = new FlockDaoImpl();
+            FlockDto flock = flockDao.getById(flockId);
+            Long resetTime = new Long(flockDao.getResetTime(flockId, growDay));
             if (resetTime != null) {
                 resetTime = DataFormat.convertToTimeFormat(resetTime);
             } else {
@@ -116,10 +116,11 @@ public class Graph24HourFWServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -129,10 +130,11 @@ public class Graph24HourFWServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -142,6 +144,7 @@ public class Graph24HourFWServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

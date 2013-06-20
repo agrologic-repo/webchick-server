@@ -3,6 +3,7 @@ package com.agrologic.app.dao.impl;
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.model.CellinkDto;
 import com.agrologic.app.web.UserRole;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +11,11 @@ import java.util.List;
 /**
  * Title: CellinkDaoImpl - Encapsulate all SQL queries to database that are related to cellink <br>
  * Description: Contains 3 types of SQL methods:<ul>
- *                        <li>regular jdbc statements</li>
- *                        <li>prepared statements<br></li></ul>
+ * <li>regular jdbc statements</li>
+ * <li>prepared statements<br></li></ul>
  * Copyright:   Copyright (c) 2008 <br>
  * Company:     Agro Logic LTD. <br>
+ *
  * @author Valery Manakhimov <br>
  * @version 1.0 <br>
  */
@@ -21,6 +23,7 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
     /**
      * Help to create cellink from result set .
+     *
      * @param rs a result set
      * @return cellink an objects that encapsulates a cellink attributes
      * @throws java.sql.SQLException
@@ -47,6 +50,7 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
     /**
      * Help to create list of cellinks from result set
+     *
      * @param rs a result set
      * @return users a list of CellinkDto objects
      * @throws java.sql.SQLException
@@ -61,8 +65,9 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
     /**
      * Inserts a new cellink row to table cellink
-     * @param cellink          an objects that encapsulates a cellink attributes
-     * @throws SQLException    if failed to insert new cellink to the database
+     *
+     * @param cellink an objects that encapsulates a cellink attributes
+     * @throws SQLException if failed to insert new cellink to the database
      */
     @Override
     public void insert(CellinkDto cellink) throws SQLException {
@@ -93,8 +98,9 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
     /**
      * Updates an existing cellink row in table cellink
-     * @param cellink       an object that encapsulates a cellink attributes
-     * @throws SQLException    if failed to update the user in the database
+     *
+     * @param cellink an object that encapsulates a cellink attributes
+     * @throws SQLException if failed to update the user in the database
      */
     @Override
     public void update(CellinkDto cellink) throws SQLException {
@@ -127,8 +133,9 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
     /**
      * Removes a cellink from the database
-     * @param cellinkId        the id of the cellink to be removed from the database
-     * @throws SQLException    if failed to remove the cellink from the database
+     *
+     * @param cellinkId the id of the cellink to be removed from the database
+     * @throws SQLException if failed to remove the cellink from the database
      */
     @Override
     public void remove(Long cellinkId) throws SQLException {
@@ -190,9 +197,9 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
         if (role == UserRole.ADVANCED) {
             sqlQuery = "select * from (" + sqlQuery + ") as a  where userid in (select userid from users where company = '" + company + "') ";
-        } else if(role == UserRole.ADMINISTRATOR) {
+        } else if (role == UserRole.ADMINISTRATOR) {
             sqlQuery = "select * from (" + sqlQuery + ") as a ";
-        } else if(role == UserRole.REGULAR) {
+        } else if (role == UserRole.REGULAR) {
             sqlQuery = "select * from (" + sqlQuery + ") as a where userid=" + userId;
         }
         sqlQuery = "select count(*) as count from (" + sqlQuery + ") as e";
@@ -220,8 +227,9 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
     /**
      * Inserts a screen data rows to table screen data
-     * @param cellinkId        the id of the cellink
-     * @throws SQLException    if failed to insert new cellink to the database
+     *
+     * @param cellinkId the id of the cellink
+     * @throws SQLException if failed to insert new cellink to the database
      */
     @Override
     public void insertScreenData(Long cellinkId) throws SQLException {
@@ -279,9 +287,10 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
     /**
      * Retrieves a cellink from the database by id
-     * @param id            the id of the cellink to get from the database
+     *
+     * @param id the id of the cellink to get from the database
      * @return CellinkDto         an object that encapsulates a cellink attribue
-     * @throws SQLException    if failed to get the cellink from the database
+     * @throws SQLException if failed to get the cellink from the database
      */
     @Override
     public CellinkDto getById(Long cellinkId) throws SQLException {
@@ -311,10 +320,11 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
     /**
      * Checks a cellink login and returns the cellink from the database
-     * @param Name      a cellink name
-     * @param Password     a cellink owner
+     *
+     * @param Name     a cellink name
+     * @param Password a cellink owner
      * @return CellinkDto         an object object that encapsulates a cellink attributes
-     * @throws SQLException    if failed validation cellink
+     * @throws SQLException if failed validation cellink
      */
     @Override
     public CellinkDto validate(String Name, String Password) throws SQLException {
@@ -345,8 +355,9 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
     /**
      * Returns actual cellink.
+     *
      * @return actual cellink.
-     * @throws SQLException     if failed validation farm
+     * @throws SQLException if failed validation farm
      */
     @Override
     public CellinkDto getActualCellink() throws SQLException {
@@ -375,8 +386,9 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
     /**
      * Retrieves all Farms in no special order
+     *
      * @return celinks     a vector of CellinkDto objects, each object reflects a row in table cellink
-     * @throws SQLException if failed to retreive all users ids from the database
+     * @throws SQLException if failed to retrieve all users ids from the database
      */
     @Override
     public List<CellinkDto> getAll() throws SQLException {
@@ -401,6 +413,7 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
     /**
      * Retrievs all CellinkDto names in no special order by owner
+     *
      * @param userId
      * @return celinks        a vector of CellinkDto objects, each object reflects a row in table cellink
      * @throws SQLException
@@ -569,7 +582,7 @@ public class CellinkDaoImpl extends ConnectorDao implements CellinkDao {
 
         if (role == UserRole.ADVANCED) {
             sqlQuery = "select * from (" + sqlQuery + ") as b  where userid in (select userid from users where company = '" + company + "') limit " + index + ",25 ";
-        } else if(role == UserRole.ADMINISTRATOR) {
+        } else if (role == UserRole.ADMINISTRATOR) {
             sqlQuery = "select * from (" + sqlQuery + ") as b  limit " + index + ",25 ";
         }
 

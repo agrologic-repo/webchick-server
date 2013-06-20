@@ -5,9 +5,9 @@
 --%>
 
 <table>
-<tr>
-    <td valign="top">
-        <img src="./HitCounter" alt="Hit Counter"/>        
-    </td>
-</tr>
+    <tr>
+        <td valign="top">
+            <img src="./HitCounter" alt="Hit Counter"/>
+        </td>
+    </tr>
 </table>

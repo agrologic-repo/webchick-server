@@ -1,4 +1,4 @@
-<jsp:useBean id="task" scope="session" class="com.agrologic.web.TaskBean"/>
+<jsp:useBean id="task" scope="session" class="com.agrologic.app.web.TaskBean"/>
 
 <% task.setRunning(false); %>
 

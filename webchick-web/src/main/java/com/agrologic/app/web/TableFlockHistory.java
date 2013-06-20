@@ -6,7 +6,6 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.impl.DataDaoImpl;
@@ -14,31 +13,26 @@ import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.model.DataDto;
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.table.TableOfHistoryCreator;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.*;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author Administrator
  */
 public class TableFlockHistory extends HttpServlet {
     private static final List<Long> historyDataIdList = new ArrayList<Long>();
-    private static final long       serialVersionUID  = 1L;
-    private static final Logger     logger            = Logger.getLogger(TableFlockHistory.class);
+    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(TableFlockHistory.class);
 
     static {
         historyDataIdList.add(Long.valueOf(800));
@@ -67,10 +61,11 @@ public class TableFlockHistory extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -87,33 +82,33 @@ public class TableFlockHistory extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                long          flockId = Long.parseLong(request.getParameter("flockId"));
-                int           fromDay = -1;
-                int           toDay   = -1;
-                StringBuilder range   = new StringBuilder();
+                long flockId = Long.parseLong(request.getParameter("flockId"));
+                int fromDay = -1;
+                int toDay = -1;
+                StringBuilder range = new StringBuilder();
 
                 try {
                     fromDay = Integer.parseInt(request.getParameter("fromDay"));
-                    toDay   = Integer.parseInt(request.getParameter("toDay"));
+                    toDay = Integer.parseInt(request.getParameter("toDay"));
 
                     if ((fromDay != -1) && (toDay != -1)) {
                         range.append("( From ").append(fromDay).append(" to ").append(toDay).append(" grow day .)");
                     }
                 } catch (Exception ex) {
                     fromDay = -1;
-                    toDay   = -1;
+                    toDay = -1;
                 }
 
                 try {
-                    FlockDao                   flockDao         = new FlockDaoImpl();
-                    Map<Integer, String>        historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    List<Map<Integer, DataDto>> historyDataList  = new ArrayList<Map<Integer, DataDto>>();
-                    List<String>                columnTitles     = new ArrayList<String>();
+                    FlockDao flockDao = new FlockDaoImpl();
+                    Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
+                    List<Map<Integer, DataDto>> historyDataList = new ArrayList<Map<Integer, DataDto>>();
+                    List<String> columnTitles = new ArrayList<String>();
 
                     historyDataList = createHistoryByGrowDay(columnTitles, historyByGrowDay);
                     out.println("<p>");
                     out.println(
-                        "<table class=table-list cellpadding=1 cellspacing=1 border=1 style=behavior:url(tablehl.htc) url(sort.htc);>");
+                            "<table class=table-list cellpadding=1 cellspacing=1 border=1 style=behavior:url(tablehl.htc) url(sort.htc);>");
                     out.println("<tr>");
 
                     for (String title : columnTitles) {
@@ -125,7 +120,7 @@ public class TableFlockHistory extends HttpServlet {
                     Iterator<Integer> growdayIter = historyByGrowDay.keySet().iterator();
 
                     while (growdayIter.hasNext()) {
-                        Integer                         growDay     = growdayIter.next();
+                        Integer growDay = growdayIter.next();
                         Iterator<Map<Integer, DataDto>> historyIter = historyDataList.iterator();
 
                         out.println("<tr>");
@@ -133,7 +128,7 @@ public class TableFlockHistory extends HttpServlet {
                         while (historyIter.hasNext()) {
                             try {
                                 Map<Integer, DataDto> interestData = historyIter.next();
-                                DataDto               data         = interestData.get(growDay);
+                                DataDto data = interestData.get(growDay);
 
                                 if (data.getId() == 800) {
                                     out.println("<td align=center>" + growDay + "</td>");
@@ -162,6 +157,7 @@ public class TableFlockHistory extends HttpServlet {
     /**
      * Return formated data value string .
      * If data type is Time than return time in minutes .
+     *
      * @param data the data object
      * @return formated value string
      */
@@ -182,10 +178,11 @@ public class TableFlockHistory extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -195,10 +192,11 @@ public class TableFlockHistory extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -208,6 +206,7 @@ public class TableFlockHistory extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
@@ -217,17 +216,18 @@ public class TableFlockHistory extends HttpServlet {
 
     /**
      * Create list of history data by grow day .
-     * @param columnTitles  the list with column titles
-     * @param historyByGrowDay  all history by grow day map.
-     * @return  historyDataForTable the list of history data by grow day.
+     *
+     * @param columnTitles     the list with column titles
+     * @param historyByGrowDay all history by grow day map.
+     * @return historyDataForTable the list of history data by grow day.
      * @throws UnsupportedOperationException
      */
     private List<Map<Integer, DataDto>> createHistoryByGrowDay(List<String> columnTitles,
-            Map<Integer, String> historyByGrowDay)
+                                                               Map<Integer, String> historyByGrowDay)
             throws UnsupportedOperationException {
         List<Map<Integer, DataDto>> historyDataForTable = new ArrayList<Map<Integer, DataDto>>();
-        Map<Integer, DataDto>       tempList            = new TreeMap<Integer, DataDto>();
-        DataDao                     dataDao             = new DataDaoImpl();
+        Map<Integer, DataDto> tempList = new TreeMap<Integer, DataDto>();
+        DataDao dataDao = new DataDaoImpl();
 
         for (Long dataId : historyDataIdList) {
             try {

@@ -6,27 +6,22 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.WorkerDao;
 import com.agrologic.app.dao.impl.WorkerDaoImpl;
 import com.agrologic.app.model.WorkerDto;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class AddWorkerFormServlet extends HttpServlet {
@@ -34,10 +29,11 @@ public class AddWorkerFormServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -50,17 +46,17 @@ public class AddWorkerFormServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            Long   cellinkId    = Long.parseLong(request.getParameter("cellinkId"));
-            Long   controllerId = Long.parseLong(request.getParameter("controllerId"));
-            Long   flockId      = Long.parseLong(request.getParameter("flockId"));
-            String name         = request.getParameter("name");
-            String define       = request.getParameter("define");
-            String hourCost     = request.getParameter("hourcost");
-            String phone        = request.getParameter("phone");
+            Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+            Long controllerId = Long.parseLong(request.getParameter("controllerId"));
+            Long flockId = Long.parseLong(request.getParameter("flockId"));
+            String name = request.getParameter("name");
+            String define = request.getParameter("define");
+            String hourCost = request.getParameter("hourcost");
+            String phone = request.getParameter("phone");
 
             try {
                 WorkerDao workerDao = new WorkerDaoImpl();
-                WorkerDto  worker    = new WorkerDto();
+                WorkerDto worker = new WorkerDto();
 
                 worker.setName(name);
                 worker.setDefine(define);
@@ -70,7 +66,7 @@ public class AddWorkerFormServlet extends HttpServlet {
                 workerDao.insert(worker);
                 logger.info("Worker added successfully to the database");
                 request.getRequestDispatcher("./rmctrl-add-worker.jsp?celinkId=" + cellinkId + "&controllerId="
-                                             + controllerId + "&flockId=" + flockId).forward(request, response);
+                        + controllerId + "&flockId=" + flockId).forward(request, response);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             } catch (Exception ex) {
@@ -85,10 +81,11 @@ public class AddWorkerFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -98,10 +95,11 @@ public class AddWorkerFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -111,6 +109,7 @@ public class AddWorkerFormServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

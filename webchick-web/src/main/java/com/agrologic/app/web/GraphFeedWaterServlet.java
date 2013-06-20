@@ -6,43 +6,39 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataDto;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.graph.history.HistoryGraph;
-
+import com.agrologic.app.model.DataDto;
 import org.apache.log4j.Logger;
-
 import org.jfree.chart.ChartUtilities;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.OutputStream;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+//~--- JDK imports ------------------------------------------------------------
 
 public class GraphFeedWaterServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -59,37 +55,37 @@ public class GraphFeedWaterServlet extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                long          flockId = Long.parseLong(request.getParameter("flockId"));
-                int           fromDay = -1;
-                int           toDay   = -1;
-                StringBuilder range   = new StringBuilder();
+                long flockId = Long.parseLong(request.getParameter("flockId"));
+                int fromDay = -1;
+                int toDay = -1;
+                StringBuilder range = new StringBuilder();
 
                 try {
                     fromDay = Integer.parseInt(request.getParameter("fromDay"));
-                    toDay   = Integer.parseInt(request.getParameter("toDay"));
+                    toDay = Integer.parseInt(request.getParameter("toDay"));
 
                     if ((fromDay != -1) && (toDay != -1)) {
                         range.append("( From ").append(fromDay).append(" to ").append(toDay).append(" grow day .)");
                     }
                 } catch (Exception ex) {
                     fromDay = -1;
-                    toDay   = -1;
+                    toDay = -1;
                 }
 
                 try {
-                    FlockDao                    flockDao         = new FlockDaoImpl();
-                    Map<Integer, String>        historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
+                    FlockDao flockDao = new FlockDaoImpl();
+                    Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
                     List<Map<Integer, DataDto>> dataHistroryList = new ArrayList<Map<Integer, DataDto>>();
-                    List<String>                axisTitles       = new ArrayList<String>();
-                    DataDao                     dataDao          = new DataDaoImpl();
-                    DataDto                     data1            = dataDao.getById(Long.valueOf(1301));
+                    List<String> axisTitles = new ArrayList<String>();
+                    DataDao dataDao = new DataDaoImpl();
+                    DataDto data1 = dataDao.getById(Long.valueOf(1301));
 
                     axisTitles.add(data1.getLabel());
                     dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
 
-                    String       title          = "Feed And Water Consumption";
-                    String       xAxisTitle     = "Grow Day[Day]";
-                    String       yAxisTitle     = "Feed[KG]";
+                    String title = "Feed And Water Consumption";
+                    String xAxisTitle = "Grow Day[Day]";
+                    String yAxisTitle = "Feed[KG]";
                     HistoryGraph waterFeedGraph = new HistoryGraph();
 
                     waterFeedGraph.setDataHistoryList(dataHistroryList);
@@ -123,10 +119,11 @@ public class GraphFeedWaterServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -136,10 +133,11 @@ public class GraphFeedWaterServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -149,6 +147,7 @@ public class GraphFeedWaterServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

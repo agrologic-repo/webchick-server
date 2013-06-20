@@ -4,7 +4,10 @@ import com.agrologic.app.model.Data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class DataUtil {
 
@@ -93,7 +96,7 @@ public class DataUtil {
         return data;
     }
 
-    public static Collection<Data> makeDataList(ResultSet rs) throws SQLException {
+    public static List<Data> makeDataList(ResultSet rs) throws SQLException {
         List<Data> datas = new ArrayList<Data>();
 
         while (rs.next()) {
@@ -103,7 +106,7 @@ public class DataUtil {
         return datas;
     }
 
-    public static Collection<Data> makeDataValueList(ResultSet rs) throws SQLException {
+    public static List<Data> makeDataValueList(ResultSet rs) throws SQLException {
         List<Data> datas = new ArrayList<Data>();
 
         while (rs.next()) {
@@ -113,7 +116,7 @@ public class DataUtil {
         return datas;
     }
 
-    public static Collection<Data> getUniqueElements(Collection<Data> dataItems) {
+    public static Set<Data> getUniqueElements(List<Data> dataItems) {
         Set<Data> uniqueDataItems = new HashSet<Data>();
 
         for (Data data : dataItems) {

@@ -6,38 +6,34 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
 import com.agrologic.app.model.ControllerDto;
 import com.agrologic.app.model.UserDto;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class EditControllerFormServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -55,8 +51,8 @@ public class EditControllerFormServlet extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                UserDto user        = (UserDto) request.getSession().getAttribute("user");
-                String  forwardLink = "";
+                UserDto user = (UserDto) request.getSession().getAttribute("user");
+                String forwardLink = "";
 
                 if (user.getRole() == UserRole.ADMINISTRATOR) {
                     forwardLink = "./cellinkinfo.html";
@@ -64,20 +60,20 @@ public class EditControllerFormServlet extends HttpServlet {
                     forwardLink = "./cellink-setting.html";
                 }
 
-                Long   userId                  = Long.parseLong(request.getParameter("userId"));
-                Long   cellinkId               = Long.parseLong(request.getParameter("cellinkId"));
-                Long   controllerId            = Long.parseLong(request.getParameter("controllerId"));
-                String title                   = request.getParameter("Ntitle");
-                String netName                 = request.getParameter("Nnetname");
-                Long   programId               = Long.parseLong(request.getParameter("NprogramId"));
-                String newControllNameList     = request.getParameter("Ncontrollernamelist");
-                String newControllName         = request.getParameter("Ncontrollername");
+                Long userId = Long.parseLong(request.getParameter("userId"));
+                Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+                Long controllerId = Long.parseLong(request.getParameter("controllerId"));
+                String title = request.getParameter("Ntitle");
+                String netName = request.getParameter("Nnetname");
+                Long programId = Long.parseLong(request.getParameter("NprogramId"));
+                String newControllNameList = request.getParameter("Ncontrollernamelist");
+                String newControllName = request.getParameter("Ncontrollername");
                 String newControllNameCheckBox = request.getParameter("newControllerName");
-                String active                  = request.getParameter("Nactive");
+                String active = request.getParameter("Nactive");
 
                 try {
                     ControllerDao controllerDao = new ControllerDaoImpl();
-                    ControllerDto  controller    = controllerDao.getById(controllerId);
+                    ControllerDto controller = controllerDao.getById(controllerId);
 
                     controller.setNetName(netName);
                     controller.setTitle(title);
@@ -99,17 +95,17 @@ public class EditControllerFormServlet extends HttpServlet {
                     controllerDao.update(controller);
                     logger.info("Controller " + controller + " successfully updated !");
                     request.getSession().setAttribute("message",
-                                                      "Controller with ID " + controller.getId()
-                                                      + " successfully updated !");
+                            "Controller with ID " + controller.getId()
+                                    + " successfully updated !");
                     request.getSession().setAttribute("error", false);
                     request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
-                                                 + cellinkId).forward(request, response);
+                            + cellinkId).forward(request, response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating controller !");
                     request.getSession().setAttribute("message", "Error occurs while updating controller  .");
                     request.getSession().setAttribute("error", true);
                     request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
-                                                 + cellinkId).forward(request, response);
+                            + cellinkId).forward(request, response);
                 }
             }
         } finally {
@@ -121,10 +117,11 @@ public class EditControllerFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -134,10 +131,11 @@ public class EditControllerFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -147,6 +145,7 @@ public class EditControllerFormServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

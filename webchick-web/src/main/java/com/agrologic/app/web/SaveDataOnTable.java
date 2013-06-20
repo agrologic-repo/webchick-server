@@ -6,7 +6,6 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.dao.TableDao;
@@ -16,27 +15,22 @@ import com.agrologic.app.dao.impl.TableDaoImpl;
 import com.agrologic.app.model.ProgramDto;
 import com.agrologic.app.model.TableDto;
 import com.agrologic.app.utils.DateLocal;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class SaveDataOnTable extends HttpServlet {
@@ -44,10 +38,11 @@ public class SaveDataOnTable extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -64,49 +59,49 @@ public class SaveDataOnTable extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                Long              programId      = Long.parseLong(request.getParameter("programId"));
-                Long              screenId       = Long.parseLong(request.getParameter("screenId"));
-                Long              tableId        = Long.parseLong(request.getParameter("tableId"));
-                String            showDataMapStr = request.getParameter("showDataMap");
-                String            posDataMapStr  = request.getParameter("posDataMap");
-                String[]          showTablePairs = showDataMapStr.split(";");
-                Map<Long, String> showTableMap   = new HashMap<Long, String>();
+                Long programId = Long.parseLong(request.getParameter("programId"));
+                Long screenId = Long.parseLong(request.getParameter("screenId"));
+                Long tableId = Long.parseLong(request.getParameter("tableId"));
+                String showDataMapStr = request.getParameter("showDataMap");
+                String posDataMapStr = request.getParameter("posDataMap");
+                String[] showTablePairs = showDataMapStr.split(";");
+                Map<Long, String> showTableMap = new HashMap<Long, String>();
 
                 for (String s : showTablePairs) {
-                    StringTokenizer st     = new StringTokenizer(s, ",");
-                    Long            dataId = Long.parseLong(st.nextToken());
-                    String          show   = st.nextToken();
+                    StringTokenizer st = new StringTokenizer(s, ",");
+                    Long dataId = Long.parseLong(st.nextToken());
+                    String show = st.nextToken();
 
                     showTableMap.put(dataId, show);
                 }
 
-                String[]           posDataPairs = posDataMapStr.split(";");
-                Map<Long, Integer> posDataMap   = new HashMap<Long, Integer>();
+                String[] posDataPairs = posDataMapStr.split(";");
+                Map<Long, Integer> posDataMap = new HashMap<Long, Integer>();
 
                 for (String s : posDataPairs) {
-                    StringTokenizer st     = new StringTokenizer(s, ",");
-                    Long            dataId = Long.parseLong(st.nextToken());
-                    Integer         pos    = Integer.parseInt(st.nextToken());
+                    StringTokenizer st = new StringTokenizer(s, ",");
+                    Long dataId = Long.parseLong(st.nextToken());
+                    Integer pos = Integer.parseInt(st.nextToken());
 
                     posDataMap.put(dataId, pos);
                 }
 
                 try {
                     TableDao tableDao = new TableDaoImpl();
-                    TableDto  table    = tableDao.getById(programId, screenId, tableId);
-                    DataDao  dataDao  = new DataDaoImpl();
+                    TableDto table = tableDao.getById(programId, screenId, tableId);
+                    DataDao dataDao = new DataDaoImpl();
 
                     dataDao.saveChanges(programId, screenId, tableId, showTableMap, posDataMap);
 
                     ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto  program    = programDao.getById(programId);
+                    ProgramDto program = programDao.getById(programId);
 
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
                     request.getSession().setAttribute("message", "Changes successfully saved !");
                     request.getSession().setAttribute("error", false);
                     request.getRequestDispatcher("./all-tables.html?screenId=" + table.getScreenId() + "&tableId="
-                                                 + tableId).forward(request, response);
+                            + tableId).forward(request, response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating program !");
                     request.getSession().setAttribute("message", "Error occurs while saving changes !");
@@ -123,10 +118,11 @@ public class SaveDataOnTable extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -136,10 +132,11 @@ public class SaveDataOnTable extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -149,6 +146,7 @@ public class SaveDataOnTable extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

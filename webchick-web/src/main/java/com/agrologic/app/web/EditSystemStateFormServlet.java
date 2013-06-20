@@ -1,66 +1,55 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.SystemStateDao;
-import com.agrologic.app.dao.impl.SystemStateDaoImpl;
-import com.agrologic.app.model.SystemStateDto;
-
+import com.agrologic.app.model.SystemState;
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
 
 /**
- *
  * @author Administrator
  */
 public class EditSystemStateFormServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
         final Logger logger = Logger.getLogger(AddSystemStateFormServlet.class);
-        PrintWriter  out    = response.getWriter();
+        PrintWriter out = response.getWriter();
 
         try {
-            Long            systemstateId   = Long.parseLong(request.getParameter("NsystemstateId"));
-            String          systemstateText = request.getParameter("Ntext");
-            Long            translateLang   = Long.parseLong(request.getParameter("translateLang"));
-            SystemStateDao systemstateDao  = new SystemStateDaoImpl();
+            Long systemstateId = Long.parseLong(request.getParameter("NsystemstateId"));
+            String systemstateText = request.getParameter("Ntext");
+            Long translateLang = Long.parseLong(request.getParameter("translateLang"));
+            SystemStateDao systemStateDao = DbImplDecider.use(DaoType.MYSQL).getDao(SystemStateDao.class);
 
             try {
-                SystemStateDto systemstate = systemstateDao.getById(systemstateId);
+                SystemState systemstate = systemStateDao.getById(systemstateId);
 
                 systemstate.setText(systemstateText);
-                systemstateDao.update(systemstate);
+                systemStateDao.update(systemstate);
                 logger.info("System State " + systemstate.getText() + "  successfully updated");
-                systemstateDao.insertTranslation(systemstate.getId(), translateLang, systemstate.getText());
+                systemStateDao.insertTranslation(systemstate.getId(), translateLang, systemstate.getText());
                 request.getSession().setAttribute("message",
-                                                  "System State <b style=\"color:gray\"> " + systemstate.getText()
-                                                  + " </b> successfully  updated");
+                        "System State <b style=\"color:gray\"> " + systemstate.getText()
+                                + " </b> successfully  updated");
                 request.getSession().setAttribute("error", false);
             } catch (SQLException ex) {
                 logger.error("Error occurs during editiing system state ", ex);
@@ -76,10 +65,11 @@ public class EditSystemStateFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -89,10 +79,11 @@ public class EditSystemStateFormServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -102,6 +93,7 @@ public class EditSystemStateFormServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

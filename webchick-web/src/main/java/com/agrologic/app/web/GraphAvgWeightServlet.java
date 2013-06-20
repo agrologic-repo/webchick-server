@@ -10,29 +10,25 @@ import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataDto;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.graph.history.HistoryGraph;
-
+import com.agrologic.app.model.DataDto;
 import org.apache.log4j.Logger;
-
 import org.jfree.chart.ChartUtilities;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.OutputStream;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+//~--- JDK imports ------------------------------------------------------------
 
 public class GraphAvgWeightServlet extends HttpServlet {
 
@@ -43,10 +39,10 @@ public class GraphAvgWeightServlet extends HttpServlet {
      * <code>GET</code> and
      * <code>POST</code> methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -133,14 +129,15 @@ public class GraphAvgWeightServlet extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP
      * <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -152,10 +149,10 @@ public class GraphAvgWeightServlet extends HttpServlet {
      * Handles the HTTP
      * <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

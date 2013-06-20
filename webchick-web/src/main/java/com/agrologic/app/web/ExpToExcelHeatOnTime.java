@@ -6,42 +6,39 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataDto;
 import com.agrologic.app.excel.DataForExcelCreator;
 import com.agrologic.app.excel.WriteToExcel;
+import com.agrologic.app.model.DataDto;
 import com.agrologic.app.utils.FileDownloadUtil;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+//~--- JDK imports ------------------------------------------------------------
 
 public class ExpToExcelHeatOnTime extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    final Logger              logger           = Logger.getLogger(ExpToExcelHeatOnTime.class);
-    final String              outfile          = "c:/heatersontime.xls";
+    final Logger logger = Logger.getLogger(ExpToExcelHeatOnTime.class);
+    final String outfile = "c:/heatersontime.xls";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -54,12 +51,12 @@ public class ExpToExcelHeatOnTime extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                long                 flockId             = Long.parseLong(request.getParameter("flockId"));
-                FlockDao            flockDao            = new FlockDaoImpl();
-                Map<Integer, String> historyByGrowDay    = flockDao.getAllHistoryByFlock(flockId);
-                List<List<String>>   allHistDataForExcel = new ArrayList<List<String>>();
-                DataDao             dataDao             = new DataDaoImpl();
-                DataDto              data0               = dataDao.getById(Long.valueOf(800), Long.valueOf(1));
+                long flockId = Long.parseLong(request.getParameter("flockId"));
+                FlockDao flockDao = new FlockDaoImpl();
+                Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId);
+                List<List<String>> allHistDataForExcel = new ArrayList<List<String>>();
+                DataDao dataDao = new DataDaoImpl();
+                DataDto data0 = dataDao.getById(Long.valueOf(800), Long.valueOf(1));
 
                 allHistDataForExcel.add(DataForExcelCreator.createDataList(historyByGrowDay.keySet()));
 
@@ -116,10 +113,11 @@ public class ExpToExcelHeatOnTime extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -129,10 +127,11 @@ public class ExpToExcelHeatOnTime extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -142,6 +141,7 @@ public class ExpToExcelHeatOnTime extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

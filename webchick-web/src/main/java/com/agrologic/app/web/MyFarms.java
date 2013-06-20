@@ -6,7 +6,6 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.impl.CellinkDaoImpl;
@@ -14,36 +13,27 @@ import com.agrologic.app.dao.impl.ControllerDaoImpl;
 import com.agrologic.app.model.CellinkDto;
 import com.agrologic.app.model.ControllerDto;
 import com.agrologic.app.model.UserDto;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
 
-/**
- *
- * @author Administrator
- */
 public class MyFarms extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -57,8 +47,8 @@ public class MyFarms extends HttpServlet {
             logger.error("Unauthorized access!");
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
-            UserDto user      = (UserDto) request.getSession().getAttribute("user");
-            String  nameParam = request.getParameter("name");
+            UserDto user = (UserDto) request.getSession().getAttribute("user");
+            String nameParam = request.getParameter("name");
             if (nameParam == null) {
                 nameParam = "";
             }
@@ -86,60 +76,61 @@ public class MyFarms extends HttpServlet {
             }
 
             try {
-                CellinkDao    cellinkDao    = new CellinkDaoImpl();
+                CellinkDao cellinkDao = new CellinkDaoImpl();
                 ControllerDao controllerDao = new ControllerDaoImpl();
-                int            count         = 0;
+                int count = 0;
                 switch (user.getRole()) {
-                default :
-                    logger.info("retreive all cellinks that belongs to  " + user);
-                    List<CellinkDto> cellinks = cellinkDao.getAll(user.getId(), state, typeParam, nameParam);
-                    for (CellinkDto cellink : cellinks) {
-                        List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellink.getId());
-                        cellink.setControllers(controllers);
-                    }
-                    request.getSession().setAttribute("cellinks", cellinks);
-                    count = cellinkDao.count(user.getId(), user.getRole(), null, state, typeParam, nameParam);
-                    setTableParameters(request, index, count);
-                    break;
-
-                case UserRole.REGULAR :
-                    logger.info("retreive all cellinks that belongs to  " + user);
-                    cellinks = cellinkDao.getAll(user.getId(), state, typeParam, nameParam);
-                    for (CellinkDto cellink : cellinks) {
-                        List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellink.getId());
-                        cellink.setControllers(controllers);
-                    }
-                    request.getSession().setAttribute("cellinks", cellinks);
-                    count = cellinkDao.count(user.getId(), user.getRole(), null, state, typeParam, nameParam);
-                    setTableParameters(request, index, count);
-                    break;
-                case UserRole.ADVANCED :
-                    cellinks = cellinkDao.getAll(user.getRole(), user.getCompany(), state, typeParam, nameParam, index);
-                    for (CellinkDto cellink : cellinks) {
-                        List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellink.getId());
-                        cellink.setControllers(controllers);
-                    }
-                    request.getSession().setAttribute("cellinks", cellinks);
-                    count = cellinkDao.count(user.getId(), user.getRole(), user.getCompany(), state, typeParam,
-                                             nameParam);
-                    setTableParameters(request, index, count);
-                    break;
-
-                case UserRole.ADMINISTRATOR :
-                    try {
-                        cellinks = cellinkDao.getAll(user.getRole(), user.getCompany(), state, typeParam, nameParam,
-                                                     index);
-
+                    default:
+                        logger.info("retrieve all cellinks that belongs to  " + user);
+                        List<CellinkDto> cellinks = cellinkDao.getAll(user.getId(), state, typeParam, nameParam);
                         for (CellinkDto cellink : cellinks) {
                             List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellink.getId());
                             cellink.setControllers(controllers);
                         }
                         request.getSession().setAttribute("cellinks", cellinks);
-                    } catch (NumberFormatException ex) {}
+                        count = cellinkDao.count(user.getId(), user.getRole(), null, state, typeParam, nameParam);
+                        setTableParameters(request, index, count);
+                        break;
 
-                    count = cellinkDao.count(user.getId(), user.getRole(), null, state, typeParam, nameParam);
-                    setTableParameters(request, index, count);
-                    break;
+                    case UserRole.REGULAR:
+                        logger.info("retrieve all cellinks that belongs to  " + user);
+                        cellinks = cellinkDao.getAll(user.getId(), state, typeParam, nameParam);
+                        for (CellinkDto cellink : cellinks) {
+                            List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellink.getId());
+                            cellink.setControllers(controllers);
+                        }
+                        request.getSession().setAttribute("cellinks", cellinks);
+                        count = cellinkDao.count(user.getId(), user.getRole(), null, state, typeParam, nameParam);
+                        setTableParameters(request, index, count);
+                        break;
+                    case UserRole.ADVANCED:
+                        cellinks = cellinkDao.getAll(user.getRole(), user.getCompany(), state, typeParam, nameParam, index);
+                        for (CellinkDto cellink : cellinks) {
+                            List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellink.getId());
+                            cellink.setControllers(controllers);
+                        }
+                        request.getSession().setAttribute("cellinks", cellinks);
+                        count = cellinkDao.count(user.getId(), user.getRole(), user.getCompany(), state, typeParam,
+                                nameParam);
+                        setTableParameters(request, index, count);
+                        break;
+
+                    case UserRole.ADMINISTRATOR:
+                        try {
+                            cellinks = cellinkDao.getAll(user.getRole(), user.getCompany(), state, typeParam, nameParam,
+                                    index);
+
+                            for (CellinkDto cellink : cellinks) {
+                                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellink.getId());
+                                cellink.setControllers(controllers);
+                            }
+                            request.getSession().setAttribute("cellinks", cellinks);
+                        } catch (NumberFormatException ex) {
+                        }
+
+                        count = cellinkDao.count(user.getId(), user.getRole(), null, state, typeParam, nameParam);
+                        setTableParameters(request, index, count);
+                        break;
                 }
                 response.sendRedirect("./my-farms.jsp");
             } catch (SQLException ex) {
@@ -154,10 +145,10 @@ public class MyFarms extends HttpServlet {
     private void setTableParameters(HttpServletRequest request, String index, int count) {
         if (index.equals("0")) {
             int from = 0;
-            int to   = ((count - from) > 25
-                        ? 25
-                        : (count - from));
-            int of   = count;
+            int to = ((count - from) > 25
+                    ? 25
+                    : (count - from));
+            int of = count;
 
             if (count > 0) {
                 from += 1;
@@ -168,10 +159,10 @@ public class MyFarms extends HttpServlet {
             request.getSession().setAttribute("of", of);
         } else {
             int from = Integer.parseInt(index);
-            int to   = from + ((count - from) > 25
-                               ? 25
-                               : (count - from));
-            int of   = count;
+            int to = from + ((count - from) > 25
+                    ? 25
+                    : (count - from));
+            int of = count;
 
             request.getSession().setAttribute("from", from + 1);
             request.getSession().setAttribute("to", to);
@@ -183,10 +174,11 @@ public class MyFarms extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -196,10 +188,11 @@ public class MyFarms extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -209,6 +202,7 @@ public class MyFarms extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

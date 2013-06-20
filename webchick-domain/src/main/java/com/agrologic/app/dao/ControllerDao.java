@@ -13,11 +13,10 @@ import java.util.Map;
 
 
 /**
- * Title: ControllerDao - Encapsulate all SQL queries to database that are related to controllers <br> Description:
- * Contains 3 types of SQL methods:<ul> <li>regular jdbc statements</li> <li>prepared statements<br></li></ul>
- * Copyright: Copyright (c) 2008 <br>
+ * DAO for the {@link  com.agrologic.app.model.Controller}. It provides all CRUD operations to work with
+ * {@link com.agrologic.app.model.Controller} objects.
  *
- * @version 1.0 <br>
+ * @author Valery Manakhimov
  */
 public interface ControllerDao {
 
@@ -28,10 +27,6 @@ public interface ControllerDao {
      * @throws SQLException if failed to execute statement.
      */
     void insert(Controller controller) throws SQLException;
-
-    void insert(List<Controller> controllers);
-
-    void insertControllerDataValues(Long controllerId, Iterator<Map.Entry<Long, Data>> dataValues) throws SQLException;
 
     /**
      * Updates an existing controller row in table controller
@@ -46,6 +41,10 @@ public interface ControllerDao {
      * @throws SQLException if failed to remove the controller from the database
      */
     void remove(Long id) throws SQLException;
+
+    void insert(List<Controller> controllers);
+
+    void insertControllerDataValues(Long controllerId, Iterator<Map.Entry<Long, Data>> dataValues) throws SQLException;
 
     /**
      * Remove controller data of specified controller .

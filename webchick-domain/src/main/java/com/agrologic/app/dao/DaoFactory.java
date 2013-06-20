@@ -1,22 +1,15 @@
 package com.agrologic.app.dao;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public abstract class DaoFactory {
-    private DataSource dataSource;
-
     /**
      * Returns a connection to the DB from the connection pool.
      *
      * @return Connection object.
      */
     public abstract Connection getConnection();
-
-//    public Connection openConnection() throws SQLException {
-//        return dataSource.getConnection();
-//    }
 
     /**
      * Releases the connection into the connection pool.

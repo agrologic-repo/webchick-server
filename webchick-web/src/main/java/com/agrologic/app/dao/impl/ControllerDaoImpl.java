@@ -3,22 +3,18 @@
 package com.agrologic.app.dao.impl;
 
 
-
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.model.ControllerDto;
 
-
-
 import java.sql.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Title: ControllerDaoImpl - Encapsulate all SQL queries to database that are related to controllers <br>
  * Description: Contains 3 types of SQL methods:<ul>
- *                        <li>regular jdbc statements</li>
- *                        <li>prepared statements<br></li></ul>
+ * <li>regular jdbc statements</li>
+ * <li>prepared statements<br></li></ul>
  * Copyright:   Copyright (c) 2008 <br>
  * Company:     AgroLogic LTD. <br>
  *
@@ -29,6 +25,7 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     /**
      * Help to create controller from result set
+     *
      * @param rs a result set
      * @return controller and object that encapsulate a cellink attributes
      * @throws java.sql.SQLException
@@ -50,6 +47,7 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     /**
      * Help to create list of controller from result set
+     *
      * @param rs a result set
      * @return controllers a list of ControllerDto objects
      * @throws java.sql.SQLException
@@ -66,17 +64,18 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     /**
      * Inserts a new ControllerDto row to table controller
-     * @param controller    an objects that encapsulates a controller attributes
-     * @throws SQLException    if failed to insert new controller to the database
+     *
+     * @param controller an objects that encapsulates a controller attributes
+     * @throws SQLException if failed to insert new controller to the database
      */
     @Override
     public void insert(ControllerDto controller) throws SQLException {
-        String            sqlQuery = "insert into controllers values (?,?,?,?,?,?,?,?)";
+        String sqlQuery = "insert into controllers values (?,?,?,?,?,?,?,?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setObject(1, null);
             prepstmt.setLong(2, controller.getCellinkId());
@@ -97,18 +96,19 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     /**
      * Updates an existing controller row in table controller
+     *
      * @param newController a object that encapsulates a controller attributes
-     * @throws SQLException    if failed to remove the controller from the database
+     * @throws SQLException if failed to remove the controller from the database
      */
     @Override
     public void update(ControllerDto newController) throws SQLException {
         String sqlQuery =
-            "update controllers set Title=?, NetName=?, ControllerName=?, Area=?, ProgramID=?, Active=? where ControllerID=? and CellinkID=?";
+                "update controllers set Title=?, NetName=?, ControllerName=?, Area=?, ProgramID=?, Active=? where ControllerID=? and CellinkID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setString(1, newController.getTitle());
             prepstmt.setString(2, newController.getNetName());
@@ -129,17 +129,18 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     /**
      * Removes a controller from the database
-     * @param controllerId  a controller id of the controller to be removed from the database
-     * @throws SQLException    if failed to remove the controller from the database
+     *
+     * @param controllerId a controller id of the controller to be removed from the database
+     * @throws SQLException if failed to remove the controller from the database
      */
     @Override
     public void remove(Long controllerId) throws SQLException {
-        String            sqlQuery = "delete from controllers where ControllerID=?";
+        String sqlQuery = "delete from controllers where ControllerID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, controllerId);
             prepstmt.executeUpdate();
@@ -153,18 +154,19 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     /**
      * Retrieves a ControllerDto by controller id
-     * @param cellinkId        a controller id
+     *
+     * @param cellinkId a controller id
      * @return controller   a ControllerDto object
-     * @throws SQLException    if failed to retreive ControllerDto from the database
+     * @throws SQLException if failed to retrieve ControllerDto from the database
      */
     @Override
     public ControllerDto getById(Long controllerId) throws SQLException {
-        String            sqlQuery = "select * from controllers where ControllerID=?";
+        String sqlQuery = "select * from controllers where ControllerID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, controllerId);
 
@@ -187,17 +189,18 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     /**
      * Retrieves all ControllerDto in no special order.
+     *
      * @return controllers  a vector of ControllerDto objects, each object reflects a row in table controllers
-     * @throws SQLException    if failed to retrieve all Controllers from the database
+     * @throws SQLException if failed to retrieve all Controllers from the database
      */
     @Override
     public List<ControllerDto> getAll() throws SQLException {
-        String     sqlQuery = "select * from controllers";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select * from controllers";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = getConnection();
+            con = getConnection();
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
@@ -215,18 +218,19 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     /**
      * Retrieves all ControllerDto by cellink id in no special order
+     *
      * @param cellinkId a cellink id
      * @return controllers a vector of ControllerDto objects, each object reflects a row in table controllers
-     * @throws SQLException    if failed to retrieve all Controllers from the database
+     * @throws SQLException if failed to retrieve all Controllers from the database
      */
     @Override
     public List<ControllerDto> getAllByCellinkId(Long cellinkId) throws SQLException {
-        String            sqlQuery = "select * from controllers where CellinkID=?";
+        String sqlQuery = "select * from controllers where CellinkID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, cellinkId);
 
@@ -245,12 +249,12 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     @Override
     public String getControllerGraph(Long controllerId) throws SQLException {
-        String            sqlQuery = "select Dataset from graph24hours where ControllerID=?";
+        String sqlQuery = "select Dataset from graph24hours where ControllerID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, controllerId);
 
@@ -274,12 +278,12 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
     @Override
     public void sendNewDataValueToController(Long controllerId, Long dataId, Long value) throws SQLException {
         String sqlQuery =
-            "insert into newcontrollerdata (ControllerID,DataID,Value) VALUES (?,?,?) on duplicate key update Value=values(Value)";
+                "insert into newcontrollerdata (ControllerID,DataID,Value) VALUES (?,?,?) on duplicate key update Value=values(Value)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, controllerId);
             prepstmt.setLong(2, dataId);
@@ -298,12 +302,12 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
     @Override
     public void saveNewDataValueOnController(Long controllerId, Long dataId, Long value) throws SQLException {
         String sqlQuery =
-            "insert into controllerdata (ControllerID,DataID,Value) VALUES (?,?,?) on duplicate key update Value=values(Value)";
+                "insert into controllerdata (ControllerID,DataID,Value) VALUES (?,?,?) on duplicate key update Value=values(Value)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, controllerId);
             prepstmt.setLong(2, dataId);
@@ -321,12 +325,12 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     @Override
     public void removeControllerData(Long controllerId) throws SQLException {
-        String            sqlQuery = "delete from controllerdata where ControllerID=?";
+        String sqlQuery = "delete from controllerdata where ControllerID=?";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, controllerId);
             prepstmt.executeUpdate();
@@ -342,15 +346,15 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     @Override
     public List<String> getControllerNames() throws SQLException {
-        String     sqlQuery = "select distinct controllername from controllers";
-        Statement  stmt     = null;
-        Connection con      = null;
+        String sqlQuery = "select distinct controllername from controllers";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = getConnection();
+            con = getConnection();
             stmt = con.createStatement();
 
-            ResultSet    rs        = stmt.executeQuery(sqlQuery);
+            ResultSet rs = stmt.executeQuery(sqlQuery);
             List<String> companies = new ArrayList<String>();
 
             while (rs.next()) {
@@ -371,13 +375,13 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
     @Override
     public boolean isDataReady(Long userId) throws SQLException {
         String sqlQuery = "select dataid from controllerdata " + "where controllerid in "
-                          + "(select controllerid from controllers " + "where cellinkid in "
-                          + "(select cellinkid from cellinks where userid=? ))";
+                + "(select controllerid from controllers " + "where cellinkid in "
+                + "(select cellinkid from cellinks where userid=? ))";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, userId);
 
@@ -400,12 +404,12 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     @Override
     public boolean isControllerDataReady(Long controllerId) throws SQLException {
-        String            sqlQuery = "select dataid from controllerdata " + "where controllerid=? and dataid=0";
+        String sqlQuery = "select dataid from controllerdata " + "where controllerid=? and dataid=0";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, controllerId);
 
@@ -428,18 +432,19 @@ public class ControllerDaoImpl extends ConnectorDao implements ControllerDao {
 
     /**
      * Retrieves all active controllers by cellink id in no special order
-     * @param cellinkId        a cellink id
+     *
+     * @param cellinkId a cellink id
      * @return controllers  a vector of ControllerDto objects, each object reflects a row in table controllers
-     * @throws SQLException    if failed to retrieve all Controllers from the database
+     * @throws SQLException if failed to retrieve all Controllers from the database
      */
     @Override
     public List<ControllerDto> getAllActiveByCellinkId(Long cellinkId) throws SQLException {
-        String            sqlQuery = "select * from controllers where CellinkID=? and active=1";
+        String sqlQuery = "select * from controllers where CellinkID=? and active=1";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = getConnection();
+            con = getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setLong(1, cellinkId);
 

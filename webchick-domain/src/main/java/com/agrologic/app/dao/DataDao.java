@@ -2,23 +2,27 @@ package com.agrologic.app.dao;
 
 import com.agrologic.app.model.Data;
 
-
 import java.sql.SQLException;
-
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
+ * DAO for the {@link  com.agrologic.app.model.Data}. It provides all CRUD operations to work with
+ * {@link com.agrologic.app.model.Data} objects.
  *
- * @author JanL
+ * @author Valery Manakhimov
  */
 public interface DataDao {
 
     public static final String CANNOT_RETRIEVE_DATA_FROM_DATABASE = "Cannot Retrieve Data From DataBase";
     public static final String TRANSACTION_ROLLED_BACK = "Transaction is being rolled back";
 
+    /**
+     * Insert a new alarm row to table alarms .
+     *
+     * @param data an objects that encapsulates an data attributes .
+     * @throws SQLException if failed to insert new data to the database .
+     */
     void insert(Data data) throws SQLException;
 
     /**
@@ -33,8 +37,8 @@ public interface DataDao {
      * Insert special data to special data labels table
      *
      * @param specialList the list of Data objects with special data labels
-     * @param programId the program id
-     * @param langId the language id
+     * @param programId   the program id
+     * @param langId      the language id
      */
     void insertSpecialList(List<Data> specialList, Long programId, Long langId) throws SQLException;
 
@@ -93,17 +97,19 @@ public interface DataDao {
 
     /**
      * Return collection of data objects .
+     *
      * @param programId the program id
      * @param screenId  the screen id
      * @param tableId   the table id
      * @param langId    the language id
-     * @return          the collection of data objects
+     * @return the collection of data objects
      * @throws SQLException if failed to retrieve data from the database
      */
     Collection<Data> getOnScreenDataList(Long programId, Long screenId, Long tableId, Long langId) throws SQLException;
 
     /**
      * Uncheck unused data on screens
+     *
      * @param programId the program id
      * @throws SQLException if failed to execute sql command
      */
@@ -140,7 +146,7 @@ public interface DataDao {
      * Retrieves special data from special data table.
      *
      * @param programId the program id
-     * @param langId the language id
+     * @param langId    the language id
      * @return a list of DataDto objects, each object reflects a row in table spacial data table
      * @throws SQLException if failed to retrieve data from the database
      */

@@ -7,6 +7,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * DAO for the {@link  com.agrologic.app.model.ProgramAlarm}. It provides all CRUD operations to work with
+ * {@link com.agrologic.app.model.ProgramAlarm} objects.
+ *
+ * @author Valery Manakhimov
+ */
 public interface ProgramAlarmDao {
     /**
      * Insert program alarm
@@ -39,12 +45,12 @@ public interface ProgramAlarmDao {
      *
      * @param programId the program id
      * @param alarmMap  the map with program alarm id and selected bit numbers .
-     * @throws SQLException
+     * @throws SQLException failed to assign alarms
      */
     public void assignAlarmsToGivenProgram(Long programId, Map<Long, Map<Integer, String>> alarmMap) throws SQLException;
 
     /**
-     * Insert program alarms collection
+     * Insert program alarm list translation to program alarm by language table. This is a dictionary of alarm names.
      *
      * @param programAlarms the list of program alarms
      * @throws SQLException if failed to insert to the program alarms collection
@@ -66,16 +72,16 @@ public interface ProgramAlarmDao {
      * @param programId the program id
      * @param langId    the language id
      * @return Collection of ProgramAlarm object , each object reflects a row in table program alarms
-     * @throws SQLException
+     * @throws SQLException if failed to retrieve all program alarm from the database
      */
     public List<ProgramAlarm> getAllProgramAlarms(Long programId, Long langId) throws SQLException;
 
     /**
-     * Retrieves selected program alarm by program id and language id.
+     * Retrieves selected program alarm by program id and text
      *
-     * @param programId
+     * @param programId the program id
      * @param text
-     * @return
+     * @return the list of program alarms
      * @throws SQLException if failed to retrieve all program alarm from the database
      */
     public List<ProgramAlarm> getAllProgramAlarms(Long programId, String[] text) throws SQLException;

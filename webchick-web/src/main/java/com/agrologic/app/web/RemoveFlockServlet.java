@@ -6,41 +6,39 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.model.FlockDto;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Title: RemoveFlockServlet.java <br>
  * Decription: <br>
  * Copyright:   Copyright 2010 <br>
  * Company:     Agro Logic Ltd.<br>
- * @author      Valery Manakhimov <br>
- * @version     0.1.1.1 <br>
+ *
+ * @author Valery Manakhimov <br>
+ * @version 0.1.1.1 <br>
  */
 public class RemoveFlockServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -50,21 +48,21 @@ public class RemoveFlockServlet extends HttpServlet {
 
         response.setContentType("text/html;charset=UTF-8");
 
-        PrintWriter out       = response.getWriter();
-        Long        userId    = Long.parseLong(request.getParameter("userId"));
-        Long        cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-        Long        flockId   = Long.parseLong(request.getParameter("flockId"));
+        PrintWriter out = response.getWriter();
+        Long userId = Long.parseLong(request.getParameter("userId"));
+        Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+        Long flockId = Long.parseLong(request.getParameter("flockId"));
 
         try {
             FlockDao flockDao = new FlockDaoImpl();
-            FlockDto  flock    = flockDao.getById(flockId);
+            FlockDto flock = flockDao.getById(flockId);
 
             flockDao.remove(flockId);
             logger.info("Flock  " + flock + "successfully removed !");
             request.getSession().setAttribute("message", "Flock successfully  removed !");
             request.getSession().setAttribute("error", false);
             request.getRequestDispatcher("./flocks.html?userId=" + userId + "&cellinkId=" + cellinkId).forward(request,
-                                         response);
+                    response);
         } catch (SQLException ex) {
 
             // error page
@@ -72,7 +70,7 @@ public class RemoveFlockServlet extends HttpServlet {
             request.getSession().setAttribute("message", "Error occurs during removing flock !");
             request.getSession().setAttribute("error", true);
             request.getRequestDispatcher("./flocks.html?userId=" + userId + "&cellinkId=" + cellinkId).forward(request,
-                                         response);
+                    response);
         } finally {
             out.close();
         }
@@ -82,10 +80,11 @@ public class RemoveFlockServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -95,10 +94,11 @@ public class RemoveFlockServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -108,6 +108,7 @@ public class RemoveFlockServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

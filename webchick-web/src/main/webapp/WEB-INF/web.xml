@@ -386,10 +386,6 @@
         <servlet-class>com.agrologic.app.web.DownloadServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>RCProgramRelays</servlet-name>
-        <servlet-class>com.agrologic.app.web.RCProgramRelays</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>RCActionSetServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.RCActionSetServlet</servlet-class>
     </servlet>
@@ -1132,10 +1128,6 @@
     <servlet-mapping>
         <servlet-name>DisplayChart</servlet-name>
         <url-pattern>/servlet/DisplayChart</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>RCProgramRelays</servlet-name>
-        <url-pattern>/RCProgramRelays</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>RCActionSetServlet</servlet-name>

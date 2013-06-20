@@ -6,30 +6,30 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.impl.ConnectorDao;
 import com.agrologic.app.utils.FileDownloadUtil;
-import java.io.*;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.lang.SystemUtils;
+import org.apache.log4j.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.log4j.Logger;
+import java.io.*;
 
 /**
- *
  * @author Administrator
  */
-public class DatabaseServlet extends HttpServlet {
-    private final static String DATABASE_DRIVER   = "database.driver";
+public class DupDatabaseServlet extends HttpServlet {
+    private final static String DATABASE_DRIVER = "database.driver";
     private final static String DATABASE_PASSWORD = "database.password";
-    private final static String DATABASE_URL      = "database.url";
-    private final static String DATABASE_USER     = "database.user";
-    private static final long   serialVersionUID  = 1L;
-    private final Logger        logger            = Logger.getLogger(DatabaseServlet.class);
-    private ConnectorDao        conDao;
-    private Process             process;
+    private final static String DATABASE_URL = "database.url";
+    private final static String DATABASE_USER = "database.user";
+    private static final long serialVersionUID = 1L;
+    private final Logger logger = Logger.getLogger(DupDatabaseServlet.class);
+    private ConnectorDao conDao;
+    private Process process;
 
     @Override
     public void init() throws ServletException {
@@ -39,10 +39,11 @@ public class DatabaseServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -50,10 +51,9 @@ public class DatabaseServlet extends HttpServlet {
 
         try {
             String outfile = makeBackupDB();
-
             FileDownloadUtil.doDownload(response, outfile, "sql");
         } catch (Exception e) {
-            logger.error("Unknown error. ", e);
+            logger.error("Unknown error during downloading dump file. ", e);
         } finally {
             response.getOutputStream().close();
         }
@@ -63,10 +63,11 @@ public class DatabaseServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -76,10 +77,11 @@ public class DatabaseServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -89,6 +91,7 @@ public class DatabaseServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
@@ -97,32 +100,39 @@ public class DatabaseServlet extends HttpServlet {
     }    // </editor-fold>
 
     private String makeBackupDB() {
-        BasicDataSource bds      = (BasicDataSource) conDao.getDataSource();
-        String          userName = bds.getUsername();
-        String          password = bds.getPassword();
-        String          dbName   = bds.getUrl();
-        int             dbIndex  = dbName.lastIndexOf("/");
+        BasicDataSource bds = (BasicDataSource) conDao.getDataSource();
+        String userName = bds.getUsername();
+        String password = bds.getPassword();
+        String dbName = bds.getUrl();
+        int dbIndex = dbName.lastIndexOf("/");
 
         dbName = dbName.substring(dbIndex + 1);
 
-        String mysqlPath = getMySQLPath() + "\\mysqldump";
-
-        logger.info("Openning mysql from " + mysqlPath);
-
-        File backupFile = new File("C:\\database.sql");
+        String mysqlPath = System.getenv("MYSQL_HOME");
+        File backupFile;
+        if (mysqlPath == null || mysqlPath.equals("")) {
+            mysqlPath = getMySQLPath() + "\\mysqldump";
+            logger.info("Openning mysql from " + mysqlPath);
+            backupFile = new File("C:\\database.sql");
+        } else {
+            mysqlPath = System.getenv("MYSQL_HOME") + "\\bin\\mysqldump";
+            logger.info("Opening mysql from " + mysqlPath);
+            String tomcatTempDir = SystemUtils.getJavaIoTmpDir().getAbsolutePath();
+            backupFile = new File(tomcatTempDir + File.pathSeparator + "database.sql");
+        }
 
         try {
-            logger.info("Creating database backup!");
+            logger.info("Creating database dump!");
             logger.info("Please wait ...");
 
-            String[]   executeCmd = new String[] { mysqlPath, "-B", "-u" + userName, "-p" + password, dbName };
+            String[] executeCmd = new String[]{mysqlPath, "-B", "-u" + userName, "-p" + password, dbName};
             FileWriter fileWriter = new FileWriter(backupFile);
 
             process = Runtime.getRuntime().exec(executeCmd);
 
             InputStreamReader inStreamReader = new InputStreamReader(process.getInputStream(), "utf-8");
-            BufferedReader    bufferReader   = new BufferedReader(inStreamReader);
-            String            line;
+            BufferedReader bufferReader = new BufferedReader(inStreamReader);
+            String line;
 
             while ((line = bufferReader.readLine()) != null) {
                 fileWriter.write(line + "\n");
@@ -144,18 +154,20 @@ public class DatabaseServlet extends HttpServlet {
             bufferReader.close();
             logger.info("Backup file created successfully");
         } catch (InterruptedException ex) {
-            logger.error("Failed create backup " + dbName, ex);
+            logger.error("Failed create dump sql file " + dbName, ex);
         } catch (IOException ex) {
-            logger.error("Failed create backup " + dbName, ex);
+            logger.error("Failed create dump sql file " + dbName, ex);
+        } catch (Exception ex) {
+            logger.error("Unknown error during creating dump sql file " + dbName, ex);
         }
 
         return backupFile.getAbsolutePath();
     }
 
     private String getPath() {
-        String        drive = System.getProperty("user.dir");
-        String[]      pp    = drive.split("\\\\");
-        StringBuilder sb    = new StringBuilder();
+        String drive = System.getProperty("user.dir");
+        String[] pp = drive.split("\\\\");
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < 2; i++) {
             sb.append(pp[i]).append("\\");
@@ -166,7 +178,7 @@ public class DatabaseServlet extends HttpServlet {
 
     private String getMySQLPath() {
         String mySqlPath = getPath();
-        String version   = conDao.getMySQLVersion();
+        String version = conDao.getMySQLVersion();
 
         mySqlPath = mySqlPath + "MySql\\MySql Server " + version + "\\bin";
 

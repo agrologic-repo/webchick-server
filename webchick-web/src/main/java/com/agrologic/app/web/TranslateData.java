@@ -6,23 +6,20 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.model.DataDto;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author Administrator
  */
 public class TranslateData extends HttpServlet {
@@ -33,10 +30,10 @@ public class TranslateData extends HttpServlet {
      * <code>GET</code> and
      * <code>POST</code> methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -47,7 +44,7 @@ public class TranslateData extends HttpServlet {
         try {
             Long langId = Long.parseLong(request.getParameter("langId"));
             Long dataId = Long.parseLong(request.getParameter("dataId"));
-            long type   = dataId;           // type of value (like 4096)
+            long type = dataId;           // type of value (like 4096)
 
             if ((type & 0xC000) != 0xC000) {
                 dataId = (type & 0xFFF);    // remove type to get an index 4096&0xFFF -> 0
@@ -55,8 +52,8 @@ public class TranslateData extends HttpServlet {
                 dataId = (type & 0xFFFF);
             }
 
-            DataDao dataDao   = new DataDaoImpl();
-            DataDto  translate = dataDao.getById(dataId, langId);
+            DataDao dataDao = new DataDaoImpl();
+            DataDto translate = dataDao.getById(dataId, langId);
 
             response.setContentType("text/xml");
             response.setHeader("Cache-Control", "no-cache");
@@ -87,10 +84,10 @@ public class TranslateData extends HttpServlet {
      * Handles the HTTP
      * <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -102,10 +99,10 @@ public class TranslateData extends HttpServlet {
      * Handles the HTTP
      * <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

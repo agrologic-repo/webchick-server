@@ -10,31 +10,26 @@ import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataDto;
-import com.agrologic.app.model.FlockDto;
 import com.agrologic.app.excel.DataForExcelCreator;
 import com.agrologic.app.excel.WriteToExcel;
+import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.FlockDto;
 import com.agrologic.app.utils.FileDownloadUtil;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-
-import java.sql.SQLException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author Administrator
  */
 public class ExpHistoryToExcel extends HttpServlet {
@@ -74,10 +69,10 @@ public class ExpHistoryToExcel extends HttpServlet {
      * <code>GET</code> and
      * <code>POST</code> methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -133,14 +128,15 @@ public class ExpHistoryToExcel extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP
      * <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -152,10 +148,10 @@ public class ExpHistoryToExcel extends HttpServlet {
      * Handles the HTTP
      * <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -174,7 +170,7 @@ public class ExpHistoryToExcel extends HttpServlet {
     }    // </editor-fold>
 
     private List<List<String>> createHistoryDataForExcel(List<String> columnTitles,
-            Map<Integer, String> historyByGrowDay)
+                                                         Map<Integer, String> historyByGrowDay)
             throws UnsupportedOperationException {
         long langId = 1;
         List<String> tempList = new ArrayList<String>();

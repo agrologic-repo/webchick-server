@@ -5,8 +5,14 @@ import com.agrologic.app.model.Cellink;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-
 import java.util.Collection;
+
+/**
+ * DAO for the {@link com.agrologic.app.model.Cellink}. It provides all CRUD operations to work with
+ * {@link com.agrologic.app.model.Alarm} objects.
+ *
+ * @author Valery Manakhimov
+ */
 
 public interface CellinkDao {
 
@@ -19,13 +25,7 @@ public interface CellinkDao {
     void insert(Cellink cellink) throws SQLException;
 
     /**
-     *
-     * @param cellinks
-     */
-    void insert(Collection<Cellink> cellinks);
-
-    /**
-     * Update cellink .
+     * Update cellink data .
      *
      * @param cellink the cellink with new data.
      * @throws SQLException if failed to execute statement.
@@ -41,6 +41,12 @@ public interface CellinkDao {
     void remove(Long id) throws SQLException;
 
     /**
+     * @param cellinks
+     */
+    void insert(Collection<Cellink> cellinks);
+
+
+    /**
      * Retrieve cellink by specified id.
      *
      * @param id the cellink id.
@@ -52,7 +58,7 @@ public interface CellinkDao {
     /**
      * Validate cellink by name and password.
      *
-     * @param name the cellink name
+     * @param name     the cellink name
      * @param password the cellink password
      * @return the cellink if name and password valid, otherwise null.
      * @throws SQLException if failed to execute statement.

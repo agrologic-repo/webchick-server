@@ -7,23 +7,17 @@ package com.agrologic.app.web;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.*;
 
 public class HitCounter extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private int               role             = UserRole.ADMINISTRATOR;
+    private int role = UserRole.ADMINISTRATOR;
 
     public HitCounter() {
         super();
@@ -68,7 +62,7 @@ public class HitCounter extends HttpServlet {
             // Update the hits counter table by incrementing the
             // counter every time a user hits our page.
             //
-            String            sql  = "UPDATE hits SET counter = counter + 1";
+            String sql = "UPDATE hits SET counter = counter + 1";
             PreparedStatement stmt = connection.prepareStatement(sql);
 
             stmt.executeUpdate();
@@ -81,16 +75,16 @@ public class HitCounter extends HttpServlet {
 
     private void getHitCounterImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Connection connection = getConnection();
-        String     hits       = "";
+        String hits = "";
 
         try {
 
             //
             // Get the current hits counter from database.
             //
-            String            sql  = "SELECT counter FROM hits";
+            String sql = "SELECT counter FROM hits";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            ResultSet         rs   = stmt.executeQuery();
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 hits = rs.getString("counter");
@@ -147,7 +141,7 @@ public class HitCounter extends HttpServlet {
 
     private void closeConnection(Connection connection) {
         try {
-            if ((connection != null) &&!connection.isClosed()) {
+            if ((connection != null) && !connection.isClosed()) {
                 connection.close();
             }
         } catch (SQLException e) {

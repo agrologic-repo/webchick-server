@@ -110,7 +110,7 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
         btnHouse.setText("<html>" + controller.getTitle() + "</html>");
 //        setUpdatedTime(btnHouse);
         btnHouse.setSize(btnHouse.getText().length() * 2, btnHouse.getHeight());
-        btnHouse.setToolTipText("<html>" + controller.getProgramId() + "</html>");
+        btnHouse.setToolTipText("<html>" + controller.getProgram().getName() + "</html>");
         dataPanel = new DataPanel(dataControllerList, controller, dbManager.getDatabaseGeneralService());
         dataPanel.setProgramAlarms(controller.getProgram().getProgramAlarms());
         dataPanel.setProgramRelays(controller.getProgram().getProgramRelays());

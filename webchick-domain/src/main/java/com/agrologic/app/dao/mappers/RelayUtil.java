@@ -5,7 +5,8 @@ import com.agrologic.app.model.Relay;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RelayUtil {
 
@@ -73,15 +74,15 @@ public class RelayUtil {
         return programRelays;
     }
 
-    public static Collection<Relay> getUniqueElements(Collection<Relay> relayItems) {
-        Set<Relay> uniqueAlarmItems = new HashSet<Relay>();
-
-        for (Relay relay : relayItems) {
-            uniqueAlarmItems.add(relay);
-        }
-
-        return uniqueAlarmItems;
-    }
+//    public static Util<Relay> getUniqueElements(Util<Relay> relayItems) {
+//        Set<Relay> uniqueAlarmItems = new HashSet<Relay>();
+//
+//        for (Relay relay : relayItems) {
+//            uniqueAlarmItems.add(relay);
+//        }
+//
+//        return uniqueAlarmItems;
+//    }
 }
 
 

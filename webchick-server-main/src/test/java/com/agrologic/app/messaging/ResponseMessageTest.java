@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.agrologic.app.messaging;
 
 import org.junit.Ignore;
@@ -9,9 +6,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Administrator
- */
 public class ResponseMessageTest {
     private static final String SINGLE_DATA_RESPONSE = "\u00181\u00164096 257 177\u0004";
     private static final String GRAPH_DATA_RESPONSE = "\u00182\u0016229 253 256 257 245 255 258 250 261 267 266 266 267 263 261 261 260 256 253 250 " +
@@ -34,12 +28,12 @@ public class ResponseMessageTest {
     @Test
     public void testConstructorWithSingleDataResponse() {
         responseMessage = new ResponseMessage(SINGLE_DATA_RESPONSE.getBytes());
-        String expected = SINGLE_DATA_RESPONSE.substring(3,SINGLE_DATA_RESPONSE.length()-4);
+        String expected = SINGLE_DATA_RESPONSE.substring(3, SINGLE_DATA_RESPONSE.length() - 4);
         assertEquals(expected, responseMessage.toString());
     }
 
     @Test
-    public void responseMessageBodyDoesNotIncludeSpecialCharactersOfGraph() {
+    public void graphResponseMessageBodyDoesNotIncludeSpecialCharacters() {
         responseMessage = new ResponseMessage(GRAPH_DATA_RESPONSE.getBytes());
         //get only data without system characters
         String expected = GRAPH_DATA_RESPONSE.substring(3, GRAPH_DATA_RESPONSE.length() - 3);

@@ -37,9 +37,6 @@ public class MySqlDaoFactory extends DaoFactory {
         }
     }
 
-    private MySqlDaoFactory() {
-    }
-
     public static MySqlDaoFactory instance() {
         if (instance == null) {
             synchronized (MySqlDaoFactory.class) {
@@ -126,16 +123,6 @@ public class MySqlDaoFactory extends DaoFactory {
 
         return false;
     }
-
-//    @Override
-//    public ControllerDao getControllerDao() {
-//        return new ControllerDaoImpl(this);
-//    }
-
-//    @Override
-//    public DataDao getDataDao() {
-//        return new DataDaoImpl(this);
-//    }
 
     /**
      * The ConnectionPool class is an inner static class implements which is a Singleton class that manages the

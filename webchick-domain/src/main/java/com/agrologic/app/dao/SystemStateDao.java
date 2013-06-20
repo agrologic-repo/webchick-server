@@ -1,9 +1,16 @@
 package com.agrologic.app.dao;
 
-import com.agrologic.app.model.ProgramSystemState;
 import com.agrologic.app.model.SystemState;
+
 import java.sql.SQLException;
 import java.util.Collection;
+
+/**
+ * DAO for the {@link  com.agrologic.app.model.SystemState}. It provides all CRUD operations to work with
+ * {@link com.agrologic.app.model.SystemState} objects.
+ *
+ * @author Valery Manakhimov
+ */
 
 public interface SystemStateDao {
 
@@ -14,41 +21,6 @@ public interface SystemStateDao {
      * @throws SQLException if failed to insert new systemState to the database .
      */
     void insert(SystemState systemState) throws SQLException;
-
-    /**
-     * Insert systemState names
-     *
-     * @param systemStateList the systemState list
-     * @throws SQLException if failed to insert to the systemState table
-     */
-    void insert(Collection<SystemState> systemStateList) throws SQLException;
-
-    /**
-     * Insert systemState translation row to systemState by language table. This is a dictionary of systemState types .
-     *
-     * @param screenId the screen id
-     * @param langId the id of language
-     * @param translation the translation text
-     * @throws SQLException if failed to insert to the systemState by language table
-     */
-    void insertTranslation(Long screenId, Long langId, String translation) throws SQLException;
-
-    /**
-     * Insert systemState list translation to systemState by language table.
-     * This is a dictionary of systemState types .
-     *
-     * @param systemStateList the systemState list
-     * @throws SQLException if failed to insert to the systemState by language table
-     */
-    void insertTranslation(Collection<SystemState> systemStateList) throws SQLException;
-
-    /**
-     * Insert program system states rows
-     *
-     * @param programSystemStates the list of program system states
-     * @throws SQLException if failed to insert the program system state list to the database
-     */
-    void insertProgramSystemState(Collection<ProgramSystemState> programSystemStates) throws SQLException;
 
     /**
      * Updates an existing systemState row in table systemState
@@ -65,6 +37,33 @@ public interface SystemStateDao {
      * @throws SQLException if failed to remove the systemState from the database
      */
     void remove(Long id) throws SQLException;
+
+    /**
+     * Insert the list of system state names
+     *
+     * @param systemStateList the systemState list
+     * @throws SQLException if failed to insert to the system state names table
+     */
+    void insert(Collection<SystemState> systemStateList) throws SQLException;
+
+    /**
+     * Insert systemState translation row to system state by language table. This is a dictionary of systemState names.
+     *
+     * @param screenId    the screen id
+     * @param langId      the id of language
+     * @param translation the translation text
+     * @throws SQLException if failed to insert to the systemState by language table
+     */
+    void insertTranslation(Long screenId, Long langId, String translation) throws SQLException;
+
+    /**
+     * Insert the list of system sate with translation to systemState by language table.
+     * This is a dictionary of systemState types .
+     *
+     * @param systemStateList the systemState list with translation to all languages that exist in system
+     * @throws SQLException if failed to insert to the systemState by language table
+     */
+    void insertTranslation(Collection<SystemState> systemStateList) throws SQLException;
 
     /**
      * Get the systemState by id
@@ -98,32 +97,4 @@ public interface SystemStateDao {
      * @throws SQLException if failed to retrieve all system state from the database
      */
     Collection<SystemState> getAllWithTranslation() throws SQLException;
-
-    /**
-     * Retrieves selected program system states by program id that was selected .
-     *
-     * @param programId the program id
-     * @return Collection of ProgramSystemState object , each object reflects a row in table programsysstates
-     * @throws SQLException if failed to retrieve all program system state from the database
-     */
-    Collection<ProgramSystemState> getAllProgramSystemStates(Long programId) throws SQLException;
-
-    /**
-     * Retrieves program alarms by program id that was selected .
-     *
-     * @param programId the program id
-     * @return programAlarms a Collection of ProgramAlarm objects, each object reflects a row of program alarm
-     * @throws SQLException if failed to retrieve all program alarm from the database
-     */
-    Collection<ProgramSystemState> getSelectedProgramSystemStates(Long programId) throws SQLException;
-
-    /**
-     * Retrieves selected program systemstate by program id and language id.
-     *
-     * @param langId the language id
-     * @param programId the program id
-     * @return Collection of ProgramSystemState object , each object reflects a row in table programsysstates
-     * @throws SQLException if failed to retrieve all program system states from the database
-     */
-    Collection<ProgramSystemState> getAllProgramSystemStates(Long programId, Long langId) throws SQLException;
 }

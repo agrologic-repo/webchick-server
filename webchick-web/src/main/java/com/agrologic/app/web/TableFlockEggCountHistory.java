@@ -11,18 +11,18 @@ import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.model.DataDto;
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.table.TableOfHistoryCreator;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.*;
+import org.apache.log4j.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
- *
  * @author Administrator
  */
 public class TableFlockEggCountHistory extends HttpServlet {
@@ -36,10 +36,10 @@ public class TableFlockEggCountHistory extends HttpServlet {
      * <code>GET</code> and
      * <code>POST</code> methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -124,13 +124,13 @@ public class TableFlockEggCountHistory extends HttpServlet {
     /**
      * Create list of history data by grow day .
      *
-     * @param columnTitles the list with column titles
+     * @param columnTitles     the list with column titles
      * @param historyByGrowDay all history by grow day map.
      * @return historyDataForTable the list of history data by grow day.
      * @throws UnsupportedOperationException
      */
     private static List<Map<Integer, DataDto>> createHistoryByGrowDay(List<String> columnTitles,
-            Map<Integer, String> historyByGrowDay)
+                                                                      Map<Integer, String> historyByGrowDay)
             throws UnsupportedOperationException {
         List<Map<Integer, DataDto>> historyDataForTable = new ArrayList<Map<Integer, DataDto>>();
         Map<Integer, DataDto> tempList = new TreeMap<Integer, DataDto>();
@@ -169,7 +169,7 @@ public class TableFlockEggCountHistory extends HttpServlet {
     }
 
     /**
-     * Return formated data value string . 
+     * Return formated data value string .
      * If data type is Time than return time in minutes .
      *
      * @param data the data object
@@ -189,14 +189,15 @@ public class TableFlockEggCountHistory extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP
      * <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -208,10 +209,10 @@ public class TableFlockEggCountHistory extends HttpServlet {
      * Handles the HTTP
      * <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

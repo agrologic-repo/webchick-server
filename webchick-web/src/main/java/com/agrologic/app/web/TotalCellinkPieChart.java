@@ -6,44 +6,38 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.impl.CellinkDaoImpl;
-
 import org.apache.log4j.Logger;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import java.awt.Font;
-
-import java.io.IOException;
-import java.io.OutputStream;
-
-import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class TotalCellinkPieChart extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -62,12 +56,12 @@ public class TotalCellinkPieChart extends HttpServlet {
             } else {
                 try {
                     DefaultPieDataset dataset = new DefaultPieDataset();
-                    JFreeChart        jfc;
-                    CellinkDao       cellinkDao = new CellinkDaoImpl();
-                    final int         offline    = cellinkDao.getAll(CellinkState.STATE_OFFLINE).size();
-                    final int         running    = cellinkDao.getAll(CellinkState.STATE_RUNNING).size();
-                    final int         online     = cellinkDao.getAll(CellinkState.STATE_START).size()
-                                       + cellinkDao.getAll(CellinkState.STATE_ONLINE).size();
+                    JFreeChart jfc;
+                    CellinkDao cellinkDao = new CellinkDaoImpl();
+                    final int offline = cellinkDao.getAll(CellinkState.STATE_OFFLINE).size();
+                    final int running = cellinkDao.getAll(CellinkState.STATE_RUNNING).size();
+                    final int online = cellinkDao.getAll(CellinkState.STATE_START).size()
+                            + cellinkDao.getAll(CellinkState.STATE_ONLINE).size();
 
                     dataset = new DefaultPieDataset();
                     dataset.setValue("Online", new Integer(online));
@@ -105,10 +99,11 @@ public class TotalCellinkPieChart extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -118,10 +113,11 @@ public class TotalCellinkPieChart extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -131,6 +127,7 @@ public class TotalCellinkPieChart extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

@@ -6,7 +6,6 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.UserDao;
@@ -16,35 +15,31 @@ import com.agrologic.app.dao.impl.UserDaoImpl;
 import com.agrologic.app.model.CellinkDto;
 import com.agrologic.app.model.ControllerDto;
 import com.agrologic.app.model.UserDto;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.sql.SQLException;
-
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.List;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class UserInfoServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -64,11 +59,11 @@ public class UserInfoServlet extends HttpServlet {
                 Long userId = Long.parseLong(request.getParameter("userId"));
 
                 try {
-                    UserDao         userDao       = new UserDaoImpl();
-                    UserDto          editUser      = userDao.getById(userId);
-                    CellinkDao      cellinkDao    = new CellinkDaoImpl();
-                    List<CellinkDto> cellinks      = (List<CellinkDto>) cellinkDao.getAllUserCellinks(editUser.getId());
-                    ControllerDao   controllerDao = new ControllerDaoImpl();
+                    UserDao userDao = new UserDaoImpl();
+                    UserDto editUser = userDao.getById(userId);
+                    CellinkDao cellinkDao = new CellinkDaoImpl();
+                    List<CellinkDto> cellinks = (List<CellinkDto>) cellinkDao.getAllUserCellinks(editUser.getId());
+                    ControllerDao controllerDao = new ControllerDaoImpl();
 
                     for (CellinkDto c : cellinks) {
                         List<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
@@ -76,11 +71,11 @@ public class UserInfoServlet extends HttpServlet {
                         c.setControllers(controllers);
                     }
 
-                    logger.info("retreive user and user cellinks and all controllers of each cellink");
+                    logger.info("retrieve user and user cellinks and all controllers of each cellink");
                     editUser.setCellinks(cellinks);
                     request.getSession().setAttribute("edituser", editUser);
                     request.getRequestDispatcher("./all-cellinks.jsp?userId=" + editUser.getId()).forward(request,
-                                                 response);
+                            response);
                 } catch (SQLException ex) {
 
                     // error page
@@ -96,10 +91,11 @@ public class UserInfoServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -109,10 +105,11 @@ public class UserInfoServlet extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -122,6 +119,7 @@ public class UserInfoServlet extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

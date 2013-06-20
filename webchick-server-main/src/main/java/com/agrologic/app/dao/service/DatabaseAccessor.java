@@ -15,6 +15,16 @@ public interface DatabaseAccessor {
 
     ProgramAlarmDao getProgramAlarmDao();
 
+    void setProgramAlarmDao(ProgramAlarmDao programAlarmDao);
+
+    ProgramRelayDao getProgramRelayDao();
+
+    void setProgramRelayDao(ProgramRelayDao programRelayDao);
+
+    ProgramSystemStateDao getProgramSystemStateDao();
+
+    void setProgramSystemStateDao(ProgramSystemStateDao programSystemStateDao);
+
     CellinkDao getCellinkDao();
 
     void setCellinkDao(CellinkDao cellinkDao);

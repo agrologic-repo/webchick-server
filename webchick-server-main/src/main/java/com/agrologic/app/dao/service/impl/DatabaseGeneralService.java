@@ -35,7 +35,7 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
     protected ProgramDao programDao;
     protected ProgramAlarmDao programAlarmDao;
     protected ProgramRelayDao programRelayDao;
-    protected ProgramSysStateDao programSystemStateDao;
+    protected ProgramSystemStateDao programSystemStateDao;
     protected RelayDao relayDao;
     protected SchemaDao schemaDao;
     protected ScreenDao screenDao;
@@ -80,8 +80,8 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
         flockDao = DbImplDecider.use(daoType).getDao(FlockDao.class);
         programDao = DbImplDecider.use(daoType).getDao(ProgramDao.class);
         programAlarmDao = DbImplDecider.use(daoType).getDao(ProgramAlarmDao.class);
-        //programRelayDao = DbImplDecider.use(daoType).getDao(ProgramRelayDao.class);
-//        programSystemStateDao = DbImplDecider.use(daoType).getDao(ProgramSysStateDao.class);
+        programRelayDao = DbImplDecider.use(daoType).getDao(ProgramRelayDao.class);
+        programSystemStateDao = DbImplDecider.use(daoType).getDao(ProgramSystemStateDao.class);
         screenDao = DbImplDecider.use(daoType).getDao(ScreenDao.class);
         tableDao = DbImplDecider.use(daoType).getDao(TableDao.class);
         dataDao = DbImplDecider.use(daoType).getDao(DataDao.class);
@@ -186,6 +186,28 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
     @Override
     public ProgramAlarmDao getProgramAlarmDao() {
         return programAlarmDao;
+    }
+
+    public void setProgramAlarmDao(ProgramAlarmDao programAlarmDao) {
+        this.programAlarmDao = programAlarmDao;
+    }
+
+    @Override
+    public ProgramRelayDao getProgramRelayDao() {
+        return programRelayDao;
+    }
+
+    @Override
+    public void setProgramRelayDao(ProgramRelayDao programRelayDao) {
+        this.programRelayDao = programRelayDao;
+    }
+
+    public ProgramSystemStateDao getProgramSystemStateDao() {
+        return programSystemStateDao;
+    }
+
+    public void setProgramSystemStateDao(ProgramSystemStateDao programSystemStateDao) {
+        this.programSystemStateDao = programSystemStateDao;
     }
 
     @Override

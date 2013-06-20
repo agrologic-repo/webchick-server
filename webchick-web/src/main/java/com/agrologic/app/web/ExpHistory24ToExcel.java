@@ -6,46 +6,38 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataFormat;
-import com.agrologic.app.model.FlockDto;
 import com.agrologic.app.excel.DataForExcelCreator;
 import com.agrologic.app.excel.WriteToExcel;
+import com.agrologic.app.model.DataFormat;
+import com.agrologic.app.model.FlockDto;
 import com.agrologic.app.utils.FileDownloadUtil;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author Administrator
  */
 public class ExpHistory24ToExcel extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static String     outfile;
+    private static String outfile;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -56,7 +48,7 @@ public class ExpHistory24ToExcel extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         long flockId = Long.parseLong(request.getParameter("flockId"));
-        int  growDay = 1;
+        int growDay = 1;
 
         try {
             growDay = Integer.parseInt(request.getParameter("growDay"));
@@ -67,8 +59,8 @@ public class ExpHistory24ToExcel extends HttpServlet {
         Locale locale = Locale.ENGLISH;
 
         try {
-            FlockDao flockDao  = new FlockDaoImpl();
-            Long      resetTime = new Long(flockDao.getResetTime(flockId, growDay));
+            FlockDao flockDao = new FlockDaoImpl();
+            Long resetTime = new Long(flockDao.getResetTime(flockId, growDay));
 
             if (resetTime != null) {
                 resetTime = DataFormat.convertToTimeFormat(resetTime);
@@ -88,13 +80,13 @@ public class ExpHistory24ToExcel extends HttpServlet {
             values4 = getDefaultValuesIfEmpty(values4);
             values5 = getDefaultValuesIfEmpty(values5);
 
-            String               title1                   = flockDao.getDNHistory24("D18");
-            String               title2                   = flockDao.getDNHistory24("D19");
-            String               title3                   = flockDao.getDNHistory24("D20");
-            String               title4                   = flockDao.getDNHistory24("D21");
-            String               title5                   = flockDao.getDNHistory24("D72");
-            Map<Integer, String> history24ByHour          = parseHistory24(resetTime, values1);
-            List<List<String>>   allHistory24DataForExcel = new ArrayList<List<String>>();
+            String title1 = flockDao.getDNHistory24("D18");
+            String title2 = flockDao.getDNHistory24("D19");
+            String title3 = flockDao.getDNHistory24("D20");
+            String title4 = flockDao.getDNHistory24("D21");
+            String title5 = flockDao.getDNHistory24("D72");
+            Map<Integer, String> history24ByHour = parseHistory24(resetTime, values1);
+            List<List<String>> allHistory24DataForExcel = new ArrayList<List<String>>();
 
             allHistory24DataForExcel.add((DataForExcelCreator.createDataList(history24ByHour.keySet())));
             history24ByHour = parseHistory24(resetTime, values1);
@@ -144,10 +136,11 @@ public class ExpHistory24ToExcel extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -157,10 +150,11 @@ public class ExpHistory24ToExcel extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -170,6 +164,7 @@ public class ExpHistory24ToExcel extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
@@ -186,9 +181,9 @@ public class ExpHistory24ToExcel extends HttpServlet {
     }
 
     private Map<Integer, String> parseHistory24(long resetTime, String values) {
-        String[]             valueList = values.split(" ");
+        String[] valueList = values.split(" ");
         Map<Integer, String> valuesMap = new TreeMap<Integer, String>();
-        int                  j         = (int) resetTime / 100;
+        int j = (int) resetTime / 100;
 
         for (int i = 0; i < 24; i++) {
             if (j == 24) {

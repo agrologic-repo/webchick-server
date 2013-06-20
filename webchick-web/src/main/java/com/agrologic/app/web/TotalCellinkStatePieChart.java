@@ -6,10 +6,8 @@
 package com.agrologic.app.web;
 
 
-
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.impl.CellinkDaoImpl;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -17,35 +15,31 @@ import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import java.awt.Color;
-import java.awt.Font;
-
-import java.io.IOException;
-import java.io.OutputStream;
-
-import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.SQLException;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author Administrator
  */
 public class TotalCellinkStatePieChart extends HttpServlet {
     private static final long serialVersionUID = 1177210028733322431L;
-    private DefaultPieDataset dataset          = new DefaultPieDataset();
+    private DefaultPieDataset dataset = new DefaultPieDataset();
 
     // private DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     private JFreeChart jfc;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -100,18 +94,19 @@ public class TotalCellinkStatePieChart extends HttpServlet {
     }
 
     private void setValues(CellinkDao cellinkDao) {
-        int online  = 0,
-            offline = 0,
-            running = 0;
+        int online = 0,
+                offline = 0,
+                running = 0;
 
         try {
-            online  = cellinkDao.getAll(CellinkState.STATE_ONLINE).size();
+            online = cellinkDao.getAll(CellinkState.STATE_ONLINE).size();
             offline = cellinkDao.getAll(CellinkState.STATE_OFFLINE).size();
             offline += cellinkDao.getAll(CellinkState.STATE_STOP).size();
             offline += cellinkDao.getAll(CellinkState.STATE_UNKNOWN).size();
             offline += cellinkDao.getAll(CellinkState.STATE_START).size();
             running = cellinkDao.getAll(CellinkState.STATE_RUNNING).size();
-        } catch (SQLException e) {}
+        } catch (SQLException e) {
+        }
 
         dataset.setValue("Offline", new Integer(offline));
         dataset.setValue("Running", new Integer(running));
@@ -122,10 +117,11 @@ public class TotalCellinkStatePieChart extends HttpServlet {
 
     /**
      * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -135,10 +131,11 @@ public class TotalCellinkStatePieChart extends HttpServlet {
 
     /**
      * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
+     *
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -148,6 +145,7 @@ public class TotalCellinkStatePieChart extends HttpServlet {
 
     /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
