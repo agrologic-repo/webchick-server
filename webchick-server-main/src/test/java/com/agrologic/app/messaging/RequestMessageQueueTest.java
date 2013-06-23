@@ -27,7 +27,7 @@ public class RequestMessageQueueTest implements Observer {
     }
 
     @Test
-    public void testAddRequest() {
+    public void addRequest() {
         RequestMessage expected = messageFactory.createRealTimeRequests("T901").get(0);
         sut.addRequest(expected);
         RequestMessage actual = (RequestMessage) sut.getRequest();
@@ -40,23 +40,10 @@ public class RequestMessageQueueTest implements Observer {
     }
 
     @Test
-    public void testGetRequest() throws Exception {
+    public void getRequestEqualsToCreatedRequest() throws Exception {
         RequestMessage actual = (RequestMessage) sut.getRequest();
         RequestMessage expected = messageFactory.createRealTimeRequests("T901").get(0);
         assertEquals(expected, actual);
-
-        actual = (RequestMessage) sut.getRequest();
-        expected = messageFactory.createRealTimeRequests("T901").get(0);
-        assertEquals(expected, actual);
-
-        actual = (RequestMessage) sut.getRequest();
-        expected = messageFactory.createRealTimeRequests("T901").get(0);
-        assertEquals(expected, actual);
-
-        actual = (RequestMessage) sut.getRequest();
-        expected = messageFactory.createRealTimeRequests("T901").get(0);
-        assertEquals(expected, actual);
-
     }
 
     @Test
