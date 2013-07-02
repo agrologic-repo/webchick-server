@@ -1,14 +1,15 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.GasDaoImpl;
 import com.agrologic.app.model.Gas;
+
 import java.sql.*;
 
-public class DerbyGasDaoImpl extends GasDaoImpl implements CreatebleDao , DropableDao , RemovebleDao {
+public class DerbyGasDaoImpl extends GasDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
     public DerbyGasDaoImpl(DaoFactory daoFactory) {
         super(daoFactory);
@@ -64,7 +65,7 @@ public class DerbyGasDaoImpl extends GasDaoImpl implements CreatebleDao , Dropab
     @Override
     public void insert(Gas gas) throws SQLException {
         String sqlQuery = "INSERT INTO GAS (FLOCKID, AMOUNT, DATE, NUMBERACCOUNT, PRICE, TOTAL) "
-                + "VALUES (?,?,?,?,?,?) " ;
+                + "VALUES (?,?,?,?,?,?) ";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -107,7 +108,7 @@ public class DerbyGasDaoImpl extends GasDaoImpl implements CreatebleDao , Dropab
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.GAS ";
         Statement stmt = null;
         Connection con = null;

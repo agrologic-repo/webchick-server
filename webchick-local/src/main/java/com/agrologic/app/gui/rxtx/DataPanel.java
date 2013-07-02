@@ -67,7 +67,7 @@ public class DataPanel extends JPanel {
                     if (data.getValue() == null || data.getValue() == -1) {
                         programRelay.setOff();
                     } else {
-                        programRelay.init(data.getValueToView());
+                        programRelay.init(data.getValueToUI());
                     }
 
                     DataComponent dataComponent = new DataComponent(data, DataComponent.X_OFFSET,
@@ -127,25 +127,13 @@ public class DataPanel extends JPanel {
         return j;
     }
 
-//    public List<ProgramAlarm> getProgramAlarms() {
-//        return programAlarms;
-//    }
-
     public void setProgramAlarms(List<ProgramAlarm> programAlarms) {
         this.programAlarms = programAlarms;
     }
 
-//    public List<ProgramRelay> getProgramRelays() {
-//        return programRelays;
-//    }
-
     public void setProgramRelays(List<ProgramRelay> programRelays) {
         this.programRelays = programRelays;
     }
-
-//    public List<ProgramSystemState> getProgramSystemStates() {
-//        return programSystemStates;
-//    }
 
     public void setProgramSystemStates(List<ProgramSystemState> programSystemStates) {
         this.programSystemStates = programSystemStates;

@@ -6,13 +6,8 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.ScreenDao;
-import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ScreenDaoImpl;
-import com.agrologic.app.dao.impl.TableDaoImpl;
-import com.agrologic.app.model.TableDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.model.Table;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -22,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -58,9 +53,10 @@ public class RemoveScreenServlet extends HttpServlet {
                 Long screenId = Long.parseLong(request.getParameter("screenId"));
 
                 try {
-                    ScreenDao screenDao = new ScreenDaoImpl();
-                    TableDao tableDao = new TableDaoImpl();
-                    DataDao dataDao = new DataDaoImpl();
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    ;
+                    TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
                     if (CheckDefaultProgram.isDefaultProgram(programId)) {
                         logger.error("Can't remove default program screen!");
@@ -68,9 +64,8 @@ public class RemoveScreenServlet extends HttpServlet {
                         request.getSession().setAttribute("error", true);
                         request.getRequestDispatcher("./all-screens.html").forward(request, response);
                     } else {
-                        List<TableDto> tables = tableDao.getAllScreenTables(programId, screenId, null);
-
-                        for (TableDto t : tables) {
+                        Collection<Table> tables = tableDao.getAllScreenTables(programId, screenId, "");
+                        for (Table t : tables) {
                             dataDao.removeDataFromTable(programId, screenId, t.getId());
                         }
 

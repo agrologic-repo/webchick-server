@@ -4,11 +4,11 @@
  */
 package com.agrologic.app.web;
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.model.Program;
 import com.agrologic.app.utils.DateLocal;
 import org.apache.log4j.Logger;
 
@@ -56,10 +56,10 @@ public class UncheckUnusedDataServlet extends HttpServlet {
                 controllerId = Long.parseLong(request.getParameter("controllerId"));
 
                 try {
-                    DataDao dataDao = new DataDaoImpl();
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     dataDao.uncheckNotUsedDataOnAllScreens(programId, controllerId);
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto program = programDao.getById(programId);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(programId);
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
                     request.getSession().setAttribute("message", "Data successfully saved !");

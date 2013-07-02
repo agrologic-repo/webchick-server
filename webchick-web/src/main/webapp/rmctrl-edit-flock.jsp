@@ -7,7 +7,7 @@
 --%>
 <jsp:directive.page import="com.agrologic.app.model.ControllerDto"/>
 <jsp:directive.page import="com.agrologic.app.model.FlockDto"/>
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -24,11 +24,11 @@
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    List<ControllerDto> controllers = (List<ControllerDto>) request.getSession().getAttribute("controllers");
+    Collection<ControllerDto> controllers = (Collection<ControllerDto>) request.getSession().getAttribute("controllers");
     FlockDto editFlock = getFlock(controllers, controllerId, flockId);
 %>
 <%!
-    FlockDto getFlock(List<ControllerDto> controllers, Long controllerId, Long flockId) {
+    FlockDto getFlock(Collection<ControllerDto> controllers, Long controllerId, Long flockId) {
         for (ControllerDto c : controllers) {
             if (c.getId() == controllerId) {
                 for (FlockDto f : c.getFlocks()) {

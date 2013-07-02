@@ -1,8 +1,9 @@
 package com.agrologic.app.web;
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.TableDaoImpl;
-import com.agrologic.app.model.TableDto;
+import com.agrologic.app.model.Table;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -43,8 +44,8 @@ public class RemoveTableServlet extends HttpServlet {
                 Long tableId = Long.parseLong(request.getParameter("tableId"));
 
                 try {
-                    TableDao tableDao = new TableDaoImpl();
-                    TableDto table = tableDao.getById(programId, screenId, tableId);
+                    TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                    Table table = tableDao.getById(programId, screenId, tableId);
 
                     tableDao.remove(table.getProgramId(), table.getScreenId(), table.getId());
                     logger.info("Table " + table + "successfully removed !");

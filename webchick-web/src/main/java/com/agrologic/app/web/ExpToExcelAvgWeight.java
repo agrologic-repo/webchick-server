@@ -6,13 +6,14 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.excel.DataForExcelCreator;
 import com.agrologic.app.excel.WriteToExcel;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.utils.FileDownloadUtil;
 import org.apache.log4j.Logger;
 
@@ -55,25 +56,25 @@ public class ExpToExcelAvgWeight extends HttpServlet {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
                 FlockDao flockDao = new FlockDaoImpl();
                 Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId);
-                DataDao dataDao = new DataDaoImpl();
+                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 List<List<String>> histotyDataList = new ArrayList<List<String>>();
-                DataDto data0 = dataDao.getById(Long.valueOf(800), Long.valueOf(1));
+                Data data0 = dataDao.getById(Long.valueOf(800), Long.valueOf(1));
 
                 histotyDataList.add(DataForExcelCreator.createDataList(historyByGrowDay.keySet()));
 
-                DataDto data1 = dataDao.getById(Long.valueOf(2933), Long.valueOf(1));
+                Data data1 = dataDao.getById(Long.valueOf(2933), Long.valueOf(1));
 
                 histotyDataList.add(DataForExcelCreator.createDataHistoryList(historyByGrowDay, data1));
 
-                DataDto data2 = dataDao.getById(Long.valueOf(2934), Long.valueOf(1));
+                Data data2 = dataDao.getById(Long.valueOf(2934), Long.valueOf(1));
 
                 histotyDataList.add(DataForExcelCreator.createDataHistoryList(historyByGrowDay, data2));
 
-                DataDto data3 = dataDao.getById(Long.valueOf(2935), Long.valueOf(1));
+                Data data3 = dataDao.getById(Long.valueOf(2935), Long.valueOf(1));
 
                 histotyDataList.add(DataForExcelCreator.createDataHistoryList(historyByGrowDay, data3));
 
-                DataDto data4 = dataDao.getById(Long.valueOf(2936), Long.valueOf(1));
+                Data data4 = dataDao.getById(Long.valueOf(2936), Long.valueOf(1));
 
                 histotyDataList.add(DataForExcelCreator.createDataHistoryList(historyByGrowDay, data4));
 

@@ -3,14 +3,13 @@ package com.agrologic.app.network;
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-@Ignore
+
 public class ClientSessionsTest {
     private CellinkDao cellinkDao = mock(CellinkDao.class);
 

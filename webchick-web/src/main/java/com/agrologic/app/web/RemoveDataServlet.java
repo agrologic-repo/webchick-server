@@ -6,12 +6,12 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.TableDaoImpl;
-import com.agrologic.app.model.DataDto;
-import com.agrologic.app.model.TableDto;
+import com.agrologic.app.model.Data;
+import com.agrologic.app.model.Table;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -58,10 +58,11 @@ public class RemoveDataServlet extends HttpServlet {
                 Long dataId = Long.parseLong(request.getParameter("dataId"));
 
                 try {
-                    TableDao tableDao = new TableDaoImpl();
-                    TableDto table = tableDao.getById(programId, screenId, tableId);
-                    DataDao dataDao = new DataDaoImpl();
-                    DataDto data = dataDao.getById(dataId);
+
+                    TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                    Table table = tableDao.getById(programId, screenId, tableId);
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    Data data = dataDao.getById(dataId);
 
                     dataDao.removeDataFromTable(programId, screenId, table.getId(), data.getId());
                     logger.info("Data " + data + "successfully removed !");

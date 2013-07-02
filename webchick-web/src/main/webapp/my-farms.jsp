@@ -11,7 +11,7 @@
 
 <%@ page import="com.agrologic.app.model.CellinkDto" %>
 <%@ page import="com.agrologic.app.web.CellinkState" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -26,14 +26,14 @@
     } catch (Exception e) {
         state = -1;
     }
-    List<CellinkDto> cellinks = (List<CellinkDto>) request.getSession().getAttribute("cellinks");
+    Collection<CellinkDto> cellinks = (Collection<CellinkDto>) request.getSession().getAttribute("cellinks");
     int from = (Integer) request.getSession().getAttribute("from");
     int to = (Integer) request.getSession().getAttribute("to");
     int of = (Integer) request.getSession().getAttribute("of");
     int tableline = 25;
 %>
 
-<%! int countCellinksByState(List<CellinkDto> cellinks, int state) {
+<%! int countCellinksByState(Collection<CellinkDto> cellinks, int state) {
     int count = 0;
     for (CellinkDto cellink : cellinks) {
         if (cellink.getState() == state) {
@@ -43,11 +43,11 @@
     return count;
 }
 %>
-<%! List<CellinkDto> getCellinksByState(List<CellinkDto> cellinks, int state) {
+<%! Collection<CellinkDto> getCellinksByState(Collection<CellinkDto> cellinks, int state) {
     if (state == -1) {
         return cellinks;
     }
-    List<CellinkDto> cellinkList = new ArrayList<CellinkDto>();
+    Collection<CellinkDto> cellinkList = new ArrayList<CellinkDto>();
     for (CellinkDto cellink : cellinks) {
         if (cellink.getState() == state) {
             cellinkList.add(cellink);

@@ -5,9 +5,9 @@
 
 <%@ page import="com.agrologic.app.model.LanguageDto" %>
 
-<jsp:directive.page import="com.agrologic.app.model.ProgramDto"/>
-<jsp:directive.page import="com.agrologic.app.model.ScreenDto"/>
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="com.agrologic.app.model.Program"/>
+<jsp:directive.page import="com.agrologic.app.model.Screen"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -15,10 +15,10 @@
         return;
     }
 
-    ProgramDto program = (ProgramDto) request.getSession().getAttribute("program");
+    Program program = (Program) request.getSession().getAttribute("program");
 
-    List<ScreenDto> screens = program.getScreens();
-    List<LanguageDto> languages = (List<LanguageDto>) request.getSession().getAttribute("languages");
+    Collection<Screen> screens = program.getScreens();
+    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
 
     String ptl = (String) request.getParameter("translateLang");
     if (ptl == null) {
@@ -263,7 +263,7 @@
                         </thead>
                         <tbody>
                         <% int cnt = 0;%>
-                        <%for (ScreenDto screen : screens) {%>
+                        <%for (Screen screen : screens) {%>
                         <% if ((cnt % 2) == 0) {%>
                         <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
                                 <%} else {%>

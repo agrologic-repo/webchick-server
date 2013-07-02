@@ -9,9 +9,9 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ page import="com.agrologic.app.model.DataDto" %>
+<%@ page import="com.agrologic.app.model.Data" %>
 <%@ page import="com.agrologic.app.model.HistorySettingDto" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -25,11 +25,11 @@
     request.getSession().setAttribute("error", null);
 
     Long programId = Long.parseLong(request.getParameter("programId"));
-    List<DataDto> historyData = (List<DataDto>) request.getSession().getAttribute("historyData");
-    List<HistorySettingDto> historySettingData = (List<HistorySettingDto>) request.getSession().getAttribute("historySettingData");
+    Collection<Data> historyData = (Collection<Data>) request.getSession().getAttribute("historyData");
+    Collection<HistorySettingDto> historySettingData = (Collection<HistorySettingDto>) request.getSession().getAttribute("historySettingData");
 %>
 
-<%! String historySettingChecked(List<HistorySettingDto> historySettingData, Long dataId) {
+<%! String historySettingChecked(Collection<HistorySettingDto> historySettingData, Long dataId) {
     if (historySettingData != null) {
         for (HistorySettingDto hsd : historySettingData) {
             if (hsd.getDataId() == dataId) {
@@ -176,7 +176,7 @@
                                 <ul>
                                     <% for (int i = 0; i < historyData.size(); i++) {%>
                                     <%
-                                        DataDto data = historyData.get(i);
+                                        Data data = historyData.get(i);
                                         String check = historySettingChecked(historySettingData, data.getId());
                                     %>
                                     <li>

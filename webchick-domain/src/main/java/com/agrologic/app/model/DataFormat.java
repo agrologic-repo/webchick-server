@@ -41,6 +41,7 @@ public class DataFormat {
         DATA_FORMAT_MAP.put(DEC_11, "xxx.x");
         DATA_FORMAT_MAP.put(PRICE, "xxx.xx");
     }
+
     private int currentFormat;
 
     public DataFormat(int format) {
@@ -81,7 +82,7 @@ public class DataFormat {
             int position = 0;
             int len = sb.length();
             int val = (int) value;
-            int before_dec,after_dec;
+            int before_dec, after_dec;
 
             switch (format) {
                 case DEC_0:
@@ -233,13 +234,11 @@ public class DataFormat {
     public static long convertToTimeFormat(long value) {
         long newValue;
         String hexString = Long.toHexString(value);
-
         if (!isLetter(hexString)) {
             newValue = Long.parseLong(hexString);
         } else {
             newValue = value;
         }
-
         return newValue;
     }
 

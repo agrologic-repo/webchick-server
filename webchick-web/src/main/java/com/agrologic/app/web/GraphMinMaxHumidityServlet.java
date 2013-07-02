@@ -6,14 +6,15 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.graph.CombinedXYGraph;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartUtilities;
 
@@ -73,23 +74,23 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
                 }
 
                 try {
-                    DataDao dataDao = new DataDaoImpl();
-                    DataDto data = dataDao.getById(Long.valueOf(3002));
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    Data data = dataDao.getById(Long.valueOf(3002));
                     FlockDao flockDao = new FlockDaoImpl();
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    Map<Integer, DataDto> interestData = createDataSet(historyByGrowDay, data);
+                    Map<Integer, Data> interestData = createDataSet(historyByGrowDay, data);
 
                     data = dataDao.getById(Long.valueOf(3003));
 
-                    Map<Integer, DataDto> interestData2 = createDataSet(historyByGrowDay, data);
+                    Map<Integer, Data> interestData2 = createDataSet(historyByGrowDay, data);
 
                     data = dataDao.getById(Long.valueOf(3004));
 
-                    Map<Integer, DataDto> interestData3 = createDataSet(historyByGrowDay, data);
+                    Map<Integer, Data> interestData3 = createDataSet(historyByGrowDay, data);
 
                     data = dataDao.getById(Long.valueOf(3005));
 
-                    Map<Integer, DataDto> interestData4 = createDataSet(historyByGrowDay, data);
+                    Map<Integer, Data> interestData4 = createDataSet(historyByGrowDay, data);
                     CombinedXYGraph combGraph = new CombinedXYGraph();
 
                     combGraph.createFirstNextPlot("Maximum and Minimum Inside Temperature", "Grow Day[Day]",
@@ -99,11 +100,11 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
                             "Temperature[C�]", data, 0, interestData3, interestData4);
                     data = dataDao.getById(Long.valueOf(3006));
 
-                    Map<Integer, DataDto> interestData5 = createDataSet(historyByGrowDay, data);
+                    Map<Integer, Data> interestData5 = createDataSet(historyByGrowDay, data);
 
                     data = dataDao.getById(Long.valueOf(3007));
 
-                    Map<Integer, DataDto> interestData6 = createDataSet(historyByGrowDay, data);
+                    Map<Integer, Data> interestData6 = createDataSet(historyByGrowDay, data);
 
                     combGraph.createNextPlot("Humidity", "Grow Day[Day]", "Humidity[%]", data, 1, interestData5,
                             interestData6);
@@ -175,8 +176,8 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
      * @param data
      * @return
      */
-    private Map<Integer, DataDto> createDataSet(final Map<Integer, String> historyByGrowDay, final DataDto data) {
-        Map<Integer, DataDto> dataSet = new HashMap<Integer, DataDto>();
+    private Map<Integer, Data> createDataSet(final Map<Integer, String> historyByGrowDay, final Data data) {
+        Map<Integer, Data> dataSet = new HashMap<Integer, Data>();
         Iterator iter = historyByGrowDay.keySet().iterator();
 
         while (iter.hasNext()) {
@@ -191,9 +192,9 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
                     String dataType = data.getType().toString();
 
                     if (dataElem.equals(dataType) && (valElem.indexOf('-') == -1)) {
-                        data.setValueToChange(valElem);
+                        data.setValueFromUI(valElem);
 
-                        DataDto cloned = (DataDto) data.clone();
+                        Data cloned = (Data) data.clone();
 
                         dataSet.put(key, cloned);
 

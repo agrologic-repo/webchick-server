@@ -6,15 +6,16 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.graph.history.HistoryGraph;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartUtilities;
 
@@ -74,35 +75,35 @@ public class GraphHeatOnTimeServlet extends HttpServlet {
                 try {
                     FlockDao flockDao = new FlockDaoImpl();
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    List<Map<Integer, DataDto>> dataHistroryList = new ArrayList<Map<Integer, DataDto>>();
+                    List<Map<Integer, Data>> dataHistroryList = new ArrayList<Map<Integer, Data>>();
                     List<String> axisTitles = new ArrayList<String>();
-                    DataDao dataDao = new DataDaoImpl();
-                    DataDto data1 = dataDao.getById(Long.valueOf(1303));
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    Data data1 = dataDao.getById(Long.valueOf(1303));
 
                     axisTitles.add(data1.getLabel());
                     dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
 
-                    DataDto data2 = dataDao.getById(Long.valueOf(1304));
+                    Data data2 = dataDao.getById(Long.valueOf(1304));
 
                     axisTitles.add(data2.getLabel());
                     dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
 
-                    DataDto data3 = dataDao.getById(Long.valueOf(1305));
+                    Data data3 = dataDao.getById(Long.valueOf(1305));
 
                     axisTitles.add(data3.getLabel());
                     dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data3));
 
-                    DataDto data4 = dataDao.getById(Long.valueOf(1306));
+                    Data data4 = dataDao.getById(Long.valueOf(1306));
 
                     axisTitles.add(data4.getLabel());
                     dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data4));
 
-                    DataDto data5 = dataDao.getById(Long.valueOf(1307));
+                    Data data5 = dataDao.getById(Long.valueOf(1307));
 
                     axisTitles.add(data5.getLabel());
                     dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data5));
 
-                    DataDto data6 = dataDao.getById(Long.valueOf(1308));
+                    Data data6 = dataDao.getById(Long.valueOf(1308));
 
                     axisTitles.add(data6.getLabel());
                     dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data6));

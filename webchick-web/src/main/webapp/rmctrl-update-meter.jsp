@@ -16,7 +16,7 @@
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
     GasDao gasDao = new GasDaoImpl();
-    List<GasDto> gazList = gasDao.getAllByFlockId(flockId);
+    Collection<GasDto> gazList = gasDao.getAllByFlockId(flockId);
 
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

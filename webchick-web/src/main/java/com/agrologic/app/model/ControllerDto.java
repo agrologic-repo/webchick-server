@@ -9,42 +9,30 @@
  */
 package com.agrologic.app.model;
 
-
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-//~--- JDK imports ------------------------------------------------------------
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-/**
- * Title:       <br>
- * Decription:
- * Copyright:   Copyright (c) 2008
- * Company:     Agro Logic
- * @author      Valery Manakhimov
- * @version     1.0
- */
 public class ControllerDto implements Serializable {
-    public static final int   COLUMN_NUMBERS   = 4;
+    public static final int COLUMN_NUMBERS = 4;
     private static final long serialVersionUID = 1L;
-    private boolean           active;
-    private Integer           area;
-    private Long              cellinkId;
-    private List<FlockDto>    flocks;
-    private Long              id;
-    private String            name;
-    private String            netName;
-    private ProgramDto        program;
-    private Long              programId;
-    private DataDto           setClock;
-    private DataDto           setDate;
-    private String            title;
+    private boolean active;
+    private Integer area;
+    private Long cellinkId;
+    private List<FlockDto> flocks;
+    private Long id;
+    private String name;
+    private String netName;
+    private Program program;
+    private Long programId;
+    private Data setClock;
+    private Data setDate;
+    private String title;
 
     public String getName() {
         return name;
@@ -96,64 +84,64 @@ public class ControllerDto implements Serializable {
 
     public int getArea() {
         return (area == null)
-               ? 0
-               : area;
+                ? 0
+                : area;
     }
 
     public void setArea(Integer area) {
         this.area = area;
     }
 
-    public ProgramDto getProgram() {
+    public Program getProgram() {
         return program;
     }
 
-    public void setProgram(ProgramDto program) {
+    public void setProgram(Program program) {
         this.program = program;
     }
 
-    public List<ScreenDto> getScreens() {
+    public List<Screen> getScreens() {
         return program.getScreens();
     }
 
-    public void setScreens(List<ScreenDto> screens) {
+    public void setScreens(List<Screen> screens) {
         this.program.setScreens(screens);
     }
 
-    public void setSetClock(DataDto setClock) {
+    public void setSetClock(Data setClock) {
         this.setClock = setClock;
     }
 
-    public DataDto getSetClock() {
+    public Data getSetClock() {
         return setClock;
     }
 
-    public void setSetDate(DataDto setDate) {
+    public void setSetDate(Data setDate) {
         this.setDate = setDate;
     }
 
-    public DataDto getSetDate() {
+    public Data getSetDate() {
         return setDate;
     }
 
-    public List<TableDto> getSellectedScreenTables(Long screenId) {
-        for (ScreenDto s : program.getScreens()) {
+    public Collection<Table> getSellectedScreenTables(Long screenId) {
+        for (Screen s : program.getScreens()) {
             if (s.getId() == screenId) {
                 return s.getTables();
             }
         }
 
-        return new ArrayList<TableDto>();
+        return new ArrayList<Table>();
     }
 
-    public DataDto getInterestData(Long screenId, Long tableId, Long dataId) {
-        for (ScreenDto s : program.getScreens()) {
+    public Data getInterestData(Long screenId, Long tableId, Long dataId) {
+        for (Screen s : program.getScreens()) {
             if (s.getId().equals(screenId)) {
-                List<TableDto> tables = s.getTables();
+                Collection<Table> tables = s.getTables();
 
-                for (TableDto t : tables) {
+                for (Table t : tables) {
                     if (t.getId().equals(tableId)) {
-                        for (DataDto d : t.getDataList()) {
+                        for (Data d : t.getDataList()) {
                             if (d.getId().equals(dataId)) {
                                 return d;
                             }
@@ -184,8 +172,8 @@ public class ControllerDto implements Serializable {
 
     public boolean isAvailable() {
         boolean available = (getSetClock().getValue() == null)
-                            ? false
-                            : true;
+                ? false
+                : true;
 
         return available;
     }

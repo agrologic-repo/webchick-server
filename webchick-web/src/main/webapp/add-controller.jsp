@@ -3,9 +3,9 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.ProgramDto" %>
+<%@ page import="com.agrologic.app.model.Program" %>
 
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -15,8 +15,8 @@
 
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    List<ProgramDto> programs = (List<ProgramDto>) request.getSession().getAttribute("programs");
-    List<String> controllernames = (List<String>) request.getSession().getAttribute("controllernames");
+    Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("programs");
+    Collection<String> controllernames = (Collection<String>) request.getSession().getAttribute("controllernames");
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -125,7 +125,7 @@
                                         <td>
                                             <select id="Nprogramid" name="Nprogramid" style="width:120px">
                                                 <option value="None" selected>Select
-                                                        <% for(ProgramDto p:programs) {%>
+                                                        <% for(Program p:programs) {%>
                                                 <option value="<%=p.getId() %>"><%=p.getName() %>
                                                         <%}%>
                                             </select>

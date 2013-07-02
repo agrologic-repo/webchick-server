@@ -491,7 +491,7 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.CONTROLLERS ";
         Statement stmt = null;
         Connection con = null;

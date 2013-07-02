@@ -1,11 +1,12 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.MedicineDaoImpl;
 import com.agrologic.app.model.Medicine;
+
 import java.sql.*;
 
 public class DerbyMedicineDaoImpl extends MedicineDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
@@ -108,7 +109,7 @@ public class DerbyMedicineDaoImpl extends MedicineDaoImpl implements CreatebleDa
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.MEDICINE ";
         Statement stmt = null;
         Connection con = null;

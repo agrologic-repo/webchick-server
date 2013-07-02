@@ -6,25 +6,25 @@
 <%@ page import="com.agrologic.app.model.ActionSetDto" %>
 
 <jsp:directive.page import="com.agrologic.app.model.LanguageDto"/>
-<%@ page import="com.agrologic.app.model.ProgramDto" %>
-<%@ page import="com.agrologic.app.model.ScreenDto" %>
-<%@ page import="java.util.List" %>
+<%@ page import="com.agrologic.app.model.Program" %>
+<%@ page import="com.agrologic.app.model.Screen" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    ProgramDto program = (ProgramDto) request.getSession().getAttribute("program");
-    ScreenDto screen = (ScreenDto) request.getSession().getAttribute("screen");
+    Program program = (Program) request.getSession().getAttribute("program");
+    Screen screen = (Screen) request.getSession().getAttribute("screen");
     long programId = screen.getProgramId();
-    List<LanguageDto> languages = (List<LanguageDto>) request.getSession().getAttribute("languages");
+    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
     String ptl = (String) request.getParameter("translateLang");
     if (ptl == null) {
         ptl = "1";
     }
     Long translateLang = Long.parseLong(ptl);
-    List<ActionSetDto> actionsets = (List<ActionSetDto>) request.getSession().getAttribute("actionset");
+    Collection<ActionSetDto> actionsets = (Collection<ActionSetDto>) request.getSession().getAttribute("actionset");
 %>
 
 

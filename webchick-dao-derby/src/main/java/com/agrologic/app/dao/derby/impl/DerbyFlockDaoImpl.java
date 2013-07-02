@@ -12,7 +12,6 @@ import java.sql.*;
 public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
 
-
     public DerbyFlockDaoImpl(DaoFactory daoFactory) {
         super(daoFactory);
     }
@@ -315,7 +314,7 @@ public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, Dro
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE FROM APP.FLOCK ";
         Statement stmt = null;
         Connection con = null;

@@ -2,7 +2,7 @@ package com.agrologic.app.except;
 
 public class JarFileWasNotFound extends Exception {
     public String givenName;
-    public final static String JAR_FILE_WAS_NOT_FOUND = "JAR file with given name was not found in classpath ";
+    public static final String JAR_FILE_WAS_NOT_FOUND = "JAR file with given name was not found in classpath ";
 
     public JarFileWasNotFound() {
         this(JAR_FILE_WAS_NOT_FOUND);

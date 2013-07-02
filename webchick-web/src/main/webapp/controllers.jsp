@@ -6,7 +6,7 @@
 <%@ page import="com.agrologic.app.model.ControllerDto" %>
 
 <jsp:directive.page import="java.util.ArrayList"/>
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <%
     UserDto user = (UserDto) request.getSession().getAttribute("user");
@@ -15,16 +15,16 @@
         return;
     }
 
-    List<UserDto> users = (List<UserDto>) request.getSession().getAttribute("users");
+    Collection<UserDto> users = (Collection<UserDto>) request.getSession().getAttribute("users");
     Long userId = Long.parseLong(request.getParameter("userId"));
     UserDto selectedUser = getChoosedUser(users, userId);
 
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     CellinkDto cellink = getChoosedCellink(selectedUser.getCellinks(), cellinkId);
 
-    List<ControllerDto> controllers = cellink.getControllers();
+    Collection<ControllerDto> controllers = cellink.getControllers();
 %>
-<%! public UserDto getChoosedUser(List<UserDto> users, Long userId) {
+<%! public UserDto getChoosedUser(Collection<UserDto> users, Long userId) {
     for (UserDto u : users) {
         if (u.getId().equals(userId)) {
             return u;
@@ -34,7 +34,7 @@
 }
 %>
 
-<%! public CellinkDto getChoosedCellink(List<CellinkDto> cellinks, Long cellinkId) {
+<%! public CellinkDto getChoosedCellink(Collection<CellinkDto> cellinks, Long cellinkId) {
     for (CellinkDto c : cellinks) {
         if (c.getId().equals(cellinkId)) {
             return c;
@@ -44,11 +44,11 @@
 }
 %>
 
-<%! public List<ControllerDto> filterCellinkControllers(List<ControllerDto> controllers, Long cellinkId) {
+<%! public Collection<ControllerDto> filterCellinkControllers(Collection<ControllerDto> controllers, Long cellinkId) {
     if (cellinkId == null || cellinkId == 0) {
         return controllers;
     }
-    List<ControllerDto> filteredControllers = new ArrayList<ControllerDto>();
+    Collection<ControllerDto> filteredControllers = new ArrayList<ControllerDto>();
     for (ControllerDto c : controllers) {
         if (c.getCellinkId().equals(cellinkId)) {
             filteredControllers.add(c);

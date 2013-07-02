@@ -1,8 +1,3 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.network;
 
 import com.agrologic.app.except.EOTException;
@@ -18,7 +13,6 @@ import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 
 public class ReadBuffer {
-
     public static final int BUFFER_SIZE = 8000;
     private int byteCounter = 0;
     private int bufferIndex;
@@ -77,7 +71,7 @@ public class ReadBuffer {
                 try {
                     inputBuffer.put(data);
                 } catch (BufferOverflowException e) {
-                    System.out.println(inputBuffer.position());
+                    CommControl.logger.debug(inputBuffer.position());
                 }
                 startTime = System.currentTimeMillis();
                 readState = CommControl.ReadState.WAIT_EOT;
@@ -86,13 +80,10 @@ public class ReadBuffer {
                 try {
                     wait(1);
                 } catch (InterruptedException ex) {
-
                 }
             }
-
             checkTimeout();
         }
-
         CommControl.logger.debug("End read buffer " + bufferIndex);
         CommControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
     }
@@ -108,19 +99,6 @@ public class ReadBuffer {
 
     public synchronized void setBufferFormat(byte bufferFormat) {
         this.bufferFormat = bufferFormat;
-    }
-
-    /**
-     * Return true if timed out.
-     *
-     * @return true if time out occurred .
-     */
-    public synchronized boolean timedOut() {
-        long currTime = System.currentTimeMillis();
-        if ((startTime + sotDelay + eotDelay) < currTime) {
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -167,14 +145,14 @@ public class ReadBuffer {
     }
 
     /**
-     * Return true if bufferIsLast equal to ERROR or LAST_COPRESSED.
+     * Return true if bufferIsLast equal to ERROR or LAST_COMPRESSED.
      *
      * @return true if last buffer received ,false - otherwise.
      */
     public synchronized boolean isReady() {
-        if ((bufferIsLast == Message.LAST_COMPRSSED_TEXT_MESSAGE)
-                || (bufferIsLast == Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE)
-                || (bufferIsLast == Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE)) {
+        if ((bufferIsLast == Message.LastIndicators.COMPRSSED_TEXT.getValue())
+                || (bufferIsLast == Message.LastIndicators.COMPRSSED_TEXT_WITH_INDEX.getValue())
+                || (bufferIsLast == Message.LastIndicators.COMPRSSED_BINARY_WITH_INDEX.getValue())) {
             if (byteCounter >= bufferSize) {
                 ready = true;
             }
@@ -190,24 +168,19 @@ public class ReadBuffer {
      */
     public byte[] toArray() {
         byte[] buffer = new byte[inputBuffer.position()];
-
         inputBuffer.flip();
         inputBuffer.get(buffer, 0, buffer.length);
-
         synchronized (this) {
-            setBufferFormat(Message.LAST_TEXT_MESSAGE/* default */);
-            if (bufferIsLast == Message.LAST_COMPRSSED_TEXT_MESSAGE) {
-                setBufferFormat(Message.LAST_COMPRSSED_TEXT_MESSAGE);
+            setBufferFormat((byte) bufferIsLast /* default */);
+            if (bufferIsLast == Message.LastIndicators.COMPRSSED_TEXT.getValue()) {
                 buffer = CommControl.Decompressor.decompress(buffer, false);
             }
 
-            if (bufferIsLast == Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE) {
-                setBufferFormat(Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE);
+            if (bufferIsLast == Message.LastIndicators.COMPRSSED_TEXT_WITH_INDEX.getValue()) {
                 buffer = CommControl.Decompressor.decompress(buffer, true);
             }
 
-            if (bufferIsLast == Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE) {
-                setBufferFormat(Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE);
+            if (bufferIsLast == Message.LastIndicators.COMPRSSED_BINARY_WITH_INDEX.getValue()) {
                 buffer = CommControl.SlipProtocol.parseSlipBuffer(buffer);
                 if (CommControl.CRC.crcValue != 0) {
                     return null;

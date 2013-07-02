@@ -59,14 +59,6 @@ public class ProgramAlarmPopup extends JDialog {
         contentPanel.add(alarmsPanel, BorderLayout.PAGE_END);
         add(contentPanel);
     }
-//
-//    private static JButton createHelpButton() {
-//        final JButton button = new JButton();
-//        button.setIcon(new javax.swing.ImageIcon(button.getClass().getResource("/help/examples/help.gif")));
-//        button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-//        button.setOpaque(false);
-//        return button;
-//    }
 
     private static JButton createCloseButton() {
         final JButton button = new JButton();

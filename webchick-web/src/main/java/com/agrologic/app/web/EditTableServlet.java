@@ -6,15 +6,10 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.ScreenDao;
-import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ScreenDaoImpl;
-import com.agrologic.app.dao.impl.TableDaoImpl;
-import com.agrologic.app.model.DataDto;
-import com.agrologic.app.model.ScreenDto;
-import com.agrologic.app.model.TableDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.model.Data;
+import com.agrologic.app.model.Screen;
+import com.agrologic.app.model.Table;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -61,14 +57,14 @@ public class EditTableServlet extends HttpServlet {
                 long tableId = Long.parseLong(request.getParameter("tableId"));
 
                 try {
-                    ScreenDao screenDao = new ScreenDaoImpl();
-                    ScreenDto screen = screenDao.getById(programId, screenId);
-                    TableDao tableDao = new TableDaoImpl();
-                    List<TableDto> tables = tableDao.getAllScreenTables(screen.getProgramId(), screen.getId(), null);
-                    DataDao dataDao = new DataDaoImpl();
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    Screen screen = screenDao.getById(programId, screenId);
+                    TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                    Collection<Table> tables = tableDao.getAllScreenTables(screen.getProgramId(), screen.getId(), "");
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
-                    for (TableDto table : tables) {
-                        List<DataDto> dataList = dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
+                    for (Table table : tables) {
+                        List<Data> dataList = dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
                                 table.getId(), null);
                         table.setDataList(dataList);
                     }

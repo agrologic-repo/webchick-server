@@ -83,26 +83,21 @@ public class DataTextField extends JTextField implements DataChangeListener {
             public void keyReleased(KeyEvent e) {
                 DataTextField txt = (DataTextField) e.getSource();
                 String string = DataFormatUtil.fixDecPoint(txt.getText(), data.getFormat());
-
                 txt.setText(string);
-
                 char c = e.getKeyChar();    // Get the typed character
 
                 // Don't ignore backspace or delete
                 if (c == KeyEvent.VK_ENTER) {
                     string = DataFormatUtil.clearDelimiter(string);
-
                     long value = Long.parseLong(string);
-
                     try {
-                        data.setValueToChange(value);
+                        data.setValueFromUI(value);
                         value = data.getValue();
                         dbaccess.getControllerDao().sendNewDataValueToController(controllerId, data.getId(), value);
                         dbaccess.getControllerDao().saveNewDataValueOnController(controllerId, data.getId(), value);
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
-//                    txt.setBackground(Color.ORANGE);
                     txt.getParent().requestFocus();
                 }
             }

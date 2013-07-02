@@ -2,19 +2,19 @@ package com.agrologic.app.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class Table implements Serializable, Comparable<Table> {
     private static final long serialVersionUID = 3L;
-    private List<Data>        dataList;
-    private String            display;
-    private Long              id;
-    private Long              langId;
-    private Integer           position;
-    private Long              programId;
-    private Long              screenId;
-    private String            title;
-    private String            unicodeTitle;
+    private Collection<Data> dataList;
+    private String display;
+    private Long id;
+    private Long langId;
+    private Integer position;
+    private Long programId;
+    private Long screenId;
+    private String title;
+    private String unicodeTitle;
 
     public String getDisplay() {
         return display;
@@ -72,49 +72,49 @@ public class Table implements Serializable, Comparable<Table> {
         this.position = position;
     }
 
-    public List<Data> getDataList() {
-        if(dataList == null) {
+    public Collection<Data> getDataList() {
+        if (dataList == null) {
             return new ArrayList<Data>();
         }
         // Collections.sort(dataList);
         return dataList;
     }
 
-    public void setDataList(List<Data> dataList) {
+    public void setDataList(Collection<Data> dataList) {
         this.dataList = dataList;
     }
 
-    public void replaceWithSpecialData(List<Data> specialDataList) {
-        for(Data d:specialDataList) {
-            if(dataList.indexOf(d) != -1) {
-                int index = dataList.indexOf(d);
-                dataList.get(index).setUnicodeLabel(d.getUnicodeLabel());
-            }
-        }
-    }
-
-    public void updateDataList(List<Data> updatedDataList) {
-        for (Data d : updatedDataList) {
-            int i = dataList.indexOf(d);
-
-            if (i != -1) {
-                dataList.set(i, d);
-            }
-        }
-
-//      this.dataList = dataList;
-    }
+//    public void replaceWithSpecialData(List<Data> specialDataList) {
+//        for(Data d:specialDataList) {
+//            if(dataList.indexOf(d) != -1) {
+//                int index = dataList.indexOf(d);
+//                dataList.get(index).setUnicodeLabel(d.getUnicodeLabel());
+//            }
+//        }
+//    }
+//
+//    public void updateDataList(List<Data> updatedDataList) {
+//        for (Data d : updatedDataList) {
+//            int i = dataList.indexOf(d);
+//
+//            if (i != -1) {
+//                dataList.set(i, d);
+//            }
+//        }
+//
+////      this.dataList = dataList;
+//    }
 
     public String isChecked() {
         return ("yes".equals(display))
-               ? "checked"
-               : "unchecked";
+                ? "checked"
+                : "unchecked";
     }
 
     public String getUnicodeTitle() {
         return (unicodeTitle == null)
-               ? ""
-               : unicodeTitle;
+                ? ""
+                : unicodeTitle;
     }
 
     public void setUnicodeTitle(String unicodeTitle) {
@@ -133,20 +133,20 @@ public class Table implements Serializable, Comparable<Table> {
 
         final Table other = (Table) obj;
 
-        if ((this.id != other.id) && ((this.id == null) ||!this.id.equals(other.id))) {
+        if ((this.id != other.id) && ((this.id == null) || !this.id.equals(other.id))) {
             return false;
         }
 
-        if ((this.screenId != other.screenId) && ((this.screenId == null) ||!this.screenId.equals(other.screenId))) {
+        if ((this.screenId != other.screenId) && ((this.screenId == null) || !this.screenId.equals(other.screenId))) {
             return false;
         }
 
         if ((this.programId != other.programId)
-                && ((this.programId == null) ||!this.programId.equals(other.programId))) {
+                && ((this.programId == null) || !this.programId.equals(other.programId))) {
             return false;
         }
 
-        if ((this.position != other.position) && ((this.position == null) ||!this.position.equals(other.position))) {
+        if ((this.position != other.position) && ((this.position == null) || !this.position.equals(other.position))) {
             return false;
         }
 
@@ -158,17 +158,17 @@ public class Table implements Serializable, Comparable<Table> {
         int hash = 3;
 
         hash = 67 * hash + ((this.id != null)
-                            ? this.id.hashCode()
-                            : 0);
+                ? this.id.hashCode()
+                : 0);
         hash = 67 * hash + ((this.screenId != null)
-                            ? this.screenId.hashCode()
-                            : 0);
+                ? this.screenId.hashCode()
+                : 0);
         hash = 67 * hash + ((this.programId != null)
-                            ? this.programId.hashCode()
-                            : 0);
+                ? this.programId.hashCode()
+                : 0);
         hash = 67 * hash + ((this.position != null)
-                            ? this.position.hashCode()
-                            : 0);
+                ? this.position.hashCode()
+                : 0);
 
         return hash;
     }
@@ -176,8 +176,8 @@ public class Table implements Serializable, Comparable<Table> {
     @Override
     public String toString() {
         return new StringBuilder().append(" ID : ").append(id).append(" TITLE :").append(title).append(
-            " POSITION : ").append(position).append(" SCREENID : ").append(screenId).append(" PROGRAMID : ").append(
-            programId).toString();
+                " POSITION : ").append(position).append(" SCREENID : ").append(screenId).append(" PROGRAMID : ").append(
+                programId).toString();
     }
 
     @Override

@@ -79,13 +79,13 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         Program program = controller.getProgram();
         for (Screen screen : program.getScreens()) {
             if (!skipScreen(screen)) {
-                List<Table> tableList = screen.getTables();
+                Collection<Table> tableList = screen.getTables();
                 if (tableList != null) {
                     TreeMap<Table, List<DataController>> tableDataMap = new TreeMap<Table, List<DataController>>();
                     try {
                         for (Table table : tableList) {
                             List<DataController> dataControllerList = new ArrayList<DataController>();
-                            List<Data> dataList = table.getDataList();
+                            Collection<Data> dataList = table.getDataList();
                             for (Data d : dataList) {
                                 DataController newData = new DataController(d);
                                 if (program.getProgramRelays() == null) {
@@ -94,8 +94,9 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                                                 .getAllProgramRelays(program.getId(),
                                                         dbManager.getDatabaseLoader().getLangId());
                                         program.setProgramRelays(programRelays);
-                                        List<ProgramAlarm> programAlarms = dbaccess.getProgramAlarmDao().getAllProgramAlarms(program.getId(),
-                                                dbManager.getDatabaseLoader().getLangId());
+                                        List<ProgramAlarm> programAlarms = dbaccess.getProgramAlarmDao()
+                                                .getAllProgramAlarms(program.getId(),
+                                                        dbManager.getDatabaseLoader().getLangId());
                                         program.setProgramAlarms(programAlarms);
                                     } catch (SQLException ex) {
                                         ex.printStackTrace();
@@ -338,8 +339,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
             @Override
             protected Object doInBackground() throws Exception {
                 try {
-                    dl = (List<Data>) dbaccess.getDataDao()
-                            .getControllerData(controller.getId());
+                    dl = (List<Data>) dbaccess.getDataDao().getControllerData(controller.getId());
                 } catch (SQLException e) {
                     e.printStackTrace();
                 } catch (NoSuchElementException e) {
@@ -376,7 +376,8 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                                 Data data = iter.next();
                                 if (df.getId().equals(data.getId())) {
                                     data.setFormat(df.getFormat());
-                                    df.setValue(data.getValueToView());
+                                    //df.setValue(data.getValueToUI());
+                                    df.setValue(data.getValue());
                                 }
                             }
                         }

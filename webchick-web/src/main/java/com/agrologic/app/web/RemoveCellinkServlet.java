@@ -27,11 +27,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class RemoveCellinkServlet extends HttpServlet {
 
     /**
@@ -61,7 +56,7 @@ public class RemoveCellinkServlet extends HttpServlet {
 
             try {
                 UserDao userDao = new UserDaoImpl();
-                CellinkDao cellinkDao = new CellinkDaoImpl();
+                CellinkDao cellinkDao = new CellinkDaoImpl();// DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                 ControllerDao controllerDao = new ControllerDaoImpl();
                 CellinkDto cellink = cellinkDao.getById(cellinkId);
 

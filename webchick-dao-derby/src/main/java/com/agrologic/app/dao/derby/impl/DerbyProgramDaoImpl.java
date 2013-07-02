@@ -1,16 +1,18 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.ProgramDaoImpl;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import java.sql.*;
 
 public class DerbyProgramDaoImpl extends ProgramDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyProgramDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyProgramDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        super(jdbcTemplate, dao);
     }
 
     @Override
@@ -19,7 +21,7 @@ public class DerbyProgramDaoImpl extends ProgramDaoImpl implements CreatebleDao,
         try {
             con = dao.getConnection();
             DatabaseMetaData dbmd = con.getMetaData();
-            ResultSet        rs   = dbmd.getTables(null, "APP", "PROGRAMS", null);
+            ResultSet rs = dbmd.getTables(null, "APP", "PROGRAMS", null);
             if (!rs.next()) {
                 return false;
             }
@@ -40,10 +42,10 @@ public class DerbyProgramDaoImpl extends ProgramDaoImpl implements CreatebleDao,
                 + "CREATED VARCHAR(45) NOT NULL, "
                 + "MODIFIED VARCHAR(45) NOT NULL, "
                 + "PRIMARY KEY (PROGRAMID))";
-        Statement  stmt = null;
-        Connection con  = null;
+        Statement stmt = null;
+        Connection con = null;
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
             stmt.execute(sqlQuery);
         } catch (Exception e) {
@@ -74,7 +76,7 @@ public class DerbyProgramDaoImpl extends ProgramDaoImpl implements CreatebleDao,
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE FROM APP.PROGRAMS ";
         Statement stmt = null;
         Connection con = null;

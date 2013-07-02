@@ -2,10 +2,7 @@ package com.agrologic.app.dao;
 
 import com.agrologic.app.model.ControllerDto;
 
-
-
 import java.sql.SQLException;
-
 import java.util.List;
 
 public interface ControllerDao {

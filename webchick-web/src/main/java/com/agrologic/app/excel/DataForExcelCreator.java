@@ -6,9 +6,9 @@
 package com.agrologic.app.excel;
 
 
-
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
+
 import java.util.*;
 
 public class DataForExcelCreator {
@@ -21,13 +21,12 @@ public class DataForExcelCreator {
      * @return dataByGrowDay the data by grow day map
      */
     /**
-     *
      * @param historyByHourMap
      * @param format
      * @return
      */
     public static List<String> createDataHistory24List(final Map<Integer, String> historyByHourMap, final int format) {
-        List<String>       dataByHour   = new ArrayList<String>();
+        List<String> dataByHour = new ArrayList<String>();
         Collection<String> stringValues = historyByHourMap.values();
 
         for (String stringValue : stringValues) {
@@ -41,13 +40,13 @@ public class DataForExcelCreator {
      * Creates list with data object that holds the value from history string by grow day.
      *
      * @param historyByGrowDayMap the history by grow day map
-     * @param data the object that encapsulate data.
+     * @param data                the object that encapsulate data.
      * @return dataByGrowDay the data by grow day map
      */
     public static List<String> createDataHistoryList(final Map<Integer, String> historyByGrowDayMap,
-            final DataDto data) {
-        List<String>       dataByGrowDay = new ArrayList<String>();
-        Collection<String> stringValues  = historyByGrowDayMap.values();
+                                                     final Data data) {
+        List<String> dataByGrowDay = new ArrayList<String>();
+        Collection<String> stringValues = historyByGrowDayMap.values();
 
         for (String stringValue : stringValues) {
             StringTokenizer token = new StringTokenizer(stringValue, " ");
@@ -77,11 +76,10 @@ public class DataForExcelCreator {
     }
 
     /**
-     *
      * @param data
      * @return
      */
-    private static String valueToString(DataDto data) {
+    private static String valueToString(Data data) {
         Long value = data.getValue();
 
         if (value == -1) {
@@ -96,17 +94,16 @@ public class DataForExcelCreator {
             return String.valueOf(t);
         }
 
-        return data.getFormatedValue();
+        return data.getFormattedValue();
     }
 
     /**
-     *
      * @param growDays
      * @return
      */
     public static List<String> createDataList(final Set<Integer> growDays) {
-        List<String>      dataByGrowDay = new ArrayList<String>();
-        Iterator<Integer> iter          = growDays.iterator();
+        List<String> dataByGrowDay = new ArrayList<String>();
+        Iterator<Integer> iter = growDays.iterator();
 
         while (iter.hasNext()) {
             Integer value = iter.next();

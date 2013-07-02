@@ -6,17 +6,13 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.UserDao;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.impl.CellinkDaoImpl;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
 import com.agrologic.app.dao.impl.UserDaoImpl;
 import com.agrologic.app.model.CellinkDto;
 import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.model.Program;
 import com.agrologic.app.model.UserDto;
 import org.apache.log4j.Logger;
 
@@ -79,8 +75,8 @@ public class ListUserCellinksServlet extends HttpServlet {
                 logger.info("retrieve all users ");
                 request.getSession().setAttribute("users", users);
 
-                ProgramDao programDao = new ProgramDaoImpl();
-                List<ProgramDto> programs = programDao.getAll();
+                ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                List<Program> programs = (List<Program>) programDao.getAll();
                 request.getSession().setAttribute("programs", programs);
                 request.getRequestDispatcher("./all-cellinks.jsp?userId=" + userId).forward(request, response);
             } catch (SQLException ex) {

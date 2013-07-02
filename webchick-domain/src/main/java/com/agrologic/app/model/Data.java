@@ -3,60 +3,61 @@ package com.agrologic.app.model;
 import java.io.Serializable;
 
 public class Data implements Serializable, Comparable<Data>, Cloneable {
-    public static final int   ALARM            = 2;
-    public static final int   DATA             = 4;
-    public static final int   HISTORY          = 5;
-    public static final int   RELAY            = 1;
-    public static final int   STATUS           = 0;
-    public static final int   SYSTEM_STATE     = 3;
+    public static final int ALARM = 2;
+    public static final int DATA = 4;
+    public static final int HISTORY = 5;
+    public static final int RELAY = 1;
+    public static final int STATUS = 0;
+    public static final int SYSTEM_STATE = 3;
     private static final long serialVersionUID = 2L;
-    private boolean           updated          = false;
-    private String            display;
-    private Integer           format;
-    private Long              id;
-    private Boolean           isRelay;
-    private String            label;
-    private Long              langId;
-    private Integer           position;
-    private Boolean           readonly;
-    private Integer           relayStatus;
-    private Integer           special;
-    private Boolean           status;
-    private String            title;
-    private Long              type;
-    private String            unicodeLabel;
-    private Long              value;
+    private boolean updated = false;
+    private String display;
+    private Integer format;
+    private Long id;
+    private Boolean isRelay;
+    private String label;
+    private Long langId;
+    private Integer position;
+    private Boolean readonly;
+    private Integer relayStatus;
+    private Integer special;
+    private Boolean status;
+    private String title;
+    private Long type;
+    private String unicodeLabel;
+    private Long value;
 
-    public Data() {}
+    public Data() {
+    }
 
     /**
      * Copy constructor
      */
     public Data(Data copy) {
-        this.id           = copy.id;
-        this.type         = copy.type;
-        this.status       = copy.status;
-        this.readonly     = copy.readonly;
-        this.title        = copy.title;
-        this.format       = copy.format;
-        this.label        = copy.label;
+        this.id = copy.id;
+        this.type = copy.type;
+        this.status = copy.status;
+        this.readonly = copy.readonly;
+        this.title = copy.title;
+        this.format = copy.format;
+        this.label = copy.label;
         this.unicodeLabel = copy.unicodeLabel;
-        this.relayStatus  = copy.relayStatus;
-        this.isRelay      = copy.isRelay;
-        this.special      = copy.special;
-        this.value        = copy.value;
-        this.langId       = copy.langId;
-        this.updated      = false;
-        this.position     = copy.position;
-        this.display      = copy.display;
+        this.relayStatus = copy.relayStatus;
+        this.isRelay = copy.isRelay;
+        this.special = copy.special;
+        this.value = copy.value;
+        this.langId = copy.langId;
+        this.updated = false;
+        this.position = copy.position;
+        this.display = copy.display;
     }
 
-    public Long getId() {
-        return id;
+    public boolean isUpdated() {
+        return updated;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUpdated(boolean updated) {
+        this.updated = updated;
     }
 
     public String getDisplay() {
@@ -67,12 +68,22 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
         this.display = display;
     }
 
-    public Integer getFormat() {
-        return format;
+    public String isChecked() {
+        return ("yes".equals(display))
+                ? "checked"
+                : "unchecked";
     }
 
     public void setFormat(Integer format) {
         this.format = format;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Boolean getIsRelay() {
@@ -83,22 +94,22 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
         this.isRelay = isRelay;
     }
 
-    public boolean isAlarm() {
-        return special == 2;
-    }
-
-    public boolean isSystemState() {
-        return special == 3;
-    }
-
     public String getLabel() {
         return (label == null)
-               ? ""
-               : label;
+                ? ""
+                : label;
     }
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public Long getLangId() {
+        return langId;
+    }
+
+    public void setLangId(Long langId) {
+        this.langId = langId;
     }
 
     public Integer getPosition() {
@@ -113,16 +124,12 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
         return readonly;
     }
 
+    public Boolean isReadonly() {
+        return readonly;
+    }
+
     public void setReadonly(Boolean readonly) {
         this.readonly = readonly;
-    }
-
-    public Integer getRelayStatus() {
-        return relayStatus;
-    }
-
-    public void setRelayStatus(Integer relayStatus) {
-        this.relayStatus = relayStatus;
     }
 
     public Integer getSpecial() {
@@ -159,138 +166,143 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
 
     public String getUnicodeLabel() {
         return (unicodeLabel == null)
-               ? ""
-               : unicodeLabel;
+                ? ""
+                : unicodeLabel;
     }
 
     public void setUnicodeLabel(String unicodeLabel) {
         this.unicodeLabel = unicodeLabel;
     }
 
-    public boolean isUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(boolean updated) {
-        this.updated = updated;
-    }
-
+    /* ************************************************************************************** */
+    /* ************************* this methods useful in webchick-web ************************ */
+    /* ************************************************************************************** */
     public Long getValue() {
-        updated = false;
         return value;
     }
 
-    public Long getValueToView() {
+    public void setValue(Long value) {
+        this.value = value;
+        updated = true;
+    }
+
+    public Long getValueToUI() {
         Long valueView = value;
         if (format == null) {
             valueView = value;
         } else if ((format == DataFormat.TIME) || (format == DataFormat.TIME_SEC) || (format == DataFormat.DATE)) {
             valueView = DataFormat.convertToTimeFormat(valueView);
+        } else {
+            valueView = value;
         }
         this.updated = true;
         return valueView;
     }
 
-    public void setValue(Long value) {
-
-//      if (format == null) {
-//          this.value = value;
-//      } else if (format == DataFormat.TIME
-//              || format == DataFormat.TIME_SEC
-//              || format == DataFormat.DATE) {
-//          this.value = DataFormat.convertToTimeFormat(value);
-//      } else {
-//          this.value = value;
-//      }
-//      this.updated = true;
-        this.value = value;
-        updated    = true;
-    }
-
-    public Long getLangId() {
-        return langId;
-    }
-
-    public void setLangId(Long langId) {
-        this.langId = langId;
-    }
-
-    public boolean isDoubleBuffer() {
-        return (format == DataFormat.DEC_4)
-               ? true
-               : false;
-    }
-
-    public boolean isLong() {
-        return (format == DataFormat.DEC_4)
-               ? true
-               : false;
-    }
-
-//  public void setValueToChange(Long value) {
-//      if (format == DataFormat.TIME || format == DataFormat.DATE) {
-////          String stringValue = Long.toHexString(value);
-////          Long stringValue2 = Long.valueOf( value.toString(), 16);
-//          Long.parseLong(Long.toHexString(value));
-//          this.value = Long.parseLong(Long.toHexString(value));
-//      } else {
-//          this.value = value;
-//      }
-//  }
-    public void setValueToChange(Long value) {
-        if ((format == DataFormat.TIME) || (format == DataFormat.DATE)) {
-            this.value = Long.valueOf(value.toString(), 16);
-        } else {
-            this.value = value;
+    /**
+     * Change newValue according to format.
+     *
+     * @param value the new newValue .
+     * @see Data#setValueFromUI(Long)
+     */
+    public void setValueFromUI(String value) {
+        if (value != null && !value.equals("")) {
+            Long parsed = Long.parseLong(value);
+            setValueFromUI(parsed);
         }
     }
 
     /**
-     * Change value according to format.
-     *
-     * @param value the new value .
+     * @param newValue
      */
-    public void setValueToChange(String value) {
-        if ((format == DataFormat.TIME) || (format == DataFormat.DATE)) {
-            this.value = Long.parseLong(value);
+    public void setValueFromUI(Long newValue) {
+        if (format == DataFormat.TIME || format == DataFormat.TIME_SEC || format == DataFormat.DATE) {
+            this.value = Long.valueOf(newValue.toString(), 16);
         } else {
-            this.value = Long.valueOf(value);
+            this.value = newValue;
         }
     }
 
-    public String isChecked() {
-        return ("yes".equals(display))
-               ? "checked"
-               : "unchecked";
+    /**
+     * Return true if there is a letter in given string, false otherwise.
+     * <p/>
+     * we need to check if a letter appear because of parsing hex value.
+     *
+     * @param s the given string to check
+     * @return true if there is a letter in string , otherwise false
+     */
+    private boolean isLetter(String s) {
+        for (Character c : s.toCharArray()) {
+            if (Character.isLetter(c)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public String getFormatedValue() {
+    public String getFormattedValue() {
         if (value != null) {
-            return new DataFormat(format).toStringValue(value);
+            Long valueToView = getValueToUI();
+            return new DataFormat(format).toStringValue(valueToView);
         } else {
             return "";
         }
     }
 
     public String printDataValue() {
-        return new DataFormat(format).toStringValue(value);
+        Long valueToView = getValueToUI();
+        return new DataFormat(format).toStringValue(valueToView);
     }
 
     public String displayTemplateValue() {
         return new DataFormat(format).toString();
     }
 
-    public boolean isDataReady() {
-        return (value == null)
-               ? false
-               : true;
+    public int getFormat() {
+        if (format == DataFormat.DEC_0) {
+            if ((id == 1302) || (id == 1329)
+                    || (id == 3059) || (id == 3083)
+                    || (id == 1500) || (id == 1501)
+                    || (id >= 1388 && id <= 1399)
+                    || (id >= 2171 && id <= 2175)) {
+                return DataFormat.DEC_5;
+            } else {
+                return format;
+            }
+        } else {
+            return format;
+        }
+    }
+    /*******************************************************************************************/
+    /**
+     * ************************ this methods useful in webchick-server************************
+     */
+    public boolean isAlarm() {
+        return special == 2;
+    }
+
+    public boolean isSystemState() {
+        return special == 3;
+    }
+
+    /**
+     * Return true if newValue of this data are 32 bit.
+     * <p/>
+     * These data values ​​are sent in parts. The first pairs sends data id and the upper 16 bits.The second pairs
+     * data id+1 and lower 16 bits .
+     *
+     * @return true if data is long type , otherwise false
+     */
+    public boolean isLongType() {
+        return (format == DataFormat.DEC_4)
+                ? true
+                : false;
     }
 
     @Override
     public Object clone() {
         try {
             Data cloned = (Data) super.clone();
-
             return cloned;
         } catch (CloneNotSupportedException ex) {
             return null;
@@ -314,9 +326,14 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
 
         final Data other = (Data) obj;
 
-        if ((this.id != other.id) && ((this.id == null) ||!this.id.equals(other.id))) {
+        if ((this.id != other.id) && ((this.id == null) || !this.id.equals(other.id))) {
             return false;
         }
+
+        if ((this.value != other.value) && ((this.value == null) || !this.value.equals(other.value))) {
+            return false;
+        }
+
         return true;
     }
 
@@ -325,15 +342,18 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
         int hash = 7;
 
         hash = 29 * hash + ((this.id != null)
-                            ? this.id.hashCode()
-                            : 0);
+                ? this.id.hashCode()
+                : 0);
+        hash = 29 * hash + ((this.value != null)
+                ? this.value.hashCode()
+                : 0);
         return hash;
     }
 
     @Override
     public String toString() {
         return new StringBuilder().append(" ID : ").append(id).append(" TYPE : ").append(type).append(
-            " LABEL :").append(label).append(" VALUE : ").append((value == null)
+                " LABEL :").append(label).append(" VALUE : ").append((value == null)
                 ? ""
                 : value).toString();
     }

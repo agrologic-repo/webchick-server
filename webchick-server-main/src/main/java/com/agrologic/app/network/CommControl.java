@@ -100,19 +100,19 @@ public class CommControl {
             networkState = NetworkState.STATE_ABORT;
         } catch (SOTException ex) {
             logException(ex);
-            response.setErrorCode(Message.SOT_ERROR);
+            response.setErrorCodes(Message.ErrorCodes.SOT_ERROR);
             networkState = NetworkState.STATE_TIMEOUT;
         } catch (EOTException ex) {
             logException(ex);
-            response.setErrorCode(Message.EOT_ERROR);
+            response.setErrorCodes(Message.ErrorCodes.EOT_ERROR);
             networkState = NetworkState.STATE_TIMEOUT;
         } catch (TimeoutException ex) {
             logException(ex);
-            response.setErrorCode(Message.TMO_ERROR);
+            response.setErrorCodes(Message.ErrorCodes.TIME_OUT_ERROR);
             networkState = NetworkState.STATE_TIMEOUT;
         } catch (InterruptedException ex) {
             logException(ex);
-            response.setErrorCode(Message.TMO_ERROR);
+            response.setErrorCodes(Message.ErrorCodes.TIME_OUT_ERROR);
             networkState = NetworkState.STATE_TIMEOUT;
         }
         return networkState;
@@ -394,7 +394,7 @@ public class CommControl {
             for (int i = 0; i < buffer.length; ) {
                 switch (parseState) {
                     case START:
-                        newBuffer[newBufCnt++] = Message.SOINDX;
+                        newBuffer[newBufCnt++] = Message.ProtocolBytes.SOINDX.getValue();
                         int val = (int) buffer[i++];
                         val <<= 8;
                         val += (int) buffer[i++];
@@ -402,7 +402,7 @@ public class CommControl {
                         for (byte b : ba) {
                             newBuffer[newBufCnt++] = b;
                         }
-                        newBuffer[newBufCnt++] = Message.SOT;
+                        newBuffer[newBufCnt++] = Message.ProtocolBytes.SOT.getValue();
                         parseState = ParseState.DATA;
                         break;
                     case DATA:
@@ -415,7 +415,7 @@ public class CommControl {
                         }
                         newBuffer[newBufCnt++] = ' ';
                         if (i == buffer.length) {
-                            newBuffer[newBufCnt - 1] = Message.EOT;
+                            newBuffer[newBufCnt - 1] = Message.ProtocolBytes.EOT.getValue();
                         }
                         break;
                     case READY:

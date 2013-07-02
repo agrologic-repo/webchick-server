@@ -38,13 +38,13 @@ public class KeepAliveMessage {
 
         Validate.notNull(payload, BUFFER_MUST_NOT_BE_NULL);
 
-        int stx = ByteUtil.indexOf(payload, Message.STX);
-        int etx = ByteUtil.indexOf(payload, Message.ETX);
+        int stx = ByteUtil.indexOf(payload, Message.ProtocolBytes.STX.getValue());
+        int etx = ByteUtil.indexOf(payload, Message.ProtocolBytes.ETX.getValue());
         if (stx < 0 || etx < 0) {
             throw new WrongMessageFormatException(MESSAGE_DOES_NOT_MATCH_THE_REQUIRED_FORMAT);
         }
         byte[] data = Arrays.copyOfRange(payload, stx + 1, etx);
-        List<byte[]> dataList = ByteUtil.split(data, Message.RS);
+        List<byte[]> dataList = ByteUtil.split(data, Message.ProtocolBytes.RS.getValue());
 
         if (dataList.size() < 2) {
             throw new WrongMessageFormatException(MESSAGE_DOES_NOT_MATCH_THE_REQUIRED_FORMAT);

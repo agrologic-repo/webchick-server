@@ -4,6 +4,8 @@
  */
 package com.agrologic.app.messaging;
 
+import org.apache.commons.lang.Validate;
+
 import java.util.Arrays;
 
 /**
@@ -115,14 +117,14 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
         StringBuilder messageString = new StringBuilder();
         switch (getMessageType()) {
             case ACK:
-                setBuffer(new byte[]{SOT, ACK, '\r'});
+                setBuffer(new byte[]{ProtocolBytes.SOT.getValue(), ProtocolBytes.ACK.getValue(), '\r'});
                 break;
             case ERROR:
-                setBuffer(new byte[]{SOT, NACK, '\r'});
+                setBuffer(new byte[]{ProtocolBytes.SOT.getValue(), ProtocolBytes.NACK.getValue(), '\r'});
                 break;
             case KEEP_ALIVE:
                 byte[] ka = getKeepAlive().getBytes();
-                setBuffer(new byte[]{SOT, ka[0], '\r'});
+                setBuffer(new byte[]{ProtocolBytes.SOT.getValue(), ka[0], '\r'});
                 break;
 
 
@@ -179,7 +181,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
                 setBuffer(messageString.toString().getBytes());
                 break;
             default:
-                setBuffer(new byte[]{SOT, NACK, '\r'});
+                setBuffer(new byte[]{ProtocolBytes.SOT.getValue(), ProtocolBytes.NACK.getValue(), '\r'});
                 break;
         }
     }
@@ -191,9 +193,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
      * @return checksum the check sum
      */
     public static int calcCheckSumToSend(final byte[] buffer) throws NullPointerException {
-        if (buffer == null) {
-            throw new NullPointerException("Buffer is null");
-        }
+        Validate.notNull(buffer, "buffer can not be null");
 
         int checksum = 0;
         for (int i = 0; i < buffer.length; i++) {

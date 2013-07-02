@@ -6,11 +6,12 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.table.TableOfHistoryCreator;
 import org.apache.log4j.Logger;
@@ -65,15 +66,15 @@ public class TableOfHeaterOnTime extends HttpServlet {
                 try {
                     FlockDao flockDao = new FlockDaoImpl();
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    DataDao dataDao = new DataDaoImpl();
-                    DataDto data1 = dataDao.getById(Long.valueOf(1303), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData1 =
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    Data data1 = dataDao.getById(Long.valueOf(1303), Long.valueOf(1));
+                    Map<Integer, Data> interestData1 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data1);
-                    DataDto data2 = dataDao.getById(Long.valueOf(1304), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData2 =
+                    Data data2 = dataDao.getById(Long.valueOf(1304), Long.valueOf(1));
+                    Map<Integer, Data> interestData2 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data2);
-                    DataDto data3 = dataDao.getById(Long.valueOf(1305), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData3 =
+                    Data data3 = dataDao.getById(Long.valueOf(1305), Long.valueOf(1));
+                    Map<Integer, Data> interestData3 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data3);
 
                     out.println("<p>");
@@ -90,9 +91,9 @@ public class TableOfHeaterOnTime extends HttpServlet {
 
                     while (iter.hasNext()) {
                         Integer growDay = (Integer) iter.next();
-                        DataDto d1 = interestData1.get(growDay);
-                        DataDto d2 = interestData2.get(growDay);
-                        DataDto d3 = interestData3.get(growDay);
+                        Data d1 = interestData1.get(growDay);
+                        Data d2 = interestData2.get(growDay);
+                        Data d3 = interestData3.get(growDay);
 
                         if ((d1 == null) || (d2 == null) || (d3 == null)) {
 
@@ -118,7 +119,7 @@ public class TableOfHeaterOnTime extends HttpServlet {
         }
     }
 
-    private long valueByType(DataDto data) {
+    private long valueByType(Data data) {
         Long value = data.getValue();
 
         if (DataFormat.TIME == data.getFormat()) {
@@ -129,7 +130,7 @@ public class TableOfHeaterOnTime extends HttpServlet {
             return t;
         }
 
-        return Long.valueOf(data.getFormatedValue());
+        return Long.valueOf(data.getFormattedValue());
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -6,12 +6,12 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.dao.ScreenDao;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.dao.impl.ScreenDaoImpl;
-import com.agrologic.app.model.ProgramDto;
-import com.agrologic.app.model.ScreenDto;
+import com.agrologic.app.model.Program;
+import com.agrologic.app.model.Screen;
 import com.agrologic.app.utils.DateLocal;
 import org.apache.log4j.Logger;
 
@@ -23,11 +23,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class AddScreenFormServlet extends HttpServlet {
 
     /**
@@ -42,7 +37,7 @@ public class AddScreenFormServlet extends HttpServlet {
             throws ServletException, IOException {
 
         /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddProgramServlet.class);
+        final Logger logger = Logger.getLogger(AddScreenFormServlet.class);
 
         response.setContentType("text/html;charset=UTF-8");
 
@@ -58,9 +53,10 @@ public class AddScreenFormServlet extends HttpServlet {
                 String screenDescript = (String) request.getParameter("NscreenDescript");
 
                 try {
-                    ScreenDao screenDao = new ScreenDaoImpl();
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    ;
                     int size = screenDao.getNextScreenPosByProgramId(programId);
-                    ScreenDto screen = new ScreenDto();
+                    Screen screen = new Screen();
 
                     screen.setProgramId(programId);
                     screen.setTitle(screenTitle);
@@ -70,8 +66,8 @@ public class AddScreenFormServlet extends HttpServlet {
                     screenDao.insert(screen);
                     logger.info("New screen successfully added !");
 
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto program = programDao.getById(programId);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(programId);
 
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);

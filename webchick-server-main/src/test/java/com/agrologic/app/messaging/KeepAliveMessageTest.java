@@ -13,6 +13,11 @@ public class KeepAliveMessageTest {
     private final static byte[] WRONG_FORMAT_PAY_LOAD = new byte[]{Message.ProtocolBytes.STX.getValue(),
             'c', 't', 'b', 'c', 't', 'b', Message.ProtocolBytes.ETX.getValue()};
 
+    private final static byte[] PAY_LOAD_3G = new byte[]{Message.ProtocolBytes.STX.getValue(), 'c', 't', 'b',
+            Message.ProtocolBytes.RS.getValue(), 'c', 't', 'b',
+            Message.ProtocolBytes.RS.getValue(), '5', '.', '0', '1', '3', 'G', 'e', '*',
+            Message.ProtocolBytes.RS.getValue(), Message.ProtocolBytes.ETX.getValue()};
+
     @Test
     public void testParseIncomingBytes() throws Exception {
         KeepAliveMessage kam = KeepAliveMessage.parseIncomingBytes(PAY_LOAD);
@@ -20,6 +25,15 @@ public class KeepAliveMessageTest {
         assertEquals(kam.getPassword(), ("ctb"));
         assertEquals(kam.getVersion(), ("5.01We*"));
     }
+
+    @Test
+    public void testParseIncomingBytes3G() throws Exception {
+        KeepAliveMessage kam = KeepAliveMessage.parseIncomingBytes(PAY_LOAD_3G);
+        assertEquals(kam.getUsername(), ("ctb"));
+        assertEquals(kam.getPassword(), ("ctb"));
+        assertEquals(kam.getVersion(), ("5.013Ge*"));
+    }
+
 
     @Test
     public void testParseIncomingBytesIfBufferIsNull() throws WrongMessageFormatException {

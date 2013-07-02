@@ -4,34 +4,12 @@
  */
 package com.agrologic.app.model;
 
-import com.agrologic.app.model.UserRole;
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.Test;
 
-/**
- *
- * @author Administrator
- */
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 public class UserRoleTest {
-
-    public UserRoleTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     @Test
     public void getUserRoleValue() {

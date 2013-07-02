@@ -57,11 +57,10 @@ public class UserLogoutServlet extends HttpServlet {
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
             UserDto user = (UserDto) request.getSession().getAttribute("user");
-            CellinkDao cellinkDao = new CellinkDaoImpl();
+            CellinkDao cellinkDao = new CellinkDaoImpl();//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
 
             try {
                 List<CellinkDto> cellinks = cellinkDao.getAllUserCellinks(user.getId());
-
                 for (CellinkDto cellink : cellinks) {
                     if ((cellink.getState() == CellinkState.STATE_RUNNING)
                             || (cellink.getState() == CellinkState.STATE_START)) {
@@ -71,7 +70,6 @@ public class UserLogoutServlet extends HttpServlet {
                 }
 
                 Cookie logout = new Cookie("logout", "true");
-
                 logout.setMaxAge(60 * 60 * 24 * 365);
                 response.addCookie(logout);
                 logger.info(user + " , successfully logged out from system .");

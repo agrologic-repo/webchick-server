@@ -32,9 +32,6 @@ public class DerbyDaoFactory extends DaoFactory {
         }
     }
 
-    private DerbyDaoFactory() {
-    }
-
     public static DerbyDaoFactory instance() {
         if (instanceObject == null) {
             synchronized (DerbyDaoFactory.class) {

@@ -7,11 +7,12 @@ package com.agrologic.app.web;
 * and open the template in the editor.
  */
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.HistorySettingDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.HistorySettingDaoImpl;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.model.HistorySettingDto;
 import org.apache.log4j.Logger;
 
@@ -57,8 +58,8 @@ public class HistorySettingServlet extends HttpServlet {
                 try {
                     HistorySettingDao historySettingDao = new HistorySettingDaoImpl();
                     List<HistorySettingDto> histSettingList = historySettingDao.getHistorySetting(programId);
-                    DataDao dataDao = new DataDaoImpl();
-                    List<DataDto> historyData = dataDao.getHistoryDataList();
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    List<Data> historyData = dataDao.getHistoryDataList();
 
                     request.getSession().setAttribute("historyData", historyData);
                     request.getSession().setAttribute("historySettingData", histSettingList);

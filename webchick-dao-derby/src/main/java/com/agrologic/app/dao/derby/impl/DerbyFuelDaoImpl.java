@@ -1,11 +1,12 @@
 package com.agrologic.app.dao.derby.impl;
 
 
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.CreatebleDao;
+import com.agrologic.app.dao.DaoFactory;
+import com.agrologic.app.dao.DropableDao;
+import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.FuelDaoImpl;
 import com.agrologic.app.model.Fuel;
-
-
 
 import java.sql.*;
 
@@ -65,7 +66,7 @@ public class DerbyFuelDaoImpl extends FuelDaoImpl implements CreatebleDao, Dropa
     @Override
     public void insert(Fuel fuel) throws SQLException {
         String sqlQuery = "INSERT INTO FUEL (FLOCKID, AMOUNT, DATE, NUMBERACCOUNT, PRICE, TOTAL) "
-                + "VALUES (?,?,?,?,?,?) " ;
+                + "VALUES (?,?,?,?,?,?) ";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -108,7 +109,7 @@ public class DerbyFuelDaoImpl extends FuelDaoImpl implements CreatebleDao, Dropa
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.FUEL ";
         Statement stmt = null;
         Connection con = null;

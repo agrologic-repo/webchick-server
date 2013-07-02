@@ -6,8 +6,9 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -36,19 +37,19 @@ public class ProgIdCheckServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            ProgramDao pdi = new ProgramDaoImpl();
+            ProgramDao pdi = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
             String sid = request.getParameter("programId");
             Long id = Long.parseLong(sid);
-            boolean isOk = pdi.checkNewProgramId(id);
+            boolean exist = pdi.isProgramWithGivenIdExist(id);
 
             response.setContentType("text/xml");
             response.setHeader("Cache-Control", "no-cache");
             out.print("<message>");
 
-            if (isOk) {
+            if (!exist) {
                 out.print("program id valid");
             } else {
-                out.print("program id invalid, choose another program id");
+                out.print("program with this id already exist, choose another id");
             }
 
             out.println("</message>");

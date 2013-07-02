@@ -6,14 +6,15 @@ import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.ScreenDaoImpl;
 import com.agrologic.app.model.Screen;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
 import java.util.Collection;
 
 public class DerbyScreenDaoImpl extends ScreenDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyScreenDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyScreenDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
 
     @Override
@@ -206,7 +207,7 @@ public class DerbyScreenDaoImpl extends ScreenDaoImpl implements CreatebleDao, D
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.SCREENS ";
         Statement stmt = null;
         Connection con = null;

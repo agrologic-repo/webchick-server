@@ -31,7 +31,7 @@ public class AssignSystemStateFormServlet extends HttpServlet {
             throws ServletException, IOException {
 
         /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddProgramServlet.class);
+        final Logger logger = Logger.getLogger(AssignSystemStateFormServlet.class);
 
         response.setContentType("text/html;charset=UTF-8");
 

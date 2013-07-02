@@ -61,7 +61,7 @@ public class PropertySummaryServlet extends HttpServlet {
                 try {
                     if (user.getRole() == UserRole.ADMINISTRATOR) {
                         UserDao userDao = new UserDaoImpl();
-                        CellinkDao cellinkDao = new CellinkDaoImpl();
+                        CellinkDao cellinkDao = new CellinkDaoImpl();//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                         ControllerDao controllerDao = new ControllerDaoImpl();
                         List<UserDto> users = userDao.getAll();
 

@@ -3,11 +3,11 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.DataDto" %>
-<%@ page import="com.agrologic.app.model.ProgramDto" %>
+<%@ page import="com.agrologic.app.model.Data" %>
+<%@ page import="com.agrologic.app.model.Program" %>
 <%@ page import="com.agrologic.app.model.ProgramSystemState" %>
 <%@ page import="com.agrologic.app.model.SystemState" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
@@ -20,12 +20,12 @@
     request.getSession().setAttribute("message", null);
     boolean errorFlag = false;
 
-    ProgramDto program = (ProgramDto) request.getSession().getAttribute("program");
-    List<DataDto> dataSystemStates = (List<DataDto>) request.getSession().getAttribute("dataSystemStates");
-    List<SystemState> systemStateNames = (List<SystemState>) request.getSession().getAttribute("systemStateNames");
+    Program program = (Program) request.getSession().getAttribute("program");
+    Collection<Data> dataSystemStates = (Collection<Data>) request.getSession().getAttribute("dataSystemStates");
+    Collection<SystemState> systemStateNames = (Collection<SystemState>) request.getSession().getAttribute("systemStateNames");
     String datamap;
 %>
-<%! ProgramSystemState findSystemState(List<ProgramSystemState> dataSystemStates, Long systemStateType, int number) {
+<%! ProgramSystemState findSystemState(Collection<ProgramSystemState> dataSystemStates, Long systemStateType, int number) {
     for (ProgramSystemState s : dataSystemStates) {
         if (s.getDataId().equals(systemStateType) && s.getNumber() == number) {
             return s;
@@ -124,7 +124,7 @@
                     <input type="hidden" id="datamap" name="datamap">
                     <table>
                         <tr>
-                            <% for (DataDto dataSysState : dataSystemStates) {%>
+                            <% for (Data dataSysState : dataSystemStates) {%>
                             <td valign="top"><p>
 
                                 <h3><%=dataSysState.getLabel()%>
@@ -140,7 +140,7 @@
                                     <tbody>
                                     <% int numbers = 10;%>
                                     <%
-                                        List<ProgramSystemState> programSystemStates = program.getProgramSystemStateByData(dataSysState.getId());%>
+                                        Collection<ProgramSystemState> programSystemStates = program.getProgramSystemStateByData(dataSysState.getId());%>
                                     <% for (int number = 1; number <= numbers; number++) {%>
                                     <% ProgramSystemState systemState = findSystemState(programSystemStates, dataSysState.getId(), number);%>
                                     <tr>

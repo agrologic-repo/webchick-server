@@ -10,6 +10,7 @@
 package com.agrologic.app.network.rxtx;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.config.Protocol;
 import com.agrologic.app.except.SerialPortControlFailure;
@@ -57,7 +58,7 @@ public class SerialPortControl implements SerialPortEventListener {
     /**
      * Creates a new instance of SerialPortControl .
      *
-     * @param com the com name
+     * @param com     the com name
      * @param network the network thread.
      * @throws SerialPortControlFailure if failed initialization .
      */
@@ -120,19 +121,19 @@ public class SerialPortControl implements SerialPortEventListener {
             serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
         } catch (UnsupportedCommOperationException ex) {
             logger.debug(ex);
-            throw new SerialPortControlFailure("COM port does not support operation you choosed .", ex);
+            throw new SerialPortControlFailure("COM port does not support operation you choose ", ex);
         } catch (TooManyListenersException ex) {
             logger.debug(ex);
             throw new SerialPortControlFailure("Serial port does not failure.", ex);
         } catch (IOException ex) {
             logger.debug(ex);
-            throw new SerialPortControlFailure("Can not create in\\out streams for serial port.", ex);
+            throw new SerialPortControlFailure("Can not create in\\out streams for serial port", ex);
         } catch (PortInUseException ex) {
             logger.debug(ex);
-            throw new SerialPortControlFailure("Selected port in use . Try select another port.", ex);
+            throw new SerialPortControlFailure("Selected port in use . Select another port ", ex);
         } catch (NoSuchPortException ex) {
             logger.debug(ex);
-            throw new SerialPortControlFailure("No such port .Try select another port.", ex);
+            throw new SerialPortControlFailure("No such port .Try select another port ", ex);
         }
     }
 
@@ -140,8 +141,8 @@ public class SerialPortControl implements SerialPortEventListener {
      * Write a buffer array over a serial port.
      *
      * @param message the message object
-     * @param sot the start of transmission index.
-     * @param eot the end of transmission index.
+     * @param sot     the start of transmission index.
+     * @param eot     the end of transmission index.
      * @throws IOException if I/O exception occurs.
      */
     public synchronized void write(final Message message, final int sot, final int eot) throws IOException {
@@ -164,8 +165,8 @@ public class SerialPortControl implements SerialPortEventListener {
      * Write a buffer array over a serial port.
      *
      * @param message the message object
-     * @param sot the start of transmission index.
-     * @param eot the end of transmission index.
+     * @param sot     the start of transmission index.
+     * @param eot     the end of transmission index.
      * @throws IOException if I/O exception occurs.
      */
     public synchronized void write(String vindex, final Message message, final int sot, final int eot) throws IOException {
@@ -193,7 +194,6 @@ public class SerialPortControl implements SerialPortEventListener {
     }
 
     /**
-     *
      * @param index
      * @param buffer
      * @return
@@ -286,12 +286,12 @@ public class SerialPortControl implements SerialPortEventListener {
             // read until detect EOT byte
             while (in.available() > 0) {
                 data = in.read() & 0x7F;
-                if (((byte) data) == Message.EOT) {
-                    buffer[ count++] = (byte) data;
+                if (((byte) data) == Message.ProtocolBytes.EOT.getValue()) {
+                    buffer[count++] = (byte) data;
                     network.setThreadState(NetworkState.STATE_READ);
                     break;
                 } else {
-                    buffer[ count++] = (byte) data;
+                    buffer[count++] = (byte) data;
                 }
                 sendTime = System.currentTimeMillis();
                 Thread.sleep(1);
@@ -317,16 +317,16 @@ public class SerialPortControl implements SerialPortEventListener {
                 switch (state) {
                     case WAIT:
                         if (data == 0xC0) {
-                            buffer[ count++] = (byte) data;
+                            buffer[count++] = (byte) data;
                             state = SlipProtocol.SlipStates.DATA;
                         }
                         break;
                     case DATA:
                         if (data == 0xC0) {
-                            buffer[ count++] = (byte) data;
+                            buffer[count++] = (byte) data;
                             state = SlipProtocol.SlipStates.READY;
                         } else {
-                            buffer[ count++] = (byte) data;
+                            buffer[count++] = (byte) data;
                         }
                         break;
                     case READY:

@@ -7,12 +7,10 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
 import com.agrologic.app.model.Alarm;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
+import com.agrologic.app.model.Program;
 import com.agrologic.app.model.ProgramAlarm;
-import com.agrologic.app.model.ProgramDto;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -60,8 +58,8 @@ public class ProgramAlarmsServlet extends HttpServlet {
                 Long programId = Long.parseLong(request.getParameter("programId"));
 
                 try {
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto program = programDao.getById(programId);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(programId);
 
                     logger.info("retrieve program!");
 
@@ -73,8 +71,8 @@ public class ProgramAlarmsServlet extends HttpServlet {
                     logger.info("retrieve program alarms!");
                     request.getSession().setAttribute("program", program);
 
-                    DataDao dataDao = new DataDaoImpl();
-                    List<DataDto> dataAlarms = dataDao.getAlarms();
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    List<Data> dataAlarms = dataDao.getAlarms();
 
                     logger.info("retrieve program alarms datatypes!");
                     request.getSession().setAttribute("dataAlarms", dataAlarms);

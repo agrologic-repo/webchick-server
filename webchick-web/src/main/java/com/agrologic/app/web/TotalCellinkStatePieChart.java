@@ -44,8 +44,7 @@ public class TotalCellinkStatePieChart extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CellinkDao cellinkDao = new CellinkDaoImpl();
-
+        CellinkDao cellinkDao = new CellinkDaoImpl();//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         setValues(cellinkDao);
 
         // jfc = ChartFactory.createPieChart("Cellinks Grouped By States", dataset, true, true, false);

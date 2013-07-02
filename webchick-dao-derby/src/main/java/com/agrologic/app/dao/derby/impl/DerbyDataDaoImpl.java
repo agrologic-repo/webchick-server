@@ -1,14 +1,18 @@
 package com.agrologic.app.dao.derby.impl;
 
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.CreatebleDao;
+import com.agrologic.app.dao.DaoFactory;
+import com.agrologic.app.dao.DropableDao;
+import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.DataDaoImpl;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import java.sql.*;
 
 public class DerbyDataDaoImpl extends DataDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-
-    public DerbyDataDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyDataDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
 
     @Override
@@ -139,7 +143,7 @@ public class DerbyDataDaoImpl extends DataDaoImpl implements CreatebleDao, Dropa
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.DATATABLE ";
         Statement stmt = null;
         Connection con = null;

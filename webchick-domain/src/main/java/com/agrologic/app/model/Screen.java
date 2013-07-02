@@ -1,26 +1,26 @@
 package com.agrologic.app.model;
 
 import java.io.Serializable;
-
-import java.util.List;
+import java.util.Collection;
 
 public class Screen implements Serializable, Comparable<Screen> {
-    public static final int   COLUMN_NUMBERS   = 4;
+    public static final int COLUMN_NUMBERS = 4;
     private static final long serialVersionUID = 3L;
-    private String            descript;
-    private String            display;
-    private Long              id;
-    private Long              langId;
-    private Integer           position;
-    private Long              programId;
-    private List<Table>       tables;
-    private String            title;
-    private String            unicodeTitle;
+    private String descript;
+    private String display;
+    private Long id;
+    private Long langId;
+    private Integer position;
+    private Long programId;
+    private Collection<Table> tables;
+    private String title;
+    private String unicodeTitle;
 
-    public Screen() {}
+    public Screen() {
+    }
 
     public Screen(Long id, String title) {
-        this.id    = id;
+        this.id = id;
         this.title = title;
     }
 
@@ -73,7 +73,9 @@ public class Screen implements Serializable, Comparable<Screen> {
     }
 
     public String getUnicodeTitle() {
-        return unicodeTitle;
+        return (unicodeTitle == null)
+                ? ""
+                : unicodeTitle;
     }
 
     public void setUnicodeTitle(String unicodeTitle) {
@@ -88,11 +90,11 @@ public class Screen implements Serializable, Comparable<Screen> {
         this.descript = descript;
     }
 
-    public List<Table> getTables() {
+    public Collection<Table> getTables() {
         return tables;
     }
 
-    public void setTables(List<Table> tables) {
+    public void setTables(Collection<Table> tables) {
         this.tables = tables;
     }
 
@@ -108,8 +110,8 @@ public class Screen implements Serializable, Comparable<Screen> {
 
     public String isChecked() {
         return ("yes".equals(display))
-               ? "checked"
-               : "unchecked";
+                ? "checked"
+                : "unchecked";
     }
 
     @Override
@@ -124,12 +126,12 @@ public class Screen implements Serializable, Comparable<Screen> {
 
         final Screen other = (Screen) obj;
 
-        if ((this.id != other.id) && ((this.id == null) ||!this.id.equals(other.id))) {
+        if ((this.id != other.id) && ((this.id == null) || !this.id.equals(other.id))) {
             return false;
         }
 
         if ((this.programId != other.programId)
-                && ((this.programId == null) ||!this.programId.equals(other.programId))) {
+                && ((this.programId == null) || !this.programId.equals(other.programId))) {
             return false;
         }
 
@@ -141,11 +143,11 @@ public class Screen implements Serializable, Comparable<Screen> {
         int hash = 7;
 
         hash = 61 * hash + ((this.id != null)
-                            ? this.id.hashCode()
-                            : 0);
+                ? this.id.hashCode()
+                : 0);
         hash = 61 * hash + ((this.programId != null)
-                            ? this.programId.hashCode()
-                            : 0);
+                ? this.programId.hashCode()
+                : 0);
 
         return hash;
     }
@@ -153,7 +155,7 @@ public class Screen implements Serializable, Comparable<Screen> {
     @Override
     public String toString() {
         return new StringBuilder().append(" ID : ").append(id).append(" TITLE :").append(title).append(
-            " PROGRAMID : ").append(programId).toString();
+                " PROGRAMID : ").append(programId).toString();
     }
 
     @Override

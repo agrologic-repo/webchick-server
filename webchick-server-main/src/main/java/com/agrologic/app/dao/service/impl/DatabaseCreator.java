@@ -74,11 +74,15 @@ public class DatabaseCreator implements DatabaseCreatable {
         while (iter.hasNext()) {
             try {
                 Object creator = iter.next();
+                logger.info("Create " + creator.getClass().getName() + " table ... ");
                 if (!((CreatebleDao) creator).tableExist()) {
-                    logger.info("Create " + creator.getClass().getName() + " table ... ");
+                    logger.info("Created " + creator.getClass().getName() + " table ... ");
                     ((CreatebleDao) creator).createTable();
                 }
             } catch (SQLException ex) {
+                logger.info(" Error during creating tables ", ex);
+            } catch (Exception ex) {
+                ex.printStackTrace();
                 logger.info(" Error during creating tables ", ex);
             }
         }

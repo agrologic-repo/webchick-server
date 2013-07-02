@@ -6,12 +6,12 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.dao.ScreenDao;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.dao.impl.ScreenDaoImpl;
-import com.agrologic.app.model.ProgramDto;
-import com.agrologic.app.model.ScreenDto;
+import com.agrologic.app.model.Program;
+import com.agrologic.app.model.Screen;
 import com.agrologic.app.utils.DateLocal;
 import org.apache.log4j.Logger;
 
@@ -60,8 +60,9 @@ public class EditScreenFormServlet extends HttpServlet {
                 String newDescript = request.getParameter("Ndescript");
 
                 try {
-                    ScreenDao screenDao = new ScreenDaoImpl();
-                    ScreenDto screen = screenDao.getById(programId, screenId);
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    ;
+                    Screen screen = screenDao.getById(programId, screenId);
 
                     screen.setTitle(newTitle);
                     screen.setPosition(newPosition);
@@ -69,8 +70,8 @@ public class EditScreenFormServlet extends HttpServlet {
                     screenDao.update(screen);
                     logger.info("Screen " + screen + "successfully updated !");
 
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto program = programDao.getById(programId);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(programId);
                     String modified = DateLocal.currentDate();
 
                     program.setModifiedDate(modified);

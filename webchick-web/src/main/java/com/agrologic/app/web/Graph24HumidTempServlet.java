@@ -7,13 +7,14 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.graph.daily.Graph;
 import com.agrologic.app.graph.daily.Graph24IOH;
 import com.agrologic.app.graph.daily.GraphType;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
@@ -58,8 +59,8 @@ public class Graph24HumidTempServlet extends HttpServlet {
         try {
             ControllerDao controllerDao = new ControllerDaoImpl();
             String values = controllerDao.getControllerGraph(controllerId);
-            DataDao dataDao = new DataDaoImpl();
-            DataDto setClock = dataDao.getSetClockByController(controllerId);
+            DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+            Data setClock = dataDao.getSetClockByController(controllerId);
 
             if (values == null) {
             } else {

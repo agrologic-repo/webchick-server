@@ -44,7 +44,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
     private Logger logger = Logger.getLogger(SocketThread.class);
 
     public SocketThread(WCSLWindow wcsl, DatabaseManager dbManager)
-            throws NumberFormatException, ObjectDoesNotExist {
+            throws NumberFormatException, ObjectDoesNotExist, SerialPortControlFailure {
         super();
         this.wcsl = wcsl;
         this.networkState = NetworkState.STATE_STARTING;
@@ -69,7 +69,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                 logger.info("Communication port opened successfully!");
             } catch (SerialPortControlFailure e) {
                 logger.error(e);
-//                throw new SerialPortControlFailure(e.getMessage(), e);
+                throw new SerialPortControlFailure(e.getMessage(), e);
             }
         }
 
@@ -273,7 +273,6 @@ public final class SocketThread extends Observable implements Runnable, Network 
     }
 
     /**
-     *
      * @throws HeadlessException
      */
     private void startingCommunication() throws HeadlessException {
@@ -307,6 +306,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
 
     /**
      * Set status panel
+     *
      * @param sp the status panel
      */
     public void setStatusPanel(StatusPanel sp) {
@@ -324,7 +324,6 @@ public final class SocketThread extends Observable implements Runnable, Network 
     }
 
     /**
-     *
      * @param networkState
      */
     @Override

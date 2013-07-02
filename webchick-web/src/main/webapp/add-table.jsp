@@ -3,7 +3,7 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.ScreenDto" %>
+<%@ page import="com.agrologic.app.model.Screen" %>
 
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
@@ -11,7 +11,7 @@
         response.sendRedirect("./index.htm");
         return;
     }
-    ScreenDto screen = (ScreenDto) request.getSession().getAttribute("screen");
+    Screen screen = (Screen) request.getSession().getAttribute("screen");
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">

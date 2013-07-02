@@ -3,7 +3,7 @@
 <%@ include file="language.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.*" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -19,10 +19,10 @@
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long screenId = Long.parseLong(request.getParameter("screenId"));
-    List<ControllerDto> controllers = (List<ControllerDto>) request.getSession().getAttribute("controllers");
+    Collection<ControllerDto> controllers = (Collection<ControllerDto>) request.getSession().getAttribute("controllers");
     ControllerDto controller = getController(controllers, controllerId);
-    ProgramDto program = controller.getProgram();
-    List<ScreenDto> screens = program.getScreens();
+    Program program = controller.getProgram();
+    Collection<Screen> screens = program.getScreens();
     Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");
 
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
@@ -31,7 +31,7 @@
         response.sendRedirect("./rmtctrl-screens.html?lang=" + lang + "&userId=" + userId + "&cellinkId=" + cellinkId + "&screenId=" + screenId + "&controllerId=" + controllerId);
     }
 %>
-<%! ControllerDto getController(List<ControllerDto> controllers, Long controllerId) {
+<%! ControllerDto getController(Collection<ControllerDto> controllers, Long controllerId) {
     for (ControllerDto c : controllers) {
         if (c.getId().equals(controllerId)) {
             return c;
@@ -185,7 +185,7 @@
                                         int col = 0;
                                         final long MAIN_SCREEN = 1;
                                     %>
-                                    <%for (ScreenDto screen : screens) {%>
+                                    <%for (Screen screen : screens) {%>
                                     <% if ((col % 8) == 0) {%>
                                 </tr>
                                 <tr>
@@ -241,13 +241,13 @@
                 <table cellPadding="2" cellSpacing="2" align="center">
                     <%
                         int column = 0;
-                        ScreenDto currScreen = program.getScreenById(screenId);
-                        List<TableDto> tables = currScreen.getTables();
+                        Screen currScreen = program.getScreenById(screenId);
+                        Collection<Table> tables = currScreen.getTables();
                         if (tables.size() > 0) {%>
                     <%
-                        for (TableDto table : tables) {
+                        for (Table table : tables) {
                             Long tableId = table.getId();
-                            if ((column % ScreenDto.COLUMN_NUMBERS) == 0) {
+                            if ((column % Screen.COLUMN_NUMBERS) == 0) {
                     %>
                     <tr>
                         <%}%>
@@ -261,7 +261,7 @@
                                 </th>
                                 </thead>
                                 <tbody>
-                                <% for (DataDto data : table.getDataList()) {
+                                <% for (Data data : table.getDataList()) {
                                     if (data.isStatus()) {
                                         int special = data.getSpecial();
                                         switch (special) {
@@ -271,7 +271,7 @@
                                     onmouseout="this.className='unselected'">
                                     <td class="tableHeaders" nowrap><%=data.getUnicodeLabel()%>
                                     </td>
-                                    <td class="tableValues" nowrap><%=data.getFormatedValue()%>
+                                    <td class="tableValues" nowrap><%=data.getFormattedValue()%>
                                     </td>
                                 </tr>
                                 <% break;
@@ -280,7 +280,7 @@
                                     onmouseout="this.className='unselected'">
                                     <td class="tableHeaders" nowrap><%=data.getUnicodeLabel()%>
                                     </td>
-                                    <td class="tableValues" nowrap><%=data.getFormatedValue()%>
+                                    <td class="tableValues" nowrap><%=data.getFormattedValue()%>
                                     </td>
                                 </tr>
                                 <% break;
@@ -293,7 +293,7 @@
                                     </td>
                                     <td class="tableValues" style="text-decoration: underline"
                                         onclick='window.open("rmctrl-edit-value.jsp?controllerId=<%=controller.getId()%>&screenId=<%=screenId%>&tableId=<%=tableId%>&dataId=<%=data.getId()%>","mywindow","status=no,width=200,height=200,left=350,top=400,screenX=100,screenY=100")'>
-                                        <a title='Click to edit'><%=data.getFormatedValue()%>
+                                        <a title='Click to edit'><%=data.getFormattedValue()%>
                                         </a>
                                     </td>
                                 </tr>
@@ -305,7 +305,7 @@
                             </table>
                         </td>
                         <%column++;%>
-                        <%if ((column % ScreenDto.COLUMN_NUMBERS) == 0) {%>
+                        <%if ((column % Screen.COLUMN_NUMBERS) == 0) {%>
                     </tr>
                     <%}%>
                     <%}%>

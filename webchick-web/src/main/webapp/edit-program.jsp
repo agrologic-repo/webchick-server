@@ -3,9 +3,9 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.ProgramDto" %>
+<%@ page import="com.agrologic.app.model.Program" %>
 
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -13,13 +13,13 @@
         return;
     }
 
-    List<ProgramDto> programs = (List<ProgramDto>) request.getSession().getAttribute("programs");
+    Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("programs");
     Long programId = Long.parseLong(request.getParameter("programId"));
-    ProgramDto program = findProgramToEdit(programs, programId);
+    Program program = findProgramToEdit(programs, programId);
 %>
 
-<%! ProgramDto findProgramToEdit(List<ProgramDto> cellinks, Long programId) {
-    for (ProgramDto p : cellinks) {
+<%! Program findProgramToEdit(Collection<Program> cellinks, Long programId) {
+    for (Program p : cellinks) {
         if (p.getId().equals(programId)) {
             return p;
         }

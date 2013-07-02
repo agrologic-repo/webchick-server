@@ -1,19 +1,8 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.dao.impl.TableDaoImpl;
-import com.agrologic.app.model.ProgramDto;
-import com.agrologic.app.model.TableDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.model.Program;
+import com.agrologic.app.model.Table;
 import com.agrologic.app.utils.DateLocal;
 import org.apache.log4j.Logger;
 
@@ -28,11 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class SaveDataOnTable extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -87,14 +71,13 @@ public class SaveDataOnTable extends HttpServlet {
                 }
 
                 try {
-                    TableDao tableDao = new TableDaoImpl();
-                    TableDto table = tableDao.getById(programId, screenId, tableId);
-                    DataDao dataDao = new DataDaoImpl();
-
+                    TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                    Table table = tableDao.getById(programId, screenId, tableId);
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     dataDao.saveChanges(programId, screenId, tableId, showTableMap, posDataMap);
 
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto program = programDao.getById(programId);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(programId);
 
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);

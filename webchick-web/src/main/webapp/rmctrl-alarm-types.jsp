@@ -4,7 +4,7 @@
 
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.ControllerDto" %>
-<%@ page import="com.agrologic.app.model.DataDto" %>
+<%@ page import="com.agrologic.app.model.Data" %>
 <%@ page import="java.util.regex.Matcher" %>
 
 <jsp:directive.page import="java.util.regex.Pattern"/>
@@ -14,12 +14,12 @@
     Long screenId = Long.parseLong(request.getParameter("screenId"));
     Long tableId = Long.parseLong(request.getParameter("tableId"));
     Long dataId = Long.parseLong(request.getParameter("dataId"));
-    List<ControllerDto> controllers = (List<ControllerDto>) request.getSession().getAttribute("controllers");
+    Collection<ControllerDto> controllers = (Collection<ControllerDto>) request.getSession().getAttribute("controllers");
     ControllerDto controller = getController(controllers, controllerId);
-    DataDto data = controller.getInterestData(screenId, tableId, dataId);
+    Data data = controller.getInterestData(screenId, tableId, dataId);
 
 %>
-<%! ControllerDto getController(List<ControllerDto> controllers, Long controllerId) {
+<%! ControllerDto getController(Collection<ControllerDto> controllers, Long controllerId) {
     for (ControllerDto c : controllers) {
         if (c.getId().equals(controllerId)) {
             return c;
@@ -29,8 +29,8 @@
 }
 %>
 
-<%! DataDto getDataFromList(List<DataDto> dataList, Long dataId) {
-    for (DataDto d : dataList) {
+<%! Data getDataFromList(Collection<Data> dataList, Long dataId) {
+    for (Data d : dataList) {
         if (d.getId().equals(dataId)) {
             return d;
         }
@@ -399,7 +399,7 @@ function closeWindow() {
         <input id="dataId" readonly type="hidden" name="dataId" class=rightTitles value="<%=dataId%>">
         <tr>
             <td><%=session.getAttribute("edit.value.label")%> *</td>
-            <td><input id="Nvalue" type="text" name="Nvalue" value="<%=data.getFormatedValue() %>" style="width:100px"
+            <td><input id="Nvalue" type="text" name="Nvalue" value="<%=data.getFormattedValue() %>" style="width:100px"
                        onkeyup="return checkField(event,this,'<%=data.getFormat()%>')"></td>
         </tr>
         <tr>

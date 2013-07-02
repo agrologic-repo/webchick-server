@@ -1,13 +1,7 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.*;
+import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -18,13 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class ViewResultServlet extends HttpServlet {
 
     /**
@@ -75,29 +65,26 @@ public class ViewResultServlet extends HttpServlet {
                 }
 
                 try {
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    List<ProgramDto> programs = programDao.getAll();
-                    ProgramDto program = programDao.getById(programId);
-                    ScreenDao screenDao = new ScreenDaoImpl();
-                    List<ScreenDto> screens = screenDao.getAllScreensByProgramAndLang(programId, translateLang, false);
-
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    List<Program> programs = (List<Program>) programDao.getAll();
+                    Program program = programDao.getById(programId);
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    ;
+                    List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(programId, translateLang, false);
                     program.setScreens(screens);
 
-                    TableDao tableDao = new TableDaoImpl();
-                    DataDao dataDao = new DataDaoImpl();
+                    TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
-                    for (ScreenDto s : screens) {
+                    for (Screen s : screens) {
                         if (s.getId().equals(screenId)) {
-                            List<TableDto> tables = tableDao.getScreenTables(s.getProgramId(), s.getId(),
+                            Collection<Table> tables = tableDao.getScreenTables(s.getProgramId(), s.getId(),
                                     translateLang, false);
-
-                            for (TableDto table : tables) {
-                                List<DataDto> dataList = dataDao.getTableDataList(s.getProgramId(), s.getId(),
+                            for (Table table : tables) {
+                                List<Data> dataList = dataDao.getTableDataList(s.getProgramId(), s.getId(),
                                         table.getId(), translateLang, "yes");
-
                                 table.setDataList(dataList);
                             }
-
                             s.setTables(tables);
 
                             break;
@@ -110,7 +97,7 @@ public class ViewResultServlet extends HttpServlet {
 
                     program.setProgramRelays(programRelays);
 
-                    List<DataDto> dataRelays = dataDao.getRelays();
+                    List<Data> dataRelays = dataDao.getRelays();
                     LanguageDao languageDao = new LanguageDaoImpl();
                     List<LanguageDto> langList = languageDao.geAll();
 

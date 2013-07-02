@@ -6,32 +6,28 @@
 package com.agrologic.app.graph;
 
 
-
 import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.model.DataDto;
 import com.agrologic.app.graph.daily.Graph24FWI;
 import com.agrologic.app.graph.daily.Graph24IOH;
 import com.agrologic.app.graph.daily.GraphType;
-
+import com.agrologic.app.model.Data;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.servlet.ServletUtilities;
 
-//~--- JDK imports ------------------------------------------------------------
-
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import java.util.Locale;
 
-import javax.servlet.http.HttpSession;
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author Administrator
  */
 public class GenerateGraph {
@@ -40,9 +36,9 @@ public class GenerateGraph {
 
         try {
             ControllerDao controllerDao = new ControllerDaoImpl();
-            String         values        = controllerDao.getControllerGraph(controllerId);
-            DataDao       dataDao       = new DataDaoImpl();
-            DataDto        setClock      = dataDao.getSetClockByController(controllerId);
+            String values = controllerDao.getControllerGraph(controllerId);
+            DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+            Data setClock = dataDao.getSetClockByController(controllerId);
 
             if (values == null) {
                 throw new Exception("No data available in database.");
@@ -75,15 +71,15 @@ public class GenerateGraph {
     }
 
     public static String generateChartWaterFeedTemp(Long controllerId, HttpSession session, PrintWriter pw,
-            Locale locale)
+                                                    Locale locale)
             throws IOException {
         String filenamewft = null;
 
         try {
             ControllerDao controllerDao = new ControllerDaoImpl();
-            String         values        = controllerDao.getControllerGraph(controllerId);
-            DataDao       dataDao       = new DataDaoImpl();
-            DataDto        setClock      = dataDao.getSetClockByController(controllerId);
+            String values = controllerDao.getControllerGraph(controllerId);
+            DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+            Data setClock = dataDao.getSetClockByController(controllerId);
 
             if (values == null) {
                 throw new Exception("No data available in database.");

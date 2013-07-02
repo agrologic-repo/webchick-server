@@ -16,7 +16,7 @@
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
     WorkerDao workerDao = new WorkerDaoImpl();
-    List<WorkerDto> workerList = workerDao.getAllByCellinkId(cellinkId);
+    Collection<WorkerDto> workerList = workerDao.getAllByCellinkId(cellinkId);
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">

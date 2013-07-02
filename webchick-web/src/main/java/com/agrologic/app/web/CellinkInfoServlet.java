@@ -1,22 +1,12 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.UserDao;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.impl.CellinkDaoImpl;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
 import com.agrologic.app.dao.impl.UserDaoImpl;
 import com.agrologic.app.model.CellinkDto;
 import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.model.Program;
 import com.agrologic.app.model.UserDto;
 import org.apache.log4j.Logger;
 
@@ -27,14 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class CellinkInfoServlet extends HttpServlet {
 
     /**
@@ -50,11 +35,8 @@ public class CellinkInfoServlet extends HttpServlet {
 
         /** Logger for this class and subclasses */
         final Logger logger = Logger.getLogger(CellinkInfoServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
-
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
@@ -64,39 +46,28 @@ public class CellinkInfoServlet extends HttpServlet {
                 Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
 
                 try {
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    List<ProgramDto> programs = programDao.getAll();
-
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    List<Program> programs = (List<Program>) programDao.getAll();
                     request.getSession().setAttribute("programs", programs);
-
                     UserDao userDao = new UserDaoImpl();
                     UserDto editUser = userDao.getById(userId);
-
-                    editUser.setCellinks(new ArrayList<CellinkDto>());
-
                     CellinkDao cellinkDao = new CellinkDaoImpl();
                     CellinkDto c = (CellinkDto) cellinkDao.getById(cellinkId);
                     ControllerDao controllerDao = new ControllerDaoImpl();
-                    List<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
-
+                    Collection<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
                     for (ControllerDto ctrl : controllers) {
-                        ProgramDto program = programDao.getById(ctrl.getProgramId());
-
+                        Program program = programDao.getById(ctrl.getProgramId());
                         ctrl.setProgram(program);
                     }
-
-                    c.setControllers(controllers);
+                    c.setControllers((List) controllers);
                     editUser.addCellink(c);
                     logger.info("retrieve user and user cellinks and all controllers of each cellink");
                     request.getSession().setAttribute("edituser", editUser);
-
-                    List<String> controllernames = controllerDao.getControllerNames();
-
+                    List<String> controllernames = (List<String>) controllerDao.getControllerNames();
                     request.getSession().setAttribute("controllernames", controllernames);
                     request.getRequestDispatcher("./cellinkinfo.jsp?userId=" + userId + "&celinkId="
                             + cellinkId).forward(request, response);
                 } catch (SQLException ex) {
-
                     // error page
                     logger.error("Database error.", ex);
                 }

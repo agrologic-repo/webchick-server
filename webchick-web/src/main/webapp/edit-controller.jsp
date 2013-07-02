@@ -5,8 +5,8 @@
 
 <%@ page import="com.agrologic.app.model.ControllerDto" %>
 
-<jsp:directive.page import="com.agrologic.app.model.ProgramDto"/>
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="com.agrologic.app.model.Program"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -16,8 +16,8 @@
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     ControllerDto editController = (ControllerDto) request.getSession().getAttribute("editcontroller");
-    List<ProgramDto> programs = (List<ProgramDto>) request.getSession().getAttribute("programs");
-    List<String> controllernames = (List<String>) request.getSession().getAttribute("controllernames");
+    Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("programs");
+    Collection<String> controllernames = (Collection<String>) request.getSession().getAttribute("controllernames");
 %>
 
 
@@ -115,7 +115,7 @@
                             <td align="left">
                                 <select id="NprogramId" name="NprogramId" style="width:120px">
                                     <option value="None" selected>Select
-                                            <% for(ProgramDto p:programs) {%>
+                                            <% for(Program p:programs) {%>
                                     <option value="<%=p.getId() %>"><%=p.getName() %>
                                             <%}%>
                                 </select>

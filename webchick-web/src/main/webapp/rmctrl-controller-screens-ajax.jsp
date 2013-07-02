@@ -5,7 +5,7 @@
 <%@ page import="com.agrologic.app.model.ControllerDto" %>
 <%@ page import="com.agrologic.app.model.UserDto" %>
 
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -21,10 +21,10 @@
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long screenId = Long.parseLong(request.getParameter("screenId"));
-    List<ControllerDto> controllers = (List<ControllerDto>) request.getSession().getAttribute("controllers");
+    Collection<ControllerDto> controllers = (Collection<ControllerDto>) request.getSession().getAttribute("controllers");
     ControllerDto controller = getController(controllers, controllerId);
-//    ProgramDto program = controller.getProgram();
-//    List<ScreenDto> screens = program.getScreens();
+//    Program program = controller.getProgram();
+//    Collection<Screen> screens = program.getScreens();
 //    Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");
 
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
@@ -34,7 +34,7 @@
     }
     String direction = (String) request.getSession().getAttribute("dir");
 %>
-<%! ControllerDto getController(List<ControllerDto> controllers, Long controllerId) {
+<%! ControllerDto getController(Collection<ControllerDto> controllers, Long controllerId) {
     for (ControllerDto c : controllers) {
         if (c.getId().equals(controllerId)) {
             return c;

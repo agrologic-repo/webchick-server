@@ -1,13 +1,8 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.*;
+import com.agrologic.app.dao.impl.ActionSetDaoImpl;
+import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -18,11 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-/**
- * @author JanL
- */
 public class ListScreenTables extends HttpServlet {
 
     @Override
@@ -66,13 +59,14 @@ public class ListScreenTables extends HttpServlet {
                 }
 
                 try {
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto program = programDao.getById(programId);
-                    ScreenDao screenDao = new ScreenDaoImpl();
-                    List<ScreenDto> screens = screenDao.getAllByProgramId(programId);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(programId);
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    ;
+                    List<Screen> screens = (List<Screen>) screenDao.getAllByProgramId(programId);
                     program.setScreens(screens);
 
-                    ScreenDto screen = screenDao.getById(programId, screenId);
+                    Screen screen = screenDao.getById(programId, screenId);
                     if (screen.getTitle().equals("Action Set Buttons")) {
                         ActionSetDao actionsetDao = new ActionSetDaoImpl();
                         List<ActionSetDto> actionset = actionsetDao.getAll(programId, translateLang);
@@ -88,8 +82,8 @@ public class ListScreenTables extends HttpServlet {
                         request.getRequestDispatcher("./all-actionset.jsp?screenId=" + screen.getId()
                                 + "&translateLang=" + translateLang).forward(request, response);
                     } else {
-                        TableDao tableDao = new TableDaoImpl();
-                        List<TableDto> tables = tableDao.getScreenTables(screen.getProgramId(), screen.getId(),
+                        TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                        Collection<Table> tables = tableDao.getScreenTables(screen.getProgramId(), screen.getId(),
                                 translateLang, true);
                         screen.setTables(tables);
 

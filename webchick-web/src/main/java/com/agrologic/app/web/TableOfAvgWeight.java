@@ -6,11 +6,12 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.table.TableOfHistoryCreator;
 import org.apache.log4j.Logger;
 
@@ -71,18 +72,18 @@ public class TableOfAvgWeight extends HttpServlet {
                 try {
                     FlockDao flockDao = new FlockDaoImpl();
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    DataDao dataDao = new DataDaoImpl();
-                    DataDto data1 = dataDao.getById(Long.valueOf(2933), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData1 =
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    Data data1 = dataDao.getById(Long.valueOf(2933), Long.valueOf(1));
+                    Map<Integer, Data> interestData1 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data1);
-                    DataDto data2 = dataDao.getById(Long.valueOf(2934), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData2 =
+                    Data data2 = dataDao.getById(Long.valueOf(2934), Long.valueOf(1));
+                    Map<Integer, Data> interestData2 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data2);
-                    DataDto data3 = dataDao.getById(Long.valueOf(2935), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData3 =
+                    Data data3 = dataDao.getById(Long.valueOf(2935), Long.valueOf(1));
+                    Map<Integer, Data> interestData3 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data3);
-                    DataDto data4 = dataDao.getById(Long.valueOf(2936), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData4 =
+                    Data data4 = dataDao.getById(Long.valueOf(2936), Long.valueOf(1));
+                    Map<Integer, Data> interestData4 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data4);
 
                     out.println("<h2>Average Weight [KG] </h2>");
@@ -100,10 +101,10 @@ public class TableOfAvgWeight extends HttpServlet {
 
                     while (iter.hasNext()) {
                         Integer growDay = (Integer) iter.next();
-                        DataDto d1 = interestData1.get(growDay);
-                        DataDto d2 = interestData2.get(growDay);
-                        DataDto d3 = interestData3.get(growDay);
-                        DataDto d4 = interestData4.get(growDay);
+                        Data d1 = interestData1.get(growDay);
+                        Data d2 = interestData2.get(growDay);
+                        Data d3 = interestData3.get(growDay);
+                        Data d4 = interestData4.get(growDay);
 
                         if ((d1 == null) || (d2 == null) || (d3 == null) || (d4 == null)) {
 
@@ -112,10 +113,10 @@ public class TableOfAvgWeight extends HttpServlet {
                         } else {
                             out.println("<tr>");
                             out.println("<td align=center>" + growDay + "</td>");
-                            out.println("<td align=center>" + d1.getFormatedValue() + "</td>");
-                            out.println("<td align=center>" + d2.getFormatedValue() + "</td>");
-                            out.println("<td align=center>" + d3.getFormatedValue() + "</td>");
-                            out.println("<td align=center>" + d4.getFormatedValue() + "</td>");
+                            out.println("<td align=center>" + d1.getFormattedValue() + "</td>");
+                            out.println("<td align=center>" + d2.getFormattedValue() + "</td>");
+                            out.println("<td align=center>" + d3.getFormattedValue() + "</td>");
+                            out.println("<td align=center>" + d4.getFormattedValue() + "</td>");
                             out.println("</tr>");
                         }
                     }

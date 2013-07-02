@@ -5,7 +5,7 @@
 
 <jsp:directive.page import="com.agrologic.app.model.CellinkDto"/>
 <jsp:directive.page import="com.agrologic.app.model.ControllerDto"/>
-<jsp:directive.page import="com.agrologic.app.model.ProgramDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Program"/>
 <jsp:directive.page import="com.agrologic.app.web.CellinkState"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
@@ -15,12 +15,12 @@
     }
     UserDto editUser = (UserDto) request.getSession().getAttribute("edituser");
     Long userId = Long.parseLong(request.getParameter("userId"));
-    List<CellinkDto> cellinks = editUser.getCellinks();
+    Collection<CellinkDto> cellinks = editUser.getCellinks();
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     CellinkDto cellink = findCellinkToEdit(cellinks, cellinkId);
-    List<ControllerDto> controllers = cellink.getControllers();
+    Collection<ControllerDto> controllers = cellink.getControllers();
 %>
-<%! UserDto findUserToEdit(List<UserDto> users, Long userId) {
+<%! UserDto findUserToEdit(Collection<UserDto> users, Long userId) {
     for (UserDto u : users) {
         if (u.getId().equals(userId)) {
             return u;
@@ -30,7 +30,7 @@
 }
 %>
 
-<%! CellinkDto findCellinkToEdit(List<CellinkDto> cellinks, Long cellinkId) {
+<%! CellinkDto findCellinkToEdit(Collection<CellinkDto> cellinks, Long cellinkId) {
     for (CellinkDto c : cellinks) {
         if (c.getId().equals(cellinkId)) {
             return c;
@@ -39,7 +39,7 @@
     return null;
 }
 %>
-<%! public UserDto getChoosedUser(List<UserDto> users, Long userId) {
+<%! public UserDto getChoosedUser(Collection<UserDto> users, Long userId) {
     for (UserDto u : users) {
         if (u.getId().equals(userId)) {
             return u;
@@ -49,7 +49,7 @@
 }
 %>
 
-<%! public CellinkDto getChoosedCellink(List<CellinkDto> cellinks, Long cellinkId) {
+<%! public CellinkDto getChoosedCellink(Collection<CellinkDto> cellinks, Long cellinkId) {
     for (CellinkDto c : cellinks) {
         if (c.getId().equals(cellinkId)) {
             return c;
@@ -248,10 +248,10 @@
                                                     <td align="center">
                                                         <%if (user.getRole() != UserRole.REGULAR) {%>
                                                         <a href="./all-screens.html?programId=<%=controller.getProgramId() %>">
-                                                            <%=((ProgramDto) controller.getProgram()).getName() %>
+                                                            <%=((Program) controller.getProgram()).getName() %>
                                                         </a>
                                                         <%} else {%>
-                                                        <%=((ProgramDto) controller.getProgram()).getName() %>
+                                                        <%=((Program) controller.getProgram()).getName() %>
                                                         <%}%>
                                                     </td>
                                                     <td align="center">

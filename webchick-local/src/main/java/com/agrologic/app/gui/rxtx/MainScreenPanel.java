@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -91,7 +92,7 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
     public void initLoadedControllerData() {
         long screenId = 1;  // main screen id
         long tableId = 1;  // main screen table id
-        List<Data> dataList = controller.getProgram().getScreenById(screenId).getTableById(tableId).getDataList();
+        Collection<Data> dataList = controller.getProgram().getScreenById(screenId).getTableById(tableId).getDataList();
         dataControllerList = new ArrayList<DataController>();
         for (Data d : dataList) {
             DataController newData = new DataController(d);
@@ -202,7 +203,7 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                     while (iter.hasNext()) {
                         Data data = iter.next();
                         if (df.getId().equals(data.getId())) {
-                            df.setValue(data.getValueToView());
+                            df.setValue(data.getValueToUI());
                         }
                     }
                 }

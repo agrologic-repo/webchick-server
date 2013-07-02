@@ -22,18 +22,18 @@ public class ClientSessions {
     private final Configuration configuration;
     private final Map<Long, SocketThread> sessions = new ConcurrentHashMap<Long, SocketThread>();
     private final CellinkDao cellinkDao;
-    private final ServerUI serverFacade;
+    private final ServerUI server;
 
-    public ClientSessions(Configuration configuration, ServerUI serverFacade, CellinkDao cellinkDao) {
+    public ClientSessions(Configuration configuration, ServerUI server, CellinkDao cellinkDao) {
         this.configuration = configuration;
-        this.serverFacade = serverFacade;
+        this.server = server;
         this.cellinkDao = cellinkDao;
     }
 
     public synchronized SocketThread createSessionWithClient(Socket socket) throws IOException {
         SocketThread newThread = new SocketThread(this, socket, configuration);
-        newThread.setServerFacade(serverFacade);
-        newThread.run();
+        newThread.setServerFacade(server);
+        new Thread(newThread).start();
         return newThread;
     }
 

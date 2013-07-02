@@ -1,13 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.*;
+import com.agrologic.app.dao.impl.ActionSetDaoImpl;
+import com.agrologic.app.dao.impl.CellinkDaoImpl;
+import com.agrologic.app.dao.impl.ControllerDaoImpl;
+import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -18,13 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class RCActionSetServlet extends HttpServlet {
 
     /**
@@ -66,12 +59,12 @@ public class RCActionSetServlet extends HttpServlet {
                 long langId = languageDao.getLanguageId(lang);
                 ControllerDao controllerDao = new ControllerDaoImpl();
                 ControllerDto controller = controllerDao.getById(controllerId);
-                ProgramDao programDao = new ProgramDaoImpl();
-                ProgramDto program = programDao.getById(controller.getProgramId());
-                ScreenDao screenDao = new ScreenDaoImpl();
-                List<ScreenDto> screens = screenDao.getAllScreensByProgramAndLang(program.getId(), langId, false);
+                ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                Program program = programDao.getById(controller.getProgramId());
+                ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                Collection<Screen> screens = screenDao.getAllScreensByProgramAndLang(program.getId(), langId, false);
 
-                program.setScreens(screens);
+                program.setScreens((List<Screen>) screens);
                 controller.setProgram(program);
 
                 ActionSetDao actionsetDao = new ActionSetDaoImpl();

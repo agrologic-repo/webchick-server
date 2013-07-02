@@ -179,7 +179,7 @@ public class DataComponent {
         String formatedValue = "-1";
 
         if (data.getValue() != null) {
-            formatedValue = DataFormat.formatToStringValue(data.getFormat(), data.getValueToView());
+            formatedValue = DataFormat.formatToStringValue(data.getFormat(), data.getValueToUI());
         }
 
         final DataLabel dataLabel = new DataLabel(formatedValue);
@@ -191,7 +191,7 @@ public class DataComponent {
         String formatedValue = "-1";
 
         if (data.getValue() != null) {
-            formatedValue = DataFormat.formatToStringValue(data.getFormat(), data.getValueToView());
+            formatedValue = DataFormat.formatToStringValue(data.getFormat(), data.getValueToUI());
 
             // dataText.setText(formatedValue);
         }

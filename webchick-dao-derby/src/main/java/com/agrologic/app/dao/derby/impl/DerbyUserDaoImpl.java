@@ -1,11 +1,12 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.UserDaoImpl;
 import com.agrologic.app.model.User;
+
 import java.sql.*;
 
 
@@ -63,7 +64,7 @@ public class DerbyUserDaoImpl extends UserDaoImpl implements CreatebleDao, Dropa
     public void insert(User user) throws SQLException {
         String sqlQuery =
                 "INSERT INTO USERS (USERID, NAME, PASSWORD, FIRSTNAME, LASTNAME, ROLE, STATE, PHONE, EMAIL, COMPANY)"
-                + " VALUES (?,?,?,?,?,?,?,?,?,?)";
+                        + " VALUES (?,?,?,?,?,?,?,?,?,?)";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -111,7 +112,7 @@ public class DerbyUserDaoImpl extends UserDaoImpl implements CreatebleDao, Dropa
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.USERS ";
         Statement stmt = null;
         Connection con = null;

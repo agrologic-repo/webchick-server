@@ -6,15 +6,16 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.graph.history.HistoryGraph;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartUtilities;
 
@@ -77,21 +78,21 @@ public class GraphAvgWeightServlet extends HttpServlet {
             try {
                 FlockDao flockDao = new FlockDaoImpl();
                 Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                DataDao dataDao = new DataDaoImpl();
-                List<Map<Integer, DataDto>> dataHistroryList = new ArrayList<Map<Integer, DataDto>>();
-                DataDto data1 = dataDao.getById(Long.valueOf(2933));
+                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                List<Map<Integer, Data>> dataHistroryList = new ArrayList<Map<Integer, Data>>();
+                Data data1 = dataDao.getById(Long.valueOf(2933));
 
                 dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
 
-                DataDto data2 = dataDao.getById(Long.valueOf(2934));
+                Data data2 = dataDao.getById(Long.valueOf(2934));
 
                 dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
 
-                DataDto data3 = dataDao.getById(Long.valueOf(2935));
+                Data data3 = dataDao.getById(Long.valueOf(2935));
 
                 dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data3));
 
-                DataDto data4 = dataDao.getById(Long.valueOf(2936));
+                Data data4 = dataDao.getById(Long.valueOf(2936));
 
                 dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data4));
 

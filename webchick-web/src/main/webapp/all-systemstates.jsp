@@ -5,15 +5,15 @@
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.SystemState" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    List<LanguageDto> languages = (List<LanguageDto>) request.getSession().getAttribute("languages");
-    List<SystemState> systemStateNames = (List<SystemState>) request.getSession().getAttribute("systemstateNames");
+    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
+    Collection<SystemState> systemStateNames = (Collection<SystemState>) request.getSession().getAttribute("systemstateNames");
 
     String translateLangStr = (String) request.getParameter("translateLang");
     if (translateLangStr == null) {
@@ -25,7 +25,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-    <title>System State List</title>
+    <title>System State Collection</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>

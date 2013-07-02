@@ -5,21 +5,21 @@
 
 <%@ page import="com.agrologic.app.model.CellinkDto" %>
 <%@ page import="com.agrologic.app.web.CellinkState" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    List<UserDto> users = (List<UserDto>) request.getSession().getAttribute("users");
+    Collection<UserDto> users = (Collection<UserDto>) request.getSession().getAttribute("users");
     String uid = request.getParameter("userId");
     Long userId = Long.parseLong(uid);
     UserDto selectedUser = getUserCellinks(users, userId);
 
-    List<CellinkDto> cellinks = selectedUser.getCellinks();
+    Collection<CellinkDto> cellinks = selectedUser.getCellinks();
 %>
-<%! UserDto getUserCellinks(List<UserDto> users, Long userId) {
+<%! UserDto getUserCellinks(Collection<UserDto> users, Long userId) {
     for (UserDto u : users) {
         if (u.getId() == userId) {
             return u;

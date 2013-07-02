@@ -5,7 +5,7 @@
 
 <%@ page import="com.agrologic.app.model.CellinkDto" %>
 
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -20,12 +20,12 @@
 
     UserDto editUser = (UserDto) request.getSession().getAttribute("edituser");
     Long userId = Long.parseLong(request.getParameter("userId"));
-    List<CellinkDto> cellinks = editUser.getCellinks();
+    Collection<CellinkDto> cellinks = editUser.getCellinks();
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     CellinkDto cellink = findCellinkToEdit(cellinks, cellinkId);
 %>
 
-<%! UserDto findUserToEdit(List<UserDto> users, Long userId) {
+<%! UserDto findUserToEdit(Collection<UserDto> users, Long userId) {
     for (UserDto u : users) {
         if (u.getId().equals(userId)) {
             return u;
@@ -35,7 +35,7 @@
 }
 %>
 
-<%! CellinkDto findCellinkToEdit(List<CellinkDto> cellinks, Long cellinkId) {
+<%! CellinkDto findCellinkToEdit(Collection<CellinkDto> cellinks, Long cellinkId) {
     for (CellinkDto c : cellinks) {
         if (c.getId().equals(cellinkId)) {
             return c;

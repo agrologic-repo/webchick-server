@@ -9,16 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Program implements Serializable, Comparable<Program> {
-    private static final long        serialVersionUID = 2L;
-    private String                   createdDate;
-    private Long                     id;
-    private String                   modifiedDate;
-    private String                   name;
-    private List<ProgramAlarm>       programAlarms;
-    private List<ProgramRelay>       programRelays;
+    private static final long serialVersionUID = 2L;
+    private String createdDate;
+    private Long id;
+    private String modifiedDate;
+    private String name;
+    private List<ProgramAlarm> programAlarms;
+    private List<ProgramRelay> programRelays;
     private List<ProgramSystemState> programSystemStates;
-    private List<Screen>             screens;
-    private List<Data>               specialList;
+    private List<Screen> screens;
+    private List<Data> specialList;
 
     public Long getId() {
         return id;
@@ -77,19 +77,19 @@ public class Program implements Serializable, Comparable<Program> {
     }
 
     // TODO : delete if code is unused
-//    public ProgramSystemState getSystemStateByNumber(long number) {
-//        int systemStateNumber = (int) number;
-//
-//        for (ProgramSystemState ps : programSystemStates) {
-//            if (ps.getSystemStateNumber().equals(systemStateNumber)) {
-//                return ps;
-//            } else {
-//                continue;
-//            }
-//        }
-//
-//        return new ProgramSystemState();
-//    }
+    public ProgramSystemState getSystemStateByNumber(long number) {
+        int systemStateNumber = (int) number;
+
+        for (ProgramSystemState ps : programSystemStates) {
+            if (ps.getSystemStateNumber().equals(systemStateNumber)) {
+                return ps;
+            } else {
+                continue;
+            }
+        }
+
+        return new ProgramSystemState();
+    }
 
     public List<Screen> getScreens() {
         if (screens == null) {
@@ -103,10 +103,9 @@ public class Program implements Serializable, Comparable<Program> {
         this.screens = screens;
     }
 
-    // TODO : delete if code is unused
-//    public void addScreen(final Screen screen) {
-//        getScreens().add(screen);
-//    }
+    public void addScreen(final Screen screen) {
+        getScreens().add(screen);
+    }
 
     public Screen getScreenById(final Long screenId) {
         for (Screen s : getScreens()) {
@@ -118,42 +117,41 @@ public class Program implements Serializable, Comparable<Program> {
         return null;
     }
 
-    // TODO : delete if code is unused
-//    public List<ProgramRelay> getProgramRelayByData(long dataId) {
-//        List<ProgramRelay> relayByData = new ArrayList<ProgramRelay>();
-//
-//        for (ProgramRelay e : programRelays) {
-//            if (e.getDataId() == dataId) {
-//                relayByData.add(e);
-//            }
-//        }
-//
-//        return relayByData;
-//    }
-//
-//    public List<ProgramAlarm> getProgramAlarmsByData(long dataId) {
-//        List<ProgramAlarm> alarmsByData = new ArrayList<ProgramAlarm>();
-//
-//        for (ProgramAlarm e : programAlarms) {
-//            if (e.getDataId() == dataId) {
-//                alarmsByData.add(e);
-//            }
-//        }
-//
-//        return alarmsByData;
-//    }
-//
-//    public List<ProgramSystemState> getProgramSystemStateByData(long dataId) {
-//        List<ProgramSystemState> systemStateByData = new ArrayList<ProgramSystemState>();
-//
-//        for (ProgramSystemState e : programSystemStates) {
-//            if (e.getDataId() == dataId) {
-//                systemStateByData.add(e);
-//            }
-//        }
-//
-//        return systemStateByData;
-//    }
+    public List<ProgramRelay> getProgramRelayByData(long dataId) {
+        List<ProgramRelay> relayByData = new ArrayList<ProgramRelay>();
+
+        for (ProgramRelay e : programRelays) {
+            if (e.getDataId() == dataId) {
+                relayByData.add(e);
+            }
+        }
+
+        return relayByData;
+    }
+
+    public List<ProgramAlarm> getProgramAlarmsByData(long dataId) {
+        List<ProgramAlarm> alarmsByData = new ArrayList<ProgramAlarm>();
+
+        for (ProgramAlarm e : programAlarms) {
+            if (e.getDataId() == dataId) {
+                alarmsByData.add(e);
+            }
+        }
+
+        return alarmsByData;
+    }
+
+    public List<ProgramSystemState> getProgramSystemStateByData(long dataId) {
+        List<ProgramSystemState> systemStateByData = new ArrayList<ProgramSystemState>();
+
+        for (ProgramSystemState e : programSystemStates) {
+            if (e.getDataId() == dataId) {
+                systemStateByData.add(e);
+            }
+        }
+
+        return systemStateByData;
+    }
 
     @Override
     public int compareTo(Program o) {

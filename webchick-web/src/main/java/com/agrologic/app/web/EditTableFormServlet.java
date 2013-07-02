@@ -6,14 +6,9 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.dao.impl.TableDaoImpl;
-import com.agrologic.app.model.ProgramDto;
-import com.agrologic.app.model.TableDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.model.Program;
+import com.agrologic.app.model.Table;
 import com.agrologic.app.utils.DateLocal;
 import org.apache.log4j.Logger;
 
@@ -65,11 +60,11 @@ public class EditTableFormServlet extends HttpServlet {
                 String newTitle = request.getParameter("Ntabletitle");
                 Long newScreenId = Long.parseLong(request.getParameter("NscreenId"));
                 Integer newPosition = Integer.parseInt(request.getParameter("Nposition"));
-                TableDao tableDao = new TableDaoImpl();
-                DataDao dataDao = new DataDaoImpl();
+                TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
                 try {
-                    TableDto table = tableDao.getById(programId, oldScreenId, tableId);
+                    Table table = tableDao.getById(programId, oldScreenId, tableId);
                     if (table != null) {
                         table.setTitle(newTitle);
                         table.setPosition(newPosition);
@@ -81,8 +76,8 @@ public class EditTableFormServlet extends HttpServlet {
                     dataDao.moveData(newScreenId, programId, tableId);
                     logger.info("Data from table " + table + " successfully moved !");
 
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto program = programDao.getById(programId);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(programId);
 
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);

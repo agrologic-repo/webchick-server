@@ -4,10 +4,10 @@
 <%@ include file="language.jsp" %>
 
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ page import="com.agrologic.app.model.ProgramDto" %>
+<%@ page import="com.agrologic.app.model.Program" %>
 
-<jsp:directive.page import="com.agrologic.app.model.ScreenDto"/>
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="com.agrologic.app.model.Screen"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -20,7 +20,7 @@
     }
 
     Long programId = Long.parseLong(param);
-    List<ProgramDto> programs = (List<ProgramDto>) request.getSession().getAttribute("programs");
+    Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("programs");
 
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -141,7 +141,7 @@
                                             <td>
                                                 <% Long defaultProgId = new Long(1); %>
                                                 <select name="programs" id="program" onclick="showScreens('program')">
-                                                    <% for (ProgramDto p : programs) {%>
+                                                    <% for (Program p : programs) {%>
                                                     <% if (p.getId().equals(defaultProgId)) {%>
                                                     <option value="<%=p.getId() %>" selected><%=p.getName() %>
                                                             <%} else if(!p.getId().equals(programId)){%>
@@ -154,19 +154,19 @@
                                         <tr>
                                             <td>Choose Screen</td>
                                             <td valign="center">
-                                                <%for (ProgramDto p : programs) {%>
+                                                <%for (Program p : programs) {%>
                                                 <p>
                                                         <%if(p.getId()== 1){%>
                                                     <select name="screen<%=p.getId()%>" id="screen<%=p.getId()%>"
                                                             style="display:block">
-                                                        <%for (ScreenDto s : p.getScreens()) {%>
+                                                        <%for (Screen s : p.getScreens()) {%>
                                                         <option value="<%=s.getId()%>"><%=s.getTitle()%>
                                                                 <%}%>
                                                     </select>
                                                         <%} else if(!p.getId().equals(programId)){%>
                                                     <select name="screen<%=p.getId()%>" id="screen<%=p.getId()%>"
                                                             style="display:none">
-                                                        <%for (ScreenDto s : p.getScreens()) {%>
+                                                        <%for (Screen s : p.getScreens()) {%>
                                                         <option value="<%=s.getId()%>"><%=s.getTitle()%>
                                                                 <%}%>
                                                     </select>

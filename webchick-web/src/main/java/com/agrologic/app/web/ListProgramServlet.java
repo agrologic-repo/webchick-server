@@ -6,9 +6,10 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.model.Program;
 import com.agrologic.app.model.UserDto;
 import org.apache.log4j.Logger;
 
@@ -20,7 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -66,29 +67,24 @@ public class ListProgramServlet extends HttpServlet {
                     }
 
                     UserDto user = (UserDto) request.getSession().getAttribute("user");
-                    ProgramDao programDao = new ProgramDaoImpl();
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     int count = programDao.count();
-                    List<ProgramDto> programs = new ArrayList<ProgramDto>();
-                    List<ProgramDto> allPrograms = new ArrayList<ProgramDto>();
-                    allPrograms = programDao.getAll();
-
+                    Collection<Program> programs = new ArrayList<Program>();
+                    Collection<Program> allPrograms = programDao.getAll();
                     switch (user.getRole()) {
                         case UserRole.REGULAR:
                             programs = programDao.getAllByUserId(searchText, user.getId());
                             setTableParameters(request, index, count);
-
                             break;
 
                         case UserRole.ADMINISTRATOR:
                             programs = programDao.getAll(searchText, index);
                             setTableParameters(request, index, count);
-
                             break;
 
                         case UserRole.ADVANCED:
                             programs = programDao.getAllByUserCompany(searchText, user.getCompany());
                             setTableParameters(request, index, count);
-
                             break;
 
                         default:

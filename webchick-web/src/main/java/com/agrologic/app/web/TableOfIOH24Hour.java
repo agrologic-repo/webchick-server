@@ -6,11 +6,12 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.table.TableOfHistoryCreator;
 import org.apache.log4j.Logger;
@@ -75,60 +76,60 @@ public class TableOfIOH24Hour extends HttpServlet {
                     FlockDao flockDao = new FlockDaoImpl();
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
                     long langId = 1;
-                    DataDao dataDao = new DataDaoImpl();
-                    DataDto data1 = dataDao.getById(Long.valueOf(1301), langId);
-                    Map<Integer, DataDto> interestData1 =
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    Data data1 = dataDao.getById(Long.valueOf(1301), langId);
+                    Map<Integer, Data> interestData1 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data1);
-                    DataDto data2 = dataDao.getById(Long.valueOf(1302), langId);
-                    Map<Integer, DataDto> interestData2 =
+                    Data data2 = dataDao.getById(Long.valueOf(1302), langId);
+                    Map<Integer, Data> interestData2 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data2);
-                    DataDto data3 = dataDao.getById(Long.valueOf(2933), langId);
-                    Map<Integer, DataDto> interestData3 =
+                    Data data3 = dataDao.getById(Long.valueOf(2933), langId);
+                    Map<Integer, Data> interestData3 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data3);
-                    DataDto data4 = dataDao.getById(Long.valueOf(2934), langId);
-                    Map<Integer, DataDto> interestData4 =
+                    Data data4 = dataDao.getById(Long.valueOf(2934), langId);
+                    Map<Integer, Data> interestData4 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data4);
-                    DataDto data5 = dataDao.getById(Long.valueOf(2935), langId);
-                    Map<Integer, DataDto> interestData5 =
+                    Data data5 = dataDao.getById(Long.valueOf(2935), langId);
+                    Map<Integer, Data> interestData5 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data5);
-                    DataDto data6 = dataDao.getById(Long.valueOf(2936), langId);
-                    Map<Integer, DataDto> interestData6 =
+                    Data data6 = dataDao.getById(Long.valueOf(2936), langId);
+                    Map<Integer, Data> interestData6 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data6);
-                    DataDto data7 = dataDao.getById(Long.valueOf(3002), langId);
-                    Map<Integer, DataDto> interestData7 =
+                    Data data7 = dataDao.getById(Long.valueOf(3002), langId);
+                    Map<Integer, Data> interestData7 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data7);
-                    DataDto data8 = dataDao.getById(Long.valueOf(3003), langId);
-                    Map<Integer, DataDto> interestData8 =
+                    Data data8 = dataDao.getById(Long.valueOf(3003), langId);
+                    Map<Integer, Data> interestData8 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data8);
-                    DataDto data9 = dataDao.getById(Long.valueOf(3004), langId);
-                    Map<Integer, DataDto> interestData9 =
+                    Data data9 = dataDao.getById(Long.valueOf(3004), langId);
+                    Map<Integer, Data> interestData9 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data9);
-                    DataDto data10 = dataDao.getById(Long.valueOf(3005), langId);
-                    Map<Integer, DataDto> interestData10 =
+                    Data data10 = dataDao.getById(Long.valueOf(3005), langId);
+                    Map<Integer, Data> interestData10 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data10);
-                    DataDto data11 = dataDao.getById(Long.valueOf(3006), langId);
-                    Map<Integer, DataDto> interestData11 =
+                    Data data11 = dataDao.getById(Long.valueOf(3006), langId);
+                    Map<Integer, Data> interestData11 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data11);
-                    DataDto data12 = dataDao.getById(Long.valueOf(3007), langId);
-                    Map<Integer, DataDto> interestData12 =
+                    Data data12 = dataDao.getById(Long.valueOf(3007), langId);
+                    Map<Integer, Data> interestData12 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data12);
-                    DataDto data13 = dataDao.getById(Long.valueOf(1303), langId);
-                    Map<Integer, DataDto> interestData13 =
+                    Data data13 = dataDao.getById(Long.valueOf(1303), langId);
+                    Map<Integer, Data> interestData13 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data13);
-                    DataDto data14 = dataDao.getById(Long.valueOf(1304), langId);
-                    Map<Integer, DataDto> interestData14 =
+                    Data data14 = dataDao.getById(Long.valueOf(1304), langId);
+                    Map<Integer, Data> interestData14 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data14);
-                    DataDto data15 = dataDao.getById(Long.valueOf(1305), langId);
-                    Map<Integer, DataDto> interestData15 =
+                    Data data15 = dataDao.getById(Long.valueOf(1305), langId);
+                    Map<Integer, Data> interestData15 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data15);
-                    DataDto data16 = dataDao.getById(Long.valueOf(3017), langId);
-                    Map<Integer, DataDto> interestData16 =
+                    Data data16 = dataDao.getById(Long.valueOf(3017), langId);
+                    Map<Integer, Data> interestData16 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data16);
-                    DataDto data17 = dataDao.getById(Long.valueOf(3033), langId);
-                    Map<Integer, DataDto> interestData17 =
+                    Data data17 = dataDao.getById(Long.valueOf(3033), langId);
+                    Map<Integer, Data> interestData17 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data17);
-                    DataDto data18 = dataDao.getById(Long.valueOf(3034), langId);
-                    Map<Integer, DataDto> interestData18 =
+                    Data data18 = dataDao.getById(Long.valueOf(3034), langId);
+                    Map<Integer, Data> interestData18 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data18);
 
                     out.println("<p>");
@@ -212,7 +213,7 @@ public class TableOfIOH24Hour extends HttpServlet {
         }
     }
 
-    private String valueByType(DataDto data) {
+    private String valueByType(Data data) {
         Long value = data.getValue();
 
         if (DataFormat.TIME == data.getFormat()) {
@@ -223,7 +224,7 @@ public class TableOfIOH24Hour extends HttpServlet {
             return String.valueOf(t);
         }
 
-        return data.getFormatedValue();
+        return data.getFormattedValue();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

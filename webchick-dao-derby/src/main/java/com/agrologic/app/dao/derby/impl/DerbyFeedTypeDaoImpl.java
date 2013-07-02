@@ -1,11 +1,12 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.FeedTypeDaoImpl;
 import com.agrologic.app.model.FeedType;
+
 import java.sql.*;
 
 public class DerbyFeedTypeDaoImpl extends FeedTypeDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
@@ -81,7 +82,7 @@ public class DerbyFeedTypeDaoImpl extends FeedTypeDaoImpl implements CreatebleDa
     @Override
     public void insert(FeedType feedType) throws SQLException {
         String sqlQuery = "INSERT INTO FEEDTYPES (FEEDTYPE, PRICE, CELLINKID) "
-                + "VALUES (?,?,?) " ;
+                + "VALUES (?,?,?) ";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -102,7 +103,7 @@ public class DerbyFeedTypeDaoImpl extends FeedTypeDaoImpl implements CreatebleDa
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.FEEDTYPE ";
         Statement stmt = null;
         Connection con = null;

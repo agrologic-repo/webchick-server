@@ -1,15 +1,15 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.FeedDaoImpl;
 import com.agrologic.app.model.Feed;
+
 import java.sql.*;
 
 public class DerbyFeedDaoImpl extends FeedDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
-
 
 
     public DerbyFeedDaoImpl(DaoFactory daoFactory) {
@@ -65,7 +65,7 @@ public class DerbyFeedDaoImpl extends FeedDaoImpl implements CreatebleDao, Dropa
             stmt.close();
             dao.closeConnection(con);
         }
-        }
+    }
 
     @Override
     public void dropTable() throws SQLException {
@@ -113,7 +113,7 @@ public class DerbyFeedDaoImpl extends FeedDaoImpl implements CreatebleDao, Dropa
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.FEED ";
         Statement stmt = null;
         Connection con = null;

@@ -4,8 +4,9 @@
  */
 package com.agrologic.app.web;
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.UserDto;
 import org.apache.log4j.Logger;
 
@@ -51,7 +52,7 @@ public class ClearControllerData extends HttpServlet {
             UserDto user = (UserDto) request.getSession().getAttribute("user");
 
             try {
-                DataDao dataDao = new DataDaoImpl();
+                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 dataDao.clearControllerData(controllerId);
                 request.getRequestDispatcher("./rmctrl-main-screen-ajax.jsp?userId=" + user.getId()
                         + "&cellinkId=" + cellinkId + "&screenId=1&doResetTimeout=true").forward(request, response);

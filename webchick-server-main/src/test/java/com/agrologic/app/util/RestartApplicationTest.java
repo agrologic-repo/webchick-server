@@ -2,6 +2,7 @@ package com.agrologic.app.util;
 
 import com.agrologic.app.except.JarFileWasNotFound;
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -31,6 +32,7 @@ public class RestartApplicationTest {
     }
 
     @Test
+    @Ignore
     public void getJarFileWasFound() throws Exception {
         String jarName = "webchick-server.jar";
         File expected = new File(jarName);

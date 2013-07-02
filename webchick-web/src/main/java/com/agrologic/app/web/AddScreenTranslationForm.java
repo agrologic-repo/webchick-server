@@ -6,8 +6,9 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ScreenDao;
-import com.agrologic.app.dao.impl.ScreenDaoImpl;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -50,7 +51,8 @@ public class AddScreenTranslationForm extends HttpServlet {
                 String translate = request.getParameter("Ntranslate");
 
                 try {
-                    ScreenDao screenDao = new ScreenDaoImpl();
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    ;
 
                     screenDao.insertTranslation(screenId, langId, translate);
                 } catch (SQLException ex) {

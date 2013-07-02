@@ -4,12 +4,12 @@
 <%@ page import="com.agrologic.app.model.ControllerDto" %>
 <%@ page import="com.agrologic.app.model.FlockDto" %>
 
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <%
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    List<ControllerDto> controllers = (List<ControllerDto>) request.getSession().getAttribute("controllers");
+    Collection<ControllerDto> controllers = (Collection<ControllerDto>) request.getSession().getAttribute("controllers");
     String direction = (String) request.getSession().getAttribute("dir");
     String align;
     if (direction.equals("ltr")) {
@@ -197,7 +197,7 @@
                                                 <td align="center">&nbsp;</td>
                                             </tr>
                                             <% for (ControllerDto controller : controllers) {%>
-                                            <% List<FlockDto> flocks = controller.getFlocks(); %>
+                                            <% Collection<FlockDto> flocks = controller.getFlocks(); %>
                                             <% if (flocks != null && flocks.size() > 0) {%>
                                             <% for (FlockDto flock : flocks) {%>
                                             <% long fid = flock.getFlockId(); %>

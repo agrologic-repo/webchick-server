@@ -50,7 +50,7 @@ public class StartPage extends HttpServlet {
             if (access.equals("regular")) {
                 request.getSession().setAttribute("access", access);
 
-                CellinkDao cellinkDao = new CellinkDaoImpl();
+                CellinkDao cellinkDao = new CellinkDaoImpl();//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                 CellinkDto cellink = cellinkDao.getActualCellink();
 
                 logger.info(cellink);

@@ -1,17 +1,17 @@
 
 /*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
 import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.model.Program;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -22,15 +22,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class ControllerDetailsServlet extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
      *
      * @param request  servlet request
      * @param response servlet response
@@ -40,7 +37,9 @@ public class ControllerDetailsServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        /** Logger for this class and subclasses */
+        /**
+         * Logger for this class and subclasses
+         */
         final Logger logger = Logger.getLogger(ControllerDetailsServlet.class);
 
         response.setContentType("text/html;charset=UTF-8");
@@ -54,18 +53,17 @@ public class ControllerDetailsServlet extends HttpServlet {
 
         Long controllerId = Long.parseLong(request.getParameter("controllerId"));
         ControllerDao controllerDao = new ControllerDaoImpl();
-        ProgramDao programDao = new ProgramDaoImpl();
+        ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
 
         try {
             ControllerDto controller = controllerDao.getById(controllerId);
-            ProgramDto program = programDao.getById(controller.getProgramId());
-
+            Program program = programDao.getById(controller.getProgramId());
             logger.info("Retreive controller details!");
             request.getSession().setAttribute("controller", controller);
             request.getSession().setAttribute("program", program);
             request.getRequestDispatcher("./controller-details.jsp").forward(request, response);
         } catch (SQLException ex) {
-            logger.info("Error occurs while retrieve controller details!");
+            logger.info("Error occurs while retreive controller details!");
             request.getRequestDispatcher("./all-controllers.html").forward(request, response);
         } finally {
             out.close();
@@ -75,7 +73,8 @@ public class ControllerDetailsServlet extends HttpServlet {
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 
     /**
-     * Handles the HTTP <code>GET</code> method.
+     * Handles the HTTP
+     * <code>GET</code> method.
      *
      * @param request  servlet request
      * @param response servlet response
@@ -89,7 +88,8 @@ public class ControllerDetailsServlet extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP
+     * <code>POST</code> method.
      *
      * @param request  servlet request
      * @param response servlet response
@@ -112,6 +112,3 @@ public class ControllerDetailsServlet extends HttpServlet {
         return "Short description";
     }    // </editor-fold>
 }
-
-
-

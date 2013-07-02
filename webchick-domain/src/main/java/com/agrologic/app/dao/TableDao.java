@@ -1,11 +1,12 @@
 package com.agrologic.app.dao;
 
 import com.agrologic.app.model.Table;
+
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Map;
 
 public interface TableDao {
-
     /**
      * show all screen tables the value 0
      */
@@ -35,6 +36,71 @@ public interface TableDao {
     void insert(Table table) throws SQLException;
 
     /**
+     * Updates an existing table row in table table
+     *
+     * @param table an object that encapsulates a table attributes
+     * @throws SQLException if failed to update the table in the database
+     */
+    void update(Table table) throws SQLException;
+
+    /**
+     * Removes a table from the database
+     *
+     * @param programId the id of the program
+     * @param screenId  the id of the screen
+     * @param tableId   the id of the table
+     * @throws SQLException if failed to remove the table from the database
+     */
+    void remove(Long programId, Long screenId, Long tableId) throws SQLException;
+
+    /**
+     * Insert already exist table
+     *
+     * @param table the table
+     * @throws SQLException if failed to insert to the table screen table
+     */
+    void insertExsitTable(Table table) throws SQLException;
+
+    /**
+     * Copy tables from specified program to new specified program table .
+     *
+     * @param newProgramId the new program id
+     * @param oldProgramId the old program id , the program id that was selected by user.
+     * @throws SQLException if failed to insert the screens to the database.
+     */
+    void insertDefaultTables(Long oldProgramId, Long newProgramId) throws SQLException;
+
+    /**
+     * Insert translation of table in specified language.
+     *
+     * @param langId      the language id
+     * @param translation the translated text for table
+     * @throws SQLException if failed to insert the translation
+     */
+    void insertTableTranslation(Long tableId, Long langId, String translation) throws SQLException;
+
+    /**
+     * Get the table from one screen and moves to another screen .
+     *
+     * @param table       the table
+     * @param oldScreenId the old screen id
+     * @throws SQLException if failed to move table
+     */
+    void moveTable(Table table, Long oldScreenId) throws SQLException;
+
+    /**
+     * Save the changed position order of table in design tables page.
+     *
+     * @param showMap     the map of table ids and text yes\no for showing table on page
+     * @param positionMap the map of table ids and position on page for each table
+     * @param programId   the program id
+     * @param screenId    the screen id
+     * @throws SQLException if failed to save the changes
+     */
+    void saveChanges(Map<Long, String> showMap, Map<Long, Integer> positionMap, Long screenId, Long programId)
+            throws SQLException;
+
+    /**
      * Insert table list into screen tables
      *
      * @param tableList the table list
@@ -51,25 +117,18 @@ public interface TableDao {
     void insertTranslation(Collection<Table> tableList) throws SQLException;
 
     /**
-     * Updates an existing table row in table table
+     * Get table by specified programId, screenId, tableId .
      *
-     * @param table an object that encapsulates a table attributes
-     * @throws SQLException if failed to update the table in the database
+     * @param programId the program id
+     * @param screenId  the screen id
+     * @param tableId   the table d
+     * @return Table object or null if not exist
+     * @throws SQLException if failed to get the table form database
      */
-    void update(Table table) throws SQLException;
+    Table getById(Long programId, Long screenId, Long tableId) throws SQLException;
 
     /**
-     * Removes a table from the database
-     *
-     * @param programId  the id of the program
-     * @param screenId   the id of the screen
-     * @param tableId    the id of the table
-     * @throws SQLException if failed to remove the table from the database
-     */
-    void remove(Long programId, Long screenId, Long tableId) throws SQLException;
-
-    /**
-     * @see TableDao#getTableById(Long programId, Long screenId, Long tableId, Long langId) ()
+     * @see TableDao#getTableById(Long programId, Long screenId, Long tableId, Long langId)
      */
     Table getById(Long programId, Long screenId, Long tableId, Long langId) throws SQLException;
 
@@ -77,13 +136,32 @@ public interface TableDao {
      * Gets table that belong to specified screen and program with title by specified language.
      *
      * @param programId the program id
-     * @param screenId the screen id
-     * @param tableId the table id
-     * @param langId the language id
+     * @param screenId  the screen id
+     * @param tableId   the table id
+     * @param langId    the language id
      * @return table an objects that encapsulates an table attributes
      * @throws SQLException if failed to retrieve table from the database
      */
     Table getTableById(Long programId, Long screenId, Long tableId, Long langId) throws SQLException;
+
+    /**
+     * Retrieve all tables from the database
+     *
+     * @return the collection of tables
+     * @throws SQLException if failed to retrieve tables from the database
+     */
+    Collection<Table> getAll() throws SQLException;
+
+    /**
+     * Retrieve all tables with specified program id, screen id and display on page string (yes\no) .
+     *
+     * @param programId the program id
+     * @param screenId  the screen id
+     * @param display   the display string {yes\no}
+     * @return the collection of tables
+     * @throws SQLException if failed to retrieve tables from the database
+     */
+    Collection<Table> getAllScreenTables(Long programId, Long screenId, String display) throws SQLException;
 
     /**
      * Retrieve all tables from database in all available languages
@@ -94,23 +172,41 @@ public interface TableDao {
     Collection<Table> getAllWithTranslation() throws SQLException;
 
     /**
-     * Retrieves all tables by specified program.
+     * Retrieves all tables in no special order with specified program id , screen id and show on page flag (0\1) .
      *
      * @param programId the program id
-     * @param screenId the screen id
-     * @param langId the language id
-     * @return tables a collection of Table objects, each object reflects a row in table tables.
-     * @throws SQLException if failed to retrieve all tables from the database.
+     * @param screenId  the screen id
+     * @param langId    the long id
+     * @param showAll   the show all flag
+     * @return tables a list of Table objects, each object reflects a row in table tables.
+     * @throws SQLException if failed to retrieve all tables from the database
+     */
+    Collection<Table> getAllScreenTables(Long programId, Long screenId, Long langId, int showAll) throws SQLException;
+
+    /**
+     * Retrieves all tables in no special order with specified program id , screen id and language id.
+     *
+     * @param programId the program id
+     * @param screenId  the screen id
+     * @param langId    the long id
+     * @return tables a list of Table objects, each object reflects a row in table tables.
+     * @throws SQLException if failed to retrieve all tables from the database
      */
     Collection<Table> getAllScreenTables(Long programId, Long screenId, Long langId) throws SQLException;
 
     /**
-     * Retrieves all tables in no special order .
+     * Retrieves all tables in no special order with specified program id , screen id and show on page flag
+     * (true\false).
      *
-     * @return tables a vector of User objects, each object reflects a row in table tables.
+     * @param programId the program id
+     * @param screenId  the screen id
+     * @param langId    the long id
+     * @param showAll   the show all flag
+     * @return tables a list of Table objects, each object reflects a row in table tables.
      * @throws SQLException if failed to retrieve all tables from the database
      */
-    Collection<Table> getAllScreenTables(Long programId, Long screenId, Long langId, int showAll) throws SQLException;
+    Collection<Table> getScreenTables(Long programId, Long screenId, Long langId, boolean showAll) throws SQLException;
+
 }
 
 

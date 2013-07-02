@@ -1,6 +1,7 @@
 package com.agrologic.app.dao;
 
 import com.agrologic.app.model.Program;
+
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -30,13 +31,10 @@ public interface ProgramDao {
      */
     void remove(Long id) throws SQLException;
 
-    /**
-     * Search program by program id and return true if program exist , otherwise false;
-     *
-     * @param id the program id
-     * @return true if program exist , otherwise false
-     * @throws SQLException if failed to get the program from the database
-     */
+    int count() throws SQLException;
+
+    boolean isProgramWithGivenIdExist(Long id) throws SQLException;
+
     boolean programExist(Long id) throws SQLException;
 
     /**
@@ -55,6 +53,15 @@ public interface ProgramDao {
      * @throws SQLException if failed to retrieve all Program from the database
      */
     Collection<Program> getAll() throws SQLException;
+
+    Collection<Program> getAll(String searchText) throws SQLException;
+
+    Collection<Program> getAllByUserId(String searchText, Long userId) throws SQLException;
+
+    Collection<Program> getAllByUserCompany(String searchText, String company) throws SQLException;
+
+    Collection<Program> getAll(String searchText, String index) throws SQLException;
+
 }
 
 

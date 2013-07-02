@@ -38,7 +38,7 @@ public class DistribDaoImpl implements DistribDao {
     }
 
     @Override
-    public void insert(Distrib gas) throws SQLException {
+    public void insert(Distrib distrib) throws SQLException {
         String sqlQuery = "insert into gas values (?,?,?,?,?,?,?)";
         PreparedStatement prepstmt = null;
         Connection con = null;

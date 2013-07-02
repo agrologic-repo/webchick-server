@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class SocketThread implements Runnable, Network {
+public class SocketThread implements Runnable {
     private List<MessageManager> messageManagers;
     private Cellink cellink;
     private CellinkDao cellinkDao;
@@ -183,7 +183,9 @@ public class SocketThread implements Runnable, Network {
     private int timeoutErrorHandler(int errCount) {
 
         responseMessage = (ResponseMessage) commControl.read();
-        if (responseMessage.getErrorCode() == Message.SOT_ERROR) {
+//        if (responseMessage.getErrorCode() == Message.SOT_ERROR) {
+        if (responseMessage.getErrorCodes().equals(Message.ErrorCodes.SOT_ERROR)) {
+
             errCount++;
         }
 
@@ -218,7 +220,8 @@ public class SocketThread implements Runnable, Network {
         } else {
             responseMessage = new ResponseMessage(null);
             responseMessage.setMessageType(MessageType.ERROR);
-            responseMessage.setErrorCode(Message.SOT_ERROR);
+//            responseMessage.setErrorCode(Message.SOT_ERROR);
+            responseMessage.setErrorCodes(Message.ErrorCodes.SOT_ERROR);
             responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
             if (withLogger) {
                 logger.debug("Error count : " + errCount);
@@ -276,6 +279,7 @@ public class SocketThread implements Runnable, Network {
 
             } else {
                 setThreadState(NetworkState.STATE_ERROR);
+
             }
         } else {
             if (sendMessage.getIndex().equals(responseMessage.getIndex()) || sendMessage.getIndex().equals("100")) {
@@ -304,14 +308,18 @@ public class SocketThread implements Runnable, Network {
             logger.info("Disconnecting cellink [" + cellink + "], user disconnected .");
             networkState = NetworkState.STATE_STOP;
         } else {
-            sendMessage = requestQueue.getRequest();
-            sendMessage.setIndex(reqIndex.getIndex());
-            commControl.write("V" + reqIndex.getIndex(), sendMessage);
-            boolean withLogger = getWithLogging();
-            if (withLogger) {
-                logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
+            try {
+                sendMessage = requestQueue.getRequest();
+                sendMessage.setIndex(reqIndex.getIndex());
+                commControl.write("V" + reqIndex.getIndex(), sendMessage);
+                boolean withLogger = getWithLogging();
+                if (withLogger) {
+                    logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
+                }
+                setThreadState(NetworkState.STATE_BUSY);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            setThreadState(NetworkState.STATE_BUSY);
         }
         reqIndex.nextIndex();
     }
@@ -458,7 +466,8 @@ public class SocketThread implements Runnable, Network {
     private void errorTimeout(int errorCount) {
         responseMessage = new ResponseMessage(null);
         responseMessage.setMessageType(MessageType.TIME_OUT_ERROR);
-        responseMessage.setErrorCode(Message.TMO_ERROR);
+//        responseMessage.setErrorCode(Message.TMO_ERROR);
+        responseMessage.setErrorCodes(Message.ErrorCodes.TIME_OUT_ERROR);
         responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
         boolean withLogger = getWithLogging();
         if (withLogger) {

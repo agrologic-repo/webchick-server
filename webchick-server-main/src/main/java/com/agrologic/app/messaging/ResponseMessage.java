@@ -36,13 +36,11 @@ public final class ResponseMessage implements Message {
      */
     private MessageType messageType;
 
-    private int errorCode = 0;
+//    private int errorCode = 0;
+
+    private ErrorCodes errorCodes = ErrorCodes.OK;
 
     private Logger logger = Logger.getLogger(ResponseMessage.class);
-
-    public enum Format {
-        BINARY, TEXT
-    }
 
     public ResponseMessage() {
         this(null);
@@ -55,13 +53,11 @@ public final class ResponseMessage implements Message {
     public ResponseMessage(byte[] buffer, Format format) {
         if (buffer == null) {
             this.messageType = MessageType.ERROR;
-            this.errorCode = SOT_ERROR;
             this.format = Format.TEXT;
             recvCHS = -1;
             calcCHS = -1;
         } else {
             this.messageType = MessageType.RESPONSE_DATA;
-            this.errorCode = 0;
             this.buffer = buffer;
             this.format = format;
             parsingReceiveBuffer();
@@ -70,22 +66,21 @@ public final class ResponseMessage implements Message {
 
     public void parsingReceiveBuffer(ReadBuffer readBuffer) {
         this.messageType = MessageType.RESPONSE_DATA;
-        this.errorCode = 0;
+        this.setBuffer(readBuffer.toArray());
         this.setFormat(readBuffer.getBufferFormat());
-        setBuffer(readBuffer.toArray());
-        parsingReceiveBuffer();
+        this.parsingReceiveBuffer();
     }
 
     private void parsingReceiveBuffer() {
         try {
             byte[] tempBuffer = getBuffer().clone();
-            int eotIndex = ByteUtil.lastIndexOf(tempBuffer, Message.EOT);
+            int eotIndex = ByteUtil.lastIndexOf(tempBuffer, ProtocolBytes.EOT.getValue());
 
             String receivedString = new String(tempBuffer, 0, eotIndex + 1);
             logger.debug(receivedString);
-            int soi = receivedString.indexOf(Message.SOINDX);     // soi - start of index index
-            int sot = receivedString.indexOf(Message.SOT);        // sot - start of transmission index
-            int eot = receivedString.lastIndexOf(Message.EOT);    // end - end of transmission index
+            int soi = receivedString.indexOf(ProtocolBytes.SOINDX.getValue());     // soi - start of index index
+            int sot = receivedString.indexOf(ProtocolBytes.SOT.getValue());        // sot - start of transmission index
+            int eot = receivedString.lastIndexOf(ProtocolBytes.EOT.getValue());    // end - end of transmission index
 
             // binary message does not have checksum
             if (getFormat() == Format.BINARY) {
@@ -95,7 +90,7 @@ public final class ResponseMessage implements Message {
                     index = "100";
                     messageBody = receivedString;
                     setMessageType(MessageType.ERROR);
-                    setErrorCode(SKP_ERROR);
+                    setErrorCodes(ErrorCodes.SKP_ERROR);
                 } else {
                     index = receivedString.substring(soi + 1, sot);
                     messageBody = receivedString.substring(sot + 1, eot);
@@ -104,28 +99,28 @@ public final class ResponseMessage implements Message {
                     if (index.equals("0")) {
                         if (messageBody.equals("-1 ")) {
                             setMessageType(MessageType.ERROR);
-                            setErrorCode(SKP_ERROR);
+                            setErrorCodes(ErrorCodes.SKP_ERROR);
                             return;
                         } else if (messageBody.equals("-2 ")) {
                             setMessageType(MessageType.ERROR);
-                            setErrorCode(CON_ERROR);
+                            setErrorCodes(ErrorCodes.CON_ERROR);
                             return;
                         }
                     } else {
                         if (messageBody.equals("-1 -1")) {
                             setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
-                            setErrorCode(REQ_ERROR);
+                            setErrorCodes(ErrorCodes.REQ_ERROR);
                             return;
                         } else if (messageBody.equals("-1 -2")) {
                             setMessageType(MessageType.ERROR);
-                            setErrorCode(CON_ERROR);
+                            setErrorCodes(ErrorCodes.CON_ERROR);
                             return;
                         }
                     }
                 }
             } else {
                 // get begin data and end data without checksum
-                int space = receivedString.lastIndexOf(Message.SPACE);// space before check sum
+                int space = receivedString.lastIndexOf(ProtocolBytes.SPACE.getValue());// space before check sum
                 // controller responded data without request index
                 if ((soi == -1) && (sot == -1)) {
                     sot = 0;
@@ -133,23 +128,22 @@ public final class ResponseMessage implements Message {
                     messageBody = receivedString.substring(sot, space + 1);
                     if ((eot == -1) || messageBody.equals("-1 ")) {
                         setMessageType(MessageType.ERROR);
-                        setErrorCode(SKP_ERROR);
+                        setErrorCodes(ErrorCodes.SKP_ERROR);
                         return;
                     }
                 } else {
                     index = receivedString.substring(soi + 1, sot);
                     messageBody = receivedString.substring(sot + 1, space + 1);
-                    // if controller does not responded for some reson
+                    // if controller does not responded for some reason
                     // 3 0 0 8 (soi)24 0 (sot) 22 -1 0 7f 4
                     if (index.equals("0")) {
                         if (messageBody.equals("-1 ")) {
                             setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
-                            setErrorCode(REQ_ERROR);
+                            setErrorCodes(ErrorCodes.REQ_ERROR);
                             return;
                         } else if (messageBody.equals("-2 ")) {
                             setMessageType(MessageType.ERROR);
-                            setErrorCode(CON_ERROR);
-
+                            setErrorCodes(ErrorCodes.CON_ERROR);
                             return;
                         }
                     }
@@ -161,7 +155,7 @@ public final class ResponseMessage implements Message {
 
                 if (!checksumWithOverFlowErrorCorrect(buffer, calcCHS, recvCHS, sot, space)) {
                     setMessageType(MessageType.ERROR);
-                    setErrorCode(CHS_ERROR);
+                    setErrorCodes(ErrorCodes.CHS_ERROR);
                     logger.error("Checksum error detected. Calculated checksum: { " + calcCHS + " } ," +
                             " Received checksum { " + recvCHS + " } .");
                     return;
@@ -182,17 +176,8 @@ public final class ResponseMessage implements Message {
         setBuffer(messageBody.getBytes());
     }
 
-    private void setFormat(byte bufferType) {
-        switch (bufferType) {
-            default:
-            case Message.LAST_COMPRSSED_TEXT_MESSAGE:
-            case Message.LAST_COMPRSS_WITH_IND_TEXT_MESSAGE:
-                format = Format.TEXT;
-                break;
-            case Message.LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE:
-                format = Format.BINARY;
-                break;
-        }
+    private void setFormat(byte bufferFormat) {
+        format = LastIndicators.getIndicator(bufferFormat);
     }
 
     private Format getFormat() {
@@ -208,7 +193,7 @@ public final class ResponseMessage implements Message {
     private boolean isUnusedResponse() {
         if (messageBody.startsWith("-1 ")) {
             setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
-            setErrorCode(REQ_ERROR);
+            setErrorCodes(ErrorCodes.REQ_ERROR);
             return true;
         }
 
@@ -301,12 +286,12 @@ public final class ResponseMessage implements Message {
         this.index = index;
     }
 
-    public int getErrorCode() {
-        return errorCode;
+    public ErrorCodes getErrorCodes() {
+        return errorCodes;
     }
 
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+    public void setErrorCodes(ErrorCodes errorCodes) {
+        this.errorCodes = errorCodes;
     }
 
     public byte[] getBuffer() {
@@ -327,33 +312,10 @@ public final class ResponseMessage implements Message {
 
     @Override
     public String toString() {
-        switch (errorCode) {
-            case SOT_ERROR:
-                return "SOT Error";
-
-            case EOT_ERROR:
-                return "EOT Error";
-
-            case CHS_ERROR:
-                return "Checksum Error";
-
-            case SKP_ERROR:
-                return "Skip Response Error";
-
-            case UNW_ERROR:
-                return "Unknown Error";
-
-            case TMO_ERROR:
-                return "Timeout Error";
-
-            case CON_ERROR:
-                return "Connection to Controller Error";
-
-            case REQ_ERROR:
-                return "Request Error";
-
-            default:
-                return messageBody;
+        if (errorCodes.toString().equals("")) {
+            return messageBody;
+        } else {
+            return errorCodes.toString();
         }
     }
 }

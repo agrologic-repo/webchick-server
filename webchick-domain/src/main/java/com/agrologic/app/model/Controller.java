@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class Controller implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final long OFF_STATE_DELAY = TimeUnit.SECONDS.toMinutes(10);
+    public static final long OFF_STATE_DELAY = TimeUnit.MINUTES.toMillis(10);
     private boolean on = true;
     private boolean active;
     private Integer area;

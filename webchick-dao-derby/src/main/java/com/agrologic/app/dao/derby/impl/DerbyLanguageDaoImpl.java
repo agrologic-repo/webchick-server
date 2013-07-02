@@ -1,10 +1,11 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.LanguageDaoImpl;
+
 import java.sql.*;
 
 public class DerbyLanguageDaoImpl extends LanguageDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
@@ -41,11 +42,11 @@ public class DerbyLanguageDaoImpl extends LanguageDaoImpl implements CreatebleDa
                 + "(ID INT NOT NULL , "
                 + "LANG VARCHAR(100) NOT NULL, "
                 + "SHORT VARCHAR(100) NOT NULL, " + "PRIMARY KEY (ID))";
-        Statement  stmt = null;
-        Connection con  = null;
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
             stmt.execute(sqlQuery);
         } catch (Exception e) {
@@ -76,7 +77,7 @@ public class DerbyLanguageDaoImpl extends LanguageDaoImpl implements CreatebleDa
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.LANGUAGE ";
         Statement stmt = null;
         Connection con = null;

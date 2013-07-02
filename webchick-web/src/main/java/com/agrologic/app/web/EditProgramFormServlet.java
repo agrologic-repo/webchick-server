@@ -6,9 +6,10 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.model.Program;
 import com.agrologic.app.utils.DateLocal;
 import org.apache.log4j.Logger;
 
@@ -52,10 +53,10 @@ public class EditProgramFormServlet extends HttpServlet {
             } else {
                 Long programId = Long.parseLong(request.getParameter("programid"));
                 String programName = request.getParameter("Nprogramname");
-                ProgramDao programDao = new ProgramDaoImpl();
+                ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
 
                 try {
-                    ProgramDto program = programDao.getById(programId);
+                    Program program = programDao.getById(programId);
 
                     program.setName(programName);
 

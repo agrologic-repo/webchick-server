@@ -4,7 +4,7 @@
 
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.*" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -21,11 +21,11 @@
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long screenId = Long.parseLong((String) request.getParameter("screenId"));
     ControllerDto controller = (ControllerDto) request.getSession().getAttribute("controller");
-    ProgramDto program = controller.getProgram();
-    List<ScreenDto> screens = program.getScreens();
+    Program program = controller.getProgram();
+    Collection<Screen> screens = program.getScreens();
     Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");
 
-    List<ActionSetDto> actionsets = (List<ActionSetDto>) request.getSession().getAttribute("actionset");
+    Collection<ActionSetDto> actionsets = (Collection<ActionSetDto>) request.getSession().getAttribute("actionset");
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
     Locale currLocal = (Locale) session.getAttribute("currLocale");
     if (!oldLocal.equals(currLocal)) {
@@ -182,7 +182,7 @@
                                         int col = 0;
                                         final long MAIN_SCREEN = 1;
                                     %>
-                                    <%for (ScreenDto screen : screens) {%>
+                                    <%for (Screen screen : screens) {%>
                                     <% if ((col % 8) == 0) {%>
                                 </tr>
                                 <tr>

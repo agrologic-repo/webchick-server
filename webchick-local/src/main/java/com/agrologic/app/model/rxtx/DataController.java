@@ -4,6 +4,7 @@ import com.agrologic.app.gui.rxtx.DataImage;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.ProgramRelay;
 import com.agrologic.app.model.ProgramSystemState;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ public class DataController extends Data implements Serializable {
     public void setProgramSystemStates(List<ProgramSystemState> pss) {
         this.programSystemStates = new ArrayList<ProgramSystemState>();
         for (ProgramSystemState pr : pss) {
-                programSystemStates.add(pr);
+            programSystemStates.add(pr);
         }
     }
 
@@ -54,7 +55,7 @@ public class DataController extends Data implements Serializable {
         switch (getSpecial()) {
             default:
                 super.setValue(newValue);
-                final String value = getFormatedValue();
+                final String value = getFormattedValue();
                 dce = new DataChangeEvent(value);
                 fireDataChanges(dce);
 

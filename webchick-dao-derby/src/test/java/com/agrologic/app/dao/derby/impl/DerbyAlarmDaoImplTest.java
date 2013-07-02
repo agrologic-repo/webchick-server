@@ -1,6 +1,7 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.AlarmDao;
+import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.model.Alarm;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
+
+import static org.junit.Assert.assertEquals;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -31,5 +35,16 @@ public class DerbyAlarmDaoImplTest {
 
         Alarm actual = alarmDao.getById(100L);
         assertReflectionEquals(expected, actual);
+    }
+
+    @Test
+    public void createTableImplementsWithAOP() throws SQLException {
+        try {
+            ((CreatebleDao) alarmDao).createTable();
+            boolean result = ((CreatebleDao) alarmDao).tableExist();
+            assertEquals(true, result);
+        } catch (SQLException e) {
+
+        }
     }
 }

@@ -6,11 +6,11 @@
 <%@ page import="com.agrologic.app.graph.GenerateGraph" %>
 <%@ page import="com.agrologic.app.model.ControllerDto" %>
 
-<jsp:directive.page import="com.agrologic.app.model.ProgramDto"/>
-<jsp:directive.page import="com.agrologic.app.model.ScreenDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Program"/>
+<jsp:directive.page import="com.agrologic.app.model.Screen"/>
 <jsp:directive.page import="com.agrologic.app.model.UserDto"/>
 <jsp:directive.page import="java.io.PrintWriter"/>
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -22,8 +22,8 @@
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long screenId = Long.parseLong((String) request.getParameter("screenId"));
     ControllerDto controller = (ControllerDto) request.getSession().getAttribute("controller");
-    ProgramDto program = controller.getProgram();
-    List<ScreenDto> screens = program.getScreens();
+    Program program = controller.getProgram();
+    Collection<Screen> screens = program.getScreens();
     Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");
 
     Locale currLocale = (Locale) session.getAttribute("currLocale");
@@ -189,7 +189,7 @@
                                     int col = 0;
                                     final long MAIN_SCREEN = 1;
                                 %>
-                                <%for (ScreenDto screen : screens) {%>
+                                <%for (Screen screen : screens) {%>
                                 <% if ((col % 8) == 0) {%>
                             </tr>
                             <tr>

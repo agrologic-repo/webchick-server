@@ -94,10 +94,6 @@
         <servlet-class>com.agrologic.app.web.RemoveProgramServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AddProgramServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.AddProgramServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>RCMainServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.RCMainServlet</servlet-class>
     </servlet>
@@ -652,10 +648,6 @@
     <servlet-mapping>
         <servlet-name>RemoveProgramServlet</servlet-name>
         <url-pattern>/removeprogram.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AddProgramServlet</servlet-name>
-        <url-pattern>/addprogram1.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>RCMainServlet</servlet-name>

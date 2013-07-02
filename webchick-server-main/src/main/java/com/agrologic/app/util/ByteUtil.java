@@ -1,20 +1,15 @@
 package com.agrologic.app.util;
 
 
+import org.apache.commons.lang.Validate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author Administrator
- */
 public class ByteUtil {
     public static int indexOf(byte[] buffer, byte input) {
-        if (buffer == null) {
-            throw new IllegalArgumentException();
-        }
-
+        Validate.notNull(buffer, "buffer can not be null");
         int count = 0;
         int i = -1;
 
@@ -32,9 +27,8 @@ public class ByteUtil {
     }
 
     public static int lastIndexOf(byte[] buffer, byte input) {
-        if (buffer == null) {
-            throw new IllegalArgumentException();
-        }
+        Validate.notNull(buffer, "buffer can not be null");
+        Validate.notNull(input, "input can not be null");
 
         int count = 0;
         int i = -1;

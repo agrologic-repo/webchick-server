@@ -5,6 +5,7 @@ import com.agrologic.app.model.Data;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * DAO for the {@link  com.agrologic.app.model.Data}. It provides all CRUD operations to work with
@@ -24,6 +25,10 @@ public interface DataDao {
      * @throws SQLException if failed to insert new data to the database .
      */
     void insert(Data data) throws SQLException;
+
+    void update(Data data) throws SQLException;
+
+    void remove(Long dataId) throws SQLException;
 
     /**
      * Insert data list
@@ -58,26 +63,57 @@ public interface DataDao {
      */
     void insertTableData(Long tableId, Long screenId, Long programId, Collection<Data> dataList) throws SQLException;
 
-    // void insertControllerDataValues(Long controllerId, Iterator<Entry<Long, Integer>> dataValues) throws SQLException;
-    void update(Data data) throws SQLException;
+    public void insertDataToTable(Long programId, Long screenId, Long tableId, Long dataId, String display,
+                                  Integer position) throws SQLException;
 
-    void updateRelays() throws SQLException;
+    public void insertDataList(Long newProgramId, Long oldProgramId) throws SQLException;
 
-    void remove(Long dataId) throws SQLException;
+    public void insertSpecialData(Long programId, Long dataId, Long langId, String label) throws SQLException;
 
-    int getCount() throws SQLException;
+    public void insertDataTranslation(Long dataId, Long langId, String translate) throws SQLException;
 
-    int getCountTranslation() throws SQLException;
+    public void uncheckNotUsedDataOnAllScreens(Long programId, Long controllerId) throws SQLException;
+
+    public void removeDataFromTable(Long programId, Long screenId, Long tableId) throws SQLException;
+
+    public void removeDataFromTable(Long programId, Long screenId, Long tableId, Long dataId) throws SQLException;
+
+    public void removeSpecialDataFromTable(Long programId, Long dataId) throws SQLException;
+
+    public void saveChanges(Long programId, Long screenId, Long tableId, Map<Long, String> showOnTableMap,
+                            Map<Long, Integer> posOnTableMap) throws SQLException;
 
     Data getById(Long dataId) throws SQLException;
+
+    Data getById(Long dataId, Long langId) throws SQLException;
+
+    Data getSetClockByController(Long controllerId) throws SQLException;
+
+    Data getSetDateByController(long controllerId) throws SQLException;
 
     Data getGrowDay(Long controllerId) throws SQLException;
 
     Data getChangedDataValue(Long controllerId) throws SQLException;
 
-    Data getSetClockByController(Long controllerId) throws SQLException;
-
     Collection<Data> getAll() throws SQLException;
+
+    List<Data> getRelays() throws SQLException;
+
+    List<Data> getAlarms() throws SQLException;
+
+    List<Data> getSystemStates() throws SQLException;
+
+    public List<Data> getTableDataList(Long programId, Long screenId, Long tableId, String display)
+            throws SQLException;
+
+    public List<Data> getTableDataList(Long programId, Long screenId, Long tableId, Long langId, String display)
+            throws SQLException;
+
+    public List<Data> getHistoryDataList() throws SQLException;
+
+    public void clearControllerData(Long controllerId) throws SQLException;
+
+    public void moveData(Long screenId, Long programId, Long tableId) throws SQLException;
 
     Collection<Data> getAllBySpecial(Integer special) throws SQLException;
 
@@ -86,11 +122,6 @@ public interface DataDao {
     Collection<Data> getControllerData(Long controllerId) throws SQLException;
 
     Collection<Data> getControllerDataValues(Long controllerId, Long programId) throws SQLException;
-
-    Collection<Data> getControllerRelays(Long controllerId) throws SQLException;
-
-    Collection<Data> getOnlineTableDataList(Long programId, Long controllerId, Long tableId, Long langId)
-            throws SQLException;
 
     Collection<Data> getOnlineTableDataList(Long controllerId, Long programId, Long screenId, Long tableId, Long langId)
             throws SQLException;
@@ -108,27 +139,19 @@ public interface DataDao {
     Collection<Data> getOnScreenDataList(Long programId, Long screenId, Long tableId, Long langId) throws SQLException;
 
     /**
-     * Uncheck unused data on screens
-     *
-     * @param programId the program id
-     * @throws SQLException if failed to execute sql command
-     */
-    void uncheckNotUsedDataOnAllScreens(Long programId) throws SQLException;
-
-    /**
      * Retrieves data relays by program id in no special order
      *
      * @param programId the program id
-     * @return a list of DataDto objects, each object reflects a row in table data table
+     * @return a list of Data objects, each object reflects a row in table data table
      * @throws SQLException if failed to retrieve data from the database
      */
     Collection<Data> getProgramDataRelays(Long programId) throws SQLException;
 
     /**
-     * Retrieves data datas by program id in no special order
+     * Retrieves data data by program id in no special order
      *
      * @param programId a program id
-     * @return a list of DataDto objects, each object reflects a row in table data table
+     * @return a list of Data objects, each object reflects a row in table data table
      * @throws SQLException if failed to retrieve data from the database
      */
     Collection<Data> getProgramDataAlarms(Long programId) throws SQLException;
@@ -137,7 +160,7 @@ public interface DataDao {
      * Retrieves data system states by program id in no special order
      *
      * @param programId a program id
-     * @return a list of DataDto objects, each object reflects a row in table data table
+     * @return a list of Data objects, each object reflects a row in table data table
      * @throws SQLException if failed to retrieve data from the database
      */
     Collection<Data> getProgramDataSystemStates(Long programId) throws SQLException;
@@ -147,7 +170,7 @@ public interface DataDao {
      *
      * @param programId the program id
      * @param langId    the language id
-     * @return a list of DataDto objects, each object reflects a row in table spacial data table
+     * @return a list of Data objects, each object reflects a row in table spacial data table
      * @throws SQLException if failed to retrieve data from the database
      */
     Collection<Data> getSpecialData(Long programId, Long langId) throws SQLException;

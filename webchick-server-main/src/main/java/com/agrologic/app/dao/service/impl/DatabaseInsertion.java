@@ -77,7 +77,7 @@ public class DatabaseInsertion implements DatabaseInsertable {
                     logger.info("the data inserted successfully to the screenbylanguage table");
 
                     for (Screen screen : screenList) {
-                        List<Table> tableList = screen.getTables();
+                        Collection<Table> tableList = screen.getTables();
                         dba.getTableDao().insert(tableList);
                         dba.getTableDao().insertTranslation(tableList);
                         for (Table table : tableList) {

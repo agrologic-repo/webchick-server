@@ -1,13 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.*;
+import com.agrologic.app.dao.impl.CellinkDaoImpl;
+import com.agrologic.app.dao.impl.ControllerDaoImpl;
+import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -19,13 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class RCMainScreenAjax extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static int count = 0;
@@ -124,7 +116,7 @@ public class RCMainScreenAjax extends HttpServlet {
                 } else {
                     out.println("<status=0 />");
 
-                    final ProgramDao programDao = new ProgramDaoImpl();
+                    final ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
 
                     // get program relays
                     final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
@@ -136,11 +128,12 @@ public class RCMainScreenAjax extends HttpServlet {
                     final ProgramSystemStateDao programSystemStateDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramSystemStateDao.class);
 
                     // get program screens
-                    final ScreenDao screenDao = new ScreenDaoImpl();
+                    final ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    ;
 
                     // get program screen tables
-                    final TableDao tableDao = new TableDaoImpl();
-                    final DataDao dataDao = new DataDaoImpl();
+                    final TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                    final DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     int column = 0;
 
                     out.println("<table border='0' cellPadding='1' cellSpacing='1'>");
@@ -148,7 +141,7 @@ public class RCMainScreenAjax extends HttpServlet {
                     for (ControllerDto controller : controllers) {
 
                         // get asigned to controller program
-                        ProgramDto program = programDao.getById(controller.getProgramId());
+                        Program program = programDao.getById(controller.getProgramId());
 
                         controller.setProgram(program);
                         program.setProgramRelays(programRelayDao.getAllProgramRelays(program.getId(), langId));
@@ -157,34 +150,29 @@ public class RCMainScreenAjax extends HttpServlet {
                                 langId));
 
                         Long nextScreenID = screenDao.getSecondScreenAfterMain(program.getId());
-
-                        // nextScrIdsByCntrl.put(controller.getId(), nsid);
-                        ScreenDto screen = screenDao.getById(program.getId(), screenId, langId);
-
+                        Screen screen = screenDao.getById(program.getId(), screenId, langId);
                         program.addScreen(screen);
 
-                        List<TableDto> tables = tableDao.getScreenTables(program.getId(), screen.getId(), langId,
-                                false);
-
+                        Collection<Table> tables = tableDao.getScreenTables(program.getId(), screen.getId(), langId, false);
                         screen.setTables(tables);
 
-                        for (TableDto table : tables) {
+                        for (Table table : tables) {
                             if ((column % ControllerDto.COLUMN_NUMBERS) == 0) {
                                 out.println("<tr>");
                             }
 
-                            DataDto setClock = dataDao.getSetClockByController(controller.getId());
+                            Data setClock = dataDao.getSetClockByController(controller.getId());
 
                             controller.setSetClock(setClock);
 
-                            DataDto setDate = dataDao.getSetDateByController(controller.getId());
+                            Data setDate = dataDao.getSetDateByController(controller.getId());
 
                             controller.setSetDate(setDate);
 
-                            List<DataDto> list = dataDao.getOnlineTableDataList(program.getId(), controller.getId(),
+                            Collection<Data> list = dataDao.getOnlineTableDataList(controller.getId(), program.getId(),
                                     screen.getId(), table.getId(), langId);
 
-                            // List<DataDto> list = dataDao.getOnlineTableDataList(program.getId(), controller.getId(), table.getId(), langId);
+                            // List<Data> list = dataDao.getOnlineTableDataList(program.getId(), controller.getId(), table.getId(), langId);
                             table.setDataList(list);
                             out.println("<td valign='top'  style='min-width:200px;'>");
                             out.println("<table class=\"table-screens\" border=\"1\" borderColor=\"#848C96\"");
@@ -213,7 +201,7 @@ public class RCMainScreenAjax extends HttpServlet {
 
                             if (list.size() > 0) {
                                 try {
-                                    String setclock = controller.getSetClock().getFormatedValue();
+                                    String setclock = controller.getSetClock().getFormattedValue();
 
                                     out.println(request.getSession().getAttribute("label.controller.update.time")
                                             + " - ");
@@ -231,7 +219,7 @@ public class RCMainScreenAjax extends HttpServlet {
                             out.println("</thead>");
                             out.println("<tbody>");
 
-                            for (DataDto data : list) {
+                            for (Data data : list) {
                                 createDataTable(controller, screen, data, request, out);
                             }
 
@@ -275,8 +263,8 @@ public class RCMainScreenAjax extends HttpServlet {
         return relayList;
     }
 
-    private boolean isAlarmOnController(List<DataDto> onScreenData) {
-        for (DataDto d : onScreenData) {
+    private boolean isAlarmOnController(Collection<Data> onScreenData) {
+        for (Data d : onScreenData) {
             if (d.getSpecial() == 1) {
                 int mask = 0x0001;
                 int val = (d.getValue().intValue());
@@ -293,7 +281,7 @@ public class RCMainScreenAjax extends HttpServlet {
         return false;
     }
 
-    private void createDataTable(ControllerDto controller, ScreenDto screen, DataDto data, HttpServletRequest request,
+    private void createDataTable(ControllerDto controller, Screen screen, Data data, HttpServletRequest request,
                                  PrintWriter out) {
         if (!data.isStatus()) {
             out.println("<tr class='' onmouseover=\"this.className='selected'\" onmouseout=\"this.className=''\">");
@@ -309,9 +297,9 @@ public class RCMainScreenAjax extends HttpServlet {
                                 + " );\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
                                 + data.getFormat()
                                 + "')\" size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
-                                + data.getFormatedValue() + ">");
+                                + data.getFormattedValue() + ">");
             } else {
-                out.println(data.getFormatedValue());
+                out.println(data.getFormattedValue());
             }
 
             out.println("</td>");
@@ -320,19 +308,19 @@ public class RCMainScreenAjax extends HttpServlet {
             int special = data.getSpecial();
 
             switch (special) {
-                case DataDto.STATUS:
+                case Data.STATUS:
                     out.println("<tr class='' onmouseover=\"this.className='selected'\" onmouseout=\"this.className=''\">");
                     out.println("<td class='label' nowrap>");
                     out.println(data.getUnicodeLabel());
                     out.println("</td>");
                     out.println("<td class='value'>");
-                    out.println(data.getFormatedValue());
+                    out.println(data.getFormattedValue());
                     out.println("</td>");
                     out.println("</tr>");
 
                     break;
 
-                case DataDto.ALARM:
+                case Data.ALARM:
                     List<ProgramAlarm> alarms = controller.getProgram().getProgramAlarmsByData(data.getId());
                     StringBuilder toolTip = new StringBuilder();
 
@@ -382,9 +370,9 @@ public class RCMainScreenAjax extends HttpServlet {
                     out.println("</div>");
                     out.println("</div>");
                     out.println("<td class='value'>");
-                    out.println(data.getFormatedValue());
+                    out.println(data.getFormattedValue());
 
-//              out.println("<input type='text' readonly size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value=" + data.getFormatedValue() + ">");
+//              out.println("<input type='text' readonly size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value=" + data.getFormattedValue() + ">");
                     out.println(
                             "<span class=\"formHelpLink\" style=\"color : #0000FF;font-weight: bold;font-size:1px;padding:0px 0px 0px 1px;margin:0px;cursor:help;\"");
                     out.println("valign='middle' align='left' onclick=\"ShowHelp(event, '" + toolTip.toString()
@@ -396,7 +384,7 @@ public class RCMainScreenAjax extends HttpServlet {
 
                     break;
 
-                case DataDto.RELAY:
+                case Data.RELAY:
                     List<ProgramRelay> programRelays = controller.getProgram().getProgramRelays();
                     List<ProgramRelay> relayList = getProgramRelaysByRelayType(programRelays, data.getId());
 
@@ -470,7 +458,7 @@ public class RCMainScreenAjax extends HttpServlet {
 
                     break;
 
-                case DataDto.SYSTEM_STATE:
+                case Data.SYSTEM_STATE:
                     out.println("<tr class='' onmouseover=\"this.className='selected'\" onmouseout=\"this.className=''\">");
 
                     ProgramSystemState programSystemState =

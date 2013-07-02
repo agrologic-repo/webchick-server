@@ -1,13 +1,7 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.*;
+import com.agrologic.app.dao.impl.ActionSetDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -18,9 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
-
-//~--- JDK imports ------------------------------------------------------------
 
 public class AddSelectedScreenFormServlet extends HttpServlet {
 
@@ -36,7 +29,7 @@ public class AddSelectedScreenFormServlet extends HttpServlet {
             throws ServletException, IOException {
 
         /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddProgramServlet.class);
+        final Logger logger = Logger.getLogger(AddSelectedScreenFormServlet.class);
 
         response.setContentType("text/html;charset=UTF-8");
 
@@ -52,10 +45,11 @@ public class AddSelectedScreenFormServlet extends HttpServlet {
                 Long selectedScreenId = Long.parseLong(request.getParameter("selectedScreenId"));
 
                 try {
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto program = programDao.getById(selectedProgramId);
-                    ScreenDao screenDao = new ScreenDaoImpl();
-                    ScreenDto screen = screenDao.getById(program.getId(), selectedScreenId);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(selectedProgramId);
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    ;
+                    Screen screen = screenDao.getById(program.getId(), selectedScreenId);
                     int nextScreenPos = screenDao.getNextScreenPosByProgramId(programId);
 
                     screen.setProgramId(programId);
@@ -69,19 +63,16 @@ public class AddSelectedScreenFormServlet extends HttpServlet {
 
                         actionSetDao.insertActionSetList(actionsetList, programId);
                     } else {
-                        TableDao tableDao = new TableDaoImpl();
-                        List<TableDto> screenTables = tableDao.getAllScreenTables(selectedProgramId, selectedScreenId,
-                                null);
-                        DataDao dataDao = new DataDaoImpl();
+                        TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                        Collection<Table> screenTables = tableDao.getAllScreenTables(selectedProgramId, selectedScreenId, "");
+                        DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
-                        for (TableDto t : screenTables) {
+                        for (Table t : screenTables) {
                             t.setProgramId(programId);
                             tableDao.insertExsitTable(t);
-
-                            List<DataDto> tableData = dataDao.getTableDataList(selectedProgramId, selectedScreenId,
+                            List<Data> tableData = dataDao.getTableDataList(selectedProgramId, selectedScreenId,
                                     t.getId(), null);
-
-                            for (DataDto d : tableData) {
+                            for (Data d : tableData) {
                                 dataDao.insertDataToTable(programId, screen.getId(), t.getId(), d.getId(), "yes",
                                         d.getPosition());
                             }

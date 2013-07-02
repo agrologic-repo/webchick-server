@@ -228,11 +228,6 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
                     if (!serverThread.isAlive()) {
                         serverThread.start();
                     }
-
-                    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-//                    while (serverSocketThread.getServerState() != ServerActivityStates.RUNNING
-//                            && serverSocketThread.getServerState() != ServerActivityStates.ERROR) {
-//                    }
                     if (!clock.isRunning()) {
                         clock.start();
                     }
@@ -266,16 +261,16 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
                     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     btnStart.setEnabled(true);
                     btnStop.setEnabled(false);
-                    //btnSetting.setEnabled(true);
                     serverSocketThread.setServerActivityState(ServerActivityStates.STOPPING);
                     serverSocketThread.shutdownServer();
 
                     while (serverSocketThread.getServerState() != ServerActivityStates.IDLE) {
+
                     }
                     if (clock.isRunning()) {
                         clock.stop();
                     }
-                    cellinkTable.stopMonitoring();
+                    //cellinkTable.stopMonitoring();
                 } finally {
                     setCursor(Cursor.getDefaultCursor());
                 }
@@ -356,14 +351,17 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
     }
 
     public void openConfiguration() {
+        boolean result;
         try {
             if (configDialog == null) {
                 configDialog = new ConfigurationDialog(this, true);
-                configDialog.show();
+                result = configDialog.showDialog();
             } else {
-                configDialog.show();
+                result = configDialog.showDialog();
             }
-            RestartApplication.restartUsingFileClassAndProcessBuilder();
+            if (result == true) {
+                RestartApplication.restartUsingFileClassAndProcessBuilder();
+            }
         } catch (JarFileWasNotFound ex) {
             logger.error("Cannot restart application . URI does not correct.", ex);
         } catch (IOException ex) {

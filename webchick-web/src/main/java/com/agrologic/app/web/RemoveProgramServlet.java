@@ -1,22 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.ScreenDao;
-import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.dao.impl.ScreenDaoImpl;
-import com.agrologic.app.dao.impl.TableDaoImpl;
-import com.agrologic.app.model.ProgramDto;
-import com.agrologic.app.model.ScreenDto;
-import com.agrologic.app.model.TableDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.model.Program;
+import com.agrologic.app.model.Screen;
+import com.agrologic.app.model.Table;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -26,13 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class RemoveProgramServlet extends HttpServlet {
 
     /**
@@ -67,20 +50,18 @@ public class RemoveProgramServlet extends HttpServlet {
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
                 } else {
                     try {
-                        ProgramDao programDao = new ProgramDaoImpl();
-                        ScreenDao screenDao = new ScreenDaoImpl();
-                        TableDao tableDao = new TableDaoImpl();
-                        DataDao dataDao = new DataDaoImpl();
-                        ProgramDto program = programDao.getById(programId);
-                        List<ScreenDto> screens = screenDao.getAllByProgramId(program.getId());
-
-                        for (ScreenDto s : screens) {
-                            List<TableDto> tables = tableDao.getAllScreenTables(programId, s.getId(), null);
-
-                            for (TableDto t : tables) {
+                        ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                        ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                        ;
+                        TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                        DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                        Program program = programDao.getById(programId);
+                        List<Screen> screens = (List<Screen>) screenDao.getAllByProgramId(program.getId());
+                        for (Screen s : screens) {
+                            Collection<Table> tables = tableDao.getAllScreenTables(programId, s.getId(), "");
+                            for (Table t : tables) {
                                 dataDao.removeDataFromTable(programId, s.getId(), t.getId());
                             }
-
                             screenDao.remove(programId, s.getId());
                         }
 

@@ -6,21 +6,14 @@
 package com.agrologic.app.graph.history;
 
 
-
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.CombinedDomainXYPlot;
-import org.jfree.chart.plot.PiePlot;
-import org.jfree.chart.plot.Plot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.plot.*;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
@@ -32,43 +25,49 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.util.UnitType;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-
+import java.awt.*;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+//~--- JDK imports ------------------------------------------------------------
+
 
 public class HistoryGraph24 {
 
-    /** Line style: dashed */
+    /**
+     * Line style: dashed
+     */
     public static final String STYLE_DASH = "dash";
 
-    /** Line style: dotted */
+    /**
+     * Line style: dotted
+     */
     public static final String STYLE_DOT = "dot";
 
-    /** Line style: line */
+    /**
+     * Line style: line
+     */
     public static final String STYLE_LINE = "line";
 
-    /** The bottom coordinate of series */
+    /**
+     * The bottom coordinate of series
+     */
     private Coordinate<Long> bottomCoord;
 
     /**  */
     protected JFreeChart chart;
 
     /**  */
-    private List<Map<Integer, DataDto>> dataHistoryList;
+    private List<Map<Integer, Data>> dataHistoryList;
 
-    /** The top coordinate of series */
+    /**
+     * The top coordinate of series
+     */
     private Coordinate<Long> topCoord;
 
     /**  */
@@ -90,7 +89,7 @@ public class HistoryGraph24 {
                 PlotOrientation.VERTICAL, true,          // include legend
                 true,                                    // tooltips
                 false                                    // urls
-                    );
+        );
 
         // now do some optional customisation of the chart...
         // set chart background color
@@ -120,26 +119,27 @@ public class HistoryGraph24 {
     /**
      * Creates series collection of data history by grow day
      * and add to plot.
+     *
      * @param dataHsitoryList the List of data history by grow day map.
-     * @param axisLabel the label of series collection.
+     * @param axisLabel       the label of series collection.
      */
-    public void createAndAddSeriesCollection(List<Map<Integer, DataDto>> dhl, String axisLabel) {
+    public void createAndAddSeriesCollection(List<Map<Integer, Data>> dhl, String axisLabel) {
         initTopAndBottomCoords();
 
         XYSeriesCollection seriesCollect = createSeriesCollection(dhl);
-        final XYPlot       plot          = chart.getXYPlot();
-        int                count         = plot.getRangeAxisCount();
+        final XYPlot plot = chart.getXYPlot();
+        int count = plot.getRangeAxisCount();
 
         plot.setDataset(count, seriesCollect);
         plot.mapDatasetToRangeAxis(count, count);
         plot.setRangeAxis(count, createNumberAxis(axisLabel, Color.BLUE));
 
         StandardXYToolTipGenerator ttg =
-            new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
-                                           new SimpleDateFormat("DD"), NumberFormat.getInstance());
-        TimeSeriesURLGenerator urlg     = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series", "hitDate");
+                new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
+                        new SimpleDateFormat("DD"), NumberFormat.getInstance());
+        TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series", "hitDate");
         StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg,
-                                              urlg);
+                urlg);
 
         renderer.setBaseShapesVisible(true);
         renderer.setBaseShapesFilled(true);
@@ -150,15 +150,16 @@ public class HistoryGraph24 {
 
     /**
      * Creates series collection of data history by grow day.
+     *
      * @param dataHsitoryList the List of data history by grow day map.
      * @return seriesCollect the series collection object.
      */
-    protected XYSeriesCollection createSeriesCollection(List<Map<Integer, DataDto>> dhl) {
+    protected XYSeriesCollection createSeriesCollection(List<Map<Integer, Data>> dhl) {
         initTopAndBottomCoords();
 
         XYSeriesCollection seriesCollect = new XYSeriesCollection();
 
-        for (Map<Integer, DataDto> coordinate : dhl) {
+        for (Map<Integer, Data> coordinate : dhl) {
             XYSeries xyseries = createSeries(coordinate);
 
             seriesCollect.addSeries(xyseries);
@@ -169,15 +170,16 @@ public class HistoryGraph24 {
 
     /**
      * Return created series and set minimum maximum coordinates.
+     *
      * @param coordinates the map with values by grow day.
      * @param seriesLabel the label of series.
      * @return series the series
      */
-    protected XYSeries createSeries(final Map<Integer, DataDto> coordinates) {
-        XYSeries                     series  = new XYSeries(getSeriesLabel(coordinates));
-        Set<Entry<Integer, DataDto>> entries = coordinates.entrySet();
+    protected XYSeries createSeries(final Map<Integer, Data> coordinates) {
+        XYSeries series = new XYSeries(getSeriesLabel(coordinates));
+        Set<Entry<Integer, Data>> entries = coordinates.entrySet();
 
-        for (Entry<Integer, DataDto> entry : entries) {
+        for (Entry<Integer, Data> entry : entries) {
             Number x = entry.getKey();
             Number y = valueByType(entry.getValue());
 
@@ -188,7 +190,7 @@ public class HistoryGraph24 {
         return series;
     }
 
-    private Number valueByType(DataDto data) {
+    private Number valueByType(Data data) {
         Long value = data.getValue();
 
         if (DataFormat.TIME == data.getFormat()) {
@@ -199,16 +201,17 @@ public class HistoryGraph24 {
             return (double) t;
         }
 
-        return Double.valueOf(data.getFormatedValue());
+        return Double.valueOf(data.getFormattedValue());
     }
 
     /**
      * Return label of series.
+     *
      * @param coordinates
      * @return data label
      */
-    protected String getSeriesLabel(final Map<Integer, DataDto> coordinates) {
-        Iterator<DataDto> dataIter = coordinates.values().iterator();
+    protected String getSeriesLabel(final Map<Integer, Data> coordinates) {
+        Iterator<Data> dataIter = coordinates.values().iterator();
 
         if (dataIter.hasNext()) {
             return dataIter.next().getLabel();
@@ -220,6 +223,7 @@ public class HistoryGraph24 {
     /**
      * Set background color, domain grid line , range grind line
      * and also set renderer of plot to XYLineAndShapeRenderer.
+     *
      * @param plot the given plot
      */
     protected void setPlotParameters(XYPlot plot) {
@@ -230,13 +234,13 @@ public class HistoryGraph24 {
         plot.setRangePannable(true);
 
         StandardXYToolTipGenerator ttg =
-            new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
-                                           new SimpleDateFormat("DD"), NumberFormat.getInstance());
+                new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
+                        new SimpleDateFormat("DD"), NumberFormat.getInstance());
         TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series", "hitDate");
 
 //
         StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg,
-                                              urlg);
+                urlg);
 
 //      renderer.setShapesFilled(true);
 //      renderer.setBaseShapesVisible(true);
@@ -251,9 +255,10 @@ public class HistoryGraph24 {
 
     /**
      * Creates axis .
+     *
      * @param axisLabel the label of axis.
      * @param color     the color of axis.
-     * @return  numberAxis the created axis object.
+     * @return numberAxis the created axis object.
      */
     protected NumberAxis createNumberAxis(final String axisLabel, Color color) {
         NumberAxis numberAxis = new NumberAxis(axisLabel);
@@ -265,6 +270,7 @@ public class HistoryGraph24 {
 
     /**
      * Set parameters of axis.
+     *
      * @param numberAxis the axis to set.
      * @param axisLabel  the label of axis to set.
      * @param color      the color of axis to set.
@@ -284,6 +290,7 @@ public class HistoryGraph24 {
 
     /**
      * Return chart.
+     *
      * @return chart
      */
     public JFreeChart getChart() {
@@ -295,7 +302,7 @@ public class HistoryGraph24 {
      * coordinate of each graph.
      */
     protected void initTopAndBottomCoords() {
-        topCoord    = new Coordinate<Long>(Long.MIN_VALUE, Long.MIN_VALUE);
+        topCoord = new Coordinate<Long>(Long.MIN_VALUE, Long.MIN_VALUE);
         bottomCoord = new Coordinate<Long>(Long.MAX_VALUE, Long.MAX_VALUE);
     }
 
@@ -312,6 +319,7 @@ public class HistoryGraph24 {
 
     /**
      * Sets top coordinates .
+     *
      * @param coord the coord to set topCoord.
      */
     private void setTopCoords(Coordinate coord) {
@@ -326,6 +334,7 @@ public class HistoryGraph24 {
 
     /**
      * Sets bottom coordinates .
+     *
      * @param coord the coord to set bottomCoord.
      */
     private void setBottomCoords(Coordinate coord) {
@@ -340,6 +349,7 @@ public class HistoryGraph24 {
 
     /**
      * Convert style string to stroke object.
+     *
      * @param style One of STYLE_xxx.
      * @return Stroke for <i>style</i> or null if style not supported.
      */
@@ -348,8 +358,8 @@ public class HistoryGraph24 {
 
         if (style != null) {
             float lineWidth = 0.2f;
-            float dash[]    = { 5.0f };
-            float dot[]     = { lineWidth };
+            float dash[] = {5.0f};
+            float dot[] = {lineWidth};
 
             if (style.equalsIgnoreCase(STYLE_LINE)) {
                 result = new BasicStroke(lineWidth);
@@ -365,16 +375,17 @@ public class HistoryGraph24 {
 
     /**
      * Set style of series.
-     * @param chart JFreeChart.
+     *
+     * @param chart       JFreeChart.
      * @param seriesIndex Index of series to set color of (0 = first series)
-     * @param style One of STYLE_xxx.
+     * @param style       One of STYLE_xxx.
      */
     public void setSeriesStyle(JFreeChart chart, int seriesIndex, String style, int plotIndex) {
         if ((chart != null) && (style != null)) {
-            BasicStroke          stroke   = toStroke(style);
-            CombinedDomainXYPlot plots    = (CombinedDomainXYPlot) chart.getPlot();
-            List                 subplots = plots.getSubplots();
-            Plot                 plot     = (Plot) subplots.get(plotIndex);
+            BasicStroke stroke = toStroke(style);
+            CombinedDomainXYPlot plots = (CombinedDomainXYPlot) chart.getPlot();
+            List subplots = plots.getSubplots();
+            Plot plot = (Plot) subplots.get(plotIndex);
 
             if (plot instanceof CategoryPlot) {
 
@@ -385,7 +396,7 @@ public class HistoryGraph24 {
                     cir.setSeriesStroke(seriesIndex, stroke);    // series line style
                 } catch (Exception e) {
                     System.err.println("Error setting style '" + style + "' for series '" + seriesIndex
-                                       + "' of chart '" + chart + "': " + e);
+                            + "' of chart '" + chart + "': " + e);
                 }
             } else if (plot instanceof XYPlot) {
 
@@ -396,7 +407,7 @@ public class HistoryGraph24 {
                     xyir.setSeriesStroke(seriesIndex, stroke);    // series line style
                 } catch (Exception e) {
                     System.err.println("Error setting style '" + style + "' for series '" + seriesIndex
-                                       + "' of chart '" + chart + "': " + e);
+                            + "' of chart '" + chart + "': " + e);
                 }
             } else {
                 System.out.println("setSeriesColor() unsupported plot: " + plot);
@@ -406,9 +417,10 @@ public class HistoryGraph24 {
 
     /**
      * Set color of series.
-     * @param chart JFreeChart.
+     *
+     * @param chart       JFreeChart.
      * @param seriesIndex Index of series to set color of (0 = first series)
-     * @param color New color to set.
+     * @param color       New color to set.
      */
     public void setSeriesColor(JFreeChart chart, int seriesIndex, Color color) {
         if (chart != null) {
@@ -416,8 +428,8 @@ public class HistoryGraph24 {
 
             try {
                 if (plot instanceof CategoryPlot) {
-                    CategoryPlot         categoryPlot = chart.getCategoryPlot();
-                    CategoryItemRenderer cir          = categoryPlot.getRenderer();
+                    CategoryPlot categoryPlot = chart.getCategoryPlot();
+                    CategoryItemRenderer cir = categoryPlot.getRenderer();
 
                     cir.setSeriesPaint(seriesIndex, color);
                 } else if (plot instanceof PiePlot) {
@@ -425,8 +437,8 @@ public class HistoryGraph24 {
 
                     piePlot.setSectionPaint(seriesIndex, color);
                 } else if (plot instanceof XYPlot) {
-                    XYPlot         xyPlot = chart.getXYPlot();
-                    XYItemRenderer xyir   = xyPlot.getRenderer();
+                    XYPlot xyPlot = chart.getXYPlot();
+                    XYItemRenderer xyir = xyPlot.getRenderer();
 
                     xyir.setSeriesPaint(seriesIndex, color);
                 } else {
@@ -434,16 +446,17 @@ public class HistoryGraph24 {
                 }
             } catch (Exception e) {    // e.g. invalid seriesIndex
                 System.err.println("Error setting color '" + color + "' for series '" + seriesIndex + "' of chart '"
-                                   + chart + "': " + e);
+                        + chart + "': " + e);
             }
         }
     }
 
     /**
      * Set data history list.
+     *
      * @param dataHistoryList the data history list
      */
-    public void setDataHistoryList(List<Map<Integer, DataDto>> dataHistoryList) {
+    public void setDataHistoryList(List<Map<Integer, Data>> dataHistoryList) {
         this.dataHistoryList = dataHistoryList;
     }
 }

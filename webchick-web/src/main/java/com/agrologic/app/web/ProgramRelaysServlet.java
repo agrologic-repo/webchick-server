@@ -7,10 +7,8 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.model.DataDto;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.model.Data;
+import com.agrologic.app.model.Program;
 import com.agrologic.app.model.ProgramRelay;
 import com.agrologic.app.model.Relay;
 import org.apache.log4j.Logger;
@@ -64,8 +62,8 @@ public class ProgramRelaysServlet extends HttpServlet {
                         translateLang = 1;    // default program
                     }
 
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto program = programDao.getById(programId);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(programId);
                     logger.info("get program !");
 
                     String[] empty = new String[0];
@@ -75,8 +73,8 @@ public class ProgramRelaysServlet extends HttpServlet {
                     logger.info("retrieve program relays!");
                     request.getSession().setAttribute("program", program);
 
-                    DataDao dataDao = new DataDaoImpl();
-                    List<DataDto> dataRelays = dataDao.getRelays();
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    List<Data> dataRelays = dataDao.getRelays();
                     logger.info("retrieve program data relay!");
                     request.getSession().setAttribute("dataRelays", dataRelays);
 

@@ -5,21 +5,21 @@
 
 <%@ page import="com.agrologic.app.model.LanguageDto" %>
 
-<jsp:directive.page import="com.agrologic.app.model.ProgramDto"/>
-<%@ page import="com.agrologic.app.model.ScreenDto" %>
-<%@ page import="com.agrologic.app.model.TableDto" %>
-<%@ page import="java.util.List" %>
+<jsp:directive.page import="com.agrologic.app.model.Program"/>
+<%@ page import="com.agrologic.app.model.Screen" %>
+<%@ page import="com.agrologic.app.model.Table" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    ProgramDto program = (ProgramDto) request.getSession().getAttribute("program");
-    ScreenDto screen = (ScreenDto) request.getSession().getAttribute("screen");
-    List<TableDto> tables = screen.getTables();
-    List<LanguageDto> languages = (List<LanguageDto>) request.getSession().getAttribute("languages");
-    String ptl = (String) request.getParameter("translateLang");
+    Program program = (Program) request.getSession().getAttribute("program");
+    Screen screen = (Screen) request.getSession().getAttribute("screen");
+    Collection<Table> tables = screen.getTables();
+    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
+    String ptl = request.getParameter("translateLang");
     if (ptl == null) {
         ptl = "1";
     }
@@ -173,7 +173,7 @@
                                     </thead>
                                     <tbody>
                                     <%
-                                        for (TableDto table : tables) {%>
+                                        for (Table table : tables) {%>
                                     <tr onmouseover="this.style.background='#CEDEF4'"
                                         onmouseout="this.style.background='white'" title="Click for details">
                                         <td class="leftCell"><a

@@ -7,11 +7,12 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -22,11 +23,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class RCChangeValue extends HttpServlet {
 
     /**
@@ -73,10 +69,10 @@ public class RCChangeValue extends HttpServlet {
 
                 ControllerDao controllerDao = new ControllerDaoImpl();
                 ControllerDto controller = controllerDao.getById(controllerId);
-                DataDao dataDao = new DataDaoImpl();
-                DataDto data = dataDao.getById(dataId);
+                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                Data data = dataDao.getById(dataId);
 
-                data.setValueToChange(value);
+                data.setValueFromUI(value);
                 controllerDao.sendNewDataValueToController(controller.getId(), data.getId(), data.getValue());
                 controllerDao.saveNewDataValueOnController(controller.getId(), data.getId(), data.getValue());
                 logger.info("Data successfully changed :" + data);

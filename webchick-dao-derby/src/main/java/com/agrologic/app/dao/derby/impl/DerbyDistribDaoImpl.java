@@ -7,11 +7,12 @@ package com.agrologic.app.dao.derby.impl;
 
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.DistribDaoImpl;
 import com.agrologic.app.model.Distrib;
+
 import java.sql.*;
 
 public class DerbyDistribDaoImpl extends DistribDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
@@ -150,7 +151,7 @@ public class DerbyDistribDaoImpl extends DistribDaoImpl implements CreatebleDao,
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.DISTRIB ";
         Statement stmt = null;
         Connection con = null;

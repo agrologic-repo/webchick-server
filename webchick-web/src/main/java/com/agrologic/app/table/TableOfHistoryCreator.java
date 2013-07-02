@@ -6,11 +6,11 @@
 package com.agrologic.app.table;
 
 
-import com.agrologic.app.model.DataDto;
-
-//~--- JDK imports ------------------------------------------------------------
+import com.agrologic.app.model.Data;
 
 import java.util.*;
+
+//~--- JDK imports ------------------------------------------------------------
 
 public class TableOfHistoryCreator {
 
@@ -18,17 +18,17 @@ public class TableOfHistoryCreator {
      * Create history data by grow day.
      *
      * @param history the history map per grow day.
-     * @param data the searching data .
+     * @param data    the searching data .
      * @return histDataByGrowDay the map with searched history data per grow day
      */
-    public static Map<Integer, DataDto> createHistDataByGrowDay(final Map<Integer, String> history,
-            final DataDto data) {
-        Map<Integer, DataDto> histDataByGrowDay = new TreeMap<Integer, DataDto>();
+    public static Map<Integer, Data> createHistDataByGrowDay(final Map<Integer, String> history,
+                                                             final Data data) {
+        Map<Integer, Data> histDataByGrowDay = new TreeMap<Integer, Data>();
         Iterator<Integer> iter = history.keySet().iterator();
 
         while (iter.hasNext()) {
             Integer key = iter.next();
-            DataDto dataFromHist = getDataFromHist(data, history.get(key));
+            Data dataFromHist = getDataFromHist(data, history.get(key));
 
             if (dataFromHist != null) {
                 histDataByGrowDay.put(key, dataFromHist);
@@ -43,21 +43,21 @@ public class TableOfHistoryCreator {
     /**
      * Create history data by grow day.
      *
-     * @param history the history map per grow day.
+     * @param history    the history map per grow day.
      * @param searchData the searching data .
      * @return histDataByGrowDay the map with searched history data per grow day
      */
-    public static Map<Integer, DataDto> createEggCountHistDataByGrowDay(final Map<Integer, String> history,
-            final DataDto searchData) {
-        int SHIFT_16_BIT        = 16;
-        int HIGH_16BIT_ON_MASK  = 0x8000;
+    public static Map<Integer, Data> createEggCountHistDataByGrowDay(final Map<Integer, String> history,
+                                                                     final Data searchData) {
+        int SHIFT_16_BIT = 16;
+        int HIGH_16BIT_ON_MASK = 0x8000;
         int HIGH_32BIT_OFF_MASK = 0x0000FFFF;
 
-        Map<Integer, DataDto> histDataByGrowDay = new TreeMap<Integer, DataDto>();
+        Map<Integer, Data> histDataByGrowDay = new TreeMap<Integer, Data>();
         Iterator<Integer> iter = history.keySet().iterator();
         while (iter.hasNext()) {
             Integer key = iter.next();
-            DataDto dataFromHist = null;
+            Data dataFromHist = null;
             StringTokenizer token = new StringTokenizer(history.get(key), " ");
 
             while (token.hasMoreElements() && token.countTokens() >= 4) {
@@ -77,7 +77,7 @@ public class TableOfHistoryCreator {
                     dataIdString = String.valueOf(dataId);
 
                     if (dataIdString.equals(dataType)) {
-                        if (searchData.isLong()) {
+                        if (searchData.isLongType()) {
                             token.nextToken();// skip this key
                             int highValue = value;
                             boolean negative = ((highValue & HIGH_16BIT_ON_MASK) == 0) ? false : true;
@@ -99,7 +99,7 @@ public class TableOfHistoryCreator {
                         }
                         valueString = String.valueOf(value);
                         searchData.setValue(Long.valueOf(valueString));
-                        dataFromHist = (DataDto) searchData.clone();
+                        dataFromHist = (Data) searchData.clone();
 
                         break;
                     }
@@ -135,12 +135,11 @@ public class TableOfHistoryCreator {
     }
 
     /**
-     *
      * @param growDays
      * @return
      */
-    public static Map<Integer, DataDto> createGrowDayList(final Map<Integer, String> history, DataDto data) {
-        Map<Integer, DataDto> histDataByGrowDay = new TreeMap<Integer, DataDto>();
+    public static Map<Integer, Data> createGrowDayList(final Map<Integer, String> history, Data data) {
+        Map<Integer, Data> histDataByGrowDay = new TreeMap<Integer, Data>();
         Iterator<Integer> iter = history.keySet().iterator();
 
         while (iter.hasNext()) {
@@ -160,9 +159,9 @@ public class TableOfHistoryCreator {
      * @param histString the string with all history pairs data and value .
      * @return foundData the data object with value from history string, or null.
      */
-    private static DataDto getDataFromHist(DataDto searchData, String histString) {
+    private static Data getDataFromHist(Data searchData, String histString) {
         StringTokenizer token = new StringTokenizer(histString, " ");
-        DataDto foundData = null;
+        Data foundData = null;
 
         while (token.hasMoreElements()) {
             try {
@@ -176,7 +175,7 @@ public class TableOfHistoryCreator {
 
                 if (dataElem.equals(dataType)) {
                     searchData.setValue(Long.valueOf(valElem));
-                    foundData = (DataDto) searchData.clone();
+                    foundData = (Data) searchData.clone();
 
                     break;
                 }

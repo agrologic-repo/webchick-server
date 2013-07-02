@@ -1,10 +1,8 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.model.DataDto;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.model.Data;
+import com.agrologic.app.model.Program;
 import com.agrologic.app.model.ProgramSystemState;
 import com.agrologic.app.model.SystemState;
 import org.apache.log4j.Logger;
@@ -47,8 +45,8 @@ public class ProgramSystemStatesServlet extends HttpServlet {
                 Long programId = Long.parseLong(request.getParameter("programId"));
 
                 try {
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto program = programDao.getById(programId);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(programId);
 
                     logger.info("get program !");
 
@@ -61,8 +59,8 @@ public class ProgramSystemStatesServlet extends HttpServlet {
                     logger.info("retrieve program system states!");
                     request.getSession().setAttribute("program", program);
 
-                    DataDao dataDao = new DataDaoImpl();
-                    List<DataDto> dataSystemStates = dataDao.getSystemStates();
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    List<Data> dataSystemStates = dataDao.getSystemStates();
 
                     logger.info("retrieve program data system states!");
                     request.getSession().setAttribute("dataSystemStates", dataSystemStates);

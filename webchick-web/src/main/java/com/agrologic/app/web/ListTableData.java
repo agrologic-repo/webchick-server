@@ -7,7 +7,8 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.*;
+import com.agrologic.app.dao.impl.ActionSetDaoImpl;
+import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -21,11 +22,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class ListTableData extends HttpServlet {
 
     /**
@@ -63,8 +59,9 @@ public class ListTableData extends HttpServlet {
                 }
 
                 try {
-                    ScreenDao screenDao = new ScreenDaoImpl();
-                    ScreenDto screen = screenDao.getById(programId, screenId);
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    ;
+                    Screen screen = screenDao.getById(programId, screenId);
 
                     if (screen.getTitle().equals("Action Set Buttons")) {
                         ActionSetDao actionsetDao = new ActionSetDaoImpl();
@@ -76,15 +73,15 @@ public class ListTableData extends HttpServlet {
                         request.getRequestDispatcher("./all-actionset.jsp?screenId=" + screen.getId()
                                 + "&translateLang=" + translateLang).forward(request, response);
                     } else {
-                        TableDao tableDao = new TableDaoImpl();
-                        TableDto table = tableDao.getById(programId, screenId, tableId);    // ScreenTables(screen.getProgramId(), screen.getId(), translateLang, true);
-                        DataDao dataDao = new DataDaoImpl();
-                        List<DataDto> dataList = dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
+                        TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                        Table table = tableDao.getById(programId, screenId, tableId);
+                        DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                        List<Data> dataList = dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
                                 table.getId(), translateLang, null);
 
                         table.setDataList(dataList);
 
-                        List<TableDto> tables = new ArrayList<TableDto>();
+                        List<Table> tables = new ArrayList<Table>();
 
                         tables.add(table);
                         screen.setTables(tables);

@@ -3,15 +3,16 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.dao.DataDao" %>
+<%@ page import="com.agrologic.app.dao.DaoType" %>
 
+<jsp:directive.page import="com.agrologic.app.dao.DataDao"/>
+<jsp:directive.page import="com.agrologic.app.dao.DbImplDecider"/>
 <jsp:directive.page import="com.agrologic.app.dao.LanguageDao"/>
-<jsp:directive.page import="com.agrologic.app.dao.impl.DataDaoImpl"/>
 <jsp:directive.page import="com.agrologic.app.dao.impl.LanguageDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.DataDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Data"/>
 <jsp:directive.page import="com.agrologic.app.model.LanguageDto"/>
-<jsp:directive.page import="com.agrologic.app.model.UserDto"/>
-<jsp:directive.page import="java.util.List"/>
+<%@ page import="com.agrologic.app.model.UserDto" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -23,16 +24,16 @@
     Long programId = Long.parseLong(request.getParameter("programId"));
     Integer position = Integer.parseInt(request.getParameter("position"));
 
-    DataDao dataDao = new DataDaoImpl();
-    List<DataDto> dataList = dataDao.getAll();
+    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+    Collection<Data> dataList = dataDao.getAll();
     LanguageDao languageDao = new LanguageDaoImpl();
-    List<LanguageDto> langList = languageDao.geAll();
+    Collection<LanguageDto> langList = languageDao.geAll();
 %>
 
 <%!
-    DataDto searchData(List<DataDto> dataList, long id) {
+    Data searchData(Collection<Data> dataList, long id) {
 
-        for (DataDto d : dataList) {
+        for (Data d : dataList) {
             if (d.getId().equals(id)) {
                 return d;
             }
@@ -256,7 +257,7 @@
                                 <select id="dataListBox" name="dataListBox"
                                         style="width:auto;height:25px;font-size:medium; "
                                         onchange="return setDataSource();">
-                                    <%for (DataDto data : dataList) { %>
+                                    <%for (Data data : dataList) { %>
                                     <option value="<%=data.getType()%>"><%=data.getUnicodeLabel()%>
                                         &nbsp;(<%=data.getType()%>)
                                     </option>

@@ -24,11 +24,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class TotalCellinkPieChart extends HttpServlet {
 
     /**
@@ -57,7 +52,7 @@ public class TotalCellinkPieChart extends HttpServlet {
                 try {
                     DefaultPieDataset dataset = new DefaultPieDataset();
                     JFreeChart jfc;
-                    CellinkDao cellinkDao = new CellinkDaoImpl();
+                    CellinkDao cellinkDao = new CellinkDaoImpl();// DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                     final int offline = cellinkDao.getAll(CellinkState.STATE_OFFLINE).size();
                     final int running = cellinkDao.getAll(CellinkState.STATE_RUNNING).size();
                     final int online = cellinkDao.getAll(CellinkState.STATE_START).size()

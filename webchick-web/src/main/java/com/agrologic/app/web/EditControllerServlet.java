@@ -7,11 +7,12 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
 import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.model.Program;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -60,8 +61,8 @@ public class EditControllerServlet extends HttpServlet {
 
                     logger.info("retrieve controller to edit");
 
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    List<ProgramDto> programs = programDao.getAll();
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    List<Program> programs = (List<Program>) programDao.getAll();
 
                     logger.info("retrieve programs");
                     request.getSession().setAttribute("editcontroller", editController);

@@ -10,7 +10,7 @@
 <%@ page import="com.agrologic.app.model.*" %>
 <%@ page import="java.util.ArrayList" %>
 
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -20,14 +20,14 @@
 
     Long screenId = Long.parseLong(request.getParameter("screenId"));
     Long screenLangId = Long.parseLong(request.getParameter("screenLangId"));
-    ProgramDto program = (ProgramDto) request.getSession().getAttribute("program");
-    List<DataDto> dataRelays = (List<DataDto>) request.getSession().getAttribute("dataRelays");
-    List<ProgramDto> programs = (List<ProgramDto>) request.getSession().getAttribute("programs");
-    List<LanguageDto> languages = (List<LanguageDto>) request.getSession().getAttribute("languages");
+    Program program = (Program) request.getSession().getAttribute("program");
+    Collection<Data> dataRelays = (Collection<Data>) request.getSession().getAttribute("dataRelays");
+    Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("programs");
+    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
 %>
-<%! ScreenDto getCurrentScreen(Long screenId, List<ScreenDto> screens) {
+<%! Screen getCurrentScreen(Long screenId, Collection<Screen> screens) {
 
-    for (ScreenDto screen : screens) {
+    for (Screen screen : screens) {
         if (screenId.equals(screen.getId())) {
             return screen;
         }
@@ -35,8 +35,8 @@
     return null;
 }
 %>
-<%! List<ProgramRelay> getProgramRelaysByRelayType(List<ProgramRelay> dataRelays, Long relayType) {
-    List<ProgramRelay> relayList = new ArrayList<ProgramRelay>();
+<%! Collection<ProgramRelay> getProgramRelaysByRelayType(Collection<ProgramRelay> dataRelays, Long relayType) {
+    Collection<ProgramRelay> relayList = new ArrayList<ProgramRelay>();
     for (ProgramRelay pr : dataRelays) {
         if (pr.getDataId().equals(relayType)) {
             relayList.add(pr);
@@ -90,7 +90,7 @@
         <tr>
             <td>
                 <h1>Preview</h1>
-                <% ScreenDto currScreen = getCurrentScreen(screenId, program.getScreens());%>
+                <% Screen currScreen = getCurrentScreen(screenId, program.getScreens());%>
             </td>
         </tr>
         <tr>
@@ -101,7 +101,7 @@
                             <form id="formFilterPrograms" name="formFilterPrograms">
                                 Program&nbsp;<select id="Program_Filter" name="Program_Filter"
                                                      onchange="return filterPrograms();">
-                                <%for (ProgramDto p : programs) {%>
+                                <%for (Program p : programs) {%>
                                 <option value="<%=p.getId()%>"><%=p.getName()%>
                                 </option>
                                 <%}%>
@@ -131,8 +131,8 @@
                             <table border="0" id="topnav" width="100%">
                                 <tr>
                                     <%int col = 0;%>
-                                    <%List<ScreenDto> screens = program.getScreens();%>
-                                    <%for (ScreenDto screen : screens) {%>
+                                    <%Collection<Screen> screens = program.getScreens();%>
+                                    <%for (Screen screen : screens) {%>
                                     <% if ((col % 6) == 0) {%>
                                 </tr>
                                 <tr>
@@ -162,11 +162,11 @@
                 <table cellPadding="2" cellSpacing="2" width="100%">
                     <%
                         int column = 0;
-                        List<TableDto> tables = currScreen.getTables();
+                        Collection<Table> tables = currScreen.getTables();
                         if (tables.size() > 0) {%>
                     <%
-                        for (TableDto table : tables) {
-                            if ((column % ScreenDto.COLUMN_NUMBERS) == 0) {
+                        for (Table table : tables) {
+                            if ((column % Screen.COLUMN_NUMBERS) == 0) {
                     %>
                     <tr>
                         <%}%>
@@ -178,7 +178,7 @@
                                     </th>
                                     </thead>
                                     <body>
-                                    <%for (DataDto data : table.getDataList()) {%>
+                                    <%for (Data data : table.getDataList()) {%>
                                     <tr>
                                         <td nowrap class="label"><%=data.getUnicodeLabel()%>
                                         </td>
@@ -191,7 +191,7 @@
                             </form>
                         </td>
                         <%column++;%>
-                        <%if ((column % ScreenDto.COLUMN_NUMBERS) == 0) {%>
+                        <%if ((column % Screen.COLUMN_NUMBERS) == 0) {%>
                     </tr>
                     <%}%>
 

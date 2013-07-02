@@ -53,14 +53,12 @@ public class ServerThread extends Observable implements Runnable {
             InetAddress ia = InetAddress.getByName(configuration.getIp());
             Integer port = configuration.getPort();
             logger.info("Try to open server on port : " + port);
-            server = new ServerSocket(port, MAX_NUM_SOCKET, ia) ;
-            server.setSoTimeout(SERVER_SOCKET_TIMEOUT);
+            server = new ServerSocket(port, MAX_NUM_SOCKET, ia);
             logger.info("ServerSocket opened on " + server.getLocalSocketAddress());
             return true;
         } catch (BindException ex) {
             logger.error("Error opening server.");
             logger.fatal(ex);
-
             return false;
         } catch (IOException ex) {
             logger.error("Error opening server.", ex);
@@ -106,17 +104,16 @@ public class ServerThread extends Observable implements Runnable {
                     try {
                         Socket socket = server.accept();//start client session
                         SocketThread newThread = clientSessions.createSessionWithClient(socket);
-                        // notify observers
                         setChanged();
                         notifyObservers(newThread);
                     } catch (SocketException ex) {
-                        logger.info("stop server, close server socket.");
-                    }catch (SocketTimeoutException ex) {
+                        logger.info("stop server, close server socket ");
+                    } catch (SocketTimeoutException ex) {
                         logger.trace("socket timeout exception ", ex);
                     } catch (IOException ex) {
-                        logger.trace("Error occurs while accepting new connection.", ex);
+                        logger.trace("Error occurs while accepting new connection ", ex);
                     } catch (Exception ex) {
-                        logger.trace("Unknown exception.", ex);
+                        logger.trace("Unknown exception ", ex);
                     }
 
                     break;
@@ -132,19 +129,18 @@ public class ServerThread extends Observable implements Runnable {
                         wait(100);
                     } catch (Exception ex) {
                         // ignore
-
                     }
 
                     break;
 
                 case STOPPED:
-                    logger.info("Server is closed.");
+                    logger.info("Server is closed");
                     setServerActivityState(ServerActivityStates.IDLE);
 
                     break;
 
                 case EXIT:
-                    logger.info("Shutdown program.");
+                    logger.info("Shutdown program");
                     shutdownServer();
                     running = false;
                     break;

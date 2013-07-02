@@ -6,16 +6,12 @@
 package com.agrologic.app.graph;
 
 
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 //~--- JDK imports ------------------------------------------------------------
-
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 /**
  * Title: DataForGraphCreator.java <br> Description: <br> Copyright: Copyright
@@ -31,15 +27,15 @@ public class DataGraphCreator {
      * Create history data by grow day.
      *
      * @param history the history map per grow day.
-     * @param data the searching data .
+     * @param data    the searching data .
      * @return histDataByGrowDay the map with searched history data per grow day
      */
-    public static Map<Integer, DataDto> createHistoryDataByGrowDay(final Map<Integer, String> history,
-            final DataDto data) {
-        Map<Integer, DataDto> histDataByGrowDay = new TreeMap<Integer, DataDto>();
+    public static Map<Integer, Data> createHistoryDataByGrowDay(final Map<Integer, String> history,
+                                                                final Data data) {
+        Map<Integer, Data> histDataByGrowDay = new TreeMap<Integer, Data>();
         Set<Entry<Integer, String>> entries = history.entrySet();
         for (Entry entry : entries) {
-            DataDto dataFromHist = getDataFromHistory(data, (String) entry.getValue());
+            Data dataFromHist = getDataFromHistory(data, (String) entry.getValue());
             if (dataFromHist != null) {
                 histDataByGrowDay.put((Integer) entry.getKey(), dataFromHist);
                 if (entry.getKey() == null) {
@@ -57,7 +53,7 @@ public class DataGraphCreator {
      * @param histString the string which all history pairs data and value .
      * @return foundData the data object with value from history string, or null.
      */
-    private static DataDto getDataFromHistory(DataDto searchData, String histString) {
+    private static Data getDataFromHistory(Data searchData, String histString) {
         StringTokenizer token = new StringTokenizer(histString, " ");
 
         while (token.hasMoreElements()) {
@@ -71,7 +67,7 @@ public class DataGraphCreator {
                 if (dataElem.equals(dataType)) {
                     Long value = Long.parseLong(valElem);
                     searchData.setValue(value);
-                    DataDto foundData = (DataDto) searchData.clone();
+                    Data foundData = (Data) searchData.clone();
                     return foundData;
                 }
             } catch (NoSuchElementException e) {

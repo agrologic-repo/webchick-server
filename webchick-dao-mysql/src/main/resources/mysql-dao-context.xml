@@ -32,8 +32,23 @@
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
+    <bean id="programDao" class="com.agrologic.app.dao.mysql.impl.ProgramDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="screenDao" class="com.agrologic.app.dao.mysql.impl.ScreenDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="tableDao" class="com.agrologic.app.dao.mysql.impl.TableDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="dataDao" class="com.agrologic.app.dao.mysql.impl.DataDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
     <bean id="controllerDao" class="com.agrologic.app.dao.mysql.impl.ControllerDaoImpl" parent="daoParent"/>
-    <bean id="dataDao" class="com.agrologic.app.dao.mysql.impl.DataDaoImpl" parent="daoParent"/>
     <bean id="distribDao" class="com.agrologic.app.dao.mysql.impl.DistribDaoImpl" parent="daoParent"/>
     <bean id="feedDao" class="com.agrologic.app.dao.mysql.impl.FeedDaoImpl" parent="daoParent"/>
     <bean id="feedTypeDao" class="com.agrologic.app.dao.mysql.impl.FeedTypeDaoImpl" parent="daoParent"/>
@@ -41,11 +56,7 @@
     <bean id="fuelDao" class="com.agrologic.app.dao.mysql.impl.FuelDaoImpl" parent="daoParent"/>
     <bean id="laborDao" class="com.agrologic.app.dao.mysql.impl.LaborDaoImpl" parent="daoParent"/>
     <bean id="userDao" class="com.agrologic.app.dao.mysql.impl.UserDaoImpl" parent="daoParent"/>
-    <bean id="programDao" class="com.agrologic.app.dao.mysql.impl.ProgramDaoImpl" parent="daoParent"/>
-    <bean id="screenDao" class="com.agrologic.app.dao.mysql.impl.ScreenDaoImpl" parent="daoParent"/>
-    <bean id="tableDao" class="com.agrologic.app.dao.mysql.impl.TableDaoImpl" parent="daoParent"/>
     <bean id="schemaDao" class="com.agrologic.app.dao.mysql.impl.SchemaDaoImpl" parent="daoParent"/>
-    <!--<bean id="systemStateDao" class="com.agrologic.app.dao.mysql.impl.SystemStateDaoImpl" parent="daoParent"/>-->
     <bean id="languageDao" class="com.agrologic.app.dao.mysql.impl.LanguageDaoImpl" parent="daoParent"/>
     <bean id="spreadDao" class="com.agrologic.app.dao.mysql.impl.SpreadDaoImpl" parent="daoParent"/>
     <bean id="transactionDao" class="com.agrologic.app.dao.mysql.impl.TransactionDaoImpl" parent="daoParent"/>

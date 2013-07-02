@@ -4,10 +4,11 @@ import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.except.ObjectDoesNotExist;
+import com.agrologic.app.except.SerialPortControlFailure;
 import com.agrologic.app.gui.ConfigurationDialog;
-import com.agrologic.app.gui.WCSWindow;
 import com.agrologic.app.gui.rxtx.flock.DesignScreen;
 import com.agrologic.app.gui.rxtx.flock.FlockManager;
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.network.rxtx.NetworkState;
 import com.agrologic.app.network.rxtx.SocketThread;
@@ -28,7 +29,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
+import java.util.ResourceBundle;
 
 public class WCSLWindow extends JFrame implements PropertyChangeListener {
 
@@ -72,14 +73,14 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
             dbManager.getDatabaseGeneralService().setDatabaseDir(PropertyFileUtil.getProgramPath());
             dbManager.doLoadTableData();
 
-            networkThread = new SocketThread(WCSLWindow.this, dbManager);
-            /*
             try {
                 networkThread = new SocketThread(WCSLWindow.this, dbManager);
             } catch (SerialPortControlFailure e) {
-                throw new Throwable(ERROR_OPENING_COM_PORT + e.getMessage() + "\n");
+                JOptionPane.showMessageDialog(WCSLWindow.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                openConfiguration();
+                System.exit(0);
             }
-            */
+
             createControllersScreens();
 
             Thread comThread = new Thread(networkThread);
@@ -92,7 +93,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
                 JOptionPane.showMessageDialog(WCSLWindow.this, USER_CANNOT_FOUND, "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 logger.info(t.getMessage(), t);
-                JOptionPane.showMessageDialog(WCSLWindow.this, ERROR_OPENING_COM_PORT, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(WCSLWindow.this, t.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             openConfiguration();
             System.exit(0);
@@ -105,7 +106,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
      * @param size the size
      * @return dimension the calculated dimension
      */
-    public Dimension calcMaximumDimens(int size) {
+    public Dimension calcMaximumDimension(int size) {
         Dimension dimension = new Dimension(0, 0);
         for (int i = 0; i < size; i++) {
             if (size == 1) {
@@ -170,7 +171,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
             }
 
             int colsOnScreen = ScreenUI.COL_NUMBERS;
-            Dimension dimension = calcMaximumDimens(size);
+            Dimension dimension = calcMaximumDimension(size);
             setMainScreenLocation(dimension, size, colsOnScreen);
             for (int i = 0; i < mainScreenPanels.length; i++) {
                 for (int j = 0; j < mainScreenPanels.length; j++) {
@@ -268,7 +269,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("MessagesBundle_en_US"); // NOI18N
+        ResourceBundle bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // NOI18N
         mnuFile.setText(bundle.getString("menu.file")); // NOI18N
 
         mnuExit.setText(bundle.getString("menu.file.exit")); // NOI18N
@@ -295,7 +296,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
 
         mnuTools.setText(bundle.getString("menu.tools")); // NOI18N
 
-        mnuConfig1.setText(bundle.getString("menu.tools.conig")); // NOI18N
+        mnuConfig1.setText(bundle.getString("menu.tools.config")); // NOI18N
         mnuConfig1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuConfig1ActionPerformed(evt);
@@ -377,9 +378,9 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
                 LocalUtil.restartApplication();
             }
         } catch (URISyntaxException ex) {
-            java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);
+
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(WCSWindow.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }
 

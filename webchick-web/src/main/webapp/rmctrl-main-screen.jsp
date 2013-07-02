@@ -7,7 +7,7 @@
 <%@ page import="com.agrologic.app.web.UserRole" %>
 <%@ page import="java.util.ArrayList" %>
 
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -22,8 +22,8 @@
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long screenId = Long.parseLong(request.getParameter("screenId"));
-    List<ControllerDto> controllers = (List<ControllerDto>) request.getSession().getAttribute("controllers");
-    List<DataDto> dataRelays = (List<DataDto>) request.getSession().getAttribute("dataRelays");
+    Collection<ControllerDto> controllers = (Collection<ControllerDto>) request.getSession().getAttribute("controllers");
+    Collection<Data> dataRelays = (Collection<Data>) request.getSession().getAttribute("dataRelays");
     Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");
 
     HashMap<Long, Long> nextScrIdsByCntrl = (HashMap<Long, Long>) request.getSession().getAttribute("nextScrIdsByCntrl");
@@ -35,8 +35,8 @@
         response.sendRedirect("./rmctrl-main-screen-ajax.jsp?userId=" + userId + "&cellinkId=" + cellinkId + "&screenId=1&doResetTimeout=true");
     }
 %>
-<%! boolean isAlarmOnController(List<DataDto> onScreenData) {
-    for (DataDto d : onScreenData) {
+<%! boolean isAlarmOnController(Collection<Data> onScreenData) {
+    for (Data d : onScreenData) {
         if (d.getSpecial() == 1) {
             int mask = 0x0001;
             int val = (d.getValue().intValue());
@@ -51,8 +51,8 @@
     return false;
 }
 %>
-<%! List<ProgramRelay> getProgramRelaysByRelayType(List<ProgramRelay> dataRelays, Long relayType) {
-    List<ProgramRelay> relayList = new ArrayList<ProgramRelay>();
+<%! Collection<ProgramRelay> getProgramRelaysByRelayType(Collection<ProgramRelay> dataRelays, Long relayType) {
+    Collection<ProgramRelay> relayList = new ArrayList<ProgramRelay>();
     for (ProgramRelay pr : dataRelays) {
         if (pr.getDataId().equals(relayType)) {
             relayList.add(pr);
@@ -61,8 +61,8 @@
     return relayList;
 }
 %>
-<%! DataDto getSetClock(List<DataDto> onScreenData) {
-    for (DataDto data : onScreenData) {
+<%! Data getSetClock(Collection<Data> onScreenData) {
+    for (Data data : onScreenData) {
         if (data.getId().equals(1309) && data.getValue() != null) {
             return data;
         }
@@ -258,9 +258,9 @@
 <tr>
 <%}%>
 <td valign="top">
-<% List<TableDto> tables = controller.getSellectedScreenTables(screenId);
+<% List<Table> tables = (List<Table>) controller.getSellectedScreenTables(screenId);
     if (tables.size() > 0) {
-        List<DataDto> onScreenData = tables.get(0).getDataList();
+        Collection<Data> onScreenData = tables.get(0).getDataList();
         Long tableId = tables.get(0).getId();%>
 <table class="table-list" width="100%" border="1" borderColor="#848C96"
        onmouseover="this.style.borderColor='orange';this.style.borderWidth='0.1cm';this.style.borderStyle='solid';"
@@ -276,17 +276,17 @@
     <%}%>
     <a href="./rmtctrl-screens.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=<%=nextScrIdsByCntrl.get(controller.getId())%>&controllerId=<%=controller.getId()%>&doResetTimeout=true"
        onclick='document.body.style.cursor = "wait"'><%=controller.getTitle()%>&nbsp;</a>
-    <% DataDto setClock = controller.getSetClock();%>
+    <% Data setClock = controller.getSetClock();%>
     <%if (setClock.getValue() != null) {%>
     <div style="font-size:small; color: tomato; ">
         <%=session.getAttribute("label.controller.update.time")%>
-        [ <%=controller.getSetClock().getFormatedValue()%>]</font>
+        [ <%=controller.getSetClock().getFormattedValue()%>]</font>
     </div>
     <%}%>
 </th>
 </thead>
 <tbody>
-<% for (DataDto data : onScreenData) {
+<% for (Data data : onScreenData) {
     if (data.isStatus()) {
         int special = data.getSpecial();
         switch (special) {
@@ -297,16 +297,16 @@
     <td class="tableHeaders" nowrap><%=data.getUnicodeLabel()%>
     </td>
     <td align="center" nowrap colspan="2">
-        <%=data.getFormatedValue()%>
+        <%=data.getFormattedValue()%>
     </td>
 </tr>
 <%
         break;
-    case DataDto.RELAY:
+    case Data.RELAY:
 %>
 <!--RELAYS-->
-<% List<ProgramRelay> programRelays = controller.getProgram().getProgramRelays();%>
-<% List<ProgramRelay> relayList = getProgramRelaysByRelayType(programRelays, data.getId());%>
+<% Collection<ProgramRelay> programRelays = controller.getProgram().getProgramRelays();%>
+<% Collection<ProgramRelay> relayList = getProgramRelaysByRelayType(programRelays, data.getId());%>
 <% if (relayList.size() > 0) {%>
 <%for (ProgramRelay relay : relayList) {%>
 <% if (relay.getRelayNumber() != 0) {%>
@@ -374,10 +374,10 @@
 <%}%>
 <%
         break;
-    case DataDto.ALARM:
+    case Data.ALARM:
 %>
 <!--ALARMS-->
-<% List<ProgramAlarm> alarms = controller.getProgram().getProgramAlarmsByData(data.getId());%>
+<% Collection<ProgramAlarm> alarms = controller.getProgram().getProgramAlarmsByData(data.getId());%>
 <% StringBuilder toolTip = new StringBuilder();%>
 <% for (ProgramAlarm a : alarms) {%>
 <%toolTip.append("<p>" + a.getDigitNumber() + " - " + a.getText() + "</p>");%>
@@ -440,7 +440,7 @@
 </tr>
 <%
         break;
-    case DataDto.SYSTEM_STATE:
+    case Data.SYSTEM_STATE:
 %>
 <tr class="unselected" onmouseover="this.className='selected'"
     onmouseout="this.className='unselected'">
@@ -461,7 +461,7 @@
     <td align="center" nowrap colspan="2" align="center" style="text-decoration: underline"
         onclick='window.open("rmctrl-edit-value.jsp?controllerId=<%=controller.getId()%>&screenId=<%=screenId%>&tableId=<%=tableId%>&dataId=<%=data.getId()%>",
                 "mywindow","status=no,width=200,height=200,left=350,top=400,screenX=100,screenY=100")'>
-        <a title='Click to edit'><%=data.getFormatedValue()%>
+        <a title='Click to edit'><%=data.getFormattedValue()%>
         </a>
     </td>
 </tr>

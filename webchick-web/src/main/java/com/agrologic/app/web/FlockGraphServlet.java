@@ -6,14 +6,11 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.FlockDao;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.model.FlockDto;
 import org.apache.log4j.Logger;
 
@@ -24,11 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class FlockGraphServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -60,8 +52,8 @@ public class FlockGraphServlet extends HttpServlet {
                 FlockDto flock = flockDao.getById(flockId);
                 ControllerDao controllerDao = new ControllerDaoImpl();
                 ControllerDto controller = controllerDao.getById(flock.getControllerId());
-                DataDao dataDao = new DataDaoImpl();
-                DataDto data = dataDao.getGrowDay(flock.getControllerId());
+                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                Data data = dataDao.getGrowDay(flock.getControllerId());
 
                 if (currGrowDay == null) {
                     if (data.getValue() == null || Long.valueOf(-1).equals(data.getValue())) {

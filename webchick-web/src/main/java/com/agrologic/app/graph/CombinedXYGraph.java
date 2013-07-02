@@ -6,21 +6,14 @@
 package com.agrologic.app.graph;
 
 
-
-import com.agrologic.app.model.DataDto;
 import com.agrologic.app.graph.history.Coordinate;
-
+import com.agrologic.app.model.Data;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.annotations.AbstractXYAnnotation;
 import org.jfree.chart.annotations.XYPointerAnnotation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.CombinedDomainXYPlot;
-import org.jfree.chart.plot.PiePlot;
-import org.jfree.chart.plot.Plot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.plot.*;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -31,42 +24,45 @@ import org.jfree.ui.HorizontalAlignment;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.TextAnchor;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+//~--- JDK imports ------------------------------------------------------------
+
 
 public class CombinedXYGraph {
-    private final static int FIRST  = 0;
-    private final static int FITH   = 4;
+    private final static int FIRST = 0;
+    private final static int FITH = 4;
     private final static int FOURTH = 3;
 
     /**  */
-    public final static int  HUM_GRAPH = 1;
-    private final static int SECOND    = 1;
-    private final static int SIXTH     = 5;
+    public final static int HUM_GRAPH = 1;
+    private final static int SECOND = 1;
+    private final static int SIXTH = 5;
 
-    /** Line style: dashed */
+    /**
+     * Line style: dashed
+     */
     public static final String STYLE_DASH = "dash";
 
-    /** Line style: dotted */
+    /**
+     * Line style: dotted
+     */
     public static final String STYLE_DOT = "dot";
 
-    /** Line style: line */
+    /**
+     * Line style: line
+     */
     public static final String STYLE_LINE = "line";
 
     /**  */
-    public final static int                  TEMP_GRAPH  = 0;
-    private final static int                 THIRD       = 2;
-    private final static Map<Integer, Color> COLOR_MAP   = new HashMap<Integer, Color>();
+    public final static int TEMP_GRAPH = 0;
+    private final static int THIRD = 2;
+    private final static Map<Integer, Color> COLOR_MAP = new HashMap<Integer, Color>();
     private final static Map<Integer, Color> ANOTBGCOLOR = new HashMap<Integer, Color>();
 
     static {
@@ -84,16 +80,16 @@ public class CombinedXYGraph {
         ANOTBGCOLOR.put(SIXTH, new Color(255, 255, 255));
     }
 
-    public int  INDEX     = 0;
-    public int  SER_INDEX = 0;
-    private int maxX      = 0;
-    private int maxY      = Integer.MIN_VALUE;
-    private int minX      = 0;
-    private int minY      = Integer.MAX_VALUE;
+    public int INDEX = 0;
+    public int SER_INDEX = 0;
+    private int maxX = 0;
+    private int maxY = Integer.MIN_VALUE;
+    private int minX = 0;
+    private int minY = Integer.MAX_VALUE;
 
     /**  */
     private Coordinate<Long> bottomCoord;
-    private JFreeChart       chart;
+    private JFreeChart chart;
 
     /**  */
     private int plotCounter;
@@ -106,7 +102,7 @@ public class CombinedXYGraph {
 
     public CombinedXYGraph() {
         super();
-        plots       = new XYPlot[5];
+        plots = new XYPlot[5];
         plotCounter = 0;
         initTopAndBottomCoords();
     }
@@ -123,16 +119,16 @@ public class CombinedXYGraph {
     }
 
     public void createFirstNextPlot(final String chartTitle, final String xAxisTitle, final String yAxisTitle,
-                                    final DataDto data, final int graphType,
-                                    final Map<Integer, DataDto>... coordinates) {
+                                    final Data data, final int graphType,
+                                    final Map<Integer, Data>... coordinates) {
         final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        XYSeriesCollection           dataset  = new XYSeriesCollection();
+        XYSeriesCollection dataset = new XYSeriesCollection();
 
         initTopAndBottomCoords();
 
-        for (Map<Integer, DataDto> coordinate : coordinates) {
-            String   datalabel = getDataLabel(coordinate);
-            XYSeries xyseries  = createSeries(coordinate, datalabel, graphType);
+        for (Map<Integer, Data> coordinate : coordinates) {
+            String datalabel = getDataLabel(coordinate);
+            XYSeries xyseries = createSeries(coordinate, datalabel, graphType);
 
             dataset.addSeries(xyseries);
             INDEX++;
@@ -153,8 +149,8 @@ public class CombinedXYGraph {
         numberAxis.setTickLabelFont(new Font("Dialog", Font.BOLD, 12));
         plots[plotCounter].setRangeAxis(numberAxis);
 
-        ValueAxis va    = plots[plotCounter].getRangeAxis();
-        double    upper = va.getUpperBound();
+        ValueAxis va = plots[plotCounter].getRangeAxis();
+        double upper = va.getUpperBound();
 
         upper = upper + upper * 0.2;
         va.setUpperBound(upper);
@@ -163,15 +159,15 @@ public class CombinedXYGraph {
     }
 
     public void createNextPlot(final String chartTitle, final String xAxisTitle, final String yAxisTitle,
-                               final DataDto data, final int graphType, final Map<Integer, DataDto>... coordinates) {
+                               final Data data, final int graphType, final Map<Integer, Data>... coordinates) {
         final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        XYSeriesCollection           dataset  = new XYSeriesCollection();
+        XYSeriesCollection dataset = new XYSeriesCollection();
 
         initTopAndBottomCoords();
 
-        for (Map<Integer, DataDto> coordinate : coordinates) {
-            String   datalabel = getDataLabel(coordinate);
-            XYSeries xyseries  = createSeries(coordinate, datalabel, graphType);
+        for (Map<Integer, Data> coordinate : coordinates) {
+            String datalabel = getDataLabel(coordinate);
+            XYSeries xyseries = createSeries(coordinate, datalabel, graphType);
 
             dataset.addSeries(xyseries);
             INDEX++;
@@ -225,39 +221,37 @@ public class CombinedXYGraph {
     }
 
     /**
-     *
      * @param coordinates
      * @param title
      */
-    public XYSeriesCollection createAndAddDataset(final Map<Integer, DataDto> coordinates, final String title,
-            DataDto data, int graphType) {
-        XYPlot             plot    = chart.getXYPlot();
+    public XYSeriesCollection createAndAddDataset(final Map<Integer, Data> coordinates, final String title,
+                                                  Data data, int graphType) {
+        XYPlot plot = chart.getXYPlot();
         XYSeriesCollection dataset = (XYSeriesCollection) plot.getDataset(SER_INDEX);
 
         return dataset;
     }
 
-    public void setMinMax(String unit, DataDto data) {
+    public void setMinMax(String unit, Data data) {
         StringBuilder sb = new StringBuilder();
 
         sb.append(data.getLabel()).append(" : Maximum = ").append(topCoord.getY()).append(unit).append(
-            ", Minimum = ").append(bottomCoord.getY()).append(unit);
+                ", Minimum = ").append(bottomCoord.getY()).append(unit);
         chart.addSubtitle(INDEX, new TextTitle(sb.toString()));
     }
 
     /**
-     *
      * @param coordinates
      * @param title
      */
-    public void createNewDataset(final Map<Integer, DataDto> coordinates, final String title, final DataDto data,
+    public void createNewDataset(final Map<Integer, Data> coordinates, final String title, final Data data,
                                  final int graphType) {
         XYSeriesCollection dataset = new XYSeriesCollection();
     }
 
     public void addAxis(final String yAxisTitle) {
-        final XYPlot plot       = chart.getXYPlot();
-        NumberAxis   numberAxis = new NumberAxis(yAxisTitle);
+        final XYPlot plot = chart.getXYPlot();
+        NumberAxis numberAxis = new NumberAxis(yAxisTitle);
 
         numberAxis.setUpperBound(topCoord.getX() + (topCoord.getY() * 0.1));
         numberAxis.setAutoRangeIncludesZero(false);
@@ -267,7 +261,8 @@ public class CombinedXYGraph {
         plot.setRangeAxis(SER_INDEX, numberAxis);
     }
 
-    public final void fillColor() {}
+    public final void fillColor() {
+    }
 
     /**
      * Convert style string to stroke object.
@@ -280,8 +275,8 @@ public class CombinedXYGraph {
 
         if (style != null) {
             float lineWidth = 0.2f;
-            float dash[]    = { 5.0f };
-            float dot[]     = { lineWidth };
+            float dash[] = {5.0f};
+            float dot[] = {lineWidth};
 
             if (style.equalsIgnoreCase(STYLE_LINE)) {
                 result = new BasicStroke(lineWidth);
@@ -298,16 +293,16 @@ public class CombinedXYGraph {
     /**
      * Set color of series.
      *
-     * @param chart JFreeChart.
+     * @param chart       JFreeChart.
      * @param seriesIndex Index of series to set color of (0 = first series)
-     * @param style One of STYLE_xxx.
+     * @param style       One of STYLE_xxx.
      */
     public void setSeriesStyle(JFreeChart chart, int seriesIndex, String style, int plotIndex) {
         if ((chart != null) && (style != null)) {
-            BasicStroke          stroke   = toStroke(style);
-            CombinedDomainXYPlot plots    = (CombinedDomainXYPlot) chart.getPlot();
-            List                 subplots = plots.getSubplots();
-            Plot                 plot     = (Plot) subplots.get(plotIndex);
+            BasicStroke stroke = toStroke(style);
+            CombinedDomainXYPlot plots = (CombinedDomainXYPlot) chart.getPlot();
+            List subplots = plots.getSubplots();
+            Plot plot = (Plot) subplots.get(plotIndex);
 
             if (plot instanceof CategoryPlot) {
 
@@ -318,7 +313,7 @@ public class CombinedXYGraph {
                     cir.setSeriesStroke(seriesIndex, stroke);    // series line style
                 } catch (Exception e) {
                     System.err.println("Error setting style '" + style + "' for series '" + seriesIndex
-                                       + "' of chart '" + chart + "': " + e);
+                            + "' of chart '" + chart + "': " + e);
                 }
             } else if (plot instanceof XYPlot) {
 
@@ -329,7 +324,7 @@ public class CombinedXYGraph {
                     xyir.setSeriesStroke(seriesIndex, stroke);    // series line style
                 } catch (Exception e) {
                     System.err.println("Error setting style '" + style + "' for series '" + seriesIndex
-                                       + "' of chart '" + chart + "': " + e);
+                            + "' of chart '" + chart + "': " + e);
                 }
             } else {
                 System.out.println("setSeriesColor() unsupported plot: " + plot);
@@ -340,9 +335,9 @@ public class CombinedXYGraph {
     /**
      * Set color of series.
      *
-     * @param chart JFreeChart.
+     * @param chart       JFreeChart.
      * @param seriesIndex Index of series to set color of (0 = first series)
-     * @param color New color to set.
+     * @param color       New color to set.
      */
     public void setSeriesColor(JFreeChart chart, int seriesIndex, Color color) {
         if (chart != null) {
@@ -350,8 +345,8 @@ public class CombinedXYGraph {
 
             try {
                 if (plot instanceof CategoryPlot) {
-                    CategoryPlot         categoryPlot = chart.getCategoryPlot();
-                    CategoryItemRenderer cir          = categoryPlot.getRenderer();
+                    CategoryPlot categoryPlot = chart.getCategoryPlot();
+                    CategoryItemRenderer cir = categoryPlot.getRenderer();
 
                     cir.setSeriesPaint(seriesIndex, color);
                 } else if (plot instanceof PiePlot) {
@@ -359,8 +354,8 @@ public class CombinedXYGraph {
 
                     piePlot.setSectionPaint(seriesIndex, color);
                 } else if (plot instanceof XYPlot) {
-                    XYPlot         xyPlot = chart.getXYPlot();
-                    XYItemRenderer xyir   = xyPlot.getRenderer();
+                    XYPlot xyPlot = chart.getXYPlot();
+                    XYItemRenderer xyir = xyPlot.getRenderer();
 
                     xyir.setSeriesPaint(seriesIndex, color);
                 } else {
@@ -368,14 +363,14 @@ public class CombinedXYGraph {
                 }
             } catch (Exception e) {    // e.g. invalid seriesIndex
                 System.err.println("Error setting color '" + color + "' for series '" + seriesIndex + "' of chart '"
-                                   + chart + "': " + e);
+                        + chart + "': " + e);
             }
         }    // else: input unavailable
     }    // setSeriesColor()
 
     public AbstractXYAnnotation createAnnotation(int x, int y, String label, int count) {
         XYPointerAnnotation annotation = new XYPointerAnnotation(label + " ( " + x + " , " + y + " ) ", x, y,
-                                             -0.7853981633974483D);
+                -0.7853981633974483D);
 
         annotation.setTextAnchor(TextAnchor.HALF_ASCENT_CENTER);
         annotation.setPaint(COLOR_MAP.get(count));
@@ -386,7 +381,7 @@ public class CombinedXYGraph {
 
     public AbstractXYAnnotation createAnnotation(long x, long y, String label, int count) {
         XYPointerAnnotation annotation = new XYPointerAnnotation(label + " ( " + x + " , " + y + " ) ", x, y,
-                                             -0.7853981633974483D);
+                -0.7853981633974483D);
 
         annotation.setTextAnchor(TextAnchor.HALF_ASCENT_CENTER);
         annotation.setPaint(COLOR_MAP.get(count));
@@ -395,17 +390,17 @@ public class CombinedXYGraph {
         return annotation;
     }
 
-    private XYSeries createSeries(final Map<Integer, DataDto> coordinates, String seriesLabel, int graphType) {
+    private XYSeries createSeries(final Map<Integer, Data> coordinates, String seriesLabel, int graphType) {
 
         // String seriesLabel = getDataLabel(coordinates);
-        XYSeries                          series = new XYSeries(seriesLabel);
-        Iterator<Entry<Integer, DataDto>> iter   = coordinates.entrySet().iterator();
+        XYSeries series = new XYSeries(seriesLabel);
+        Iterator<Entry<Integer, Data>> iter = coordinates.entrySet().iterator();
 
         while (iter.hasNext()) {
-            Entry<Integer, DataDto> entry = (Entry<Integer, DataDto>) iter.next();
-            Number                  x     = entry.getKey();
-            Number                  y     = Double.valueOf(entry.getValue().getFormatedValue());
-            Coordinate              coord = new Coordinate(x.longValue(), y.longValue());
+            Entry<Integer, Data> entry = (Entry<Integer, Data>) iter.next();
+            Number x = entry.getKey();
+            Number y = Double.valueOf(entry.getValue().getFormattedValue());
+            Coordinate coord = new Coordinate(x.longValue(), y.longValue());
 
             if ((graphType == TEMP_GRAPH) && ((y.doubleValue() >= -50.0) && (y.doubleValue() <= 50.0))) {
                 series.add(x, y);
@@ -421,9 +416,9 @@ public class CombinedXYGraph {
         return series;
     }
 
-    private String getDataLabel(final Map<Integer, DataDto> coordinates) {
-        String            label    = "";
-        Iterator<DataDto> dataIter = coordinates.values().iterator();
+    private String getDataLabel(final Map<Integer, Data> coordinates) {
+        String label = "";
+        Iterator<Data> dataIter = coordinates.values().iterator();
 
         if (dataIter.hasNext()) {
             label = dataIter.next().getUnicodeLabel();
@@ -437,12 +432,13 @@ public class CombinedXYGraph {
      * cordinate of each graph.
      */
     private void initTopAndBottomCoords() {
-        topCoord    = new Coordinate<Long>(Long.MIN_VALUE, Long.MIN_VALUE);
+        topCoord = new Coordinate<Long>(Long.MIN_VALUE, Long.MIN_VALUE);
         bottomCoord = new Coordinate<Long>(Long.MAX_VALUE, Long.MAX_VALUE);
     }
 
     /**
      * Sets top coordinates .
+     *
      * @param coord the coord to set topCoord.
      */
     private void setTopCoords(Coordinate coord) {
@@ -455,6 +451,7 @@ public class CombinedXYGraph {
 
     /**
      * Sets bottom coordinates .
+     *
      * @param coord the coord to set bottomCoord.
      */
     private void setBottomCoords(Coordinate coord) {

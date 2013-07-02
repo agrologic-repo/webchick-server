@@ -6,8 +6,9 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.TableDaoImpl;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -77,7 +78,7 @@ public class SaveTablesServlet extends HttpServlet {
                 }
 
                 try {
-                    TableDao tableDao = new TableDaoImpl();
+                    TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                     tableDao.saveChanges(showTableMap, posTableMap, screenId, programId);
                     request.getSession().setAttribute("message", "Tables successfully saved !");
                     request.getSession().setAttribute("error", false);

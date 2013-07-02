@@ -1,9 +1,4 @@
-
-/*
-* @(#)AddCellinkFormServlet.java        1.0 01/03/10
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.ControllerDao;
@@ -25,13 +20,9 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class AddCellinkFormServlet extends HttpServlet {
 
     /**
@@ -85,7 +76,7 @@ public class AddCellinkFormServlet extends HttpServlet {
                 request.getSession().setAttribute("message", "Cellink successfully added !");
                 request.getSession().setAttribute("error", false);
 
-                List<UserDto> users = new ArrayList<UserDto>();
+                Collection<UserDto> users = new ArrayList<UserDto>();
                 String paramRole = request.getParameter("role");
 
                 if ((paramRole == null) || "3".equals(paramRole)) {

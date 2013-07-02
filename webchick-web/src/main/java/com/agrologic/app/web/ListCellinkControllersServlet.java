@@ -1,22 +1,12 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.UserDao;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.impl.CellinkDaoImpl;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
 import com.agrologic.app.dao.impl.UserDaoImpl;
 import com.agrologic.app.model.CellinkDto;
 import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.model.Program;
 import com.agrologic.app.model.UserDto;
 import org.apache.log4j.Logger;
 
@@ -30,11 +20,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class ListCellinkControllersServlet extends HttpServlet {
     final static String EMPTY_CELLINKID = "0";
 
@@ -67,8 +52,8 @@ public class ListCellinkControllersServlet extends HttpServlet {
                 UserDao userDao = new UserDaoImpl();
                 CellinkDao cellinkDao = new CellinkDaoImpl();
                 ControllerDao controllerDao = new ControllerDaoImpl();
-                ProgramDao programDao = new ProgramDaoImpl();
-                List<ProgramDto> programs = programDao.getAll();
+                ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                List<Program> programs = (List<Program>) programDao.getAll();
                 List<UserDto> users = new ArrayList<UserDto>();
 
                 users = userDao.getAll();
@@ -80,7 +65,7 @@ public class ListCellinkControllersServlet extends HttpServlet {
                         List<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
 
                         for (ControllerDto ctrl : controllers) {
-                            ProgramDto program = programDao.getById(ctrl.getProgramId());
+                            Program program = programDao.getById(ctrl.getProgramId());
 
                             ctrl.setProgram(program);
                         }

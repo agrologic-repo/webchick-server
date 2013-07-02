@@ -1,13 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.*;
+import com.agrologic.app.dao.impl.CellinkDaoImpl;
+import com.agrologic.app.dao.impl.ControllerDaoImpl;
+import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -19,15 +15,11 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class RCMainScreenServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -81,10 +73,11 @@ public class RCMainScreenServlet extends HttpServlet {
                 // get all controllers connected to cellink
                 ControllerDao controllerDao = new ControllerDaoImpl();
                 List<ControllerDto> controllers = controllerDao.getAllByCellinkId(new Long(cellinkId));
-                final DataDao dataDao = new DataDaoImpl();
-                final TableDao tableDao = new TableDaoImpl();
-                final ScreenDao screenDao = new ScreenDaoImpl();
-                final ProgramDao programDao = new ProgramDaoImpl();
+                final DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                final TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                final ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                ;
+                final ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                 final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
                 final ProgramAlarmDao programAlarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramAlarmDao.class);
 
@@ -94,7 +87,7 @@ public class RCMainScreenServlet extends HttpServlet {
                 for (ControllerDto controller : controllers) {
 
                     // get asigned to controller program
-                    ProgramDto program = programDao.getById(controller.getProgramId());
+                    Program program = programDao.getById(controller.getProgramId());
 
                     controller.setProgram(program);
 
@@ -102,7 +95,7 @@ public class RCMainScreenServlet extends HttpServlet {
 
                     nextScrIdsByCntrl.put(controller.getId(), nsid);
 
-                    DataDto setClock = dataDao.getSetClockByController(controller.getId());
+                    Data setClock = dataDao.getSetClockByController(controller.getId());
 
                     controller.setSetClock(setClock);
 
@@ -117,12 +110,12 @@ public class RCMainScreenServlet extends HttpServlet {
                             langId));
 
                     // get program current screen
-                    ScreenDto screen = screenDao.getById(program.getId(), screenId, langId);
+                    Screen screen = screenDao.getById(program.getId(), screenId, langId);
 
                     // get screen tables
-                    List<TableDto> tables = tableDao.getScreenTables(program.getId(), screen.getId(), langId, false);
-                    for (TableDto table : tables) {
-                        table.setDataList(dataDao.getOnlineTableDataList(program.getId(), controller.getId(),
+                    Collection<Table> tables = tableDao.getScreenTables(program.getId(), screen.getId(), langId, false);
+                    for (Table table : tables) {
+                        table.setDataList(dataDao.getOnlineTableDataList(controller.getId(), program.getId(),
                                 screen.getId(), table.getId(), langId));
 
                         // table.setDataList(dataDao.getOnlineTableDataList(program.getId(), controller.getId(), table.getId(), langId));

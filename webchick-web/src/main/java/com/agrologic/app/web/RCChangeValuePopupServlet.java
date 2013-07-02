@@ -7,11 +7,12 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -54,8 +55,8 @@ public class RCChangeValuePopupServlet extends HttpServlet {
             long dataId = Long.parseLong(request.getParameter("dataId"));
             ControllerDao controllerDao = new ControllerDaoImpl();
             ControllerDto controller = controllerDao.getById(controllerId);
-            DataDao dataDao = new DataDaoImpl();
-            DataDto data = dataDao.getById(dataId);
+            DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+            Data data = dataDao.getById(dataId);
 
             request.getSession().setAttribute("controller", controller);
             request.getSession().setAttribute("data", data);

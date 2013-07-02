@@ -93,7 +93,7 @@ public class ListUserServlet extends HttpServlet {
                         CellinkDao cellinkDao = new CellinkDaoImpl();
 
                         for (UserDto u : users) {
-                            List<CellinkDto> cellinks = (List<CellinkDto>) cellinkDao.getAllUserCellinks(u.getId());
+                            List<CellinkDto> cellinks = cellinkDao.getAllUserCellinks(u.getId());
 
                             u.setCellinks(cellinks);
                         }
@@ -112,7 +112,7 @@ public class ListUserServlet extends HttpServlet {
                     logger.error("Error occurs during retrieve users !", ex);
                     request.getSession().setAttribute("message", "Error occurs during retrive users !");
                     request.getSession().setAttribute("error", true);
-                    request.getRequestDispatcher("./all-users.jsp?role=0").forward(request, response);
+                    request.getRequestDispatcher("./WEB-INF/jsp/all-users.jsp?role=0").forward(request, response);
                 }
             }
         } finally {

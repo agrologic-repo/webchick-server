@@ -1,20 +1,7 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.ScreenDao;
-import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.dao.impl.ScreenDaoImpl;
-import com.agrologic.app.dao.impl.TableDaoImpl;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.model.Program;
 import com.agrologic.app.utils.DateLocal;
 import org.apache.log4j.Logger;
 
@@ -26,11 +13,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class AddProgramFormServlet extends HttpServlet {
 
     /**
@@ -61,34 +43,30 @@ public class AddProgramFormServlet extends HttpServlet {
                 Long selectedProgramId = Long.parseLong(request.getParameter("Selectedprogramid"));
 
                 try {
-                    ProgramDto newProgram = new ProgramDto();
-
+                    Program newProgram = new Program();
                     newProgram.setId(programId);
                     newProgram.setName(name);
                     newProgram.setCreatedDate(DateLocal.currentDate());
                     newProgram.setModifiedDate(DateLocal.currentDate());
 
                     // Here we insert new table to database
-                    ProgramDao programDao = new ProgramDaoImpl();
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
 
                     programDao.insert(newProgram);
                     logger.info("Program " + newProgram + "successfully added !");
                     request.getSession().setAttribute("message", "program successfully added !");
 
                     // Here we execute query for inserting screens of new program
-                    ScreenDao screenDao = new ScreenDaoImpl();
-
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
                     screenDao.insertDefaultScreens(newProgram.getId(), selectedProgramId);
                     logger.info("New screens successfully added !");
 
                     // Get screens of inserted program. Screens of new programs have
                     // same ID's , so we need same screens but new progam id in screen .
-                    TableDao tableDao = new TableDaoImpl();
-
+                    TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                     tableDao.insertDefaultTables(newProgram.getId(), selectedProgramId);
 
-                    DataDao dataDao = new DataDaoImpl();
-
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     dataDao.insertDataList(newProgram.getId(), selectedProgramId);
 
                     // ----------------------------------------------------------
@@ -98,7 +76,7 @@ public class AddProgramFormServlet extends HttpServlet {
                 } catch (SQLException ex) {
 
                     // error page
-                    logger.error("Error occurs while adding cellink !");
+                    logger.error("Error occurs while adding program !");
                     request.getSession().setAttribute("message", "Error occurs while adding program !");
                     request.getSession().setAttribute("error", true);
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);

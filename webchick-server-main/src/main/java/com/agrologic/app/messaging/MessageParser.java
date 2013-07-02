@@ -79,7 +79,7 @@ public class MessageParser {
      * diagnostic , the diagnostic pair skipped .Diagnostic data intended to display the amount of data that have been
      * changed since previous request.
      *
-     * @param response the response to be parsing
+     * @param response       the response to be parsing
      * @param withDiagnostic true if response hold diagnostic data, otherwise false
      */
     public void parseResponse(Message response, boolean withDiagnostic) {
@@ -96,7 +96,7 @@ public class MessageParser {
                 int receivedValue = dataValueParser.getReceivedValue();
 
                 if (parsedDataMap.containsKey(receivedDataId)) {
-                    if (parsedDataMap.get(receivedDataId).isDoubleBuffer()) {
+                    if (parsedDataMap.get(receivedDataId).isLongType()) {
                         receivedValue = dataValueParser.invoke(token, receivedValue).getReceivedValue();
                     }
                     // here we actually must to update data

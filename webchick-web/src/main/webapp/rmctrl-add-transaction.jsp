@@ -17,7 +17,7 @@
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
     TransactionDao transactDao = new TransactionDaoImpl();
-    List<TransactionDto> transactList = transactDao.getAll();
+    Collection<TransactionDto> transactList = transactDao.getAll();
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">

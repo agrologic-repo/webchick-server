@@ -1,21 +1,19 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.TableDaoImpl;
-
 import com.agrologic.app.model.Table;
-
-
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
 
-public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, DropableDao, RemovebleDao  {
+public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyTableDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyTableDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
 
     @Override
@@ -26,7 +24,7 @@ public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, Dro
             con = dao.getConnection();
 
             DatabaseMetaData dbmd = con.getMetaData();
-            ResultSet        rs   = dbmd.getTables(null, "APP", "SCREENTABLE", null);
+            ResultSet rs = dbmd.getTables(null, "APP", "SCREENTABLE", null);
 
             if (!rs.next()) {
                 return false;
@@ -48,15 +46,15 @@ public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, Dro
 
     private void createTableScreenTable() throws SQLException {
         String sqlQuery = "CREATE TABLE SCREENTABLE " + "(TABLEID INT NOT NULL , " + "SCREENID INT NOT NULL , "
-                          + "PROGRAMID INT NOT NULL , " + "TITLE VARCHAR(250) NOT NULL, "
-                          + "DISPLAYONSCREEN VARCHAR(10) NOT NULL, " + "POSITION INT NOT NULL, "
-                          + "PRIMARY KEY (TABLEID,SCREENID,PROGRAMID), "
-                          + "FOREIGN KEY (SCREENID,PROGRAMID) REFERENCES SCREENS(SCREENID,PROGRAMID))";
-        Statement  stmt = null;
-        Connection con  = null;
+                + "PROGRAMID INT NOT NULL , " + "TITLE VARCHAR(250) NOT NULL, "
+                + "DISPLAYONSCREEN VARCHAR(10) NOT NULL, " + "POSITION INT NOT NULL, "
+                + "PRIMARY KEY (TABLEID,SCREENID,PROGRAMID), "
+                + "FOREIGN KEY (SCREENID,PROGRAMID) REFERENCES SCREENS(SCREENID,PROGRAMID))";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
             stmt.execute(sqlQuery);
         } catch (SQLException e) {
@@ -71,12 +69,12 @@ public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, Dro
 
     private void createTableScreenTableByLanguage() throws SQLException {
         String sqlQuery = "CREATE TABLE TABLEBYLANGUAGE " + "(TABLEID INT NOT NULL , " + "LANGID INT NOT NULL , "
-                          + "UNICODETITLE VARCHAR(500) NOT NULL, " + "PRIMARY KEY (TABLEID, LANGID))";
-        Statement  stmt = null;
-        Connection con  = null;
+                + "UNICODETITLE VARCHAR(500) NOT NULL, " + "PRIMARY KEY (TABLEID, LANGID))";
+        Statement stmt = null;
+        Connection con = null;
 
         try {
-            con  = dao.getConnection();
+            con = dao.getConnection();
             stmt = con.createStatement();
             stmt.execute(sqlQuery);
         } catch (SQLException e) {
@@ -91,12 +89,12 @@ public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, Dro
 
     @Override
     public void insert(Table table) throws SQLException {
-        String            sqlQuery = "insert into screentable values (?,?,?,?,?,?)";
+        String sqlQuery = "insert into screentable values (?,?,?,?,?,?)";
         PreparedStatement prepstmt = null;
-        Connection        con      = null;
+        Connection con = null;
 
         try {
-            con      = dao.getConnection();
+            con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);
             prepstmt.setObject(1, table.getId());
             prepstmt.setLong(2, table.getScreenId());
@@ -135,7 +133,7 @@ public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, Dro
     }
 
     @Override
-    public void removeFromTable() throws SQLException {
+    public void deleteFromTable() throws SQLException {
         String sqlQueryFlock = "DELETE  FROM APP.SCREENTABLE ";
         Statement stmt = null;
         Connection con = null;

@@ -4,20 +4,20 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    ProgramDto program = (ProgramDto) request.getSession().getAttribute("program");
-    ScreenDto screen = (ScreenDto) request.getSession().getAttribute("screen");
-    List<TableDto> tables = screen.getTables();
+    Program program = (Program) request.getSession().getAttribute("program");
+    Screen screen = (Screen) request.getSession().getAttribute("screen");
+    Collection<Table> tables = screen.getTables();
     long tableId = Long.parseLong(request.getParameter("tableId"));
     long screenId = screen.getId();
     long programId = screen.getProgramId();
-    List<LanguageDto> languages = (List<LanguageDto>) request.getSession().getAttribute("languages");
+    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
     String ptl = (String) request.getParameter("translateLang");
     if (ptl == null) {
         ptl = "1";
@@ -25,13 +25,13 @@
     Long translateLang = Long.parseLong(ptl);
 %>
 
-<%! TableDto getTableToEdit(long tableId, List<TableDto> tables) {
-    for (TableDto table : tables) {
+<%! Table getTableToEdit(long tableId, Collection<Table> tables) {
+    for (Table table : tables) {
         if (table.getId() == tableId) {
             return table;
         }
     }
-    return new TableDto();
+    return new Table();
 }
 %>
 
@@ -137,13 +137,13 @@
             <td valign="top">
                 <table border=0 cellPadding=1 cellSpacing=1>
                     <%
-                        TableDto table = getTableToEdit(tableId, tables);
+                        Table table = getTableToEdit(tableId, tables);
                         int size = table.getDataList().size();
                         int lastPos = 1;
                         if (size > 0) {
                             lastPos = (table.getDataList().get(size - 1)).getPosition() + 1;
                         }
-                        List<DataDto> dataList = table.getDataList();
+                        Collection<Data> dataList = table.getDataList();
                     %>
                     <tr>
                         <td>
@@ -207,7 +207,7 @@
                                     <th class="centerHeader" width="300px">Action</th>
                                     </thead>
                                     <% int cnt = 0;%>
-                                    <%for (DataDto data : dataList) {%>
+                                    <%for (Data data : dataList) {%>
                                     <% if ((cnt % 2) == 0) {%>
                                     <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
                                             <%} else {%>

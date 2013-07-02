@@ -6,9 +6,10 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Data;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -52,8 +53,8 @@ public class TranslateData extends HttpServlet {
                 dataId = (type & 0xFFFF);
             }
 
-            DataDao dataDao = new DataDaoImpl();
-            DataDto translate = dataDao.getById(dataId, langId);
+            DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+            Data translate = dataDao.getById(dataId, langId);
 
             response.setContentType("text/xml");
             response.setHeader("Cache-Control", "no-cache");

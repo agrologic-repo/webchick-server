@@ -7,8 +7,6 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -19,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -54,8 +53,8 @@ public class ProgramDetailsServet extends HttpServlet {
         Long programId = Long.parseLong(request.getParameter("programId"));
 
         try {
-            ProgramDao programDao = new ProgramDaoImpl();
-            ProgramDto program = programDao.getById(programId);
+            ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+            Program program = programDao.getById(programId);
 
             logger.info("retrieve program details!");
             request.getSession().setAttribute("program", program);
@@ -76,16 +75,16 @@ public class ProgramDetailsServet extends HttpServlet {
 
             request.getSession().setAttribute("programSystemStates", programSystemStates);
 
-            DataDao dataDao = new DataDaoImpl();
-            List<DataDto> relayDataTypes = dataDao.getProgramDataRelays(program.getId());
+            DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+            Collection<Data> relayDataTypes = dataDao.getProgramDataRelays(program.getId());
 
             request.getSession().setAttribute("relayDataTypes", relayDataTypes);
 
-            List<DataDto> alarmDataTypes = dataDao.getProgramDataAlarms(program.getId());
+            Collection<Data> alarmDataTypes = dataDao.getProgramDataAlarms(program.getId());
 
             request.getSession().setAttribute("alarmDataTypes", alarmDataTypes);
 
-            List<DataDto> sysStateDataTypes = dataDao.getProgramDataSystemStates(program.getId());
+            Collection<Data> sysStateDataTypes = dataDao.getProgramDataSystemStates(program.getId());
 
             request.getSession().setAttribute("sysStateDataTypes", sysStateDataTypes);
             request.getRequestDispatcher("./program-details.jsp").forward(request, response);

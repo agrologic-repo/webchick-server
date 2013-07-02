@@ -1,13 +1,9 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.*;
+import com.agrologic.app.dao.impl.CellinkDaoImpl;
+import com.agrologic.app.dao.impl.ControllerDaoImpl;
+import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -21,8 +17,6 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- */
 public class RCGraphServlet extends HttpServlet {
 
     /**
@@ -73,23 +67,25 @@ public class RCGraphServlet extends HttpServlet {
 
                 ControllerDao controllerDao = new ControllerDaoImpl();
                 ControllerDto controller = controllerDao.getById(controllerId);
-                ProgramDao programDao = new ProgramDaoImpl();
-                ProgramDto program = programDao.getById(controller.getProgramId());
+                ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                Program program = programDao.getById(controller.getProgramId());
 
                 LanguageDao languageDao = new LanguageDaoImpl();
                 long langId = languageDao.getLanguageId(lang);
-                ScreenDao screenDao = new ScreenDaoImpl();
-                List<ScreenDto> screens = screenDao.getAllScreensByProgramAndLang(program.getId(), langId, false);
+                ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                ;
+                List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(program.getId(), langId,
+                        false);
                 program.setScreens(screens);
 
                 final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
                 List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId(), langId);
                 program.setProgramRelays(programRelays);
-                DataDao dataDao = new DataDaoImpl();
+                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 program.setScreens(screens);
                 controller.setProgram(program);
 
-                List<DataDto> dataRelays = dataDao.getRelays();
+                List<Data> dataRelays = dataDao.getRelays();
                 logger.info("retrieve program data relay!");
                 request.getSession().setAttribute("dataRelays", dataRelays);
                 request.getSession().setAttribute("controller", controller);

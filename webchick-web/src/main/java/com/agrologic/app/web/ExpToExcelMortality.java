@@ -6,13 +6,14 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.excel.DataForExcelCreator;
 import com.agrologic.app.excel.WriteToExcel;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.utils.FileDownloadUtil;
 import org.apache.log4j.Logger;
 
@@ -55,20 +56,20 @@ public class ExpToExcelMortality extends HttpServlet {
                 FlockDao flockDao = new FlockDaoImpl();
                 Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId);
                 List<List<String>> histotyDataList = new ArrayList<List<String>>();
-                DataDao dataDao = new DataDaoImpl();
-                DataDto data0 = dataDao.getById(Long.valueOf(800), Long.valueOf(1));
+                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                Data data0 = dataDao.getById(Long.valueOf(800), Long.valueOf(1));
 
                 histotyDataList.add(DataForExcelCreator.createDataList(historyByGrowDay.keySet()));
 
-                DataDto data1 = dataDao.getById(Long.valueOf(3017), Long.valueOf(1));
+                Data data1 = dataDao.getById(Long.valueOf(3017), Long.valueOf(1));
 
                 histotyDataList.add(DataForExcelCreator.createDataHistoryList(historyByGrowDay, data1));
 
-                DataDto data2 = dataDao.getById(Long.valueOf(3033), Long.valueOf(1));
+                Data data2 = dataDao.getById(Long.valueOf(3033), Long.valueOf(1));
 
                 histotyDataList.add(DataForExcelCreator.createDataHistoryList(historyByGrowDay, data2));
 
-                DataDto data3 = dataDao.getById(Long.valueOf(3034), Long.valueOf(1));
+                Data data3 = dataDao.getById(Long.valueOf(3034), Long.valueOf(1));
 
                 histotyDataList.add(DataForExcelCreator.createDataHistoryList(historyByGrowDay, data3));
 

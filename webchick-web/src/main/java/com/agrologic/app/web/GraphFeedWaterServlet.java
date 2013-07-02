@@ -6,15 +6,16 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.graph.history.HistoryGraph;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartUtilities;
 
@@ -75,10 +76,10 @@ public class GraphFeedWaterServlet extends HttpServlet {
                 try {
                     FlockDao flockDao = new FlockDaoImpl();
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    List<Map<Integer, DataDto>> dataHistroryList = new ArrayList<Map<Integer, DataDto>>();
+                    List<Map<Integer, Data>> dataHistroryList = new ArrayList<Map<Integer, Data>>();
                     List<String> axisTitles = new ArrayList<String>();
-                    DataDao dataDao = new DataDaoImpl();
-                    DataDto data1 = dataDao.getById(Long.valueOf(1301));
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    Data data1 = dataDao.getById(Long.valueOf(1301));
 
                     axisTitles.add(data1.getLabel());
                     dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
@@ -91,7 +92,7 @@ public class GraphFeedWaterServlet extends HttpServlet {
                     waterFeedGraph.setDataHistoryList(dataHistroryList);
                     waterFeedGraph.createChart(title, xAxisTitle, yAxisTitle);
 
-                    DataDto data2 = dataDao.getById(Long.valueOf(1302));
+                    Data data2 = dataDao.getById(Long.valueOf(1302));
 
                     axisTitles.add(data2.getLabel());
                     dataHistroryList.clear();

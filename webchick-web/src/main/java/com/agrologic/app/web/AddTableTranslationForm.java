@@ -6,8 +6,9 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.TableDaoImpl;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -50,8 +51,7 @@ public class AddTableTranslationForm extends HttpServlet {
                 String translate = request.getParameter("Ntranslate");
 
                 try {
-                    TableDao tableDao = new TableDaoImpl();
-
+                    TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                     tableDao.insertTableTranslation(tableId, langId, translate);
                 } catch (SQLException ex) {
 

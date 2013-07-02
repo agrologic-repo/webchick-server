@@ -3,11 +3,11 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.ProgramDto" %>
+<%@ page import="com.agrologic.app.model.Program" %>
 
-<jsp:directive.page import="com.agrologic.app.model.ScreenDto"/>
-<jsp:directive.page import="com.agrologic.app.model.TableDto"/>
-<jsp:directive.page import="java.util.List"/>
+<jsp:directive.page import="com.agrologic.app.model.Screen"/>
+<jsp:directive.page import="com.agrologic.app.model.Table"/>
+<jsp:directive.page import="java.util.Collection"/>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -15,15 +15,15 @@
         return;
     }
 
-    ProgramDto program = (ProgramDto) request.getSession().getAttribute("program");
-    List<ScreenDto> screens = program.getScreens();
-    ScreenDto screen = (ScreenDto) request.getSession().getAttribute("screen");
+    Program program = (Program) request.getSession().getAttribute("program");
+    Collection<Screen> screens = program.getScreens();
+    Screen screen = (Screen) request.getSession().getAttribute("screen");
     Long tableId = Long.parseLong(request.getParameter("tableId"));
-    TableDto table = findTableToEdit(screen.getTables(), tableId);
+    Table table = findTableToEdit(screen.getTables(), tableId);
 %>
 
-<%! TableDto findTableToEdit(List<TableDto> tables, Long tableId) {
-    for (TableDto t : tables) {
+<%! Table findTableToEdit(Collection<Table> tables, Long tableId) {
+    for (Table t : tables) {
         if (t.getId().equals(tableId)) {
             return t;
         }
@@ -106,7 +106,7 @@
                                         <td align="left">
                                             <select id="NscreenId" name="NscreenId" style="width:120px">
                                                 <option value="None" selected>Select
-                                                        <% for(ScreenDto s:screens) {%>
+                                                        <% for(Screen s:screens) {%>
                                                 <option value="<%=s.getId() %>"><%=s.getTitle() %>
                                                         <%}%>
                                             </select>

@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.ControllerDao;
@@ -26,11 +20,6 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class UserInfoServlet extends HttpServlet {
 
     /**
@@ -61,16 +50,13 @@ public class UserInfoServlet extends HttpServlet {
                 try {
                     UserDao userDao = new UserDaoImpl();
                     UserDto editUser = userDao.getById(userId);
-                    CellinkDao cellinkDao = new CellinkDaoImpl();
+                    CellinkDao cellinkDao = new CellinkDaoImpl();//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                     List<CellinkDto> cellinks = (List<CellinkDto>) cellinkDao.getAllUserCellinks(editUser.getId());
                     ControllerDao controllerDao = new ControllerDaoImpl();
-
                     for (CellinkDto c : cellinks) {
                         List<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
-
                         c.setControllers(controllers);
                     }
-
                     logger.info("retrieve user and user cellinks and all controllers of each cellink");
                     editUser.setCellinks(cellinks);
                     request.getSession().setAttribute("edituser", editUser);

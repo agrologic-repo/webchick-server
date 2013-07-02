@@ -6,11 +6,12 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.table.TableOfHistoryCreator;
 import org.apache.log4j.Logger;
@@ -102,7 +103,7 @@ public class TableFlockHistory extends HttpServlet {
                 try {
                     FlockDao flockDao = new FlockDaoImpl();
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    List<Map<Integer, DataDto>> historyDataList = new ArrayList<Map<Integer, DataDto>>();
+                    List<Map<Integer, Data>> historyDataList = new ArrayList<Map<Integer, Data>>();
                     List<String> columnTitles = new ArrayList<String>();
 
                     historyDataList = createHistoryByGrowDay(columnTitles, historyByGrowDay);
@@ -121,14 +122,14 @@ public class TableFlockHistory extends HttpServlet {
 
                     while (growdayIter.hasNext()) {
                         Integer growDay = growdayIter.next();
-                        Iterator<Map<Integer, DataDto>> historyIter = historyDataList.iterator();
+                        Iterator<Map<Integer, Data>> historyIter = historyDataList.iterator();
 
                         out.println("<tr>");
 
                         while (historyIter.hasNext()) {
                             try {
-                                Map<Integer, DataDto> interestData = historyIter.next();
-                                DataDto data = interestData.get(growDay);
+                                Map<Integer, Data> interestData = historyIter.next();
+                                Data data = interestData.get(growDay);
 
                                 if (data.getId() == 800) {
                                     out.println("<td align=center>" + growDay + "</td>");
@@ -161,7 +162,7 @@ public class TableFlockHistory extends HttpServlet {
      * @param data the data object
      * @return formated value string
      */
-    private String valueByType(DataDto data) {
+    private String valueByType(Data data) {
         Long value = data.getValue();
 
         if (DataFormat.TIME == data.getFormat()) {
@@ -171,7 +172,7 @@ public class TableFlockHistory extends HttpServlet {
 
             return String.valueOf(t);
         }
-        return data.getFormatedValue();
+        return data.getFormattedValue();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -222,16 +223,16 @@ public class TableFlockHistory extends HttpServlet {
      * @return historyDataForTable the list of history data by grow day.
      * @throws UnsupportedOperationException
      */
-    private List<Map<Integer, DataDto>> createHistoryByGrowDay(List<String> columnTitles,
-                                                               Map<Integer, String> historyByGrowDay)
+    private List<Map<Integer, Data>> createHistoryByGrowDay(List<String> columnTitles,
+                                                            Map<Integer, String> historyByGrowDay)
             throws UnsupportedOperationException {
-        List<Map<Integer, DataDto>> historyDataForTable = new ArrayList<Map<Integer, DataDto>>();
-        Map<Integer, DataDto> tempList = new TreeMap<Integer, DataDto>();
-        DataDao dataDao = new DataDaoImpl();
+        List<Map<Integer, Data>> historyDataForTable = new ArrayList<Map<Integer, Data>>();
+        Map<Integer, Data> tempList = new TreeMap<Integer, Data>();
+        DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
         for (Long dataId : historyDataIdList) {
             try {
-                DataDto data = dataDao.getById(dataId, (long) 1);
+                Data data = dataDao.getById(dataId, (long) 1);
 
                 if (dataId == 800) {
                     columnTitles.add(data.getLabel());

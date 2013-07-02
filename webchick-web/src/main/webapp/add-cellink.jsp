@@ -11,12 +11,12 @@
         return;
     }
 
-    List<UserDto> users = (List<UserDto>) request.getSession().getAttribute("users");
+    Collection<UserDto> users = (Collection<UserDto>) request.getSession().getAttribute("users");
     Long userId = Long.parseLong(request.getParameter("userId"));
     UserDto editUser = findUserToEdit(users, userId);
-    List<CellinkDto> cellinks = editUser.getCellinks();
+    Collection<CellinkDto> cellinks = editUser.getCellinks();
 %>
-<%! UserDto findUserToEdit(List<UserDto> users, Long userId) {
+<%! UserDto findUserToEdit(Collection<UserDto> users, Long userId) {
     for (UserDto u : users) {
         if (u.getId().equals(userId)) {
             return u;

@@ -1,13 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.*;
+import com.agrologic.app.dao.impl.CellinkDaoImpl;
+import com.agrologic.app.dao.impl.ControllerDaoImpl;
+import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -18,14 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class RCControllerScreenAjax extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -77,30 +69,30 @@ public class RCControllerScreenAjax extends HttpServlet {
                 long langId = languageDao.getLanguageId(lang);
                 ControllerDao controllerDao = new ControllerDaoImpl();
                 List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
-                ProgramDao programDao = new ProgramDaoImpl();
+                ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                 final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
-                ScreenDao screenDao = new ScreenDaoImpl();
-                TableDao tableDao = new TableDaoImpl();
-                DataDao dataDao = new DataDaoImpl();
+                ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                ;
+                TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
                 for (ControllerDto controller : controllers) {
                     if (controller.getId() == controllerId) {
-                        ProgramDto program = programDao.getById(controller.getProgramId());
+                        Program program = programDao.getById(controller.getProgramId());
                         List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId(), langId);
                         program.setProgramRelays(programRelays);
 
-                        List<ScreenDto> screens = screenDao.getAllScreensByProgramAndLang(program.getId(), langId, false);
-                        for (ScreenDto screen : screens) {
+                        List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(program.getId(),
+                                langId, false);
+                        for (Screen screen : screens) {
                             if (screen.getId() == screenId) {
-                                List<TableDto> tables = tableDao.getScreenTables(program.getId(), screen.getId(),
+                                Collection<Table> tables = tableDao.getScreenTables(program.getId(), screen.getId(),
                                         langId, false);
 
-                                for (TableDto table : tables) {
-                                    List<DataDto> dataList = dataDao.getOnlineTableDataList(program.getId(),
-                                            controller.getId(), screen.getId(), table.getId(),
-                                            langId);
+                                for (Table table : tables) {
+                                    Collection<Data> dataList = dataDao.getOnlineTableDataList(controller.getId(), program.getId(),
+                                            screen.getId(), table.getId(), langId);
 
-                                    // List<DataDto> dataList = dataDao.getOnlineTableDataList(program.getId(), controller.getId(), table.getId(), langId);
                                     table.setDataList(dataList);
                                 }
 
@@ -127,7 +119,7 @@ public class RCControllerScreenAjax extends HttpServlet {
                 int col = 0;
                 final long MAIN_SCREEN = 1;
 
-                for (ScreenDto screen : controller.getProgram().getScreens()) {
+                for (Screen screen : controller.getProgram().getScreens()) {
                     if ((col % 8) == 0) {
                         out.println("</tr>");
                         out.println("<tr>");
@@ -193,14 +185,14 @@ public class RCControllerScreenAjax extends HttpServlet {
                 out.println("<table cellPadding=2 cellSpacing=2 align=center>");
 
                 int column = 0;
-                ScreenDto currScreen = controller.getProgram().getScreenById(screenId);
-                List<TableDto> tables = currScreen.getTables();
+                Screen currScreen = controller.getProgram().getScreenById(screenId);
+                Collection<Table> tables = currScreen.getTables();
 
                 if (tables.size() > 0) {
-                    for (TableDto table : tables) {
+                    for (Table table : tables) {
                         Long tableId = table.getId();
 
-                        if ((column % ScreenDto.COLUMN_NUMBERS) == 0) {
+                        if ((column % Screen.COLUMN_NUMBERS) == 0) {
                             out.println("<tr>");
                         }
 
@@ -217,7 +209,7 @@ public class RCControllerScreenAjax extends HttpServlet {
                         out.println("</thead>");
                         out.println("<tbody>");
 
-                        for (DataDto data : table.getDataList()) {
+                        for (Data data : table.getDataList()) {
                             if (data.isStatus()) {
                                 int special = data.getSpecial();
 
@@ -231,7 +223,7 @@ public class RCControllerScreenAjax extends HttpServlet {
                                         out.println("<td class='value' nowrap>");
                                         out.println(
                                                 "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
-                                                        + data.getFormatedValue() + "'>");
+                                                        + data.getFormattedValue() + "'>");
                                         out.println("</td>");
                                         out.println("</tr>");
 
@@ -246,7 +238,7 @@ public class RCControllerScreenAjax extends HttpServlet {
                                         out.println("<td class='value' nowrap>");
                                         out.println(
                                                 "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
-                                                        + data.getFormatedValue() + "'>");
+                                                        + data.getFormattedValue() + "'>");
                                         out.println("</td>");
                                         out.println("</tr>");
 
@@ -268,11 +260,11 @@ public class RCControllerScreenAjax extends HttpServlet {
                                                     + " );\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
                                                     + data.getFormat()
                                                     + "')\" size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
-                                                    + data.getFormatedValue() + ">");
+                                                    + data.getFormattedValue() + ">");
                                 } else {
                                     out.println(
                                             "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
-                                                    + data.getFormatedValue() + "'>");
+                                                    + data.getFormattedValue() + "'>");
                                 }
 
                                 out.println("</td>");
@@ -285,7 +277,7 @@ public class RCControllerScreenAjax extends HttpServlet {
                         out.println("</td>");
                         column++;
 
-                        if ((column % ScreenDto.COLUMN_NUMBERS) == 0) {
+                        if ((column % Screen.COLUMN_NUMBERS) == 0) {
                             out.println("</tr>");
                         }
                     }

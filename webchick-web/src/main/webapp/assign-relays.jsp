@@ -3,11 +3,11 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.DataDto" %>
-<%@ page import="com.agrologic.app.model.ProgramDto" %>
+<%@ page import="com.agrologic.app.model.Data" %>
+<%@ page import="com.agrologic.app.model.Program" %>
 <%@ page import="com.agrologic.app.model.ProgramRelay" %>
 <%@ page import="com.agrologic.app.model.Relay" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -15,9 +15,9 @@
         return;
     }
 
-    ProgramDto program = (ProgramDto) request.getSession().getAttribute("program");
-    List<DataDto> dataRelays = (List<DataDto>) request.getSession().getAttribute("dataRelays");
-    List<Relay> relayNames = (List<Relay>) request.getSession().getAttribute("relayNames");
+    Program program = (Program) request.getSession().getAttribute("program");
+    Collection<Data> dataRelays = (Collection<Data>) request.getSession().getAttribute("dataRelays");
+    Collection<Relay> relayNames = (Collection<Relay>) request.getSession().getAttribute("relayNames");
     long translateLang;
     try {
         translateLang = Long.parseLong(request.getParameter("translateLang"));
@@ -27,7 +27,7 @@
 
 %>
 
-<%! ProgramRelay findRelay(List<ProgramRelay> dataRelays, Long relayType, int bitNumber) {
+<%! ProgramRelay findRelay(Collection<ProgramRelay> dataRelays, Long relayType, int bitNumber) {
     for (ProgramRelay r : dataRelays) {
         if (r.getDataId().equals(relayType) && r.getBitNumber() == bitNumber) {
             return r;
@@ -94,7 +94,7 @@
                     <input type="hidden" id="datamap" name="datamap"/>
                     <table border="0" cellPadding="1" cellSpacing="1">
                         <tr>
-                            <%for (DataDto dataRelay : dataRelays) {%>
+                            <%for (Data dataRelay : dataRelays) {%>
                             <td>
                                 <h3><%=dataRelay.getLabel()%>
                                 </h3>
@@ -109,7 +109,7 @@
                                     <tbody>
                                     <% int bitNumbers = 16;%>
                                     <%
-                                        List<ProgramRelay> programRelays = program.getProgramRelayByData(dataRelay.getId());%>
+                                        Collection<ProgramRelay> programRelays = program.getProgramRelayByData(dataRelay.getId());%>
                                     <% for (int bitNumber = 0; bitNumber < bitNumbers; bitNumber++) {%>
                                     <% ProgramRelay relay = findRelay(programRelays, dataRelay.getId(), bitNumber);%>
                                     <tr>

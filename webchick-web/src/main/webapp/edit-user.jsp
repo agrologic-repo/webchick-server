@@ -3,7 +3,7 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
@@ -17,13 +17,13 @@
     Boolean errorFlag = (Boolean) request.getSession().getAttribute("error");
     request.getSession().setAttribute("error", null);
 
-    List<UserDto> users = (List<UserDto>) request.getSession().getAttribute("users");
+    Collection<UserDto> users = (Collection<UserDto>) request.getSession().getAttribute("users");
     Long userId = Long.parseLong(request.getParameter("userId"));
     UserDto editUser = findUserToEdit(users, userId);
-    List<String> companies = (List<String>) request.getSession().getAttribute("companies");
+    Collection<String> companies = (Collection<String>) request.getSession().getAttribute("companies");
 %>
 
-<%! UserDto findUserToEdit(List<UserDto> users, Long userId) {
+<%! UserDto findUserToEdit(Collection<UserDto> users, Long userId) {
     for (UserDto u : users) {
         if (u.getId().equals(userId)) {
             return u;

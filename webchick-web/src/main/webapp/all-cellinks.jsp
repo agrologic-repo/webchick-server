@@ -5,7 +5,7 @@
 
 <%@ page import="com.agrologic.app.model.CellinkDto" %>
 <%@ page import="com.agrologic.app.web.CellinkState" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
@@ -14,7 +14,7 @@
     }
 
     UserDto editUser = (UserDto) request.getSession().getAttribute("edituser");
-    List<CellinkDto> cellinks = editUser.getCellinks();
+    Collection<CellinkDto> cellinks = editUser.getCellinks();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html dir="<%=(String) request.getSession().getAttribute("dir")%>" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"

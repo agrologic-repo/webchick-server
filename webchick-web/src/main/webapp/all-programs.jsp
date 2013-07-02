@@ -3,15 +3,15 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.ProgramDto" %>
-<%@ page import="java.util.List" %>
+<%@ page import="com.agrologic.app.model.Program" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    List<ProgramDto> programs = (List<ProgramDto>) request.getSession().getAttribute("programs");
+    Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("programs");
     int from = (Integer) request.getSession().getAttribute("from");
     int to = (Integer) request.getSession().getAttribute("to");
     int of = (Integer) request.getSession().getAttribute("of");
@@ -135,7 +135,7 @@
                         </thead>
                         <tbody>
                         <%int rawCount = 0;%>
-                        <%for (ProgramDto program : programs) {%>
+                        <%for (Program program : programs) {%>
                         <% if ((rawCount % 2) == 0) {%>
                         <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
                                 <%} else {%>

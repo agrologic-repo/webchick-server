@@ -47,7 +47,7 @@ public class RCMainServlet extends HttpServlet {
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
             Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-            CellinkDao cellinkDao = new CellinkDaoImpl();
+            CellinkDao cellinkDao = new CellinkDaoImpl();// DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
 
             try {
                 CellinkDto cellink = cellinkDao.getById(cellinkId);

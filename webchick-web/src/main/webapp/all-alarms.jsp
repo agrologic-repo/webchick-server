@@ -5,15 +5,15 @@
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.LanguageDto" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    List<LanguageDto> languages = (List<LanguageDto>) request.getSession().getAttribute("languages");
-    List<Alarm> alarmNames = (List<Alarm>) request.getSession().getAttribute("alarmNames");
+    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
+    Collection<Alarm> alarmNames = (Collection<Alarm>) request.getSession().getAttribute("alarmNames");
 
     String translateLangStr = request.getParameter("translateLang");
     if (translateLangStr == null) {
@@ -25,7 +25,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-    <title>Alarms List</title>
+    <title>Alarms Collection</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
@@ -72,7 +72,7 @@
     <table border="0" cellPadding=1 cellSpacing=1 width="100%">
         <tr>
             <td>
-                <h1>Alarm List</h1>
+                <h1>Alarm Collection</h1>
 
                 <h2>alarm list</h2>
             </td>

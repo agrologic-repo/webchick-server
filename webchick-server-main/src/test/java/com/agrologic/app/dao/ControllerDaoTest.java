@@ -4,12 +4,9 @@
  */
 package com.agrologic.app.dao;
 
-import java.sql.SQLException;
 import org.junit.*;
-import static org.junit.Assert.*;
 
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -38,12 +35,4 @@ public class ControllerDaoTest {
     }
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
-    //
-
-    @Test
-    public void getControllerDao() throws SQLException {
-        long cid = 393;
-        String values = dao.getControllerGraph(cid);
-        System.out.println(values);
-    }
 }

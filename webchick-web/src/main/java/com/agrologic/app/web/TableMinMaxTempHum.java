@@ -6,11 +6,12 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.table.TableOfHistoryCreator;
 import org.apache.log4j.Logger;
 
@@ -71,24 +72,24 @@ public class TableMinMaxTempHum extends HttpServlet {
                 try {
                     FlockDao flockDao = new FlockDaoImpl();
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    DataDao dataDao = new DataDaoImpl();
-                    DataDto data1 = dataDao.getById(Long.valueOf(3002), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData1 =
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    Data data1 = dataDao.getById(Long.valueOf(3002), Long.valueOf(1));
+                    Map<Integer, Data> interestData1 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data1);
-                    DataDto data2 = dataDao.getById(Long.valueOf(3003), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData2 =
+                    Data data2 = dataDao.getById(Long.valueOf(3003), Long.valueOf(1));
+                    Map<Integer, Data> interestData2 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data2);
-                    DataDto data3 = dataDao.getById(Long.valueOf(3004), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData3 =
+                    Data data3 = dataDao.getById(Long.valueOf(3004), Long.valueOf(1));
+                    Map<Integer, Data> interestData3 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data3);
-                    DataDto data4 = dataDao.getById(Long.valueOf(3005), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData4 =
+                    Data data4 = dataDao.getById(Long.valueOf(3005), Long.valueOf(1));
+                    Map<Integer, Data> interestData4 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data4);
-                    DataDto data5 = dataDao.getById(Long.valueOf(3006), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData5 =
+                    Data data5 = dataDao.getById(Long.valueOf(3006), Long.valueOf(1));
+                    Map<Integer, Data> interestData5 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data5);
-                    DataDto data6 = dataDao.getById(Long.valueOf(3007), Long.valueOf(1));
-                    Map<Integer, DataDto> interestData6 =
+                    Data data6 = dataDao.getById(Long.valueOf(3007), Long.valueOf(1));
+                    Map<Integer, Data> interestData6 =
                             TableOfHistoryCreator.createHistDataByGrowDay(historyByGrowDay, data6);
 
                     out.println("<p>");
@@ -108,12 +109,12 @@ public class TableMinMaxTempHum extends HttpServlet {
 
                     while (iter.hasNext()) {
                         Integer growDay = iter.next();
-                        DataDto d1 = interestData1.get(growDay);
-                        DataDto d2 = interestData2.get(growDay);
-                        DataDto d3 = interestData3.get(growDay);
-                        DataDto d4 = interestData4.get(growDay);
-                        DataDto d5 = interestData5.get(growDay);
-                        DataDto d6 = interestData6.get(growDay);
+                        Data d1 = interestData1.get(growDay);
+                        Data d2 = interestData2.get(growDay);
+                        Data d3 = interestData3.get(growDay);
+                        Data d4 = interestData4.get(growDay);
+                        Data d5 = interestData5.get(growDay);
+                        Data d6 = interestData6.get(growDay);
 
                         if ((d1 == null) || (d2 == null) || (d3 == null) || (d4 == null) || (d5 == null)
                                 || (d5 == null)) {

@@ -4,22 +4,22 @@
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.Alarm" %>
-<%@ page import="com.agrologic.app.model.DataDto" %>
+<%@ page import="com.agrologic.app.model.Data" %>
+<%@ page import="com.agrologic.app.model.Program" %>
 <%@ page import="com.agrologic.app.model.ProgramAlarm" %>
-<%@ page import="com.agrologic.app.model.ProgramDto" %>
-<%@ page import="java.util.List" %>
+<%@ page import="java.util.Collection" %>
 
 <% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    ProgramDto program = (ProgramDto) request.getSession().getAttribute("program");
-    List<DataDto> dataAlarms = (List<DataDto>) request.getSession().getAttribute("dataAlarms");
-    List<Alarm> alarmNames = (List<Alarm>) request.getSession().getAttribute("alarmNames");
+    Program program = (Program) request.getSession().getAttribute("program");
+    Collection<Data> dataAlarms = (Collection<Data>) request.getSession().getAttribute("dataAlarms");
+    Collection<Alarm> alarmNames = (Collection<Alarm>) request.getSession().getAttribute("alarmNames");
     String datamap;
 %>
-<%! ProgramAlarm findAlarm(List<ProgramAlarm> dataAlarms, Long alarmType, int digitNumber) {
+<%! ProgramAlarm findAlarm(Collection<ProgramAlarm> dataAlarms, Long alarmType, int digitNumber) {
     for (ProgramAlarm pa : dataAlarms) {
         if (pa.getDataId().equals(alarmType) && pa.getDigitNumber() == digitNumber) {
             return pa;
@@ -98,7 +98,7 @@
                                 <input type="hidden" id="programId" name="programId" value="<%=program.getId() %>">
                                 <table>
                                     <tr>
-                                        <% for (DataDto dataAlarm : dataAlarms) {%>
+                                        <% for (Data dataAlarm : dataAlarms) {%>
                                         <td valign="top"><p>
 
                                             <h3><%=dataAlarm.getLabel() %>
@@ -117,7 +117,7 @@
                                                 <tbody>
                                                 <% int digitNumbers = 10; %>
                                                 <%
-                                                    List<ProgramAlarm> programAlarms = program.getProgramAlarmsByData(dataAlarm.getId()); %>
+                                                    Collection<ProgramAlarm> programAlarms = program.getProgramAlarmsByData(dataAlarm.getId()); %>
                                                 <% for (int digitNumber = 1; digitNumber <= digitNumbers; digitNumber++) { %>
                                                 <% ProgramAlarm alarm = findAlarm(programAlarms, dataAlarm.getId(), digitNumber); %>
                                                 <tr>

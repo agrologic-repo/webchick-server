@@ -1,17 +1,11 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.dao.ScreenDao;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.dao.impl.ScreenDaoImpl;
-import com.agrologic.app.model.ProgramDto;
-import com.agrologic.app.model.ScreenDto;
+import com.agrologic.app.model.Program;
+import com.agrologic.app.model.Screen;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -22,9 +16,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
-
-//~--- JDK imports ------------------------------------------------------------
-
 
 public class AddScreenServlet extends HttpServlet {
 
@@ -52,13 +43,12 @@ public class AddScreenServlet extends HttpServlet {
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
                 try {
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    List<ProgramDto> programs = programDao.getAll();
-                    ScreenDao screenDao = new ScreenDaoImpl();
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    List<Program> programs = (List<Program>) programDao.getAll();
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
 
-                    for (ProgramDto p : programs) {
-                        List<ScreenDto> screens = screenDao.getAllByProgramId(p.getId());
-
+                    for (Program p : programs) {
+                        List<Screen> screens = (List<Screen>) screenDao.getAllByProgramId(p.getId());
                         p.setScreens(screens);
                     }
 

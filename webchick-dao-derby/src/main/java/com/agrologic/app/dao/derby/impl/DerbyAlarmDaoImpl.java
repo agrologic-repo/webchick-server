@@ -10,6 +10,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.*;
 
 public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
+    public final static String APP_SCHEMA = "APP";
+    public final static String ALARMNAMES_TABLE = "ALARMNAMES";
+    public final static String ALARMBYLANGUAGE_TABLE = "ALARMBYLANGUAGE";
 
     public DerbyAlarmDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
         super(jdbcTemplate, daoFactory);
@@ -26,20 +29,20 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
             con = dao.getConnection();
 
             DatabaseMetaData dbmd = con.getMetaData();
-            ResultSet rs = dbmd.getTables(null, "APP", "ALARMNAMES", null);
+            ResultSet rs = dbmd.getTables(null, APP_SCHEMA, ALARMNAMES_TABLE, null);
 
             if (!rs.next()) {
                 return false;
             }
 
-            rs = dbmd.getTables(null, "APP", "ALARMBYLANGUAGE", null);
+            rs = dbmd.getTables(null, APP_SCHEMA, ALARMBYLANGUAGE_TABLE, null);
 
             if (!rs.next()) {
                 return false;
             }
 
         } catch (SQLException e) {
-            throw new SQLException("Cannot get table ALARMNAMES from DataBase", e);
+            throw new SQLException("Cannot get table " + ALARMNAMES_TABLE + " from DataBase", e);
         } finally {
             dao.closeConnection(con);
         }
@@ -88,7 +91,7 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
             stmt = con.createStatement();
             stmt.execute(sqlQuery);
         } catch (Exception e) {
-            throw new SQLException("Cannot create new ALARMBYLANGUAGE Table", e);
+            throw new SQLException("Cannot create new " + ALARMBYLANGUAGE_TABLE + " Table", e);
         } finally {
             stmt.close();
             dao.closeConnection(con);
@@ -97,7 +100,7 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
 
     @Override
     public void dropTable() throws SQLException {
-        String sqlQueryFlock = "DROP TABLE APP.ALARM ";
+        String sqlQueryFlock = "DROP TABLE APP.ALARMNAMES ";
         Statement stmt = null;
         Connection con = null;
 
@@ -116,7 +119,7 @@ public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, Dro
 
     @Override
     public void deleteFromTable() throws SQLException {
-        String sqlQueryFlock = "DELETE FROM APP.ALARM ";
+        String sqlQueryFlock = "DELETE FROM APP.ALARMNAMES ";
         Statement stmt = null;
         Connection con = null;
 

@@ -6,17 +6,13 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.UserDao;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.impl.CellinkDaoImpl;
 import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
 import com.agrologic.app.dao.impl.UserDaoImpl;
 import com.agrologic.app.model.CellinkDto;
 import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.ProgramDto;
+import com.agrologic.app.model.Program;
 import com.agrologic.app.model.UserDto;
 import org.apache.log4j.Logger;
 
@@ -27,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -65,35 +61,35 @@ public class CellinkSetting extends HttpServlet {
                 Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
 
                 try {
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    List<ProgramDto> programs = programDao.getAll();
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    List<Program> programs = (List<Program>) programDao.getAll();
 
                     request.getSession().setAttribute("programs", programs);
 
                     UserDao userDao = new UserDaoImpl();
                     UserDto editUser = userDao.getById(userId);
 
-                    editUser.setCellinks(new ArrayList<CellinkDto>());
+//                    editUser.setCellinks(new Collection<CellinkDto>());
 
                     CellinkDao cellinkDao = new CellinkDaoImpl();
                     CellinkDto c = cellinkDao.getById(cellinkId);
                     ControllerDao controllerDao = new ControllerDaoImpl();
-                    List<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
+                    Collection<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
 
                     for (ControllerDto ctrl : controllers) {
-                        ProgramDto program = programDao.getById(ctrl.getProgramId());
+                        Program program = programDao.getById(ctrl.getProgramId());
 
                         ctrl.setProgram(program);
                     }
 
-                    c.setControllers(controllers);
+                    c.setControllers((List) controllers);
                     editUser.addCellink(c);
                     logger.info("retrieve user");
                     logger.info("retrieve cellinks by user");
                     logger.info("retrieve controllers by user cellinks");
                     request.getSession().setAttribute("edituser", editUser);
 
-                    List<String> controllernames = controllerDao.getControllerNames();
+                    List<String> controllernames = (List<String>) controllerDao.getControllerNames();
 
                     logger.info("retrieve controller names");
                     request.getSession().setAttribute("controllernames", controllernames);

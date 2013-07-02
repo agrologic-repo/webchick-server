@@ -6,13 +6,14 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
 import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.excel.DataForExcelCreator;
 import com.agrologic.app.excel.WriteToExcel;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.utils.FileDownloadUtil;
 import org.apache.log4j.Logger;
 
@@ -55,17 +56,17 @@ public class ExpToExcelFeedWater extends HttpServlet {
                 FlockDao flockDao = new FlockDaoImpl();
                 Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId);
                 List<List<String>> allHistDataForExcel = new ArrayList<List<String>>();
-                DataDao dataDao = new DataDaoImpl();
+                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 long langId = 1;
-                DataDto data0 = dataDao.getById(Long.valueOf(800), langId);
+                Data data0 = dataDao.getById(Long.valueOf(800), langId);
 
                 allHistDataForExcel.add(DataForExcelCreator.createDataList(historyByGrowDay.keySet()));
 
-                DataDto data1 = dataDao.getById(Long.valueOf(1301), langId);
+                Data data1 = dataDao.getById(Long.valueOf(1301), langId);
 
                 allHistDataForExcel.add(DataForExcelCreator.createDataHistoryList(historyByGrowDay, data1));
 
-                DataDto data2 = dataDao.getById(Long.valueOf(1302), langId);
+                Data data2 = dataDao.getById(Long.valueOf(1302), langId);
 
                 allHistDataForExcel.add(DataForExcelCreator.createDataHistoryList(historyByGrowDay, data2));
 

@@ -5,10 +5,10 @@
  */
 package com.agrologic.app.web;
 
-
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.model.DataDto;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Data;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -55,7 +55,7 @@ public class AddDataSetFormServlet extends HttpServlet {
             endDataId = Long.parseLong(request.getParameter("enddataId"));
             show = request.getParameter("show");
             pos = Integer.parseInt(request.getParameter("startpos"));
-            dataDao = new DataDaoImpl();
+            dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
             Thread thread = new Thread(new Runnable() {
                 @Override
@@ -76,12 +76,12 @@ public class AddDataSetFormServlet extends HttpServlet {
                         endDataId = (type & 0xFFFF);
                     }
 
-                    DataDto data = null;
+                    Data data = null;
 
                     try {
                         data = dataDao.getById(startDataId);
                     } catch (SQLException ex) {
-                        data = new DataDto();
+                        data = new Data();
                         data.setFormat(0);
                     }
 
@@ -93,8 +93,6 @@ public class AddDataSetFormServlet extends HttpServlet {
                         try {
                             dataDao.insertDataToTable(programid, screenid, tableid, startDataId, show, pos);
                         } catch (SQLException ex) {
-
-//                          jTextArea2.append("Error adding dataids\n");
                             for (Throwable e : ex) {
                                 if (e instanceof SQLException) {
                                     e.printStackTrace(System.err);
@@ -102,26 +100,19 @@ public class AddDataSetFormServlet extends HttpServlet {
                                     Throwable t = ex.getCause();
 
                                     while (t != null) {
-
-//                                      jTextArea2.append("Cause: " + t + "\n");
                                         t = t.getCause();
                                     }
                                 }
                             }
                         }
 
-                        if (data.isLong()) {
+                        if (data.isLongType()) {
                             startDataId++;
                         }
 
                         startDataId++;
                         pos++;
-
-//                      jTextArea2.append(".");
                     }
-
-//                  jTextArea2.append("\n");
-//                  jTextArea2.append("All data are added\n");
                 }
             });
 

@@ -5,10 +5,6 @@
  */
 package com.agrologic.app.except;
 
-/**
- *
- * @author Administrator
- */
 public class StartProgramException extends Exception {
     public StartProgramException(String message) {
         super("Fatal error \n" + message);

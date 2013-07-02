@@ -25,11 +25,6 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class OverviewServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ServletContext ctx;
@@ -90,7 +85,7 @@ public class OverviewServlet extends HttpServlet {
             }
 
             try {
-                CellinkDao cellinkDao = new CellinkDaoImpl();
+                CellinkDao cellinkDao = new CellinkDaoImpl();//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                 ControllerDao controllerDao = new ControllerDaoImpl();
                 int count = 0;
 

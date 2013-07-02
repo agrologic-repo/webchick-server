@@ -6,18 +6,11 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.ScreenDao;
-import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.impl.DataDaoImpl;
-import com.agrologic.app.dao.impl.ProgramDaoImpl;
-import com.agrologic.app.dao.impl.ScreenDaoImpl;
-import com.agrologic.app.dao.impl.TableDaoImpl;
-import com.agrologic.app.model.DataDto;
-import com.agrologic.app.model.ProgramDto;
-import com.agrologic.app.model.ScreenDto;
-import com.agrologic.app.model.TableDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.model.Data;
+import com.agrologic.app.model.Program;
+import com.agrologic.app.model.Screen;
+import com.agrologic.app.model.Table;
 import com.agrologic.app.utils.DateLocal;
 import org.apache.log4j.Logger;
 
@@ -52,7 +45,7 @@ public class AddTableDataFormServlet extends HttpServlet implements Serializable
             throws ServletException, IOException {
 
         /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddProgramServlet.class);
+        final Logger logger = Logger.getLogger(AddTableDataFormServlet.class);
 
         response.setContentType("text/html;charset=UTF-8");
 
@@ -88,9 +81,9 @@ public class AddTableDataFormServlet extends HttpServlet implements Serializable
                 Integer position = Integer.parseInt(request.getParameter("position"));
 
                 try {
-                    TableDao tableDao = new TableDaoImpl();
-                    TableDto table = tableDao.getById(programId, screenId, tableId);
-                    DataDao dataDao = new DataDaoImpl();
+                    TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                    Table table = tableDao.getById(programId, screenId, tableId);
+                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
                     dataDao.insertDataToTable(programId, screenId, table.getId(), dataId, display, position);
 
@@ -105,20 +98,21 @@ public class AddTableDataFormServlet extends HttpServlet implements Serializable
                         request.getSession().setAttribute("error", false);
                     }
 
-                    ProgramDao programDao = new ProgramDaoImpl();
-                    ProgramDto program = programDao.getById(programId);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(programId);
 
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
 
-                    ScreenDao screenDao = new ScreenDaoImpl();
-                    ScreenDto screen = screenDao.getById(programId, screenId, langId);
-                    List<TableDto> tables = new ArrayList<TableDto>();
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+
+                    Screen screen = screenDao.getById(programId, screenId, langId);
+                    List<Table> tables = new ArrayList<Table>();
 
                     tables.add(table);
                     screen.setTables(tables);
 
-                    List<DataDto> dataList = dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
+                    List<Data> dataList = dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
                             table.getId(), null);
 
                     table.setDataList(dataList);

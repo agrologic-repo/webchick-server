@@ -2,120 +2,264 @@ package com.agrologic.app.messaging;
 
 public interface Message {
 
-    /**
-     * Acknowledge - 6
-     */
-    static final byte ACK = 6;
+    public enum ProtocolBytes {
 
-    /**
-     * check sum error
-     */
-    static final int CHS_ERROR = 30;
+        ACK((byte) 6),
+        NACK((byte) 21),
+        SOT((byte) 22),
+        EOT((byte) 4),
+        STX((byte) 2),
+        ETX((byte) 3),
+        ERROR((byte) 25),
+        SOINDX((byte) 24),
+        SPACE((byte) 32),
+        RS((byte) 30);
 
-    /**
-     * skip request error
-     */
-    static final int CON_ERROR = 40;
 
-    /**
-     * End of transmission - 4
-     */
-    static final byte EOT = 4;
+        ProtocolBytes(byte value) {
+            this.value = value;
+        }
 
-    /**
-     * end of transmission error message
-     */
-    static final int EOT_ERROR = 20;
+        public byte getValue() {
+            return value;
+        }
 
-    /**
-     * Error flag - 25
-     */
-    static final byte ERROR = 25;
+        private final byte value;
+    }
 
-    /**
-     * End of text - 3
-     */
-    static final byte ETX = 3;
+    public enum LastIndicators {
 
-    /**
-     * Indicate last received buffer - 2
-     */
-    static final byte LAST_COMPRSSED_TEXT_MESSAGE = 2;
+        TEXT((byte) 1),
+        COMPRSSED_TEXT((byte) 2),
+        COMPRSSED_TEXT_WITH_INDEX((byte) 3),
+        COMPRSSED_BINARY_WITH_INDEX((byte) 4);
 
-    /**
-     * Indicate last received binary buffer with index in response - 4
-     */
-    static final byte LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE = 4;
+        LastIndicators(byte value) {
+            this.value = value;
+        }
 
-    /**
-     * Indicate last received buffer with index in response - 3
-     */
-    static final byte LAST_COMPRSS_WITH_IND_TEXT_MESSAGE = 3;
+        public byte getValue() {
+            return value;
+        }
 
-    /**
-     * Indicate last received buffer - 1
-     */
-    static final byte LAST_TEXT_MESSAGE = 1;
+        public static Format getIndicator(byte val) {
+            switch (val) {
+                default:
+                case 1:
+                case 2:
+                case 3:
+                    return Format.TEXT;
+                case 4:
+                    return Format.BINARY;
+            }
+        }
 
-    /**
-     * Negative acknowledge - 21
-     */
-    static final byte NACK = 21;
+        private final byte value;
+    }
 
-    /**
-     * Indicate first or middle received buffer - 0
-     */
-    static final int  OK               = 0;
+    public enum ErrorCodes {
 
-    /**
-     * skip request error
-     */
-    static final int REQ_ERROR = 50;
+        /**
+         * start of transmission error
+         */
+        SOT_ERROR((byte) 10),
+        /**
+         * end of transmission error message
+         */
+        EOT_ERROR((byte) 20),
+        /**
+         * check sum error
+         */
+        CHS_ERROR((byte) 30),
+        /**
+         * skip request error
+         */
+        CON_ERROR((byte) 40),
+        /**
+         * Indicate first or middle received buffer - 0
+         */
+        OK((byte) 0),
 
-    /**
-     * Record separator - 30
-     */
-    static final byte RS = 30;
+        /**
+         * skip request error
+         */
+        REQ_ERROR((byte) 50),
 
-    /**
-     * skip request error
-     */
-    static final int SKP_ERROR = 60;
+        /**
+         * skip request error
+         */
+        SKP_ERROR((byte) 60),
 
-    /**
-     * Start of index - 24
-     */
-    static final byte SOINDX = 24;
+        /**
+         * timeout error
+         */
+        TIME_OUT_ERROR((byte) 80),
 
-    /**
-     * Start of transmission - 22
-     */
-    static final byte SOT = 22;
+        /**
+         * unknown error
+         */
+        UNW_ERROR((byte) 70);
 
-    /**
-     * start of transmission error
-     */
-    static final int SOT_ERROR = 10;
+        ErrorCodes(int value) {
+            this.value = value;
+        }
 
-    /**
-     * White space -32
-     */
-    static final byte SPACE = 32;
+        public int getValue() {
+            return value;
+        }
 
-    /**
-     * Start of text - 2
-     */
-    static final byte STX = 2;
 
-    /**
-     * timeout error
-     */
-    static final int TMO_ERROR = 80;
+        public String toString() {
+            switch (this) {
+                case SOT_ERROR:
+                    return "SOT Error";
 
-    /**
-     * unknown error
-     */
-    static final int UNW_ERROR = 70;
+                case EOT_ERROR:
+                    return "EOT Error";
+
+                case CHS_ERROR:
+                    return "Checksum Error";
+
+                case SKP_ERROR:
+                    return "Skip Response Error";
+
+                case UNW_ERROR:
+                    return "Unknown Error";
+
+                case TIME_OUT_ERROR:
+                    return "Timeout Error";
+
+                case CON_ERROR:
+                    return "Connection to Controller Error";
+
+                case REQ_ERROR:
+                    return "Request Error";
+
+                default:
+                    return "";
+            }
+        }
+
+        private int value;
+    }
+
+    public enum Format {
+        BINARY, TEXT
+    }
+//    /**
+//     * Acknowledge - 6
+//     */
+//    static final byte ACK = 6;
+//
+//    /**
+//     * End of transmission - 4
+//     */
+//    static final byte EOT = 4;
+//
+//    /**
+//     * Error flag - 25
+//     */
+//    static final byte ERROR = 25;
+//
+//    /**
+//     * End of text - 3
+//     */
+//    static final byte ETX = 3;
+//
+//    /**
+//     * Indicate last received buffer - 2
+//     */
+//    static final byte LAST_COMPRSSED_TEXT_MESSAGE = 2;
+//
+//    /**
+//     * Indicate last received binary buffer with index in response - 4
+//     */
+//    static final byte LAST_COMPRSSED_WITH_IND_BINARY_MESSAGE = 4;
+//
+//    /**
+//     * Indicate last received buffer with index in response - 3
+//     */
+//    static final byte LAST_COMPRSS_WITH_IND_TEXT_MESSAGE = 3;
+//
+//    /**
+//     * Indicate last received buffer - 1
+//     */
+//    static final byte LAST_TEXT_MESSAGE = 1;
+//
+//    /**
+//     * Negative acknowledge - 21
+//     */
+//    static final byte NACK = 21;
+//
+//    /**
+//     * Record separator - 30
+//     */
+//    static final byte RS = 30;
+//
+//    /**
+//     * Start of index - 24
+//     */
+//    static final byte SOINDX = 24;
+//
+//    /**
+//     * Start of transmission - 22
+//     */
+//    static final byte SOT = 22;
+//
+//    /**
+//     * White space -32
+//     */
+//    static final byte SPACE = 32;
+//
+//    /**
+//     * Start of text - 2
+//     */
+//    static final byte STX = 2;
+//
+//    /**
+//     * start of transmission error
+//     */
+//    static final int SOT_ERROR = 10;
+//
+//    /**
+//     * check sum error
+//     */
+//    static final int CHS_ERROR = 30;
+//
+//    /**
+//     * skip request error
+//     */
+//    static final int CON_ERROR = 40;
+//
+//    /**
+//     * end of transmission error message
+//     */
+//    static final int EOT_ERROR = 20;
+//
+//    /**
+//     * Indicate first or middle received buffer - 0
+//     */
+//    static final int OK       = 0;
+//
+//    /**
+//     * skip request error
+//     */
+//    static final int REQ_ERROR = 50;
+//
+//    /**
+//     * skip request error
+//     */
+//    static final int SKP_ERROR = 60;
+//
+//    /**
+//     * timeout error
+//     */
+//    static final int TIME_OUT_ERROR = 80;
+//
+//    /**
+//     * unknown error
+//     */
+//    static final int UNW_ERROR = 70;
 
     /**
      * Return message buffer.

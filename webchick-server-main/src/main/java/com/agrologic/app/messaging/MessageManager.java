@@ -242,7 +242,7 @@ public class MessageManager implements Observer {
             return true;
         }
         final long timeSinceUpdated = System.currentTimeMillis() - updateTime.getTime();
-        if (timeSinceUpdated > TimeUnit.SECONDS.toHours(11)) {
+        if (timeSinceUpdated > TimeUnit.HOURS.toMillis(1L)) {
 
             return true;
         }
@@ -572,7 +572,7 @@ public class MessageManager implements Observer {
             return true;
         }
         final long timeSinceUpdated = System.currentTimeMillis() - updateTime.getTime();
-        if (timeSinceUpdated > TimeUnit.SECONDS.toHours(11)) {
+        if (timeSinceUpdated > TimeUnit.HOURS.toMillis(1L)) {
             return true;
         }
         return false;

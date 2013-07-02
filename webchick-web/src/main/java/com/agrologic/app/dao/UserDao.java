@@ -3,7 +3,6 @@ package com.agrologic.app.dao;
 import com.agrologic.app.model.UserDto;
 
 import java.sql.SQLException;
-
 import java.util.List;
 
 public interface UserDao {

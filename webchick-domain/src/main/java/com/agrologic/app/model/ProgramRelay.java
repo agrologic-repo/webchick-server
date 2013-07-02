@@ -7,17 +7,18 @@ import java.io.Serializable;
 
 public class ProgramRelay implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Integer           bitNumber;
-    private Long              dataId;
-    private Integer           index;
-    private String            on;
-    private Long              programId;
-    private Integer           relayNumber;
-    private Long              relayTextId;
-    private String            text;
-    private String            unicodeText;
+    private Integer bitNumber;
+    private Long dataId;
+    private Integer index;
+    private String on;
+    private Long programId;
+    private Integer relayNumber;
+    private Long relayTextId;
+    private String text;
+    private String unicodeText;
 
-    public ProgramRelay() {}
+    public ProgramRelay() {
+    }
 
     public Integer getBitNumber() {
         return bitNumber;
@@ -25,6 +26,14 @@ public class ProgramRelay implements Serializable {
 
     public void setBitNumber(Integer bitNumber) {
         this.bitNumber = bitNumber;
+    }
+
+    public Long getRelayTextId() {
+        return relayTextId;
+    }
+
+    public void setRelayTextId(Long relayTextId) {
+        this.relayTextId = relayTextId;
     }
 
     public Integer getRelayNumber() {
@@ -68,25 +77,18 @@ public class ProgramRelay implements Serializable {
     }
 
     // TODO : delete if code is unused
-//    public Integer getIndex() {
-//        return index;
-//    }
-//
-//    public void setIndex(Integer index) {
-//        this.index = index;
-//    }
-
-    public Long getRelayTextId() {
-        return relayTextId;
+    public Integer getIndex() {
+        return index;
     }
 
-    public void setRelayTextId(Long relayTextId) {
-        this.relayTextId = relayTextId;
+    public void setIndex(Integer index) {
+        this.index = index;
     }
+
     // TODO : delete if code is unused
-//    public String getOn() {
-//        return on;
-//    }
+    public String getOn() {
+        return on;
+    }
 
     public void setOn() {
         this.on = "ON";
@@ -97,7 +99,7 @@ public class ProgramRelay implements Serializable {
     }
 
     public void init(long val) {
-        if (val== -1) {
+        if (val == -1) {
             setOff();
             return;
         }
@@ -109,26 +111,17 @@ public class ProgramRelay implements Serializable {
             setOff();
         }
     }
-    // TODO : delete if code is unused
-//  public String getImage(String name) {
-//      if(name.startsWith("Fan")) {
-//          if(isOn()) {
-//              return "img/fanon.gif";
-//          } else {
-//              return "img/fanoff.gif";
-//          }
-//      }
-//  }
+
     public boolean isOn() {
         return on.equals("ON")
-               ? true
-               : false;
+                ? true
+                : false;
     }
 
     public String displayTemplateValue() {
         return (bitNumber % 2 == 0)
-               ? "On"
-               : "Off";
+                ? "On"
+                : "Off";
     }
 
     @Override
@@ -148,7 +141,7 @@ public class ProgramRelay implements Serializable {
         ProgramRelay programRelay = (ProgramRelay) o;
 
         return new EqualsBuilder().append(this.text, programRelay.text).append(this.relayNumber,
-                                          programRelay.relayNumber).isEquals();
+                programRelay.relayNumber).isEquals();
     }
 
     @Override
@@ -159,7 +152,7 @@ public class ProgramRelay implements Serializable {
     @Override
     public String toString() {
         return new StringBuilder().append(" ID : ").append(dataId).append(" TYPE : ").append(bitNumber).append(
-            " LABEL :").append(text).append(" RELAY TEXT ID : ").append(relayTextId).toString();
+                " LABEL :").append(text).append(" RELAY TEXT ID : ").append(relayTextId).toString();
     }
 }
 
