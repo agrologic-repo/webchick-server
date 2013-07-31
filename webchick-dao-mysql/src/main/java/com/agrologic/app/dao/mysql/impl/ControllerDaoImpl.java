@@ -2,595 +2,322 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoFactory;
+import com.agrologic.app.dao.mappers.RowMappers;
+import com.agrologic.app.dao.mappers.Util;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
-import com.agrologic.app.dao.mappers.ControllerUtil;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ControllerDaoImpl implements ControllerDao {
+    protected final DaoFactory dao;
+    private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    protected DaoFactory dao;
-
-    public ControllerDaoImpl(DaoFactory daoFactory) {
-        dao = daoFactory;
+    public ControllerDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("controllers");
+        this.dao = dao;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insert(Controller controller) throws SQLException {
-        String sqlQuery = "insert into controllers values (?,?,?,?,?,?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setObject(1, null);
-            prepstmt.setLong(2, controller.getCellinkId());
-            prepstmt.setString(3, controller.getTitle());
-            prepstmt.setString(4, controller.getNetName());
-            prepstmt.setString(5, controller.getName());
-            prepstmt.setLong(6, controller.getProgramId());
-            prepstmt.setInt(7, controller.getArea());
-            prepstmt.setBoolean(8, controller.isActive());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Insert Controller To The DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Creating controller with name [{}]", controller.getName());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("cellinkid", controller.getCellinkId());
+        valuesToInsert.put("title", controller.getTitle());
+        valuesToInsert.put("netname", controller.getNetName());
+        valuesToInsert.put("controllername", controller.getName());
+        valuesToInsert.put("programid", controller.getProgramId());
+        valuesToInsert.put("area", controller.getArea());
+        valuesToInsert.put("active", controller.isActive());
+        jdbcInsert.execute(valuesToInsert);
     }
 
-    @Override
-    public void insert(List<Controller> controllers) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void insertControllerDataValues(Long controllerId, Iterator<Map.Entry<Long, Data>> dataValues) throws SQLException {
-        String sqlQuery = "insert into controllerdata values (?,?,?) ";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            // turn off autocommit
-            con.setAutoCommit(false);
-
-            int i = 0;
-            prepstmt = con.prepareStatement(sqlQuery);
-            while (dataValues.hasNext()) {
-                Map.Entry<Long, Data> entry = dataValues.next();
-                prepstmt = con.prepareStatement(sqlQuery);
-                prepstmt.setLong(1, controllerId);
-                prepstmt.setLong(2, entry.getKey());
-                prepstmt.setLong(3, entry.getValue().getValue());
-                prepstmt.addBatch();
-                if ((i + 1) % 200 == 0) {
-                    prepstmt.executeBatch(); // Execute every 200 items.
-                    System.out.print(".");
-                }
-                i++;
-            }
-            prepstmt.executeBatch();
-            con.commit();
-            con.setAutoCommit(true);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    dao.printSQLException(ex);
-                    throw new SQLException("Transaction is being rolled back", ex);
-                }
-            }
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(Controller controller) throws SQLException {
-        String sqlQuery = "update controllers set Title=?, NetName=?, ControllerName=?, Area=?, ProgramID=?, "
-                + "Active=? where ControllerID=? and CellinkID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, controller.getTitle());
-            prepstmt.setString(2, controller.getNetName());
-            prepstmt.setString(3, controller.getName());
-            prepstmt.setLong(4, controller.getArea());
-            prepstmt.setLong(5, controller.getProgramId());
-            prepstmt.setBoolean(6, controller.isActive());
-            prepstmt.setLong(7, controller.getId());
-            prepstmt.setLong(8, controller.getCellinkId());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException("Cannot Update Controller In DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Update controller with id [{}]", controller.getId());
+        jdbcTemplate.update("update controllers set Title=?, NetName=?, ControllerName=?, Area=?, ProgramID=?, "
+                + "Active=? where ControllerID=? ",
+                new Object[]{controller.getTitle(), controller.getNetName(), controller.getName(),
+                        controller.getArea(), controller.getProgramId(), controller.isActive(), controller.getId()});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void remove(Long id) throws SQLException {
-        String sqlQuery = "delete from controllers where ControllerID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException("Cannot Delete Controller From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        Validate.notNull(id, "Id can not be null");
+        logger.debug("Delete controller with id [{}]", id);
+        jdbcTemplate.update("delete from controllers where ControllerID=?", new Object[]{id});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void removeChangedValue(Long controllerId, Long dataId) throws SQLException {
-        String sqlQuery = "delete from newcontrollerdata where ControllerID=? and DataID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            prepstmt.setLong(2, dataId);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Delete Controller From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+    public void insert(Collection<Controller> controllers) throws SQLException {
+        // there is duplicate controller elements in controllerList we need only unique elements
+        Collection<Controller> controllerCollection = Util.getUniqueElements(controllers);
+        for (Controller controller : controllerCollection) {
+            insert(controller);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void resetControllerData(Long id) throws SQLException {
+        Validate.notNull(id, "Id can not be null");
+        logger.debug("Set data value to -1 on controller with id [{}]", id);
+        jdbcTemplate.update("update controllerdata set value=-1 where ControllerID=?", new Object[]{id});
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void removeControllerData(Long controllerId) throws SQLException {
-        String sqlQuery = "delete from controllerdata where ControllerID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Delete Controller Data From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+    public void updateControllerData(Long id, Long dataId, Long value) throws SQLException {
+        Validate.notNull(id, "Id can not be null");
+        logger.debug("Set data value on controller with id [{}]", id);
+        jdbcTemplate.update("insert into controllerdata (ControllerID,DataID,Value) "
+                + "values (?,?,?) on duplicate key update value=values(Value)", new Object[]{id, dataId, value});
     }
 
-    public void resetControllerData(Long controllerId) throws SQLException {
-        String sqlQuery = "update controllerdata set value=-1 where ControllerID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Reset Controller Data In DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void updateControllerData(Long controllerId, Long dataId, Long value) throws SQLException {
-        String sqlQuery = "insert into controllerdata (ControllerID,DataID,Value) "
-                + "VALUES (?,?,?) on duplicate key update Value=values(Value)";
+    public void updateControllerData(final Long id, final Collection<Data> onlineData) throws SQLException {
+        Validate.notNull(id, "Id can not be null");
+        logger.debug("Set collection of data value of controller with id [{}]", id);
+        final String sql = "insert into controllerdata (ControllerID, DataID,Value) "
+                + "values (?,?,?) on duplicate key update value=values(value)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            prepstmt.setLong(2, dataId);
-            prepstmt.setLong(3, value);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Update Controller Data. ", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    @Override
-    public void updateControllerData(Long controllerId, Collection<Data> onlineData) throws SQLException {
-        final String sqlQuery = "insert into controllerdata (ControllerID, DataID,Value) "
-                + "VALUES (?,?,?) on duplicate key update value=values(value)";
-
-
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-        try {
-            con = dao.getConnection();
-            // turn off autocommit
-            con.setAutoCommit(false);
-
-            prepstmt = con.prepareStatement(sqlQuery);
-            for (Data dc : onlineData) {
-                prepstmt.setLong(1, controllerId);
-                prepstmt.setLong(2, dc.getId());
-                prepstmt.setLong(3, dc.getValue());
-                prepstmt.executeUpdate();
-                prepstmt.addBatch();
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Data data = Lists.newArrayList(onlineData).get(i);
+                ps.setLong(1, id);
+                ps.setLong(2, data.getId());
+                ps.setLong(3, data.getValue());
             }
-            prepstmt.executeBatch();
-            con.commit();
-            con.setAutoCommit(true);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    dao.printSQLException(ex);
-                    throw new SQLException("Transaction is being rolled back");
-                }
+
+            @Override
+            public int getBatchSize() {
+                return onlineData.size();
             }
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void updateControllerGraph(Long controllerId, String values, Timestamp updateTime) throws SQLException {
+    public void updateControllerGraph(Long id, String values, Timestamp updateTime) throws SQLException {
+        logger.debug("Set graphs data of controller with id [{}]", id);
         String sqlQuery = "insert into graph24hours (ControllerID,Dataset,UpdateTime) "
-                + "VALUES (?,?,?) on duplicate key update Dataset=VALUES(Dataset) , UpdateTime=VALUES(UpdateTime)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            prepstmt.setString(2, values);
-            prepstmt.setTimestamp(3, updateTime);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("SQLException: " + e.getMessage());
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-
-        }
+                + "values (?,?,?) on duplicate key update Dataset=values(Dataset) , UpdateTime=VALUES(UpdateTime)";
+        jdbcTemplate.update(sqlQuery, new Object[]{id, values, updateTime});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void updateControllerHistogram(Long controllerId, String plate, String values, Timestamp updateTime)
+    public void updateControllerHistogram(Long id, String plate, String values, Timestamp updateTime)
             throws SQLException {
+        logger.debug("Set histogram data of controller with id [{}]", id);
         String sqlQuery = "insert into histogram24hour (ControllerID, Plate, Histogram, UpdateTime) "
-                + "VALUES (?,?,?,?) on duplicate key update Histogram=VALUES(Histogram) , UpdateTime=VALUES(UpdateTime)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            prepstmt.setString(2, plate);
-            prepstmt.setString(3, values);
-            prepstmt.setTimestamp(4, updateTime);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("SQLException: " + e.getMessage());
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+                + "values(?,?,?,?) on duplicate key update Histogram=values(Histogram) , UpdateTime=values(UpdateTime)";
+        jdbcTemplate.update(sqlQuery, new Object[]{id, plate, values, updateTime});
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeControllerData(Long id) throws SQLException {
+        logger.debug("Delete controller data of controller with id [{}]", id);
+        String sqlQuery = "delete from controllerdata where ControllerID=?";
+        jdbcTemplate.update(sqlQuery, new Object[]{id});
     }
 
     @Override
-    public final Timestamp getUpdatedGraphTime(Long controllerId) throws SQLException {
-        String sqlQuery = "select UpdateTime as time from graph24hours where ControllerID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            ResultSet rs = prepstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getTimestamp("time");
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("SQLException: " + e.getMessage());
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+    public void removeChangedValue(Long id, Long dataId) throws SQLException {
+        logger.debug("Delete controller data that was sent to change to controller with id [{}]", id);
+        String sqlQuery = "delete from newcontrollerdata where ControllerID=? and DataID=?";
+        jdbcTemplate.update(sqlQuery, new Object[]{id, dataId});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Timestamp getHistogramUpdateTime(Long controllerId) throws SQLException {
-        String sqlQuery = "select UpdateTime as time from history24hours where ControllerID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            ResultSet rs = prepstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getTimestamp("time");
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Updated Time of Histogram Data");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-
-        }
-    }
-
-    @Override
-    public Controller getById(Long controllerId) throws SQLException {
-        String sqlQuery = "select * from controllers where ControllerID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return ControllerUtil.makeController(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Controller From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    @Override
-    public void sendNewDataValueToController(Long controllerId, Long dataId, Long value)
-            throws SQLException {
+    public void sendNewDataValueToController(Long id, Long dataId, Long value) throws SQLException {
+        logger.debug("Add new value to change on controller with id [{}]", id);
         String sqlQuery = "insert into newcontrollerdata (ControllerID,DataID,Value) "
-                + "VALUES (?,?,?) on duplicate key update Value=values(Value)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            prepstmt.setLong(2, dataId);
-            prepstmt.setLong(3, value);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Can not add new value into newcontrollerdata", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+                + "values(?,?,?) on duplicate key update Value=values(Value)";
+        jdbcTemplate.update(sqlQuery, new Object[]{id, dataId, value});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void saveNewDataValueOnController(Long controllerId, Long dataId, Long value)
+    public void saveNewDataValueOnController(Long id, Long dataId, Long value)
             throws SQLException {
-        String sqlQuery = "insert into controllerdata (ControllerID,DataID,Value) "
-                + "VALUES (?,?,?) on duplicate key update Value=values(Value)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            prepstmt.setLong(2, dataId);
-            prepstmt.setLong(3, value);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Can not add new value into controllerdata table", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Add new value to change on controller with id [{}]", id);
+        String sqlQuery = "insert into newcontrollerdata (ControllerID,DataID,Value) "
+                + "values(?,?,?) on duplicate key update Value=values(Value)";
+        jdbcTemplate.update(sqlQuery, new Object[]{id, dataId, value});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getControllerGraph(Long controllerId) throws SQLException {
-        String sqlQuery = "select Dataset from graph24hours where ControllerID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            ResultSet rs = prepstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getString("Dataset");
-            } else {
-                return null;
+    public final Timestamp getUpdatedGraphTime(Long id) throws SQLException {
+        logger.debug("Get updated time of graphs on controller with id [{}]", id);
+        String sqlQuery = "select UpdateTime as time from graph24hours where ControllerID=? ";
+        List<Timestamp> result = jdbcTemplate.query(sqlQuery, new Object[]{id}, new RowMapper<Timestamp>() {
+            @Override
+            public Timestamp mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getTimestamp(rowNum);
             }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Controller Graph Data From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        });
+        return result.get(0);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param id
+     */
+    @Override
+    public Timestamp getUpdatedHistoryTime(Long id) throws SQLException {
+        logger.debug("Get updated time of histogram on controller with id [{}]", id);
+        String sqlQuery = "select UpdateTime as time from history24hours where ControllerID=?";
+        List<Timestamp> result = jdbcTemplate.query(sqlQuery, new Object[]{id}, new RowMapper<Timestamp>() {
+            @Override
+            public Timestamp mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getTimestamp(rowNum);
+            }
+        });
+        return result.get(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Controller getById(Long id) throws SQLException {
+        logger.debug("Get controller with id [{}]", id);
+        String sqlQuery = "select * from controllers where controllerid=?";
+        List<Controller> controllers = jdbcTemplate.query(sqlQuery, new Object[]{id}, RowMappers.controller());
+        if (controllers.isEmpty()) {
+            return null;
+        }
+        return controllers.get(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getControllerGraph(Long id) throws SQLException {
+        logger.debug("Get string with graphs values of controller with id [{}]", id);
+        String sqlQuery = "select Dataset from graph24hours where ControllerID=?";
+        List<String> result = jdbcTemplate.query(sqlQuery, new Object[]{id}, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString(rowNum);
+            }
+        });
+        return result.get(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isDataReady(Long userId) throws SQLException {
-
+        logger.debug("Check if any data of given user already loaded ");
         String sqlQuery = "select dataid from controllerdata where controllerid in "
                 + "(select controllerid from controllers where cellinkid in "
                 + "(select cellinkid from cellinks where userid=? ))";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
 
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, userId);
-            ResultSet rs = prepstmt.executeQuery();
-
-            return rs.next();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Data From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        List<Integer> result = jdbcTemplate.query(sqlQuery, new Object[]{userId}, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt(rowNum);
+            }
+        });
+        return result.isEmpty() ? false : true;
     }
 
-    @Override
-    public boolean isControllerDataReady(Long controllerId) throws SQLException {
-
-        String sqlQuery = "select dataid from controllerdata where controllerid=? and dataid=0";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-            ResultSet rs = prepstmt.executeQuery();
-            return rs.next();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Data From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<String> getControllerNames() throws SQLException {
+        logger.debug("Get list of controller names");
         String sqlQuery = "select distinct controllername from controllers";
-        Statement stmt = null;
-        Connection con = null;
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-            List<String> companies = new ArrayList<String>();
-            while (rs.next()) {
-                companies.add(rs.getString("ControllerName"));
-            }
-            return companies;
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Controller Names From DataBase", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        List<String> result = jdbcTemplate.queryForList(sqlQuery, String.class);
+        return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Controller> getAll() throws SQLException {
+        logger.debug("Get all controllers ");
         String sqlQuery = "select * from controllers";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-            return ControllerUtil.makeControllerList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Controllers From DataBase", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        return jdbcTemplate.query(sqlQuery, RowMappers.controller());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Controller> getAllByCellink(Long cellinkId) throws SQLException {
-        String sqlQuery = "select * from controllers where CellinkID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, cellinkId);
-            ResultSet rs = prepstmt.executeQuery();
-            return ControllerUtil.makeControllerList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Controllers By Cellink From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Get all controllers that belongs to cellink with id [{}]", cellinkId);
+        String sqlQuery = "select * from controllers where cellinkid=?";
+        return jdbcTemplate.query(sqlQuery, new Object[]{cellinkId}, RowMappers.controller());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Controller> getActiveCellinkControllers(Long cellinkId) throws SQLException {
-        String sqlQuery = "select * from controllers where CellinkID=? and Active=1";
-//        and controllerid=57 ";//or controllerid = 372
-//        String sqlQuery = "select * from controllers ";
-//        String sqlQuery = "SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY key ASC) AS rownumber,  columns FROM controllers  ) AS foo "
-//                + " WHERE rownumber <= 1";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, cellinkId);
-            ResultSet rs = prepstmt.executeQuery();
-            return ControllerUtil.makeControllerList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Active Controllers From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Get all controllers that belongs to active cellink with id [{}]", cellinkId);
+        String sqlQuery = "select * from controllers where cellinkid=? and active=1";
+        return jdbcTemplate.query(sqlQuery, new Object[]{cellinkId}, RowMappers.controller());
     }
 }

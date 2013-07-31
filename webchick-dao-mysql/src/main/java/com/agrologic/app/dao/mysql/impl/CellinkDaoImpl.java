@@ -2,243 +2,153 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoFactory;
+import com.agrologic.app.dao.mappers.RowMappers;
+import com.agrologic.app.dao.mappers.Util;
 import com.agrologic.app.model.Cellink;
-import com.agrologic.app.dao.mappers.CellinkUtil;
+import com.agrologic.app.model.CellinkCriteria;
+import com.agrologic.app.model.UserRole;
+import org.apache.commons.lang.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.*;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CellinkDaoImpl implements CellinkDao {
 
-    protected DaoFactory dao;
+    protected final DaoFactory dao;
+    private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    public CellinkDaoImpl(DaoFactory dao) {
+    public CellinkDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("cellinks");
         this.dao = dao;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insert(Cellink cellink) throws SQLException {
-        String sqlQuery = "insert into cellinks (Name, Password, UserID, SIM, Type, Version, State, ScreenID, Actual) "
-                + "values (?,?,?,?,?,?,?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, cellink.getName());
-            prepstmt.setString(2, cellink.getPassword());
-            prepstmt.setLong(3, cellink.getUserId());
-            prepstmt.setString(4, cellink.getSimNumber());
-            prepstmt.setString(5, cellink.getType());
-            prepstmt.setString(6, cellink.getVersion());
-            prepstmt.setInt(7, cellink.getState());
-            prepstmt.setLong(8, cellink.getScreenId());
-            prepstmt.setBoolean(9, cellink.isActual());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Insert new Cellink to the DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Creating cellink with name [{}]", cellink.getName());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("name", cellink.getName());
+        valuesToInsert.put("password", cellink.getPassword());
+        valuesToInsert.put("userid", cellink.getUserId());
+        valuesToInsert.put("sim", cellink.getSimNumber());
+        valuesToInsert.put("type", cellink.getType());
+        valuesToInsert.put("version", cellink.getVersion());
+        valuesToInsert.put("state", cellink.getState());
+        valuesToInsert.put("screenid", cellink.getScreenId());
+        valuesToInsert.put("actual", cellink.isActual());
+        jdbcInsert.execute(valuesToInsert);
     }
 
-    public void insert(Collection<Cellink> cellinks) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(Cellink cellink) throws SQLException {
-        String sqlQuery = "update cellinks set Name=?, Password=?, UserID=?, Time=?,"
-                + "Port=?, Ip=? ,State=?, Version=? , Actual=? " + " where CellinkID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, cellink.getName());
-            prepstmt.setString(2, cellink.getPassword());
-            prepstmt.setLong(3, cellink.getUserId());
-            prepstmt.setTimestamp(4, cellink.getTime());
-            prepstmt.setInt(5, cellink.getPort());
-            prepstmt.setString(6, cellink.getIp());
-            prepstmt.setInt(7, cellink.getState());
-            prepstmt.setString(8, cellink.getVersion());
-            prepstmt.setBoolean(9, cellink.isActual());
-            prepstmt.setLong(10, cellink.getId());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Update Cellink In DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Update cellink with id [{}]", cellink.getId());
+        jdbcTemplate.update("update cellinks set Name=?, Password=?, UserID=?, Time=?,Port=?, SIM=?, Ip=? ,State=?, Version=?,"
+                + " Actual=?  where CellinkID=?",
+                new Object[]{cellink.getName(), cellink.getPassword(), cellink.getUserId(), cellink.getTime(),
+                        cellink.getPort(), cellink.getSimNumber(), cellink.getIp(), cellink.getState(), cellink.getVersion(), cellink.isActual(),
+                        cellink.getId()});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void remove(Long id) throws SQLException {
-        String sqlQuery = "delete from cellink where CellinkID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Delete User From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        Validate.notNull(id, "Id can not be null");
+        logger.debug("Delete cellink with id [{}]", id);
+        jdbcTemplate.update("delete from cellinks where CellinkID=?", new Object[]{id});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Cellink getById(Long id) throws SQLException {
-        String sqlQuery = "select * from cellinks where CellinkID=" + id;
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            if (rs.next()) {
-                return CellinkUtil.makeCellink(rs);
-            } else {
-                return new Cellink();
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve All Farms From DataBase");
-        } finally {
-            try {
-                stmt.close();
-                dao.closeConnection(con);
-            } catch (SQLException ex) {
-                throw new SQLException("close statment error.");
-            }
+    public void insert(Collection<Cellink> cellinks) throws SQLException {
+        // there is duplicate cellink elements in cellinkList we need only unique elements
+        Collection<Cellink> cellinkCollection = Util.getUniqueElements(cellinks);
+        for (Cellink cellink : cellinkCollection) {
+            insert(cellink);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Cellink validate(String name, String password) throws SQLException {
+        logger.debug("Get cellink with name [{}]", name);
         String sqlQuery = "select * from cellinks where Name = ? and Password = ?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, name);
-            prepstmt.setString(2, password);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return CellinkUtil.makeCellink(rs);
-            } else {
-                Cellink cellink = new Cellink();
-
-                cellink.setName(name);
-                cellink.setPassword(password);
-
-                return cellink;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot validate users From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        List<Cellink> cellinks = jdbcTemplate.query(sqlQuery, new Object[]{name, password}, RowMappers.cellink());
+        if (cellinks.isEmpty()) {
+            Cellink cellink = new Cellink();
+            cellink.setName(name);
+            cellink.setPassword(password);
+            return cellink;
         }
+        return cellinks.get(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Cellink getById(Long id) throws SQLException {
+        logger.debug("Get cellink with id [{}]", id);
+        String sqlQuery = "select * from cellinks where CellinkID=?";
+        List<Cellink> cellinks = jdbcTemplate.query(sqlQuery, new Object[]{id}, RowMappers.cellink());
+        if (cellinks.isEmpty()) {
+            return null;
+        }
+        return cellinks.get(0);
     }
 
     @Override
     public Cellink getActualCellink() throws SQLException {
+        logger.debug("Get cellink that was set as actual");
         String sqlQuery = "select * from cellinks where actual=1";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            if (rs.next()) {
-                return CellinkUtil.makeCellink(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Actual Cellink From DataBase.");
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
+        List<Cellink> cellinks = jdbcTemplate.query(sqlQuery, RowMappers.cellink());
+        if (cellinks.isEmpty()) {
+            return null;
         }
+        return cellinks.get(0);
     }
 
     @Override
     public Collection<Cellink> getAll() throws SQLException {
-        String sqlQuery = "select * from cellinks";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            return CellinkUtil.makeCellinkList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve All Cellink From DataBase");
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Get all cellinks");
+        String sqlQuery = "select * from cellinks ";
+        return jdbcTemplate.query(sqlQuery, RowMappers.cellink());
     }
 
     @Override
     public Collection<Cellink> getAllUserCellinks(Long userID) throws SQLException {
-        String sqlQuery = "select * from cellinks where UserID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
+        logger.debug("Get cellink belongs to user with id  [{}]", userID);
+        String sqlQuery = "select * from cellinks where userid=?";
+        return jdbcTemplate.query(sqlQuery, new Object[]{userID}, RowMappers.cellink());
+    }
 
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, userID);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            return CellinkUtil.makeCellinkList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve All Farms From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+    @Override
+    public void changeState(Long cellinkId, Integer oldState, Integer newState) throws SQLException {
+        logger.debug("Update cellink state with cellink id [{}]", cellinkId);
+        jdbcTemplate.update("update cellinks set state=? where cellinkid=? and state=? ",
+                new Object[]{newState, cellinkId, oldState});
     }
 
     @Override
@@ -253,28 +163,59 @@ public class CellinkDaoImpl implements CellinkDao {
 
     @Override
     public int count() throws SQLException {
-        String sqlQuery = "select count(*) as count from cellinks";
-        Statement stmt = null;
-        Connection con = null;
+        return count(null);
+    }
 
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
+    @Override
+    public int count(CellinkCriteria criteria) throws SQLException {
+        logger.debug("Count all cellinks ");
+        String sqlQuery = "select count(*) from cellinks";
+        return jdbcTemplate.queryForObject(sqlQuery, Integer.class);
+    }
 
-            ResultSet rs = stmt.executeQuery(sqlQuery);
+    @Override
+    public Collection<Cellink> getAll(CellinkCriteria criteria) throws SQLException {
+        logger.debug("Get all cellinks by criteria ");
+        String sqlQuery;
+        Object[] objects;
 
-            if (rs.next()) {
-                return rs.getInt("count");
-            } else {
-                return 0;
+        if (criteria.getRole() != null) {
+            UserRole userRole = UserRole.get(criteria.getRole());
+            switch (userRole) {
+                default:
+                case USER:
+                    sqlQuery = "select * from cellinks where userid=? ";
+                    objects = new Object[]{criteria.getUserId()};
+                    break;
+                case ADMIN:
+                    sqlQuery = "select * from cellinks where  "
+                            + "(state = ? or ? is null) and "
+                            + "type like ? and "
+                            + "name like ?  "
+                            + "limit ?  , 25 ";
+
+                    objects = new Object[]{
+                            criteria.getState(), criteria.getState(),
+                            criteria.getType() == null ? "%%" : "%" + criteria.getType() + "%",
+                            criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%",
+                            criteria.getIndex() == null ? 0 : criteria.getIndex()};
+                    break;
+                case DISTRIBUTOR:
+                    sqlQuery = "select * from cellinks where userid in (select userid from users where company=?) ";
+                    objects = new Object[]{criteria.getCompany()};
+                    break;
             }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Count Programs From DataBase");
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
+        } else {
+            sqlQuery = "select * from cellinks where  "
+                    + "(state = ? or ? is null) and "
+                    + "type like ? and "
+                    + "name like ? limit ?  , 25 ";
+            objects = new Object[]{
+                    criteria.getState(), criteria.getState(),
+                    criteria.getType() == null ? "%%" : "%" + criteria.getType() + "%",
+                    criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%",
+                    criteria.getIndex() == null ? 0 : criteria.getIndex()};
         }
+        return jdbcTemplate.query(sqlQuery, objects, RowMappers.cellink());
     }
 }

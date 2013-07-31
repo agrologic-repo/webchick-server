@@ -2,21 +2,23 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.mappers.ProgramUtil;
+import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.Program;
+import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProgramDaoImpl implements ProgramDao {
     protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(ProgramDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
@@ -40,258 +42,84 @@ public class ProgramDaoImpl implements ProgramDao {
 
     @Override
     public void update(Program program) throws SQLException {
-        String sqlQuery = "update programs set Name=?, Modified=? where ProgramID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, program.getName());
-            prepstmt.setString(2, program.getModifiedDate());
-            prepstmt.setLong(3, program.getId());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Update Program In DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Update program with id [{}]", program.getId());
+        jdbcTemplate.update("update programs set Name=?, Modified=? where ProgramID=?",
+                new Object[]{program.getName(), program.getModifiedDate(), program.getId()});
     }
 
     @Override
     public void remove(Long id) throws SQLException {
-        String sqlQuery = "delete from programs where ProgramID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Delete Program " + id + "From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        Validate.notNull(id, "Id can not be null");
+        logger.debug("Delete program with id [{}]", id);
+        jdbcTemplate.update("delete from programs where ProgramID=?", new Object[]{id});
     }
 
     @Override
-    public int count() throws SQLException {
+    public Integer count() throws SQLException {
+        logger.debug("Count all programs ");
         String sqlQuery = "select count(*) as count from programs";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            if (rs.next()) {
-                return rs.getInt("count");
-            } else {
-                return 0;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Count Programs From DataBase");
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        return jdbcTemplate.queryForObject(sqlQuery, Integer.class);
     }
 
     @Override
-    public boolean isProgramWithGivenIdExist(Long id) throws SQLException {
-        String sqlQuery = "select * from programs where ProgramID = ?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Validate Program ID In DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    @Override
-    public boolean programExist(Long id) throws SQLException {
+    public Boolean isProgramWithGivenIdExist(Long id) throws SQLException {
         Program p = getById(id);
-
         return p != null;
     }
 
     @Override
     public Program getById(Long id) throws SQLException {
+        logger.debug("Get alarm with id [{}]", id);
         String sqlQuery = "select * from programs where ProgramID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return ProgramUtil.makeProgram(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Program " + id + " From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        List<Program> programs = jdbcTemplate.query(sqlQuery, new Object[]{id}, RowMappers.program());
+        if (programs.isEmpty()) {
+            return null;
         }
+        return programs.get(0);
     }
 
     @Override
     public Collection<Program> getAll() throws SQLException {
+        logger.debug("Get all programs  ");
         String sqlQuery = "select * from programs";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            return ProgramUtil.makeProgramList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Programs From DataBase");
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        return jdbcTemplate.query(sqlQuery, RowMappers.program());
     }
 
     @Override
     public Collection<Program> getAll(String searchText) throws SQLException {
-        String sqlQuery = "select * from programs where name like '%" + searchText + "%'";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            return ProgramUtil.makeProgramList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Programs From DataBase");
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Get all programs with given search text " + searchText);
+        String sqlQuery = "select * from programs where name like ? ";
+        Object[] objects = new Object[]{"%" + searchText + "%"};
+        return jdbcTemplate.query(sqlQuery, objects, RowMappers.program());
     }
 
     @Override
     public Collection<Program> getAllByUserId(String searchText, Long userId) throws SQLException {
+        logger.debug("Get all programs belongs to specified user with given search text " + searchText);
         String sqlQuery = "select * from programs where programid in "
                 + "(select programid from controllers where cellinkid in "
-                + "(select cellinkid from cellinks where userid=?)) and name like '%" + searchText + "%'";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, userId);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            return ProgramUtil.makeProgramList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Programs From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+                + "(select cellinkid from cellinks where userid=?)) and name like ?";
+        Object[] objects = new Object[]{userId, "%" + searchText + "%"};
+        return jdbcTemplate.query(sqlQuery, objects, RowMappers.program());
     }
 
     @Override
     public Collection<Program> getAllByUserCompany(String searchText, String company) throws SQLException {
+        logger.debug("Get all programs belongs to specified company with given search text " + searchText);
         String sqlQuery = "select * from programs where programid in "
                 + "(select distinct programid from controllers where cellinkid in "
                 + "(select cellinkid from cellinks where userid in "
-                + "(select userid from users where company=?) and programid<>1)) and name like '%"
-                + searchText + "%'";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, company);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            return ProgramUtil.makeProgramList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Programs From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+                + "(select userid from users where company=?) and programid<>1)) and name like ?";
+        Object[] objects = new Object[]{company, "%" + searchText + "%"};
+        return jdbcTemplate.query(sqlQuery, objects, RowMappers.program());
     }
 
     @Override
     public Collection<Program> getAll(String searchText, String index) throws SQLException {
-        String sqlQuery = "select * from programs where name like '%" + searchText + "%' limit ?,25 ";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setInt(1, Integer.parseInt(index));
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            return ProgramUtil.makeProgramList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Programs From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Get all programs belongs to specified company with given search text " + searchText);
+        String sqlQuery = "select * from programs where name like ? limit ? ,25 ";
+        Object[] objects = new Object[]{(searchText == null ? "%%" : "%" + searchText + "%"),
+                index == null ? 0 : Integer.valueOf(index)};
+        return jdbcTemplate.query(sqlQuery, objects, RowMappers.program());
     }
 }

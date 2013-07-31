@@ -36,7 +36,7 @@ public class UserDaoImpl implements UserDao {
      * {@inheritDoc}
      */
     @Override
-    public void insert(User user) {
+    public void insert(User user) throws SQLException {
         logger.debug("Creating user with id [{}]", user.getLogin());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("name", user.getLogin());
@@ -60,7 +60,7 @@ public class UserDaoImpl implements UserDao {
         jdbcTemplate.update("update users set Name=?,Password=?,FirstName=?,LastName=?,Role=?,Phone=?,Email=?, " +
                 "Company=? where UserID=?",
                 new Object[]{user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(),
-                        user.getRole(), user.getPhone(), user.getEmail(), user.getCompany(), user.getId()});
+                        user.getRole().getValue(), user.getPhone(), user.getEmail(), user.getCompany(), user.getId()});
     }
 
     /**
@@ -72,33 +72,6 @@ public class UserDaoImpl implements UserDao {
         logger.debug("delete from users where UserID=?", id);
         jdbcTemplate.update("delete from users where userID=?", new Object[]{id});
     }
-
-//    @Override
-//    public Integer getTotalNumUsers() throws SQLException {
-//        String sqlQuery = "select count(*) as num from users";
-//        Statement stmt = null;
-//        Connection con = null;
-//
-//        try {
-//            con = dao.getConnection();
-//            stmt = con.createStatement();
-//
-//            ResultSet rs = stmt.executeQuery(sqlQuery);
-//
-//            if (rs.next()) {
-//                return rs.getInt("num");
-//            } else {
-//                return 0;
-//            }
-//        } catch (SQLException e) {
-//            dao.getConnection();
-//
-//            throw new SQLException("Cannot Retrieve Users From DataBase", e);
-//        } finally {
-//            stmt.close();
-//            dao.closeConnection(con);
-//        }
-//    }
 
     /**
      * {@inheritDoc}
@@ -178,11 +151,11 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public Collection<User> getAll(Integer role, String company, String search) throws SQLException {
-        String sqlQuery = "select * from users where (role=? or ? is null) and (company = ? or ? is null)" +
-                "and name like ? ";
         logger.debug("Get all users by role ");
-        return jdbcTemplate.query(sqlQuery, new Object[]{role, role, company, company, (search == null ?
-                "%%" : "%" + search + "%")},
+        String sqlQuery = "select * from users where " +
+                "(role=? or ? is null) and (company = ? or ? is null) and name like ? ";
+        return jdbcTemplate.query(sqlQuery,
+                new Object[]{role, role, company, company, (search == null ? "%%" : "%" + search + "%")},
                 RowMappers.user());
     }
 }
