@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
 public class AddProgramFormServlet extends HttpServlet {
 
@@ -73,7 +72,7 @@ public class AddProgramFormServlet extends HttpServlet {
                     request.getSession().setAttribute("error", false);
                     request.getSession().setAttribute("message", "Program successfully added !");
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
-                } catch (SQLException ex) {
+                } catch (Exception ex) {
 
                     // error page
                     logger.error("Error occurs while adding program !");

@@ -1,31 +1,32 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ page import="com.agrologic.app.model.CellinkDto" %>
-<%@ page import="com.agrologic.app.model.ControllerDto" %>
+<%@ page import="com.agrologic.app.model.Cellink" %>
+<%@ page import="com.agrologic.app.model.Controller" %>
 
 <jsp:directive.page import="com.agrologic.app.model.Program"/>
 <jsp:directive.page import="com.agrologic.app.web.CellinkState"/>
 <jsp:directive.page import="java.util.ArrayList"/>
 <jsp:directive.page import="java.util.Collection"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
 
-    UserDto editUser = (UserDto) request.getSession().getAttribute("edituser");
+    User editUser = (User) request.getSession().getAttribute("edituser");
     Long userId = Long.parseLong(request.getParameter("userId"));
-    Collection<CellinkDto> cellinks = editUser.getCellinks();
+    Collection<Cellink> cellinks = editUser.getCellinks();
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    CellinkDto cellink = findCellinkToEdit(cellinks, cellinkId);
-    Collection<ControllerDto> controllers = cellink.getControllers();
+    Cellink cellink = findCellinkToEdit(cellinks, cellinkId);
+    Collection<Controller> controllers = cellink.getControllers();
 %>
 
 
-<%! UserDto findUserToEdit(Collection<UserDto> users, Long userId) {
-    for (UserDto u : users) {
+<%! User findUserToEdit(Collection<User> users, Long userId) {
+    for (User u : users) {
         if (u.getId().equals(userId)) {
             return u;
         }
@@ -34,8 +35,8 @@
 }
 %>
 
-<%! CellinkDto findCellinkToEdit(Collection<CellinkDto> cellinks, Long cellinkId) {
-    for (CellinkDto c : cellinks) {
+<%! Cellink findCellinkToEdit(Collection<Cellink> cellinks, Long cellinkId) {
+    for (Cellink c : cellinks) {
         if (c.getId().equals(cellinkId)) {
             return c;
         }
@@ -43,8 +44,8 @@
     return null;
 }
 %>
-<%! public UserDto getChoosedUser(Collection<UserDto> users, Long userId) {
-    for (UserDto u : users) {
+<%! public User getChoosedUser(Collection<User> users, Long userId) {
+    for (User u : users) {
         if (u.getId().equals(userId)) {
             return u;
         }
@@ -53,8 +54,8 @@
 }
 %>
 
-<%! public CellinkDto getChoosedCellink(Collection<CellinkDto> cellinks, Long cellinkId) {
-    for (CellinkDto c : cellinks) {
+<%! public Cellink getChoosedCellink(Collection<Cellink> cellinks, Long cellinkId) {
+    for (Cellink c : cellinks) {
         if (c.getId().equals(cellinkId)) {
             return c;
         }
@@ -63,12 +64,12 @@
 }
 %>
 
-<%! public Collection<ControllerDto> filterCellinkControllers(Collection<ControllerDto> controllers, Long cellinkId) {
+<%! public Collection<Controller> filterCellinkControllers(Collection<Controller> controllers, Long cellinkId) {
     if (cellinkId == null || cellinkId == 0) {
         return controllers;
     }
-    Collection<ControllerDto> filteredControllers = new ArrayList<ControllerDto>();
-    for (ControllerDto c : controllers) {
+    Collection<Controller> filteredControllers = new ArrayList<Controller>();
+    for (Controller c : controllers) {
         if (c.getCellinkId().equals(cellinkId)) {
             filteredControllers.add(c);
         }
@@ -248,7 +249,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <%for (ControllerDto controller : controllers) {%>
+                                        <%for (Controller controller : controllers) {%>
                                         <tr onmouseover="this.style.background='#CEDEF4'"
                                             onmouseout="this.style.background='white'" title="Click for details">
                                             <td align="center"><a

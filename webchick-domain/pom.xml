@@ -7,7 +7,7 @@
     <parent>
         <artifactId>webchick-server</artifactId>
         <groupId>com.agrologic</groupId>
-        <version>6.5.12-SNAPSHOT</version>
+        <version>6.5.14-SNAPSHOT</version>
     </parent>
 
     <artifactId>webchick-domain</artifactId>

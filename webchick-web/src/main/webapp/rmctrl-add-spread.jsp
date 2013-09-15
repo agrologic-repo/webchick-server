@@ -9,14 +9,14 @@
 
 <jsp:directive.page import="com.agrologic.app.dao.SpreadDao"/>
 <jsp:directive.page import="com.agrologic.app.dao.impl.SpreadDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.SpreadDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Spread"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    SpreadDao spreadDao = new SpreadDaoImpl();
-    Collection<SpreadDto> spreadList = spreadDao.getAllByFlockId(flockId);
+    SpreadDao spreadDao = DbImplDecider.use(DaoType.MYSQL).getDao(SpreadDaoImpl.class);
+    Collection<Spread> spreadList = spreadDao.getAllByFlockId(flockId);
 
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -153,7 +153,7 @@
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
-            <%for (SpreadDto spread : spreadList) {%>
+            <%for (Spread spread : spreadList) {%>
             <tr>
                 <td><%=spread.getAmount() %>
                 </td>

@@ -209,9 +209,6 @@ public class SerialPortControl implements SerialPortEventListener {
         for (byte b : buffer) {
             sendBuffer[i++] = b;
         }
-
-        System.out.println(new String(sendBuffer, 0, sendBuffer.length));
-
         return sendBuffer;
     }
 

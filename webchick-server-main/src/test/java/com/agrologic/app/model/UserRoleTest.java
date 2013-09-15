@@ -15,14 +15,14 @@ public class UserRoleTest {
     public void getUserRoleValue() {
         int role = 1;
         UserRole theRole = UserRole.get(role);
-        assertEquals(UserRole.USER.getValue(), theRole.getValue());
+        assertEquals(UserRole.ADMIN.getValue(), theRole.getValue());
     }
 
     @Test
     public void getUserRoleText() {
         int role = 2;
         UserRole theRole = UserRole.get(role);
-        assertEquals("DISTRIBUTOR", theRole.getText());
+        assertEquals("USER", theRole.getText());
     }
 
     @Test

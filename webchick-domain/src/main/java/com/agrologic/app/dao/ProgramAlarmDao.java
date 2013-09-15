@@ -58,6 +58,14 @@ public interface ProgramAlarmDao {
     public void insert(Collection<ProgramAlarm> programAlarms) throws SQLException;
 
     /**
+     * Remove all program alarms with specified program id
+     *
+     * @param programId the program id
+     * @throws SQLException if failed to remove program alarms
+     */
+    public void removeAllProgramAlarms(Long programId) throws SQLException;
+
+    /**
      * Retrieves program alarms by program id.
      *
      * @param programId the program id

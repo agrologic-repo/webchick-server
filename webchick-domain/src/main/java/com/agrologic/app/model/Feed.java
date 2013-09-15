@@ -2,12 +2,12 @@ package com.agrologic.app.model;
 
 public class Feed {
     private Integer amount;
-    private String  date;
-    private Long    type;
-    private Long    flockId;
-    private Long    id;
+    private String date;
+    private Long type;
+    private Long flockId;
+    private Long id;
     private Integer numberAccount;
-    private Float   total;
+    private Float total;
 
     public Feed() {
     }
@@ -80,16 +80,16 @@ public class Feed {
 
         final Feed other = (Feed) obj;
 
-        if ((this.id != other.id) && ((this.id == null) ||!this.id.equals(other.id))) {
+        if ((this.id != other.id) && ((this.id == null) || !this.id.equals(other.id))) {
             return false;
         }
 
-        if ((this.flockId != other.flockId) && ((this.flockId == null) ||!this.flockId.equals(other.flockId))) {
+        if ((this.flockId != other.flockId) && ((this.flockId == null) || !this.flockId.equals(other.flockId))) {
             return false;
         }
 
         if ((this.type != other.type)
-                && ((this.type == null) ||!this.type.equals(other.type))) {
+                && ((this.type == null) || !this.type.equals(other.type))) {
             return false;
         }
 
@@ -105,8 +105,8 @@ public class Feed {
 
     @Override
     public String toString() {
-        return "FeedDto{" + "id=" + id + "flockId=" + flockId + "feedTypeId=" + type + "amount=" + amount
-               + "date=" + date + "numberAccount=" + numberAccount + "total=" + total + '}';
+        return "Feed{" + "id=" + id + "flockId=" + flockId + "feedTypeId=" + type + "amount=" + amount
+                + "date=" + date + "numberAccount=" + numberAccount + "total=" + total + '}';
     }
 }
 

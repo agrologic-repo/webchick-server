@@ -7,11 +7,11 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author JanL
@@ -56,8 +56,8 @@ public class SaveBeginEndForm extends HttpServlet {
             String femaleCost = request.getParameter("femaleCost");
 
             try {
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
                 flock.setQuantityMale(Integer.parseInt(maleQuant));
                 flock.setQuantityFemale(Integer.parseInt(femaleQuant));
                 flock.setCostChickMale(Float.parseFloat(maleCost));
@@ -65,12 +65,11 @@ public class SaveBeginEndForm extends HttpServlet {
                 flock.setTotalChicks(flock.calcTotalChicksCost());
                 flockDao.update(flock);
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
 

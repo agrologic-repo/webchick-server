@@ -1,20 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.DistribDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.DistribDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.DistribDto;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.DistribDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Distrib;
+import com.agrologic.app.model.Flock;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,11 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
-/**
- * @author JanL
- */
 public class AddDistrebutFormServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -77,19 +64,20 @@ public class AddDistrebutFormServlet extends HttpServlet {
             String another = request.getParameter("anotherKg");
 
             try {
-                DistribDao gasDao = new DistribDaoImpl();
-                DistribDto disrib = new DistribDto();
+                DistribDao distribDao = DbImplDecider.use(DaoType.MYSQL).getDao(DistribDaoImpl.class);
+                Distrib disrib = new Distrib();
                 disrib.setTotal(Float.parseFloat(total));
-                gasDao.insert(disrib);
+                distribDao.insert(disrib);
 
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
                 flockDao.update(flock);
                 logger.info("Distrib added successfully to the database");
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
+
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
                 request.getSession().setAttribute("controllers", controllers);

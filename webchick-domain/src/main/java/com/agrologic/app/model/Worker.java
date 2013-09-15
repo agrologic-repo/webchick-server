@@ -1,14 +1,15 @@
 package com.agrologic.app.model;
 
 public class Worker {
-    private Long   cellinkId;
+    private Long cellinkId;
     private String define;
-    private Float  hourCost;
-    private Long   id;
+    private Float hourCost;
+    private Long id;
     private String name;
     private String phone;
 
-    public Worker() {}
+    public Worker() {
+    }
 
     public String getDefine() {
         return define;
@@ -70,13 +71,13 @@ public class Worker {
 
         final Worker other = (Worker) obj;
 
-        if ((this.id != other.id) && ((this.id == null) ||!this.id.equals(other.id))) {
+        if ((this.id != other.id) && ((this.id == null) || !this.id.equals(other.id))) {
             return false;
         }
 
         if ((this.name == null)
-            ? (other.name != null)
-            : !this.name.equals(other.name)) {
+                ? (other.name != null)
+                : !this.name.equals(other.name)) {
             return false;
         }
 
@@ -88,19 +89,17 @@ public class Worker {
         int hash = 7;
 
         hash = 11 * hash + ((this.id != null)
-                            ? this.id.hashCode()
-                            : 0);
+                ? this.id.hashCode()
+                : 0);
         hash = 11 * hash + ((this.name != null)
-                            ? this.name.hashCode()
-                            : 0);
+                ? this.name.hashCode()
+                : 0);
 
         return hash;
     }
 
     @Override
     public String toString() {
-        return "WorkerDto{" + "name=" + name + "define=" + define + "hourCost=" + hourCost + '}';
+        return "Worker{" + "name=" + name + "define=" + define + "hourCost=" + hourCost + '}';
     }
 }
-
-

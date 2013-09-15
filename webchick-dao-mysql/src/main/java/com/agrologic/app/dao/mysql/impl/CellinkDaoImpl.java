@@ -20,12 +20,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An implementation of {@link CellinkDao} that is based on JdbcTemplate and working
+ * with database.
+ *
+ * @author Valery Manakhimov
+ */
+
 public class CellinkDaoImpl implements CellinkDao {
 
     protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
+    protected final Logger logger = LoggerFactory.getLogger(CellinkDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
+    protected final SimpleJdbcInsert jdbcInsert;
 
     public CellinkDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
         this.jdbcTemplate = jdbcTemplate;
@@ -41,6 +48,9 @@ public class CellinkDaoImpl implements CellinkDao {
     public void insert(Cellink cellink) throws SQLException {
         logger.debug("Creating cellink with name [{}]", cellink.getName());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        if (cellink.getId() != null) {
+            valuesToInsert.put("cellinkid", cellink.getId());
+        }
         valuesToInsert.put("name", cellink.getName());
         valuesToInsert.put("password", cellink.getPassword());
         valuesToInsert.put("userid", cellink.getUserId());

@@ -6,9 +6,11 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.WorkerDao;
-import com.agrologic.app.dao.impl.WorkerDaoImpl;
-import com.agrologic.app.model.WorkerDto;
+import com.agrologic.app.dao.mysql.impl.WorkerDaoImpl;
+import com.agrologic.app.model.Worker;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -55,8 +57,8 @@ public class AddWorkerFormServlet extends HttpServlet {
             String phone = request.getParameter("phone");
 
             try {
-                WorkerDao workerDao = new WorkerDaoImpl();
-                WorkerDto worker = new WorkerDto();
+                WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDaoImpl.class);
+                Worker worker = new Worker();
 
                 worker.setName(name);
                 worker.setDefine(define);

@@ -10,7 +10,6 @@ import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
 import com.agrologic.app.graph.daily.Graph;
 import com.agrologic.app.graph.daily.Graph24FWI;
 import com.agrologic.app.graph.daily.GraphType;
@@ -57,12 +56,13 @@ public class Graph24WaterConsumpTempServlet extends HttpServlet {
         long controllerId = Long.parseLong(request.getParameter("controllerId"));
 
         try {
-            ControllerDao controllerDao = new ControllerDaoImpl();
+            ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
             String values = controllerDao.getControllerGraph(controllerId);
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             Data setClock = dataDao.getSetClockByController(controllerId);
 
             if (values == null) {
+                throw new Exception("No data available for this type of graphs");
             } else {
                 Graph graph = null;
 

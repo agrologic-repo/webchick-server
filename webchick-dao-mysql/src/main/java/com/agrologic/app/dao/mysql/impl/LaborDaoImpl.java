@@ -3,6 +3,10 @@ package com.agrologic.app.dao.mysql.impl;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.LaborDao;
 import com.agrologic.app.model.Labor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,33 +16,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LaborDaoImpl implements LaborDao {
+    protected final DaoFactory dao;
+    private final Logger logger = LoggerFactory.getLogger(LaborDaoImpl.class);
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    protected DaoFactory dao;
-
-    public LaborDaoImpl(DaoFactory daoFactory) {
-        dao = daoFactory;
+    public LaborDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("labor");
+        this.dao = dao;
     }
 
     private Labor makeLabor(ResultSet rs) throws SQLException {
         Labor labor = new Labor();
-
         labor.setId(rs.getLong("ID"));
         labor.setFlockId(rs.getLong("FlockID"));
         labor.setWorkerId(rs.getLong("WorkerID"));
         labor.setDate(rs.getString("Date"));
         labor.setHours(rs.getInt("Hours"));
         labor.setSalary(rs.getFloat("Salary"));
-
         return labor;
     }
 
     private List<Labor> makeLaborList(ResultSet rs) throws SQLException {
         List<Labor> laborList = new ArrayList<Labor>();
-
         while (rs.next()) {
             laborList.add(makeLabor(rs));
         }
-
         return laborList;
     }
 
@@ -47,7 +52,6 @@ public class LaborDaoImpl implements LaborDao {
         String sqlQuery = "insert into labor values (?,?,?,?,?,?)";
         PreparedStatement prepstmt = null;
         Connection con = null;
-
         try {
             con = dao.getConnection();
             prepstmt = con.prepareStatement(sqlQuery);

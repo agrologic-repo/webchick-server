@@ -6,14 +6,14 @@
 package com.agrologic.app.utils;
 
 
-
-import java.io.File;
-import java.io.IOException;
 import jxl.Cell;
 import jxl.CellType;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ReadExcelUtil {
     private String inputFile;
@@ -23,7 +23,7 @@ public class ReadExcelUtil {
     }
 
     public void read() throws IOException {
-        File     inputWorkbook = new File(inputFile);
+        File inputWorkbook = new File(inputFile);
         Workbook w;
 
         try {
@@ -36,7 +36,7 @@ public class ReadExcelUtil {
 
             for (int j = 0; j < sheet.getColumns(); j++) {
                 for (int i = 0; i < sheet.getRows(); i++) {
-                    Cell     cell = sheet.getCell(j, i);
+                    Cell cell = sheet.getCell(j, i);
                     CellType type = cell.getType();
 
                     if (cell.getType() == CellType.LABEL) {

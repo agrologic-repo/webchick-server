@@ -16,7 +16,6 @@ public class Flock implements Serializable {
     private String startTime;
     private String endTime;
     private Long programId;
-
     private int quantMale;
     private int quantFemale;
     private int quantElect;
@@ -30,7 +29,6 @@ public class Flock implements Serializable {
     private int endGas;
     private int beginWater;
     private int endWater;
-
     private float costChickMale;
     private float costChickFemale;
     private float costElect;
@@ -41,16 +39,13 @@ public class Flock implements Serializable {
     private float costWater;
     private float costSpread;
     private float costMaleKg;
-
     private int amountFuel;
     private int amountGas;
     private int amountFeed;
     private int amountSpread;
     private float expenses;
-
     private float revenues;
     private float costPerKg;
-
     private float totalCostElect;
     private float totalCostFuel;
     private float totalCostGas;
@@ -60,7 +55,6 @@ public class Flock implements Serializable {
     private float totalCostMedic;
     private float totalCostChicks;
     private float totalCostLabor;
-
     private String currency;
     private String controllerName;
     private Map<Long, HistoryDataSetting> historySetting;
@@ -505,28 +499,6 @@ public class Flock implements Serializable {
         costPerKg = calcTotalExpenses() / getTotalChicks();
         return Math.round(costPerKg);
     }
-    // TODO : delete if code is unused
-//    public void setHistoryData(List<Data> dataList) {
-//        int length = dataList.size();
-//        for (int i = 0; i < length; i++) {
-//            Data d = dataList.get(i);
-//            if (historySetting.containsKey(d.getId()) == false) {
-//                historySetting.put(d.getId(), new HistoryDataSetting(d.getId(), "unchecked"));
-//            }
-//        }
-//    }
-//
-//    public String getHistoryDataSetting(Long id) {
-//        return (String) ((HistoryDataSetting) historySetting.get(id)).isChecked();
-//    }
-//
-//    public void setHistoryDataSetting(Data data, String checked) {
-//        if (historySetting.get(data.getId()) == null) {
-//            historySetting.put(data.getId(), new HistoryDataSetting(data.getId(), checked));
-//        } else {
-//            historySetting.get(data.getId()).setChecked(checked);
-//        }
-//    }
 
     public void setControllerName(String controllerName) {
         this.controllerName = controllerName;

@@ -10,14 +10,14 @@
 
 <jsp:directive.page import="com.agrologic.app.dao.DistribDao"/>
 <jsp:directive.page import="com.agrologic.app.dao.impl.DistribDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.DistribDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Distrib"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    DistribDao distribDao = new DistribDaoImpl();
-    Collection<DistribDto> distribList = distribDao.getAllByFlockId(flockId);
+    DistribDao distribDao = DbImplDecider.use(DaoType.MYSQL).getDao(DistribDaoImpl.class);
+    Collection<Distrib> distribList = distribDao.getAllByFlockId(flockId);
 %>
 <html>
 <head>

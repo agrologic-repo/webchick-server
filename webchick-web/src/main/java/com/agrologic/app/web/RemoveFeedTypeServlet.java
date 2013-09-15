@@ -6,15 +6,11 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FeedTypeDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FeedTypeDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FeedTypeDto;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.FeedTypeDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.FeedType;
+import com.agrologic.app.model.Flock;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -57,8 +53,8 @@ public class RemoveFeedTypeServlet extends HttpServlet {
             Long feedTypeId = Long.parseLong(request.getParameter("feedTypeId"));
 
             try {
-                FeedTypeDao feedTypeDao = new FeedTypeDaoImpl();
-                FeedTypeDto feedType = feedTypeDao.getById(feedTypeId);
+                FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDaoImpl.class);
+                FeedType feedType = feedTypeDao.getById(feedTypeId);
 
                 if (feedType == null) {
                     logger.info("Feed Type " + feedTypeId + " can't be removed");
@@ -68,13 +64,12 @@ public class RemoveFeedTypeServlet extends HttpServlet {
                     feedTypeDao.remove(feedType.getId());
                     logger.info("Feed Type removed successfully from the datebase");
 
-                    FlockDao flockDao = new FlockDaoImpl();
-                    ControllerDao controllerDao = new ControllerDaoImpl();
-                    List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                    for (ControllerDto controller : controllers) {
-                        List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                    for (Controller controller : controllers) {
+                        Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                         controller.setFlocks(flocks);
                     }
 

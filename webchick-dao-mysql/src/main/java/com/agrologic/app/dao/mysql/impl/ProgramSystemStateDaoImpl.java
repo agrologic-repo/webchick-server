@@ -23,7 +23,7 @@ import java.util.*;
  * {@inheritDoc}
  */
 public class ProgramSystemStateDaoImpl implements ProgramSystemStateDao {
-    private final Logger logger = LoggerFactory.getLogger(RelayDaoImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(ProgramSystemStateDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     protected DaoFactory dao;
@@ -82,9 +82,7 @@ public class ProgramSystemStateDaoImpl implements ProgramSystemStateDao {
                 "SystemStateNumber=values(SystemStateNumber)";
         Set<Long> dataIdList = systemStateMap.keySet();
         final int maxNumbers = 10;
-        int systemStateIndex = 0,
-                stateNumber = 0;
-
+        int stateNumber, systemStateIndex = 0;
         List<Object[]> batch = new ArrayList<Object[]>();
         for (Long dataId : dataIdList) {
             Map<Integer, String> systemStateNumberMaps = systemStateMap.get(dataId);
@@ -106,8 +104,7 @@ public class ProgramSystemStateDaoImpl implements ProgramSystemStateDao {
             }
             systemStateIndex++;
         }
-        int[] result = jdbcTemplate.batchUpdate(sqlQuery, batch);
-        System.out.println(result);
+        jdbcTemplate.batchUpdate(sqlQuery, batch);
     }
 
     @Override
@@ -172,7 +169,6 @@ public class ProgramSystemStateDaoImpl implements ProgramSystemStateDao {
         StringTokenizer token = new StringTokenizer(systemStateText, "-");
         String text = token.nextToken().trim();
         text = text.replaceAll("[\n\r]", "");
-        System.out.println(text);
         String ids = token.nextToken();
         Long id = null;
         try {

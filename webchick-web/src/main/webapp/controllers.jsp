@@ -2,30 +2,30 @@
 <%@ include file="language.jsp" %>
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ page import="com.agrologic.app.model.CellinkDto" %>
-<%@ page import="com.agrologic.app.model.ControllerDto" %>
+<%@ page import="com.agrologic.app.model.Cellink" %>
+<%@ page import="com.agrologic.app.model.Controller" %>
 
 <jsp:directive.page import="java.util.ArrayList"/>
 <jsp:directive.page import="java.util.Collection"/>
 
 <%
-    UserDto user = (UserDto) request.getSession().getAttribute("user");
+    User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
 
-    Collection<UserDto> users = (Collection<UserDto>) request.getSession().getAttribute("users");
+    Collection<User> users = (Collection<User>) request.getSession().getAttribute("users");
     Long userId = Long.parseLong(request.getParameter("userId"));
-    UserDto selectedUser = getChoosedUser(users, userId);
+    User selectedUser = getChoosedUser(users, userId);
 
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    CellinkDto cellink = getChoosedCellink(selectedUser.getCellinks(), cellinkId);
+    Cellink cellink = getChoosedCellink(selectedUser.getCellinks(), cellinkId);
 
-    Collection<ControllerDto> controllers = cellink.getControllers();
+    Collection<Controller> controllers = cellink.getControllers();
 %>
-<%! public UserDto getChoosedUser(Collection<UserDto> users, Long userId) {
-    for (UserDto u : users) {
+<%! public User getChoosedUser(Collection<User> users, Long userId) {
+    for (User u : users) {
         if (u.getId().equals(userId)) {
             return u;
         }
@@ -34,8 +34,8 @@
 }
 %>
 
-<%! public CellinkDto getChoosedCellink(Collection<CellinkDto> cellinks, Long cellinkId) {
-    for (CellinkDto c : cellinks) {
+<%! public Cellink getChoosedCellink(Collection<Cellink> cellinks, Long cellinkId) {
+    for (Cellink c : cellinks) {
         if (c.getId().equals(cellinkId)) {
             return c;
         }
@@ -44,12 +44,12 @@
 }
 %>
 
-<%! public Collection<ControllerDto> filterCellinkControllers(Collection<ControllerDto> controllers, Long cellinkId) {
+<%! public Collection<Controller> filterCellinkControllers(Collection<Controller> controllers, Long cellinkId) {
     if (cellinkId == null || cellinkId == 0) {
         return controllers;
     }
-    Collection<ControllerDto> filteredControllers = new ArrayList<ControllerDto>();
-    for (ControllerDto c : controllers) {
+    Collection<Controller> filteredControllers = new ArrayList<Controller>();
+    for (Controller c : controllers) {
         if (c.getCellinkId().equals(cellinkId)) {
             filteredControllers.add(c);
         }
@@ -136,7 +136,7 @@
                         </thead>
                         <tbody>
                         <% int rows = 0;
-                            for (ControllerDto controller : controllers) {%>
+                            for (Controller controller : controllers) {%>
                         <%if ((rows % 2) == 0) {%>
                         <tr class="even">
                                 <%} else {%>

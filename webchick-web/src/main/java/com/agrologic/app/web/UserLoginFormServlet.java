@@ -1,14 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.User;
 import com.agrologic.app.utils.Base64;
 import org.apache.log4j.Logger;
 
@@ -22,11 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author JanL
- */
 public class UserLoginFormServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ServletContext ctx;
@@ -56,11 +47,11 @@ public class UserLoginFormServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
-        UserDao userDao = new UserDaoImpl();
+        UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
 
         try {
             String encpsswd = Base64.encode(pass);
-            UserDto user = userDao.validate(name, encpsswd);
+            User user = userDao.validate(name, encpsswd);
 
             user.setPassword(pass);
             logger.info("login user : " + name);
@@ -85,24 +76,20 @@ public class UserLoginFormServlet extends HttpServlet {
                 logger.info(request.getServerName());
 
                 switch (user.getRole()) {
-                    case UserRole.REGULAR:
+                    case USER:
                         response.sendRedirect(getURLWithContextPath(request) + "/my-farms.html?userId=" + user.getId());
-
                         break;
 
-                    case UserRole.ADVANCED:
+                    case DISTRIBUTOR:
                         response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
-
                         break;
 
-                    case UserRole.ADMINISTRATOR:
+                    case ADMIN:
                         response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
-
                         break;
 
                     default:
                         response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
-
                         break;
                 }
             }

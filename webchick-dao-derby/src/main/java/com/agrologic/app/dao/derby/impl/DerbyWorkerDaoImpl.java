@@ -6,13 +6,14 @@ import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.WorkerDaoImpl;
 import com.agrologic.app.model.Worker;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
 
 public class DerbyWorkerDaoImpl extends WorkerDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyWorkerDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyWorkerDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
 
     @Override

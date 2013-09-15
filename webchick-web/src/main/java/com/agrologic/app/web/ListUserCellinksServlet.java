@@ -1,19 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.CellinkDto;
-import com.agrologic.app.model.ControllerDto;
+import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Program;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,13 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class ListUserCellinksServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -59,15 +46,15 @@ public class ListUserCellinksServlet extends HttpServlet {
             Long userId = Long.parseLong(request.getParameter("userId"));
 
             try {
-                UserDao userDao = new UserDaoImpl();
-                CellinkDao cellinkDao = new CellinkDaoImpl();
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<UserDto> users = new ArrayList<UserDto>();
+                UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
+                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<User> users = new ArrayList<User>();
                 users = userDao.getAll();
-                for (UserDto u : users) {
-                    List<CellinkDto> cellinks = cellinkDao.getAllUserCellinks(u.getId());
-                    for (CellinkDto c : cellinks) {
-                        List<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
+                for (User u : users) {
+                    Collection<Cellink> cellinks = cellinkDao.getAllUserCellinks(u.getId());
+                    for (Cellink c : cellinks) {
+                        Collection<Controller> controllers = controllerDao.getAllByCellink(c.getId());
                         c.setControllers(controllers);
                     }
                     u.setCellinks(cellinks);

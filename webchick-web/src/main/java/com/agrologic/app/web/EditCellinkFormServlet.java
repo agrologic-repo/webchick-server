@@ -6,15 +6,10 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.CellinkDto;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -25,6 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -63,10 +59,10 @@ public class EditCellinkFormServlet extends HttpServlet {
                 String type = request.getParameter("Ntype");
 
                 try {
-                    UserDao userDao = new UserDaoImpl();
-                    CellinkDao cellinkDao = new CellinkDaoImpl();
-                    ControllerDao controllerDao = new ControllerDaoImpl();
-                    CellinkDto cellink = cellinkDao.getById(cellinkId);
+                    UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
+                    CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    Cellink cellink = cellinkDao.getById(cellinkId);
 
                     cellink.setName(name);
                     cellink.setPassword(password);
@@ -78,7 +74,7 @@ public class EditCellinkFormServlet extends HttpServlet {
                     request.getSession().setAttribute("error", false);
 
                     // ////////////////////////////////////////////////
-                    List<UserDto> users = new ArrayList<UserDto>();
+                    Collection<User> users = new ArrayList<User>();
                     String paramRole = request.getParameter("role");
 
                     if ((paramRole == null) || "3".equals(paramRole)) {
@@ -89,11 +85,11 @@ public class EditCellinkFormServlet extends HttpServlet {
                         users = userDao.getAllByRole(role);
                     }
 
-                    for (UserDto u : users) {
-                        List<CellinkDto> cellinks = (List<CellinkDto>) cellinkDao.getAllUserCellinks(u.getId());
+                    for (User u : users) {
+                        Collection<Cellink> cellinks = (List<Cellink>) cellinkDao.getAllUserCellinks(u.getId());
 
-                        for (CellinkDto c : cellinks) {
-                            List<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
+                        for (Cellink c : cellinks) {
+                            Collection<Controller> controllers = controllerDao.getAllByCellink(c.getId());
 
                             c.setControllers(controllers);
                         }

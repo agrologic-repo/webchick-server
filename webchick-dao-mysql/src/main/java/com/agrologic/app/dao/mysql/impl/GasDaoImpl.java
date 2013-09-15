@@ -3,6 +3,10 @@ package com.agrologic.app.dao.mysql.impl;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.GasDao;
 import com.agrologic.app.model.Gas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,16 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GasDaoImpl implements GasDao {
+    protected final DaoFactory dao;
+    private final Logger logger = LoggerFactory.getLogger(GasDaoImpl.class);
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    protected DaoFactory dao;
-
-    public GasDaoImpl(DaoFactory daoFactory) {
-        dao = daoFactory;
+    public GasDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("gas");
+        this.dao = dao;
     }
 
     private Gas makeGas(ResultSet rs) throws SQLException {
         Gas gas = new Gas();
-
         gas.setId(rs.getLong("ID"));
         gas.setFlockId(rs.getLong("FlockID"));
         gas.setAmount(rs.getInt("Amount"));
@@ -29,7 +37,6 @@ public class GasDaoImpl implements GasDao {
         gas.setNumberAccount(rs.getInt("NumberAccount"));
         gas.setPrice(rs.getFloat("Price"));
         gas.setTotal(rs.getFloat("Total"));
-
         return gas;
     }
 

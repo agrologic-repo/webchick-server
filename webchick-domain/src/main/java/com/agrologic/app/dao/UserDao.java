@@ -1,10 +1,20 @@
 package com.agrologic.app.dao;
 
 import com.agrologic.app.model.User;
+
 import java.sql.SQLException;
 import java.util.Collection;
 
 public interface UserDao {
+    /**
+     * schema name
+     */
+    public final static String APP_SCHEMA = "APP";
+    /**
+     * users
+     */
+    public final static String USER_TABLE = "USERS";
+
 
     /**
      * Inserts a new user row to table user .
@@ -48,14 +58,6 @@ public interface UserDao {
     Boolean loginEnabled(String name) throws SQLException;
 
     /**
-     * Gets total the number of Users
-     *
-     * @return countRows the number of users in database
-     * @throws SQLException if failed to get the number of users from the database
-     */
-    Integer getTotalNumUsers() throws SQLException;
-
-    /**
      * Gets user by it id
      *
      * @param id an user id
@@ -67,7 +69,7 @@ public interface UserDao {
     /**
      * Authenticate user name and password.
      *
-     * @param name login name
+     * @param name     login name
      * @param password login password
      * @return User an User object that encapsulate the user attribute or null
      * @throws SQLException if failed to check user login
@@ -102,10 +104,10 @@ public interface UserDao {
     /**
      * Retrieves users that match the specified criteria
      *
-     * @param role the role that represent user role in system <br> (values: -1 - all, 0 - guest, 1 - user, 2 -
-     * administrator, 3 - distributor)
+     * @param role    the role that represent user role in system <br> (values: -1 - all, 0 - guest, 1 - user, 2 -
+     *                administrator, 3 - distributor)
      * @param company the company of user
-     * @param text the text that compare to user login name
+     * @param text    the text that compare to user login name
      * @return the list of users that match the criteria
      * @throws SQLException if failed to retrieve users from the database.
      */

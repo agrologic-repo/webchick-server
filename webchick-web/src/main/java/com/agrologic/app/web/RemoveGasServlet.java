@@ -6,15 +6,11 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.GasDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.GasDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
-import com.agrologic.app.model.GasDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.GasDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.Gas;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -57,8 +54,8 @@ public class RemoveGasServlet extends HttpServlet {
             Long gazId = Long.parseLong(request.getParameter("gazId"));
 
             try {
-                GasDao gazDao = new GasDaoImpl();
-                GasDto gaz = gazDao.getById(gazId);
+                GasDao gazDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDaoImpl.class);
+                Gas gaz = gazDao.getById(gazId);
 
                 if (gaz == null) {
                     logger.info("Gas " + gazId + " can't be removed");
@@ -68,13 +65,13 @@ public class RemoveGasServlet extends HttpServlet {
                     gazDao.remove(gaz.getId());
                     logger.info("Gas removed successfully from the datebase");
 
-                    FlockDao flockDao = new FlockDaoImpl();
-                    FlockDto flock = flockDao.getById(flockId);
-                    List<GasDto> gazList = gazDao.getAllByFlockId(flockId);
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                    Flock flock = flockDao.getById(flockId);
+                    List<Gas> gazList = gazDao.getAllByFlockId(flockId);
                     int gazAmount = 0;
                     float gazTotalCost = 0;
 
-                    for (GasDto g : gazList) {
+                    for (Gas g : gazList) {
                         gazAmount += g.getAmount();
                         gazTotalCost += g.getTotal();
                     }
@@ -83,12 +80,11 @@ public class RemoveGasServlet extends HttpServlet {
                     flock.setTotalGas(gazTotalCost);
                     flockDao.update(flock);
 
-                    ControllerDao controllerDao = new ControllerDaoImpl();
-                    List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                    for (ControllerDto controller : controllers) {
-                        List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                    for (Controller controller : controllers) {
+                        Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                         controller.setFlocks(flocks);
                     }
 

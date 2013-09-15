@@ -1,20 +1,15 @@
 
 /*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.GasDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.GasDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
-import com.agrologic.app.model.GasDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.GasDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.Gas;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -32,10 +28,13 @@ import java.util.List;
  * @author JanL
  */
 public class AddGasFormServlet extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
      *
      * @param request  servlet request
      * @param response servlet response
@@ -45,7 +44,9 @@ public class AddGasFormServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        /** Logger for this class and subclasses */
+        /**
+         * Logger for this class and subclasses
+         */
         final Logger logger = Logger.getLogger(AddGasFormServlet.class);
 
         response.setContentType("text/html;charset=UTF-8");
@@ -63,8 +64,8 @@ public class AddGasFormServlet extends HttpServlet {
             String total = request.getParameter("total");
 
             try {
-                GasDao gasDao = new GasDaoImpl();
-                GasDto gas = new GasDto();
+                GasDao gasDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDaoImpl.class);
+                Gas gas = new Gas();
 
                 gas.setFlockId(flockId);
                 gas.setAmount(Integer.parseInt(amount));
@@ -74,13 +75,13 @@ public class AddGasFormServlet extends HttpServlet {
                 gas.setTotal(Float.parseFloat(total));
                 gasDao.insert(gas);
 
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
-                List<GasDto> gasList = gasDao.getAllByFlockId(flockId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
+                List<Gas> gasList = gasDao.getAllByFlockId(flockId);
                 int gasAmount = 0;
                 float gasTotalCost = 0;
 
-                for (GasDto g : gasList) {
+                for (Gas g : gasList) {
                     gasAmount += g.getAmount();
                     gasTotalCost += g.getTotal();
                 }
@@ -90,12 +91,11 @@ public class AddGasFormServlet extends HttpServlet {
                 flockDao.update(flock);
                 logger.info("Gas added successfully to the database");
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
 
@@ -115,7 +115,8 @@ public class AddGasFormServlet extends HttpServlet {
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 
     /**
-     * Handles the HTTP <code>GET</code> method.
+     * Handles the HTTP
+     * <code>GET</code> method.
      *
      * @param request  servlet request
      * @param response servlet response
@@ -129,7 +130,8 @@ public class AddGasFormServlet extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP
+     * <code>POST</code> method.
      *
      * @param request  servlet request
      * @param response servlet response
@@ -152,6 +154,3 @@ public class AddGasFormServlet extends HttpServlet {
         return "Short description";
     }    // </editor-fold>
 }
-
-
-

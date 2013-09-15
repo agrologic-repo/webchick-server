@@ -7,14 +7,16 @@ import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.FuelDaoImpl;
 import com.agrologic.app.model.Fuel;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
 
 public class DerbyFuelDaoImpl extends FuelDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyFuelDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyFuelDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
+
 
     @Override
     public boolean tableExist() throws SQLException {

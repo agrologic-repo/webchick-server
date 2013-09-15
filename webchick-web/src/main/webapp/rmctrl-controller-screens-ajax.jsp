@@ -2,12 +2,13 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ page import="com.agrologic.app.model.ControllerDto" %>
-<%@ page import="com.agrologic.app.model.UserDto" %>
+<%@ page import="com.agrologic.app.model.Controller" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
 <jsp:directive.page import="java.util.Collection"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -21,8 +22,8 @@
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long screenId = Long.parseLong(request.getParameter("screenId"));
-    Collection<ControllerDto> controllers = (Collection<ControllerDto>) request.getSession().getAttribute("controllers");
-    ControllerDto controller = getController(controllers, controllerId);
+    Collection<Controller> controllers = (Collection<Controller>) request.getSession().getAttribute("controllers");
+    Controller controller = getController(controllers, controllerId);
 //    Program program = controller.getProgram();
 //    Collection<Screen> screens = program.getScreens();
 //    Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");
@@ -34,8 +35,8 @@
     }
     String direction = (String) request.getSession().getAttribute("dir");
 %>
-<%! ControllerDto getController(Collection<ControllerDto> controllers, Long controllerId) {
-    for (ControllerDto c : controllers) {
+<%! Controller getController(Collection<Controller> controllers, Long controllerId) {
+    for (Controller c : controllers) {
         if (c.getId().equals(controllerId)) {
             return c;
         }

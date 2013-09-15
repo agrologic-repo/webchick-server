@@ -10,13 +10,13 @@
 
 <jsp:directive.page import="com.agrologic.app.dao.FuelDao"/>
 <jsp:directive.page import="com.agrologic.app.dao.impl.FuelDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.FuelDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Fuel"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    FuelDao fuelDao = new FuelDaoImpl();
-    Collection<FuelDto> fuelList = fuelDao.getAllByFlockId(flockId);
+    FuelDao fuelDao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDaoImpl.class);
+    Collection<Fuel> fuelList = fuelDao.getAllByFlockId(flockId);
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -128,7 +128,7 @@
 
         </tr>
         <%
-            for (FuelDto fuel : fuelList) {%>
+            for (Fuel fuel : fuelList) {%>
         <tr>
             <td><%=fuel.getAmount()%>
             </td>

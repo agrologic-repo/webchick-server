@@ -1,10 +1,7 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.ActionSetDaoImpl;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
+import com.agrologic.app.dao.mysql.impl.ActionSetDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -50,15 +47,15 @@ public class RCActionSetServlet extends HttpServlet {
             }
 
             try {
-                CellinkDao cellinkDao = new CellinkDaoImpl();
-                CellinkDto cellink = cellinkDao.getById(cellinkId);
+                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                Cellink cellink = cellinkDao.getById(cellinkId);
 
                 cellinkDao.update(cellink);
 
-                LanguageDao languageDao = new LanguageDaoImpl();
+                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                 long langId = languageDao.getLanguageId(lang);
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                ControllerDto controller = controllerDao.getById(controllerId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Controller controller = controllerDao.getById(controllerId);
                 ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                 Program program = programDao.getById(controller.getProgramId());
                 ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
@@ -67,8 +64,8 @@ public class RCActionSetServlet extends HttpServlet {
                 program.setScreens((List<Screen>) screens);
                 controller.setProgram(program);
 
-                ActionSetDao actionsetDao = new ActionSetDaoImpl();
-                List<ActionSetDto> actionset = actionsetDao.getAllOnScreen(program.getId(), langId);
+                ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDaoImpl.class);
+                List<ActionSet> actionset = actionsetDao.getAllOnScreen(program.getId(), langId);
 
                 logger.info("retrieve program action set!");
                 request.getSession().setAttribute("controller", controller);

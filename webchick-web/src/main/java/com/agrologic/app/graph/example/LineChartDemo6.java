@@ -6,7 +6,6 @@
 package com.agrologic.app.graph.example;
 
 
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -19,26 +18,22 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.util.Map.Entry;
+
 //~--- JDK imports ------------------------------------------------------------
 
-import java.awt.Color;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
 public class LineChartDemo6 extends ApplicationFrame {
-    private JFreeChart               chart;
-    private XYSeriesCollection       dataset;
+    private JFreeChart chart;
+    private XYSeriesCollection dataset;
     private List<XYSeriesCollection> datasetList;
 
     /**
      * Creates a new demo.
      *
-     * @param title  the frame title.
+     * @param title the frame title.
      */
     public LineChartDemo6(final String title) {
         super(title);
@@ -52,7 +47,6 @@ public class LineChartDemo6 extends ApplicationFrame {
     }
 
     /**
-     *
      * @param coordinates
      * @param title
      */
@@ -62,12 +56,12 @@ public class LineChartDemo6 extends ApplicationFrame {
         }
 
         XYSeries series = new XYSeries(title);
-        Iterator iter   = coordinates.entrySet().iterator();
+        Iterator iter = coordinates.entrySet().iterator();
 
         while (iter.hasNext()) {
             Entry<Double, Double> entry = (Entry<Double, Double>) iter.next();
-            double                x     = entry.getKey();
-            double                y     = entry.getValue();
+            double x = entry.getKey();
+            double y = entry.getValue();
 
             series.add(x, y);
         }
@@ -76,18 +70,17 @@ public class LineChartDemo6 extends ApplicationFrame {
     }
 
     /**
-     *
      * @param coordinates
      * @param title
      */
     private XYSeries createSeries(final Map<Double, Double> coordinates, final String title) {
         XYSeries series = new XYSeries(title);
-        Iterator iter   = coordinates.entrySet().iterator();
+        Iterator iter = coordinates.entrySet().iterator();
 
         while (iter.hasNext()) {
             Entry<Double, Double> entry = (Entry<Double, Double>) iter.next();
-            double                x     = entry.getKey();
-            double                y     = entry.getValue();
+            double x = entry.getKey();
+            double y = entry.getValue();
 
             series.add(x, y);
         }
@@ -108,8 +101,7 @@ public class LineChartDemo6 extends ApplicationFrame {
     /**
      * Creates a chart.
      *
-     * @param dataset  the data for the chart.
-     *
+     * @param dataset the data for the chart.
      * @return a chart.
      */
     private void createChart() {
@@ -122,7 +114,7 @@ public class LineChartDemo6 extends ApplicationFrame {
                 PlotOrientation.VERTICAL, true,                        // include legend
                 true,                                                  // tooltips
                 false                                                  // urls
-                    );
+        );
 
         // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
         chart.setBackgroundPaint(Color.white);
@@ -201,11 +193,11 @@ public class LineChartDemo6 extends ApplicationFrame {
     /**
      * Starting point for the demonstration application.
      *
-     * @param args  ignored.
+     * @param args ignored.
      */
     public static void main(final String[] args) {
-        Map<Double, Double>  coordinates = new TreeMap<Double, Double>();
-        final LineChartDemo6 demo        = new LineChartDemo6("Line Chart Demo 6");
+        Map<Double, Double> coordinates = new TreeMap<Double, Double>();
+        final LineChartDemo6 demo = new LineChartDemo6("Line Chart Demo 6");
 
         coordinates.put(1.0, 60.0);
         coordinates.put(2.0, 40.5);

@@ -6,7 +6,8 @@
 <%@ page import="com.agrologic.app.model.Program" %>
 <%@ page import="java.util.Collection" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -28,7 +29,7 @@
     <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
     <script type="text/javascript">
         function addProgram() {
-            <% if (user.getRole() == UserRole.REGULAR || user.getRole() == UserRole.ADVANCED) {%>
+            <% if (user.getRole() == UserRole.USER || user.getRole() == UserRole.DISTRIBUTOR) {%>
             window.document.location.replace("./access-denied.jsp");
             <%} else {%>
             window.document.location.replace("./add-program.jsp");

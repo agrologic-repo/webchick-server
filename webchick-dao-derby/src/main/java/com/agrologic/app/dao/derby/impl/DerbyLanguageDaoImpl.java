@@ -5,14 +5,16 @@ import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.LanguageDaoImpl;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
 
 public class DerbyLanguageDaoImpl extends LanguageDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyLanguageDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyLanguageDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
+
 
     @Override
     public boolean tableExist() throws SQLException {

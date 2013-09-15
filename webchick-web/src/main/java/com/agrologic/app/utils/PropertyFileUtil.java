@@ -7,12 +7,7 @@ package com.agrologic.app.utils;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
+import java.io.*;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
@@ -21,7 +16,8 @@ import java.util.Set;
  * Title: PropertyFileUtil <br>
  * Decription: <br>
  * Copyright:   Copyright (c) 2008 <br>
- * @version     1.0 <br>
+ *
+ * @version 1.0 <br>
  */
 public class PropertyFileUtil {
 
@@ -29,7 +25,7 @@ public class PropertyFileUtil {
      * Ccreates a new, empty property file named by this filename if
      * and only if a file with this name does not yet exist.
      *
-     * @param fileName  the property file name
+     * @param fileName the property file name
      */
     public static void createPropertyFile(String fileName) {
         File propertyFile = new File(fileName);
@@ -37,7 +33,8 @@ public class PropertyFileUtil {
         if (!propertyFile.exists()) {
             try {
                 propertyFile.createNewFile();
-            } catch (IOException ex) {}
+            } catch (IOException ex) {
+            }
         } else {
             System.out.println("Exist");
         }
@@ -46,11 +43,11 @@ public class PropertyFileUtil {
     /**
      * Set property key with giving value, at giving filename.
      *
-     * @param fileName  the property file name
-     * @param comments  the property comments
-     * @param key       the property to set
-     * @param value     the value to set
-     * @return          true if ok, fasle otherwise.
+     * @param fileName the property file name
+     * @param comments the property comments
+     * @param key      the property to set
+     * @param value    the value to set
+     * @return true if ok, fasle otherwise.
      */
     public static boolean setProperty(String fileName, String comments, String key, String value) {
         try {
@@ -73,9 +70,9 @@ public class PropertyFileUtil {
     /**
      * Get property by key from  property file.
      *
-     * @param fileName  the property file name
-     * @param key       the property to get
-     * @return          value of key.
+     * @param fileName the property file name
+     * @param key      the property to get
+     * @return value of key.
      */
     public static String getProperty(String fileName, String key) {
         String value = "";
@@ -85,8 +82,9 @@ public class PropertyFileUtil {
 
             props.load(new FileInputStream(fileName));
             value = props.getProperty(key);
-        } catch (FileNotFoundException ex) {}
-        catch (IOException ex) {}
+        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
+        }
 
         return value;
     }
@@ -94,10 +92,10 @@ public class PropertyFileUtil {
     /**
      * Delete property key from property file
      *
-     * @param fileName  the property file name
-     * @param comments  the comment of property file
-     * @param key       the property key to delete
-     * @return          true if ok , false otherwise
+     * @param fileName the property file name
+     * @param comments the comment of property file
+     * @param key      the property key to delete
+     * @return true if ok , false otherwise
      */
     public static boolean deleteProperty(String fileName, String comments, String key) {
         try {
@@ -116,7 +114,7 @@ public class PropertyFileUtil {
     }
 
     public static void main(String[] args) {
-        String     path = System.getProperty("user.home");
+        String path = System.getProperty("user.home");
         Properties prop = System.getProperties();
 
         System.out.print("The path : ");
@@ -131,9 +129,9 @@ public class PropertyFileUtil {
             System.out.println(prop.getProperty(pn));
         }
 
-        Locale locale   = Locale.US;
+        Locale locale = Locale.US;
         String fileName = "GraphData_" + locale.toString() + ".properties";
-        String p        = "../ggggggggggggg.properties";
+        String p = "../ggggggggggggg.properties";
 
         PropertyFileUtil.createPropertyFile(p);
     }

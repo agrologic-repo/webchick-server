@@ -2,170 +2,77 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.WorkerDao;
+import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.Worker;
+import org.apache.commons.lang.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WorkerDaoImpl implements WorkerDao {
+    protected final DaoFactory dao;
+    private final Logger logger = LoggerFactory.getLogger(WorkerDaoImpl.class);
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    protected DaoFactory dao;
-
-    public WorkerDaoImpl(DaoFactory daoFactory) {
-        dao = daoFactory;
-    }
-
-    private Worker makeWorker(ResultSet rs) throws SQLException {
-        Worker worker = new Worker();
-
-        worker.setId(rs.getLong("ID"));
-        worker.setName(rs.getString("Name"));
-        worker.setDefine(rs.getString("Define"));
-        worker.setPhone(rs.getString("Phone"));
-        worker.setHourCost(rs.getFloat("HourCost"));
-        worker.setCellinkId(rs.getLong("CellinkID"));
-
-        return worker;
-    }
-
-    private List<Worker> makeWorkerList(ResultSet rs) throws SQLException {
-        List<Worker> workerList = new ArrayList<Worker>();
-
-        while (rs.next()) {
-            workerList.add(makeWorker(rs));
-        }
-
-        return workerList;
+    public WorkerDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("workers");
+        this.dao = dao;
     }
 
     @Override
     public void insert(Worker worker) throws SQLException {
-        String sqlQuery = "insert into workers values (?,?,?,?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setObject(1, null);
-            prepstmt.setString(2, worker.getName());
-            prepstmt.setString(3, worker.getDefine());
-            prepstmt.setString(4, worker.getPhone());
-            prepstmt.setFloat(5, worker.getHourCost());
-            prepstmt.setFloat(6, worker.getCellinkId());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Insert Worker To The DataBase", e.getMessage());
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Creating worker with name [{}]", worker.getName());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("name", worker.getName());
+        valuesToInsert.put("define", worker.getDefine());
+        valuesToInsert.put("phone", worker.getPhone());
+        valuesToInsert.put("hourcost", worker.getHourCost());
+        valuesToInsert.put("cellinkid", worker.getCellinkId());
+        jdbcInsert.execute(valuesToInsert);
     }
 
     @Override
     public void remove(Long id) throws SQLException {
-        String sqlQuery = "delete from workers where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Delete Controller From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        Validate.notNull(id, " Worker id can not be null");
+        logger.debug("Delete workers with id [{}]", id);
+        jdbcTemplate.update("delete from workers where ID=?", new Object[]{id});
     }
 
     @Override
     public Worker getById(Long id) throws SQLException {
-        String sqlQuery = "select * from workers where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return makeWorker(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Worker " + id + " From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        logger.debug("Get worker with id [{}]", id);
+        String sql = "select * from workers where ID=?";
+        List<Worker> workers = jdbcTemplate.query(sql, new Object[]{id}, RowMappers.worker());
+        if (workers.isEmpty()) {
+            return null;
         }
+        return workers.get(0);
     }
 
     @Override
     public List<Worker> getAllByCellinkId(Long cellinkId) throws SQLException {
-        String sqlQuery = "select * from workers where CellinkID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, cellinkId);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            return makeWorkerList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve All Workers", e.getMessage());
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Get all alarm names of given language id ");
+        String sql = "select * from workers where CellinkID=?";
+        return jdbcTemplate.query(sql, new Object[]{cellinkId}, RowMappers.worker());
     }
 
     @Override
     public String getCurrencyById(Long id) throws SQLException {
-        String sqlQuery = "select * from currency where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getString("Symbol");
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Worker " + id + " From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        logger.debug("Get currency string with id  [{}]", id);
+        String sql = "select * from currency where ID=?";
+        List<String> currency = jdbcTemplate.queryForList(sql, new Object[]{id}, String.class);
+        if (currency.isEmpty()) {
+            return null;
         }
+        return currency.get(0);
     }
 }

@@ -7,11 +7,11 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -56,7 +56,7 @@ public class AddFlockFormServlet extends HttpServlet {
             String status = request.getParameter("status_Filter");
             String startDate = request.getParameter("startDate");
             String endDate = request.getParameter("endDate");
-            FlockDto flock = new FlockDto();
+            Flock flock = new Flock();
 
             flock.setFlockName(flockName);
             flock.setControllerId(controllerId);
@@ -65,12 +65,12 @@ public class AddFlockFormServlet extends HttpServlet {
             flock.setEndDate(endDate);
 
             try {
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                ControllerDto controller = controllerDao.getById(controllerId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Controller controller = controllerDao.getById(controllerId);
 
                 flock.setProgramId(controller.getProgramId());
 
-                FlockDao flockDao = new FlockDaoImpl();
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
 
                 flockDao.insert(flock);
                 logger.info("Flock " + flock + " successfully added !");

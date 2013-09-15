@@ -11,10 +11,11 @@
 <%@ page import="com.agrologic.app.dao.LanguageDao" %>
 
 <jsp:directive.page import="com.agrologic.app.dao.impl.LanguageDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.LanguageDto"/>
-<jsp:directive.page import="com.agrologic.app.model.UserDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Language"/>
+<jsp:directive.page import="com.agrologic.app.model.User"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -24,8 +25,8 @@
     Long langId = Long.parseLong(request.getParameter("langId"));
 
     String actionsetLabel = request.getParameter("actionsetLabel");
-    LanguageDao languageDao = new LanguageDaoImpl();
-    LanguageDto langDto = languageDao.getById(langId);
+    LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+    Language lang = languageDao.getById(langId);
 %>
 
 <%@page contentType="text/html" pageEncoding="utf-8" %>
@@ -96,9 +97,9 @@
                   onsubmit="return validate();">
                 <table width="100%" align="left" border="0">
                     <input type="hidden" id="valueId" name="valueId" value="<%=valueId%>">
-                    <input type="hidden" id="langId" name="langId" value="<%=langDto.getId() %>">
+                    <input type="hidden" id="langId" name="langId" value="<%=lang.getId() %>">
                     <tr>
-                        <td align="left">Insert &nbsp;<%=actionsetLabel%> in <%=langDto.getLanguage() %>
+                        <td align="left">Insert &nbsp;<%=actionsetLabel%> in <%=lang.getLanguage() %>
                     </tr>
                     <tr>
                         <td align="left"><input id="Ntranslate" type="text" name="Ntranslate">&nbsp;</td>

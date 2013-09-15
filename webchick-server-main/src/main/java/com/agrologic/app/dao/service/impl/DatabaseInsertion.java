@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
 
 public class DatabaseInsertion implements DatabaseInsertable {
 
@@ -52,7 +51,7 @@ public class DatabaseInsertion implements DatabaseInsertable {
             for (Cellink cellink : dla.getUser().getCellinks()) {
                 insertNewCellink(cellink);
                 logger.info("the data inserted successfully to the cellinks table");
-                List<Controller> controllers = cellink.getControllers();
+                Collection<Controller> controllers = cellink.getControllers();
                 for (Controller controller : controllers) {
                     insertNewController(controller);
                     logger.info("the data inserted successfully to the controller and controllerdata table");
@@ -60,7 +59,7 @@ public class DatabaseInsertion implements DatabaseInsertable {
             }
 
             for (Program program : dla.getPrograms()) {
-                if (!dba.getProgramDao().programExist(program.getId())) {
+                if (!dba.getProgramDao().isProgramWithGivenIdExist(program.getId())) {
                     dba.getProgramDao().insert(program);
                     logger.info("the data inserted successfully to the program table");
                     dba.getProgramAlarmDao().insert(program.getProgramAlarms());
@@ -111,6 +110,7 @@ public class DatabaseInsertion implements DatabaseInsertable {
     public void insertNewController(Controller c) {
         try {
             dba.getControllerDao().insert(c);
+            dba.getControllerDao().insertControllerDataValues(c.getId(), c.getDataValues());
         } catch (Exception e) {
             logger.info("Cannot insert controller to the database ", e);
         }

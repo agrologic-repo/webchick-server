@@ -27,26 +27,26 @@ import java.util.StringTokenizer;
  * @author Sven Reimers
  */
 public class TextPaneAppender extends AppenderSkeleton {
-    final String           COLOR_OPTION_BACKGROUND = "Color.Background";
-    final String           COLOR_OPTION_DEBUG      = "Color.Debug";
-    final String           COLOR_OPTION_ERROR      = "Color.Error";
-    final String           COLOR_OPTION_FATAL      = "Color.Emerg";
-    final String           COLOR_OPTION_INFO       = "Color.Info";
-    final String           COLOR_OPTION_WARN       = "Color.Warn";
-    final String           FANCY_OPTION            = "Fancy";
-    final String           FONT_NAME_OPTION        = "Font.Name";
-    final String           FONT_SIZE_OPTION        = "Font.Size";
-    final String           LABEL_OPTION            = "Label";
-    private PatternLayout  layout                  = new PatternLayout("%d{dd/MM/yyyy hh:mm:ss} %5p  - %m%n");
-    private Hashtable      attributes;
+    final String COLOR_OPTION_BACKGROUND = "Color.Background";
+    final String COLOR_OPTION_DEBUG = "Color.Debug";
+    final String COLOR_OPTION_ERROR = "Color.Error";
+    final String COLOR_OPTION_FATAL = "Color.Emerg";
+    final String COLOR_OPTION_INFO = "Color.Info";
+    final String COLOR_OPTION_WARN = "Color.Warn";
+    final String FANCY_OPTION = "Fancy";
+    final String FONT_NAME_OPTION = "Font.Name";
+    final String FONT_SIZE_OPTION = "Font.Size";
+    final String LABEL_OPTION = "Label";
+    private PatternLayout layout = new PatternLayout("%d{dd/MM/yyyy hh:mm:ss} %5p  - %m%n");
+    private Hashtable attributes;
     private StyledDocument doc;
-    private boolean        fancy;
-    private Hashtable      icons;
-    private String         label;
-    private int            maxBufSize;
-    private QuietWriter    qw;
-    private StringWriter   sw;
-    private JTextPane      textpane;
+    private boolean fancy;
+    private Hashtable icons;
+    private String label;
+    private int maxBufSize;
+    private QuietWriter qw;
+    private StringWriter sw;
+    private JTextPane textpane;
 
     public TextPaneAppender() {
         super();
@@ -55,8 +55,8 @@ public class TextPaneAppender extends AppenderSkeleton {
         createAttributes();
         createIcons();
         this.label = "";
-        this.sw    = new StringWriter();
-        this.qw    = new QuietWriter(getSw(), errorHandler);
+        this.sw = new StringWriter();
+        this.qw = new QuietWriter(getSw(), errorHandler);
         this.fancy = true;
     }
 
@@ -86,19 +86,16 @@ public class TextPaneAppender extends AppenderSkeleton {
         try {
             URL url = TextPaneAppender.class.getResource(path);
             if (url != null) {
-                img = (Image) (Toolkit.getDefaultToolkit()).getImage(url);
-            } else {
-                // System.out.println("Unable to get image from " + path);
+                img = (Toolkit.getDefaultToolkit()).getImage(url);
             }
         } catch (Exception e) {
-
-            // System.out.println("Exception occured: " + e.getMessage() + " - " + e);
         }
 
         return img;
     }
 
-    public void close() {}
+    public void close() {
+    }
 
     private void createAttributes() {
         setAttributes(new Hashtable());
@@ -137,18 +134,18 @@ public class TextPaneAppender extends AppenderSkeleton {
             getIcons().put(Level.INFO, new ImageIcon(loadIcon("/images/green.gif")));
             getIcons().put(Level.DEBUG, new ImageIcon(loadIcon("/images/black.gif")));
         } catch (NullPointerException e) {
-            // System.out.println("TextPaneAppender: Unable to load icons");
+
         }
     }
 
     @Override
     public void append(LoggingEvent event) {
-        String               text = null;
-        ThrowableInformation ti   = event.getThrowableInformation();
+        String text = null;
+        ThrowableInformation ti = event.getThrowableInformation();
 
         if (ti != null) {
-            StringBuilder exbuf   = new StringBuilder();
-            String[]      excDesc = ti.getThrowableStrRep();
+            StringBuilder exbuf = new StringBuilder();
+            String[] excDesc = ti.getThrowableStrRep();
 
             for (int i = 0; i < excDesc.length; i++) {
                 exbuf.append(excDesc[i]);
@@ -174,7 +171,7 @@ public class TextPaneAppender extends AppenderSkeleton {
             }
 
             getDoc().insertString(getDoc().getLength(), text,
-                                  (MutableAttributeSet) getAttributes().get(event.getLevel()));
+                    (MutableAttributeSet) getAttributes().get(event.getLevel()));
         } catch (BadLocationException badex) {
 
             // System.err.println(badex);
@@ -188,9 +185,9 @@ public class TextPaneAppender extends AppenderSkeleton {
     }
 
     private static Color parseColor(String v) {
-        StringTokenizer st  = new StringTokenizer(v, ",");
-        int[]           val = { 255, 255, 255, 255 };
-        int             i   = 0;
+        StringTokenizer st = new StringTokenizer(v, ",");
+        int[] val = {255, 255, 255, 255};
+        int i = 0;
 
         while (st.hasMoreTokens()) {
             val[i] = Integer.parseInt(st.nextToken());
@@ -206,8 +203,8 @@ public class TextPaneAppender extends AppenderSkeleton {
         String res = c.getRed() + "," + c.getGreen() + "," + c.getBlue();
 
         return (c.getAlpha() >= 255)
-               ? res
-               : res + "," + c.getAlpha();
+                ? res
+                : res + "," + c.getAlpha();
     }
 
     public void setTextPane(JTextPane textpane) {
@@ -223,8 +220,8 @@ public class TextPaneAppender extends AppenderSkeleton {
         Color c = StyleConstants.getForeground((MutableAttributeSet) getAttributes().get(p));
 
         return (c == null)
-               ? null
-               : colorToString(c);
+                ? null
+                : colorToString(c);
     }
 
     // ///////////////////////////////////////////////////////////////////

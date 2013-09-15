@@ -4,17 +4,16 @@
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.dao.DaoType" %>
-
-<jsp:directive.page import="com.agrologic.app.dao.DataDao"/>
-<jsp:directive.page import="com.agrologic.app.dao.DbImplDecider"/>
-<jsp:directive.page import="com.agrologic.app.dao.LanguageDao"/>
-<jsp:directive.page import="com.agrologic.app.dao.impl.LanguageDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.Data"/>
-<jsp:directive.page import="com.agrologic.app.model.LanguageDto"/>
-<%@ page import="com.agrologic.app.model.UserDto" %>
+<%@ page import="com.agrologic.app.dao.DataDao" %>
+<%@ page import="com.agrologic.app.dao.DbImplDecider" %>
+<%@ page import="com.agrologic.app.dao.LanguageDao" %>
+<%@ page import="com.agrologic.app.model.Data" %>
+<%@ page import="com.agrologic.app.model.Language" %>
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="java.util.Collection" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -26,8 +25,8 @@
 
     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
     Collection<Data> dataList = dataDao.getAll();
-    LanguageDao languageDao = new LanguageDaoImpl();
-    Collection<LanguageDto> langList = languageDao.geAll();
+    LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+    Collection<Language> langList = languageDao.geAll();
 %>
 
 <%!
@@ -67,7 +66,6 @@
         }
 
         function translateData(langid) {
-
             var dataId = document.addForm.Ndatatype.value
             if (dataId == "") {
                 return;
@@ -291,7 +289,7 @@
                             <td colspan="3">
                                 <select id="langListBox" name="langListBox"
                                         style="width:auto;height:25px;font-size:medium;" disabled>
-                                    <%for (LanguageDto l : langList) { %>
+                                    <%for (Language l : langList) { %>
                                     <option value="<%=l.getId()%>"><%=l.getLanguage()%>
                                     </option>
                                     <%}%>
@@ -376,9 +374,9 @@
     </tr>
     <tr>
         <td>
-            <from name="loadForm">
+            <form name="loadForm">
                 <span id="loading" name="loading"></span>
-                </form>
+            </form>
         </td>
     </tr>
 </table>

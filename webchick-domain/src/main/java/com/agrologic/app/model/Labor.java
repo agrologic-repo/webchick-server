@@ -1,12 +1,13 @@
 package com.agrologic.app.model;
 
 public class Labor {
-    private Long    id;
-    private String  date;
-    private Long    workerId;
+    private Long id;
+    private String date;
+    private String define;
+    private Long workerId;
     private Integer hours;
-    private Float   salary;
-    private Long    flockId;
+    private Float salary;
+    private Long flockId;
 
     public Labor() {
     }
@@ -17,6 +18,14 @@ public class Labor {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getDefine() {
+        return define;
+    }
+
+    public void setDefine(String define) {
+        this.define = define;
     }
 
     public Long getFlockId() {
@@ -71,15 +80,15 @@ public class Labor {
 
         final Labor other = (Labor) obj;
 
-        if ((this.id != other.id) && ((this.id == null) ||!this.id.equals(other.id))) {
+        if ((this.id != other.id) && ((this.id == null) || !this.id.equals(other.id))) {
             return false;
         }
 
-        if ((this.flockId != other.flockId) && ((this.flockId == null) ||!this.flockId.equals(other.flockId))) {
+        if ((this.flockId != other.flockId) && ((this.flockId == null) || !this.flockId.equals(other.flockId))) {
             return false;
         }
 
-        if ((this.workerId != other.workerId) && ((this.workerId == null) ||!this.workerId.equals(other.workerId))) {
+        if ((this.workerId != other.workerId) && ((this.workerId == null) || !this.workerId.equals(other.workerId))) {
             return false;
         }
 
@@ -91,14 +100,14 @@ public class Labor {
         int hash = 3;
 
         hash = 29 * hash + ((this.id != null)
-                            ? this.id.hashCode()
-                            : 0);
+                ? this.id.hashCode()
+                : 0);
         hash = 29 * hash + ((this.flockId != null)
-                            ? this.flockId.hashCode()
-                            : 0);
+                ? this.flockId.hashCode()
+                : 0);
         hash = 29 * hash + ((this.workerId != null)
-                            ? this.workerId.hashCode()
-                            : 0);
+                ? this.workerId.hashCode()
+                : 0);
 
         return hash;
     }

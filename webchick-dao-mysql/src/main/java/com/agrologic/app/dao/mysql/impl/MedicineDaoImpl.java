@@ -3,6 +3,10 @@ package com.agrologic.app.dao.mysql.impl;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.MedicineDao;
 import com.agrologic.app.model.Medicine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,23 +16,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MedicineDaoImpl implements MedicineDao {
+    protected final DaoFactory dao;
+    private final Logger logger = LoggerFactory.getLogger(MedicineDaoImpl.class);
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    protected DaoFactory dao;
-
-    public MedicineDaoImpl(DaoFactory daoFactory) {
-        dao = daoFactory;
+    public MedicineDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("fuel");
+        this.dao = dao;
     }
 
     private Medicine makeMedicine(ResultSet rs) throws SQLException {
         Medicine medicine = new Medicine();
-
         medicine.setId(rs.getLong("ID"));
         medicine.setFlockId(rs.getLong("FlockID"));
         medicine.setAmount(rs.getInt("Amount"));
         medicine.setName(rs.getString("Name"));
         medicine.setPrice(rs.getFloat("Price"));
         medicine.setTotal(rs.getFloat("Total"));
-
         return medicine;
     }
 

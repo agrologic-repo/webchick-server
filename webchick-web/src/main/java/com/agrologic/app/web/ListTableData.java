@@ -7,8 +7,7 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.ActionSetDaoImpl;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
+import com.agrologic.app.dao.mysql.impl.ActionSetDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -20,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ListTableData extends HttpServlet {
@@ -60,14 +60,14 @@ public class ListTableData extends HttpServlet {
 
                 try {
                     ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                    ;
+
                     Screen screen = screenDao.getById(programId, screenId);
 
                     if (screen.getTitle().equals("Action Set Buttons")) {
-                        ActionSetDao actionsetDao = new ActionSetDaoImpl();
-                        List<ActionSetDto> actionset = actionsetDao.getAll();
-                        LanguageDao languageDao = new LanguageDaoImpl();
-                        List<LanguageDto> langList = languageDao.geAll();
+                        ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDaoImpl.class);
+                        Collection<ActionSet> actionset = actionsetDao.getAll();
+                        LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+                        Collection<Language> langList = languageDao.geAll();
 
                         request.getSession().setAttribute("languages", langList);
                         request.getRequestDispatcher("./all-actionset.jsp?screenId=" + screen.getId()
@@ -78,7 +78,9 @@ public class ListTableData extends HttpServlet {
                         DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                         List<Data> dataList = dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
                                 table.getId(), translateLang, null);
-
+                        System.out.println("==============================================================");
+                        System.out.println(dataList);
+                        System.out.println("==============================================================");
                         table.setDataList(dataList);
 
                         List<Table> tables = new ArrayList<Table>();
@@ -87,8 +89,8 @@ public class ListTableData extends HttpServlet {
                         screen.setTables(tables);
                         request.getSession().setAttribute("screen", screen);
 
-                        LanguageDao languageDao = new LanguageDaoImpl();
-                        List<LanguageDto> langList = languageDao.geAll();
+                        LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+                        Collection<Language> langList = languageDao.geAll();
 
                         request.getSession().setAttribute("languages", langList);
                         request.getRequestDispatcher("./all-tabledata.jsp?tableId=" + tableId + "&translateLang="

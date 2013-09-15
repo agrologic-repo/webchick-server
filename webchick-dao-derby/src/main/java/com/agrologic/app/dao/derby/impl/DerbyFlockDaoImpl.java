@@ -6,14 +6,16 @@ import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.FlockDaoImpl;
 import com.agrologic.app.model.Flock;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-
-    public DerbyFlockDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyFlockDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
 
     @Override
@@ -244,26 +246,15 @@ public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, Dro
 
     @Override
     public void insert(Flock flock) throws SQLException {
-        String sqlQuery =
-                "INSERT INTO FLOCKS (FLOCKID, CONTROLLERID, NAME, STATUS, STARTDATE) VALUES (?,?,?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, flock.getFlockId());
-            prepstmt.setLong(2, flock.getControllerId());
-            prepstmt.setString(3, flock.getFlockName());
-            prepstmt.setString(4, flock.getStatus());
-            prepstmt.setString(5, flock.getStartTime());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Insert New Flock To The DataBase ", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Creating flock with id [{}]", flock.getFlockId());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("flockid", flock.getFlockId());
+        valuesToInsert.put("controllerid", flock.getControllerId());
+        valuesToInsert.put("name", flock.getFlockName());
+        valuesToInsert.put("status", flock.getStatus());
+        valuesToInsert.put("startdate", flock.getStartTime());
+        valuesToInsert.put("startdate", flock.getEndTime());
+        jdbcInsert.execute(valuesToInsert);
     }
 
     @Override

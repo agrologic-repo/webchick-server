@@ -1,14 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.GasDao;
-import com.agrologic.app.dao.impl.GasDaoImpl;
-import com.agrologic.app.model.GasDto;
+import com.agrologic.app.dao.mysql.impl.GasDaoImpl;
+import com.agrologic.app.model.Gas;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -20,11 +16,6 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class ListGasServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -52,8 +43,9 @@ public class ListGasServlet extends HttpServlet {
             Long flockId = Long.parseLong(request.getParameter("flockId"));
 
             try {
-                GasDao gazDao = new GasDaoImpl();
-                List<GasDto> gazList = gazDao.getAllByFlockId(flockId);
+
+                GasDao gazDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDaoImpl.class);
+                List<Gas> gazList = gazDao.getAllByFlockId(flockId);
 
                 logger.info("retrieve user and user cellinks and all controllers of each cellink");
                 request.getSession().setAttribute("gazList", gazList);

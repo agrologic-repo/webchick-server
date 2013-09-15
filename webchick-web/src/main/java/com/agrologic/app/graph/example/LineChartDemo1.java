@@ -6,12 +6,7 @@
 package com.agrologic.app.graph.example;
 
 
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.LegendItem;
-import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.*;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -21,28 +16,24 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Shape;
-
+import java.awt.*;
 import java.text.AttributedString;
+
+//~--- JDK imports ------------------------------------------------------------
 
 public class LineChartDemo1 extends ApplicationFrame {
 
     /**
      * Creates a new demo.
      *
-     * @param title  the frame title.
+     * @param title the frame title.
      */
     public LineChartDemo1(final String title) {
         super(title);
 
-        final CategoryDataset dataset    = createDataset();
-        final JFreeChart      chart      = createChart(dataset);
-        final ChartPanel      chartPanel = new ChartPanel(chart);
+        final CategoryDataset dataset = createDataset();
+        final JFreeChart chart = createChart(dataset);
+        final ChartPanel chartPanel = new ChartPanel(chart);
 
         chartPanel.setPreferredSize(new Dimension(500, 270));
         setContentPane(chartPanel);
@@ -61,26 +52,26 @@ public class LineChartDemo1 extends ApplicationFrame {
         final String series3 = "Humidity";
 
         // column keys...
-        String[]     types     = new String[] {
-            " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8"
+        String[] types = new String[]{
+                " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8"
         };
-        double[]     inValues  = new double[] {
-            25.0, 24.0, 23.0, 25.0, 27.0, 26.0, 25.0, 24.0
+        double[] inValues = new double[]{
+                25.0, 24.0, 23.0, 25.0, 27.0, 26.0, 25.0, 24.0
         };
-        double[]     outValues = new double[] {
-            25.0, 24.0, 23.0, 25.0, 27.0, 26.0, 25.0, 24.0
+        double[] outValues = new double[]{
+                25.0, 24.0, 23.0, 25.0, 27.0, 26.0, 25.0, 24.0
         };
-        double[]     hValues   = new double[] {
-            25.0, 24.0, 25.0, 24.0, 27.0, 26.0, 23.0, 25.0
+        double[] hValues = new double[]{
+                25.0, 24.0, 25.0, 24.0, 27.0, 26.0, 23.0, 25.0
         };
-        final String type1     = " 1";
-        final String type2     = " 2";
-        final String type3     = " 3";
-        final String type4     = " 4";
-        final String type5     = " 5";
-        final String type6     = " 6";
-        final String type7     = " 7";
-        final String type8     = " 8";
+        final String type1 = " 1";
+        final String type2 = " 2";
+        final String type3 = " 3";
+        final String type4 = " 4";
+        final String type5 = " 5";
+        final String type6 = " 6";
+        final String type7 = " 7";
+        final String type8 = " 8";
 
         // create the dataset...
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -116,22 +107,21 @@ public class LineChartDemo1 extends ApplicationFrame {
     /**
      * Creates a sample chart.
      *
-     * @param dataset  a dataset.
-     *
+     * @param dataset a dataset.
      * @return The chart.
      */
     private JFreeChart createChart(final CategoryDataset dataset) {
 
         // create the chart...
         final JFreeChart chart = ChartFactory.createLineChart("Line Chart Demo 1",    // chart title
-            "Type",                                                                   // domain axis label
-            "Value",                                                                  // range axis label
-            dataset,                                                                  // data
-            PlotOrientation.VERTICAL,                                                 // orientation
-            true,                                                                     // include legend
-            true,                                                                     // tooltips
-            false                                                                     // urls
-                );
+                "Type",                                                                   // domain axis label
+                "Value",                                                                  // range axis label
+                dataset,                                                                  // data
+                PlotOrientation.VERTICAL,                                                 // orientation
+                true,                                                                     // include legend
+                true,                                                                     // tooltips
+                false                                                                     // urls
+        );
 
         ((CategoryPlot) chart.getPlot()).setFixedLegendItems(getPrincipalAndInterestLegendItemCollection());
 
@@ -178,10 +168,10 @@ public class LineChartDemo1 extends ApplicationFrame {
     }
 
     private LegendItemCollection getPrincipalAndInterestLegendItemCollection() {
-        LegendItemCollection result             = new LegendItemCollection();
-        Shape                shape              = new Rectangle(10, 10);
-        AttributedString     label              = new AttributedString("Interest");
-        LegendItem           interestLegendItem = new LegendItem(label, null, null, null, shape, Color.RED);
+        LegendItemCollection result = new LegendItemCollection();
+        Shape shape = new Rectangle(10, 10);
+        AttributedString label = new AttributedString("Interest");
+        LegendItem interestLegendItem = new LegendItem(label, null, null, null, shape, Color.RED);
 
         label = new AttributedString("Principal");
 
@@ -196,7 +186,7 @@ public class LineChartDemo1 extends ApplicationFrame {
     /**
      * Starting point for the demonstration application.
      *
-     * @param args  ignored.
+     * @param args ignored.
      */
     public static void main(final String[] args) {
         final LineChartDemo1 demo = new LineChartDemo1("Line Chart Demo");

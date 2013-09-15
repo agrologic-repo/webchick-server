@@ -7,9 +7,10 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.model.CellinkDto;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -20,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -56,12 +57,12 @@ public class UserLogoutServlet extends HttpServlet {
             logger.error("Unauthorized access!");
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
-            UserDto user = (UserDto) request.getSession().getAttribute("user");
-            CellinkDao cellinkDao = new CellinkDaoImpl();//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+            User user = (User) request.getSession().getAttribute("user");
+            CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
 
             try {
-                List<CellinkDto> cellinks = cellinkDao.getAllUserCellinks(user.getId());
-                for (CellinkDto cellink : cellinks) {
+                Collection<Cellink> cellinks = cellinkDao.getAllUserCellinks(user.getId());
+                for (Cellink cellink : cellinks) {
                     if ((cellink.getState() == CellinkState.STATE_RUNNING)
                             || (cellink.getState() == CellinkState.STATE_START)) {
                         cellink.setState(CellinkState.STATE_STOP);

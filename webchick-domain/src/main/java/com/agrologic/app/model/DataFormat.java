@@ -143,7 +143,6 @@ public class DataFormat {
 
                 case TIME:
                     delim = TIME_DELIMITER;       // hh:mm
-
                     while (len < 4) {
                         sb.insert(0, "0");
                         len++;

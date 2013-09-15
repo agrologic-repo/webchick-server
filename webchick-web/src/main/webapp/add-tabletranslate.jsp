@@ -8,13 +8,14 @@
 
 <%@ include file="disableCaching.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
+<%@ page import="com.agrologic.app.dao.DaoType" %>
+<%@ page import="com.agrologic.app.dao.DbImplDecider" %>
 <%@ page import="com.agrologic.app.dao.LanguageDao" %>
+<%@ page import="com.agrologic.app.model.Language" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
-<jsp:directive.page import="com.agrologic.app.dao.impl.LanguageDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.LanguageDto"/>
-<jsp:directive.page import="com.agrologic.app.model.UserDto"/>
+<% User user = (User) request.getSession().getAttribute("user");
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -24,8 +25,8 @@
     Long langId = Long.parseLong(request.getParameter("langId"));
 
     String tableName = request.getParameter("tableName");
-    LanguageDao languageDao = new LanguageDaoImpl();
-    LanguageDto langDto = languageDao.getById(langId);
+    LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+    Language lang = languageDao.getById(langId);
 %>
 
 <%@page contentType="text/html" pageEncoding="windows-1252" %>
@@ -110,7 +111,7 @@
                     <input type="hidden" id="tableId" name="tableId" value="<%=tableId%>">
                     <input type="hidden" id="langId" name="langId" value="<%=langId%>">
                     <tr>
-                        <td align="left">Insert &nbsp;<%=tableName%> in <%=langDto.getLanguage() %>
+                        <td align="left">Insert &nbsp;<%=tableName%> in <%=lang.getLanguage() %>
                     </tr>
                     <tr>
                         <td align="left"><input id="Ntranslate" type="text" name="Ntranslate">&nbsp;</td>

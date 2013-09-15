@@ -3,18 +3,19 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.CellinkDto" %>
+<%@ page import="com.agrologic.app.model.Cellink" %>
 <%@ page import="com.agrologic.app.web.CellinkState" %>
 <%@ page import="java.util.Collection" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
 
-    UserDto editUser = (UserDto) request.getSession().getAttribute("edituser");
-    Collection<CellinkDto> cellinks = editUser.getCellinks();
+    User editUser = (User) request.getSession().getAttribute("edituser");
+    Collection<Cellink> cellinks = editUser.getCellinks();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html dir="<%=(String) request.getSession().getAttribute("dir")%>" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
@@ -118,7 +119,7 @@
                             <td style="font-weight:bold"><%=session.getAttribute("user.role")%>
                             </td>
                             <td bgcolor="#F3F3F3">
-                                <%if (editUser.getRole() == UserRole.ADMINISTRATOR) {%>
+                                <%if (editUser.getRole() == UserRole.ADMIN) {%>
                                 <%=session.getAttribute("user.role.admin")%>
                                 <%} else {%>
                                 <%=session.getAttribute("user.role.regular")%>
@@ -170,7 +171,7 @@
                                 <th align="center" width="150px"><%=session.getAttribute("table.col.cellink.name")%>
                                 </th>
 
-                                <%if (user.getRole() == UserRole.ADMINISTRATOR) {%>
+                                <%if (user.getRole() == UserRole.ADMIN) {%>
                                 <th align="center" width="100px">
                                     <%=session.getAttribute("table.col.cellink.password")%>
                                 </th>
@@ -184,7 +185,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <%for (CellinkDto cellink : cellinks) {%>
+                            <%for (Cellink cellink : cellinks) {%>
                             <tr onmouseover="this.style.background='#CEDEF4'" onmouseout="this.style.background='white'"
                                 title="Click for details">
                                 <td align="center"><%=cellink.getId()%>
@@ -192,14 +193,18 @@
                                 <td align="center" style="padding-left:10px;"><a
                                         href='./cellinkinfo.html?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>'><%=cellink.getName()%>
                                 </td>
-                                <%if (user.getRole() == UserRole.ADMINISTRATOR) {%>
+                                <%if (user.getRole() == UserRole.ADMIN) {%>
                                 <td align="center" style="padding-left:10px;"
                                     onclick="window.document.location='./cellinkinfo.html?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>'"><%=cellink.getPassword()%>
                                 </td>
                                 <%}%>
                                 <td align="center" style="padding-left:10px;"><%=cellink.getSimNumber()%>
                                 </td>
-                                <%if (CellinkState.OFFLINE != cellink.getCellinkState()) {%>
+                                <%
+                                    if (cellink.getCellinkState().getValue() == CellinkState.STATE_ONLINE
+                                            || cellink.getCellinkState().getValue() == CellinkState.STATE_START
+                                            || cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {
+                                %>
                                 <td align="center"
                                     bgcolor="<%=CellinkState.getCellinkStateBGColor(cellink.getState())%>"
                                     style="cursor: pointer" title="<%=session.getAttribute("button.connect.cellink")%>"
@@ -247,7 +252,7 @@
             </tr>
             <tr>
                 <td>
-                    <%if (userRole == UserRole.ADMINISTRATOR) {%>
+                    <%if (userRole == UserRole.ADMIN) {%>
                     <button id="btnBack" name="btnBack"
                             onclick='return back("./all-users.html");'><%=session.getAttribute("button.back")%>
                     </button>

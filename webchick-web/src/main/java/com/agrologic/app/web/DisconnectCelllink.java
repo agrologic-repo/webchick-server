@@ -1,13 +1,8 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,11 +12,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class DisconnectCelllink extends HttpServlet {
 
     /**
@@ -39,14 +29,15 @@ public class DisconnectCelllink extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            CellinkDao cellinkDao = new CellinkDaoImpl();
+            CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
             Long userId = Long.parseLong(request.getParameter("userId"));
             Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
 
             try {
-                cellinkDao.disconnectStarted(cellinkId);
-                cellinkDao.disconnect(cellinkId);
+                cellinkDao.changeState(cellinkId, CellinkState.STATE_START, CellinkState.STATE_STOP);
+                cellinkDao.changeState(cellinkId, CellinkState.STATE_RUNNING, CellinkState.STATE_STOP);
             } catch (SQLException ex) {
+
             }
 
             request.getSession().setAttribute("message",

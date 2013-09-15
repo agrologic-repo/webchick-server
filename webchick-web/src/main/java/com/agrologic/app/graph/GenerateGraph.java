@@ -10,7 +10,6 @@ import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
 import com.agrologic.app.graph.daily.Graph24FWI;
 import com.agrologic.app.graph.daily.Graph24IOH;
 import com.agrologic.app.graph.daily.GraphType;
@@ -35,7 +34,7 @@ public class GenerateGraph {
         String filenameth = null;
 
         try {
-            ControllerDao controllerDao = new ControllerDaoImpl();
+            ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
             String values = controllerDao.getControllerGraph(controllerId);
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             Data setClock = dataDao.getSetClockByController(controllerId);
@@ -76,7 +75,7 @@ public class GenerateGraph {
         String filenamewft = null;
 
         try {
-            ControllerDao controllerDao = new ControllerDaoImpl();
+            ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
             String values = controllerDao.getControllerGraph(controllerId);
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             Data setClock = dataDao.getSetClockByController(controllerId);

@@ -6,15 +6,11 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FeedDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FeedDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FeedDto;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.FeedDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Feed;
+import com.agrologic.app.model.Flock;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -57,8 +54,8 @@ public class RemoveFeedServlet extends HttpServlet {
             Long feedId = Long.parseLong(request.getParameter("feedId"));
 
             try {
-                FeedDao feedDao = new FeedDaoImpl();
-                FeedDto feed = feedDao.getById(feedId);
+                FeedDao feedDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedDaoImpl.class);
+                Feed feed = feedDao.getById(feedId);
 
                 if (feed == null) {
                     logger.info("Feed " + feedId + " can't be removed");
@@ -68,13 +65,13 @@ public class RemoveFeedServlet extends HttpServlet {
                     feedDao.remove(feed.getId());
                     logger.info("Feed removed successfully from the datebase");
 
-                    FlockDao flockDao = new FlockDaoImpl();
-                    FlockDto flock = flockDao.getById(flockId);
-                    List<FeedDto> feedList = feedDao.getAllByFlockId(flockId);
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                    Flock flock = flockDao.getById(flockId);
+                    List<Feed> feedList = feedDao.getAllByFlockId(flockId);
                     int feedAmount = 0;
                     float feedTotalCost = 0;
 
-                    for (FeedDto g : feedList) {
+                    for (Feed g : feedList) {
                         feedAmount += g.getAmount();
                         feedTotalCost += g.getTotal();
                     }
@@ -83,12 +80,11 @@ public class RemoveFeedServlet extends HttpServlet {
                     flock.setTotalFeed(feedTotalCost);
                     flockDao.update(flock);
 
-                    ControllerDao controllerDao = new ControllerDaoImpl();
-                    List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                    for (ControllerDto controller : controllers) {
-                        List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                    for (Controller controller : controllers) {
+                        Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                         controller.setFlocks(flocks);
                     }
 

@@ -1,9 +1,6 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -47,38 +44,34 @@ public class RCMainScreenAjax extends HttpServlet {
                 lang = "en";
             }
 
-//          Map<Long, Long> nextScrIdsByCntrl = new HashMap<Long, Long>();
-
             try {
-                CellinkDao cellinkDao = new CellinkDaoImpl();
-                CellinkDto cellink = cellinkDao.getById(cellinkId);
+                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                Cellink cellink = cellinkDao.getById(cellinkId);
 
                 if (cellink.getState() == CellinkState.STATE_ONLINE) {
                     cellink.setState(CellinkState.STATE_START);
                     cellinkDao.update(cellink);
                 }
 
-                // cellink.setTime(new Timestamp(System.currentTimeMillis()));
                 cellinkDao.update(cellink);
 
-                LanguageDao languageDao = new LanguageDaoImpl();
+                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                 long langId = languageDao.getLanguageId(lang);    // get language id
 
                 // get all controllers connected to cellink
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllActiveByCellinkId(cellinkId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getActiveCellinkControllers(cellinkId);
 
                 request.getSession().setAttribute("controllers", controllers);
-
-                // check if controllerdata table have any data
+                // check if controller data table have any data
                 if (!controllerDao.isDataReady(userId)) {
                     out.println("<status=1 />");
                     out.println("<table border='0' cellPadding='1' cellSpacing='1'>");
 
                     int column = 0;
 
-                    for (ControllerDto controller : controllers) {
-                        if ((column % ControllerDto.COLUMN_NUMBERS) == 0) {
+                    for (Controller controller : controllers) {
+                        if ((column % Controller.COLUMN_NUMBERS) == 0) {
                             out.println("<tr>");
                         }
 
@@ -106,7 +99,7 @@ public class RCMainScreenAjax extends HttpServlet {
                         column++;
                         out.println("</td>");
 
-                        if ((column % ControllerDto.COLUMN_NUMBERS) == 0) {
+                        if ((column % Controller.COLUMN_NUMBERS) == 0) {
                             out.println("</tr>");
                         }
                     }
@@ -138,7 +131,7 @@ public class RCMainScreenAjax extends HttpServlet {
 
                     out.println("<table border='0' cellPadding='1' cellSpacing='1'>");
 
-                    for (ControllerDto controller : controllers) {
+                    for (Controller controller : controllers) {
 
                         // get asigned to controller program
                         Program program = programDao.getById(controller.getProgramId());
@@ -157,7 +150,7 @@ public class RCMainScreenAjax extends HttpServlet {
                         screen.setTables(tables);
 
                         for (Table table : tables) {
-                            if ((column % ControllerDto.COLUMN_NUMBERS) == 0) {
+                            if ((column % Controller.COLUMN_NUMBERS) == 0) {
                                 out.println("<tr>");
                             }
 
@@ -165,9 +158,8 @@ public class RCMainScreenAjax extends HttpServlet {
 
                             controller.setSetClock(setClock);
 
-                            Data setDate = dataDao.getSetDateByController(controller.getId());
-
-                            controller.setSetDate(setDate);
+//                            Data setDate = dataDao.getSetDateByController(controller.getId());
+//                            controller.setSetDate(setDate);
 
                             Collection<Data> list = dataDao.getOnlineTableDataList(controller.getId(), program.getId(),
                                     screen.getId(), table.getId(), langId);
@@ -228,7 +220,7 @@ public class RCMainScreenAjax extends HttpServlet {
                             column++;
                             out.println("</td>");
 
-                            if ((column % ControllerDto.COLUMN_NUMBERS) == 0) {
+                            if ((column % Controller.COLUMN_NUMBERS) == 0) {
                                 out.println("</tr>");
                             }
                         }
@@ -281,7 +273,7 @@ public class RCMainScreenAjax extends HttpServlet {
         return false;
     }
 
-    private void createDataTable(ControllerDto controller, Screen screen, Data data, HttpServletRequest request,
+    private void createDataTable(Controller controller, Screen screen, Data data, HttpServletRequest request,
                                  PrintWriter out) {
         if (!data.isStatus()) {
             out.println("<tr class='' onmouseover=\"this.className='selected'\" onmouseout=\"this.className=''\">");

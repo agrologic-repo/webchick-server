@@ -10,12 +10,14 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.Data" %>
-<%@ page import="com.agrologic.app.model.HistorySettingDto" %>
-<%@ page import="com.agrologic.app.model.UserDto" %>
-<%@ page import="com.agrologic.app.web.UserRole" %>
-<%@ page import="java.util.Collection" %>
+<%@ page import="com.agrologic.app.model.HistorySetting" %>
+<%@ page import="com.agrologic.app.model.User" %>
+<%@ page import="com.agrologic.app.model.UserRole" %>
+<%@ page import="com.google.common.collect.Lists" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<%@ page import="java.util.Collection" %>
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -32,12 +34,12 @@
     Long flockId = Long.parseLong(request.getParameter("flockId"));
 
     Collection<Data> historyData = (Collection<Data>) request.getSession().getAttribute("historyData");
-    Collection<HistorySettingDto> historySettingData = (Collection<HistorySettingDto>) request.getSession().getAttribute("historySettingData");
+    Collection<HistorySetting> historySettingData = (Collection<HistorySetting>) request.getSession().getAttribute("historySettingData");
 %>
 
-<%! String historySettingChecked(Collection<HistorySettingDto> historySettingData, Long dataId) {
+<%! String historySettingChecked(Collection<HistorySetting> historySettingData, Long dataId) {
     if (historySettingData != null) {
-        for (HistorySettingDto hsd : historySettingData) {
+        for (HistorySetting hsd : historySettingData) {
             if (hsd.getDataId() == dataId) {
                 if (hsd.getChecked().equals("true"))
                     return "checked";
@@ -165,7 +167,7 @@
                 <img src="img/display.png" style="cursor: pointer" border="0"/>
                 &nbsp;<%=session.getAttribute("button.screens")%>&nbsp;
             </a>
-            <%if (user.getRole() == UserRole.ADMINISTRATOR) {%>
+            <%if (user.getRole() == UserRole.ADMIN) {%>
             <a href="<%=request.getContextPath()%>/userinfo.html?userId=<%=userId%>">
                 <img src="img/cellinks.png" style="cursor: pointer" border="0"/>
                 &nbsp;<%=session.getAttribute("button.cellinks")%>&nbsp;
@@ -212,7 +214,7 @@
                         <td valign="top">
                             <ul>
                                 <% for (int i = 0; i < historySettingData.size(); i++) {%>
-                                <% Data data = historyData.get(i);
+                                <% Data data = Lists.newArrayList(historyData).get(i);
                                     String check = historySettingChecked(historySettingData, data.getId());%>
                                 <li>
                                     <label for="<%=data.getId() %>">

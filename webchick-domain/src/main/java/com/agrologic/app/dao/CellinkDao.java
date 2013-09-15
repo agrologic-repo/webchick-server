@@ -2,6 +2,7 @@ package com.agrologic.app.dao;
 
 
 import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.CellinkCriteria;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -43,8 +44,7 @@ public interface CellinkDao {
     /**
      * @param cellinks
      */
-    void insert(Collection<Cellink> cellinks);
-
+    void insert(Collection<Cellink> cellinks) throws SQLException;
 
     /**
      * Retrieve cellink by specified id.
@@ -74,23 +74,6 @@ public interface CellinkDao {
     Cellink getActualCellink() throws SQLException;
 
     /**
-     * Retrieve all cellinks from database.
-     *
-     * @return Collection of all cellink from cellink table.
-     * @throws SQLException if failed to execute statement.
-     */
-    Collection<Cellink> getAll() throws SQLException;
-
-    /**
-     * Retrieve Collection of cellinks owned to user with specified user id.
-     *
-     * @param userId the user id.
-     * @return Collection of cellinks owned to user with specified user id.
-     * @throws SQLException if failed to execute statement.
-     */
-    Collection<Cellink> getAllUserCellinks(Long userId) throws SQLException;
-
-    /**
      * Return state of cellink with specified id.
      *
      * @param id the cellink id
@@ -115,6 +98,31 @@ public interface CellinkDao {
      * @throws SQLException if failed to execute statement.
      */
     int count() throws SQLException;
+
+    int count(CellinkCriteria criteria) throws SQLException;
+
+    void changeState(Long id, Integer oldState, Integer newState) throws SQLException;
+
+    /**
+     * Retrieve all cellinks from database.
+     *
+     * @return Collection of all cellink from cellink table.
+     * @throws SQLException if failed to execute statement.
+     */
+    Collection<Cellink> getAll() throws SQLException;
+
+    /**
+     * Retrieve Collection of cellinks owned to user with specified user id.
+     *
+     * @param userId the user id.
+     * @return Collection of cellinks owned to user with specified user id.
+     * @throws SQLException if failed to execute statement.
+     */
+    Collection<Cellink> getAllUserCellinks(Long userId) throws SQLException;
+
+//    Collection<Cellink> getAll(int role, String company, Integer state, String type, String name, String index) throws SQLException;
+
+    Collection<Cellink> getAll(CellinkCriteria criteria) throws SQLException;
 }
 
 

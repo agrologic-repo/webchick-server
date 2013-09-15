@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.*;
@@ -20,11 +14,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class ProgramDetailsServet extends HttpServlet {
 
     /**

@@ -75,6 +75,13 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
         initialize();
     }
 
+    public RequestMessage(final MessageType type, final String netName, final Integer growDay) {
+        this.netName = netName;
+        this.messageType = type;
+        this.growDay = growDay;
+        initialize();
+    }
+
     public RequestMessage(final MessageType type, final String netName, Integer growDay, String dnum) {
         this.netName = netName;
         this.messageType = type;
@@ -126,7 +133,6 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
                 byte[] ka = getKeepAlive().getBytes();
                 setBuffer(new byte[]{ProtocolBytes.SOT.getValue(), ka[0], '\r'});
                 break;
-
 
             case TEST_MESSAGE:
                 messageString.append("%").append(getNetName()).append("R4096 100").append(" ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");

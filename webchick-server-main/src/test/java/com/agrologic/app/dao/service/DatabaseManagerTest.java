@@ -16,6 +16,7 @@ import com.agrologic.app.util.PropertyFileUtil;
 import org.junit.*;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -23,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 //import com.agrologic.app.model.Configuration;
 
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -68,7 +68,7 @@ public class DatabaseManagerTest {
         Cellink cellink = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class).getById(cellinkId);
         user.addCellink(cellink);
 
-        List<Controller> controllers = (List<Controller>) DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class).getActiveCellinkControllers(cellinkId);
+        Collection<Controller> controllers = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class).getActiveCellinkControllers(cellinkId);
         cellink.setControllers(controllers);
 
         assertEquals("getUser()", user, dbManager.getDatabaseLoader().getUser());

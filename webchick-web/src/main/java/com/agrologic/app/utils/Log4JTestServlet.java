@@ -6,26 +6,23 @@
 package com.agrologic.app.utils;
 
 
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
-
-import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
- *
  * @author JanL
  */
 public class Log4JTestServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    static Logger             log              = Logger.getLogger(Log4JTestServlet.class);
+    static Logger log = Logger.getLogger(Log4JTestServlet.class);
 
     public Log4JTestServlet() {
         super();

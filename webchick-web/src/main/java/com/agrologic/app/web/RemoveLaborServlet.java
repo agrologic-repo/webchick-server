@@ -6,15 +6,11 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.LaborDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.LaborDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
-import com.agrologic.app.model.LaborDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.LaborDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.Labor;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -57,8 +54,8 @@ public class RemoveLaborServlet extends HttpServlet {
             Long laborId = Long.parseLong(request.getParameter("laborId"));
 
             try {
-                LaborDao laborDao = new LaborDaoImpl();
-                LaborDto labor = laborDao.getById(laborId);
+                LaborDao laborDao = DbImplDecider.use(DaoType.MYSQL).getDao(LaborDaoImpl.class);
+                Labor labor = laborDao.getById(laborId);
 
                 if (labor == null) {
                     logger.info("Labor " + laborId + " can't be removed");
@@ -68,25 +65,24 @@ public class RemoveLaborServlet extends HttpServlet {
                     laborDao.remove(labor.getId());
                     logger.info("Labor removed successfully from the datebase");
 
-                    List<LaborDto> labors = laborDao.getAllByFlockId(flockId);
+                    List<Labor> labors = laborDao.getAllByFlockId(flockId);
                     float totalLaborsSalary = 0;
 
-                    for (LaborDto l : labors) {
+                    for (Labor l : labors) {
                         totalLaborsSalary += l.getSalary();
                     }
 
-                    FlockDao flockDao = new FlockDaoImpl();
-                    FlockDto flock = flockDao.getById(flockId);
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                    Flock flock = flockDao.getById(flockId);
 
                     flock.setTotalLabor(totalLaborsSalary);
                     flockDao.update(flock);
 
-                    ControllerDao controllerDao = new ControllerDaoImpl();
-                    List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                    for (ControllerDto controller : controllers) {
-                        List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                    for (Controller controller : controllers) {
+                        Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                         controller.setFlocks(flocks);
                     }
 

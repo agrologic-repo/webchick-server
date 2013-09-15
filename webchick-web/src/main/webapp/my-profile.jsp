@@ -3,7 +3,8 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -179,11 +180,11 @@
                                     <td style="font-weight:bold"><%=session.getAttribute("table.col.user.role") %>
                                     </td>
                                     <td bgcolor="#F3F3F3">
-                                        <%if (user.getRole() == UserRole.ADMINISTRATOR) {%>
+                                        <%if (user.getRole() == UserRole.ADMIN) {%>
                                         <%=session.getAttribute("user.role.admin") %>
-                                        <%} else if (user.getRole() == UserRole.ADVANCED) {%>
+                                        <%} else if (user.getRole() == UserRole.DISTRIBUTOR) {%>
                                         <%=session.getAttribute("user.role.advanced") %>
-                                        <%} else if (user.getRole() == UserRole.REGULAR) {%>
+                                        <%} else if (user.getRole() == UserRole.USER) {%>
                                         <%=session.getAttribute("user.role.regular") %>
                                         <%} else {%>
 
@@ -195,7 +196,7 @@
                     </tr>
                     <tr>
                         <td colspan="1">
-                            <%if (user.getRole() == UserRole.REGULAR) {%>
+                            <%if (user.getRole() == UserRole.USER) {%>
                             <button id="btnCancel" name="btnCancel"
                                     onclick='return back("./my-farms.html?userId=<%=user.getId() %>");'>
                                 <%=session.getAttribute("button.back") %>

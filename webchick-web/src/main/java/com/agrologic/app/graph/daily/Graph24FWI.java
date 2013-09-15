@@ -6,10 +6,8 @@
 package com.agrologic.app.graph.daily;
 
 
-
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.utils.DateLocal;
-
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.DateAxis;
@@ -29,24 +27,11 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.util.UnitType;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import java.awt.Color;
-import java.awt.Font;
-
+import java.awt.*;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-
 import java.util.Locale;
 
-/**
- * Title: Graph24WaterConsumpTemp <br>
- * Description: <br>
- * Copyright:   Copyright (c) 2009 <br>
- * Company:     Agro Logic LTD. <br>
- * @author      Valery Manakhimov <br>
- * @version     1.1 <br>
- */
 public class Graph24FWI extends AbstractGraph {
     private int resetTime;
 
@@ -60,7 +45,7 @@ public class Graph24FWI extends AbstractGraph {
     public Graph24FWI(GraphType type, String values, Long currentTime, Locale locale) {
         super(type, values);
         this.currentTime = currentTime;
-        this.locale      = locale;
+        this.locale = locale;
         initLaguage();
     }
 
@@ -68,7 +53,6 @@ public class Graph24FWI extends AbstractGraph {
     public final JFreeChart createChart() {
         if (!isEmpty()) {
             DateAxis dateaxis = new DateAxis(dictinary.get("graph.fw.axis.time"));
-
             dateaxis.setDateFormatOverride(new SimpleDateFormat("HH"));
             dateaxis.setLabelPaint(Color.BLACK);
             dateaxis.setLabelFont(new Font("Dialog", Font.PLAIN, 16));
@@ -76,7 +60,6 @@ public class Graph24FWI extends AbstractGraph {
             dateaxis.setVerticalTickLabels(false);
 
             NumberAxis numberaxis = new NumberAxis(dictinary.get("graph.fw.axis.feed"));
-
             numberaxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
             numberaxis.setAutoRangeIncludesZero(true);
             numberaxis.setLabelPaint(Color.RED);
@@ -85,13 +68,13 @@ public class Graph24FWI extends AbstractGraph {
             numberaxis.setTickLabelFont(new Font("Dialog", Font.BOLD, 12));
 
             // Create tooltip and URL generators
-            SimpleDateFormat           dateFormat = new SimpleDateFormat();
-            StandardXYToolTipGenerator ttg        =
-                new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT, dateFormat,
-                                               NumberFormat.getInstance());
-            TimeSeriesURLGenerator urlg     = new TimeSeriesURLGenerator(dateFormat, "", "series", "values");
+            SimpleDateFormat dateFormat = new SimpleDateFormat();
+            StandardXYToolTipGenerator ttg =
+                    new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT, dateFormat,
+                            NumberFormat.getInstance());
+            TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(dateFormat, "", "series", "values");
             StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg,
-                                                  urlg);
+                    urlg);
 
             renderer.setShapesFilled(true);
             renderer.setBaseShapesVisible(true);
@@ -128,7 +111,7 @@ public class Graph24FWI extends AbstractGraph {
             waterAxis.setUpperBound(maxY + 1);
 
             StandardXYItemRenderer renderer2 = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg,
-                                                   urlg);
+                    urlg);
 
             renderer2.setShapesFilled(true);
             renderer2.setBaseShapesVisible(true);
@@ -166,27 +149,27 @@ public class Graph24FWI extends AbstractGraph {
     private XYDataset createFeedDataset() {
         resetMinMaxY();
 
-        DateLocal                  now                  = DateLocal.now();
-        DateLocal                  yday                 = now.addDays(-1);
-        int                        day                  = now.getDate();
-        int                        month                = now.getMonth();
-        int                        year                 = now.getYear();
-        int                        hour                 = now.getHours() - 1;
-        Day                        today                = new Day(SerialDate.createInstance(day, month, year));
-        Day                        yesterday            = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
+        DateLocal now = DateLocal.now();
+        DateLocal yday = now.addDays(-1);
+        int day = now.getDate();
+        int month = now.getMonth();
+        int year = now.getYear();
+        int hour = now.getHours() - 1;
+        Day today = new Day(SerialDate.createInstance(day, month, year));
+        Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
         final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
-        final TimeSeries           feedSeries           = new TimeSeries(dictinary.get("graph.fw.series.feed"));
-        int                        hr                   = (int) (currentTime / 100) - 1;
+        final TimeSeries feedSeries = new TimeSeries(dictinary.get("graph.fw.series.feed"));
+        int hr = (int) (currentTime / 100) - 1;
 
         for (int i = FEED_INDEX + DAY_HOURS - 1; i >= FEED_INDEX; i--, hr--) {
-            String value    = DataFormat.formatToStringValue(DataFormat.DEC_0, Long.valueOf(datasetString[i]));
-            int    intValue = Integer.valueOf(value);
+            String value = DataFormat.formatToStringValue(DataFormat.DEC_0, Long.valueOf(datasetString[i]));
+            int intValue = Integer.valueOf(value);
 
             feedSeries.add(new Hour(hr, today), intValue);
 
             if (hr == 0) {
                 today = yesterday;
-                hr    = DAY_HOURS;
+                hr = DAY_HOURS;
             }
 
             if (maxY < intValue) {
@@ -204,30 +187,30 @@ public class Graph24FWI extends AbstractGraph {
     }
 
     private XYDataset createWaterDataset() {
-        DateLocal                  now                  = DateLocal.now();
-        DateLocal                  yday                 = now.addDays(-1);
-        int                        day                  = now.getDate();
-        int                        month                = now.getMonth();
-        int                        year                 = now.getYear();
-        int                        hour                 = now.getHours() - 1;
-        Day                        today                = new Day(SerialDate.createInstance(day, month, year));
-        Day                        yesterday            = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
+        DateLocal now = DateLocal.now();
+        DateLocal yday = now.addDays(-1);
+        int day = now.getDate();
+        int month = now.getMonth();
+        int year = now.getYear();
+        int hour = now.getHours() - 1;
+        Day today = new Day(SerialDate.createInstance(day, month, year));
+        Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
         final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
-        final TimeSeries           timeseries1          = new TimeSeries(dictinary.get("graph.fw.series.water"));
+        final TimeSeries timeseries1 = new TimeSeries(dictinary.get("graph.fw.series.water"));
 
         resetMinMaxY();
 
         int hr = (int) (currentTime / 100) - 1;
 
         for (int i = WATER_INDEX + DAY_HOURS - 1; i >= WATER_INDEX; i--, hr--) {
-            String value    = DataFormat.formatToStringValue(DataFormat.DEC_0, Long.valueOf(datasetString[i]));
-            int    intValue = Integer.valueOf(value);
+            String value = DataFormat.formatToStringValue(DataFormat.DEC_0, Long.valueOf(datasetString[i]));
+            int intValue = Integer.valueOf(value);
 
             timeseries1.add(new Hour(hr, today), intValue);
 
             if (hr == 0) {
                 today = yesterday;
-                hr    = DAY_HOURS;
+                hr = DAY_HOURS;
             }
 
             if (maxY < intValue) {

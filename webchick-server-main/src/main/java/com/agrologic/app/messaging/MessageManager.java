@@ -148,6 +148,7 @@ public class MessageManager implements Observer {
             //3.1. create history daily
             try {
                 requestToSend = createHistoryRequest();
+                setRequestCreated(true);
             } catch (IllegalAccessException ex) {
                 controller.switchOff();
                 setRequestCreated(false);
@@ -242,6 +243,8 @@ public class MessageManager implements Observer {
             return true;
         }
         final long timeSinceUpdated = System.currentTimeMillis() - updateTime.getTime();
+        Long t = TimeUnit.HOURS.toMillis(1L);
+        System.out.println("Time ::: " + t);
         if (timeSinceUpdated > TimeUnit.HOURS.toMillis(1L)) {
 
             return true;
@@ -262,7 +265,6 @@ public class MessageManager implements Observer {
         }
         // flock is opened
         if (flock != null) {
-            System.out.println(" History Request Cycle : " + histRequestCycle);
             if (histRequestCycle == 0 && (requestsHistory24 == null || requestsHistory24.isCycleComplete())) {
                 resetHistReqCycle();
                 if (requestsHistory24 != null) {
@@ -296,7 +298,6 @@ public class MessageManager implements Observer {
 
         // flock is opened
         if (flock != null) {
-            System.out.println(" History24 Request Cycle : " + hist24RequestCycle);
             if (hist24RequestCycle == 0) {
                 Data growDay = dataDao.getGrowDay(controller.getId());
                 if (growDay == null) {
@@ -349,7 +350,7 @@ public class MessageManager implements Observer {
         } else {
             growDay += 1;
         }
-        return new RequestMessage(MessageType.REQUEST_HISTORY, controller.getNetName(), growDay, null);
+        return new RequestMessage(MessageType.REQUEST_HISTORY, controller.getNetName(), growDay);
     }
 
     /**
@@ -567,7 +568,7 @@ public class MessageManager implements Observer {
      * @throws SQLException
      */
     private boolean histogramShouldBeRequested() throws SQLException {
-        final Timestamp updateTime = controllerDao.getHistogramUpdateTime(controller.getId());
+        final Timestamp updateTime = controllerDao.getHistogramUpdatedTime(controller.getId());
         if (updateTime == null) {
             return true;
         }

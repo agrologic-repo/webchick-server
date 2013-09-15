@@ -2,202 +2,81 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.LanguageDao;
+import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.Language;
-import com.agrologic.app.dao.mappers.LanguageUtil;
+import org.apache.commons.lang.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LanguageDaoImpl implements LanguageDao {
-    protected DaoFactory dao;
+    protected final DaoFactory dao;
+    private final Logger logger = LoggerFactory.getLogger(LanguageDaoImpl.class);
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    public LanguageDaoImpl(DaoFactory daoFactory) {
-        dao = daoFactory;
+    public LanguageDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("languages");
+        this.dao = dao;
     }
 
     public void insert(Language language) throws SQLException {
-        String sqlQuery = "insert into languages values (?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setObject(1, language.getId());
-            prepstmt.setString(2, language.getLanguage());
-            prepstmt.setString(3, language.getShortLang());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Insert Language To The DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Creating language with id [{}]", language.getId());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("id", language.getId());
+        valuesToInsert.put("lang", language.getLanguage());
+        valuesToInsert.put("short", language.getShortLang());
+        jdbcInsert.execute(valuesToInsert);
     }
 
-    public void insert(Collection<Language> languageList) throws SQLException {
-        String sqlQuery = "insert into languages values (?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-
-            // turn off autocommit
-            con.setAutoCommit(false);
-
-            int i = 0;
-
-            prepstmt = con.prepareStatement(sqlQuery);
-
-            for (Language language : languageList) {
-                prepstmt.setObject(1, language.getId());
-                prepstmt.setString(2, language.getLanguage());
-                prepstmt.setString(3, language.getShortLang());
-                prepstmt.addBatch();
-
-                if ((i + 1) % 200 == 0) {
-                    prepstmt.executeBatch();    // Execute every 200 items.
-                    System.out.print(".");
-                }
-
-                i++;
-            }
-            prepstmt.executeBatch();
-            con.commit();
-            con.setAutoCommit(true);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    dao.printSQLException(ex);
-
-                    throw new SQLException("Transaction is being rolled back");
-                }
-            }
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+    public void insert(Collection<Language> languages) throws SQLException {
+        for (Language language : languages) {
+            insert(language);
         }
     }
 
     public void update(Language language) throws SQLException {
-        String sqlQuery = "update languages set Lang=?, Short=? where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, language.getLanguage());
-            prepstmt.setString(2, language.getShortLang());
-            prepstmt.setObject(3, language.getId());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Update Program In DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Update language with id [{}]", language.getId());
+        jdbcTemplate.update("update languages set Name=? where ID=?", new Object[]{language.getLanguage(),
+                language.getShortLang(), language.getId()});
     }
 
     public void remove(Long langId) throws SQLException {
-        String sqlQuery = "delete from languages where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, langId);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Delete Language From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        Validate.notNull(langId, "Language id can not be null");
+        logger.debug("Delete alarm with id [{}]", langId);
+        jdbcTemplate.update("delete from languages where ID=?", new Object[]{langId});
     }
 
     @Override
     public Long getLanguageId(String l) throws SQLException {
-        String sqlQuery = "select id from languages where short like '%" + l + "%'";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            if (rs.next()) {
-                return rs.getLong("ID");
-            } else {
-                return Long.valueOf(1);
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Language ID From DataBase");
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        String sqlQuery = "select id from languages where short like ?";
+        return jdbcTemplate.queryForLong(sqlQuery, new Object[]{"%" + l + "%"});
     }
 
     @Override
     public Language getById(Long langId) throws SQLException {
+        logger.debug("Get language with id [{}]", langId);
         String sqlQuery = "select * from languages where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, langId);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return LanguageUtil.makeLang(rs);
-            } else {
-                return new Language();
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Language ID From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        List<Language> languages = jdbcTemplate.query(sqlQuery, new Object[]{langId}, RowMappers.language());
+        if (languages.isEmpty()) {
+            return null;
         }
+        return languages.get(0);
     }
 
     @Override
     public Collection<Language> geAll() throws SQLException {
+        logger.debug("Get all languages");
         String sqlQuery = "select * from languages";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-            return LanguageUtil.makeLangList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Languages From DataBase", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        return jdbcTemplate.query(sqlQuery, RowMappers.language());
     }
 }

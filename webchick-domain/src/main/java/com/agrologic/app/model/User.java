@@ -1,13 +1,10 @@
 package com.agrologic.app.model;
 
+import com.agrologic.app.except.ObjectDoesNotExist;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import com.agrologic.app.except.ObjectDoesNotExist;
-
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +12,7 @@ import java.util.List;
 
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Long   id;
+    private Long id;
     private String company;
     private String email;
     private String firstName;
@@ -23,7 +20,7 @@ public class User implements Serializable {
     private String login;
     private String password;
     private String phone;
-    private UserRole currRole;
+    private UserRole role;
     private Integer state;
     private Boolean toValidate;
     private Collection<Cellink> cellinks;
@@ -50,19 +47,27 @@ public class User implements Serializable {
     }
 
     public void setUserRole(Integer role) {
-        this.currRole = UserRole.get(role);
+        this.role = UserRole.get(role);
     }
 
     public void setUserRole(UserRole userRole) {
-        this.currRole = userRole;
+        this.role = userRole;
     }
 
     public UserRole getUserRole() {
-        return currRole;
+        return role;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     public Integer getState() {
-        return state;
+        return state == null ? 0 : state;
     }
 
     public void setState(Integer state) {
@@ -178,7 +183,7 @@ public class User implements Serializable {
     }
 
     public String userRoleText() {
-        return currRole.getText();
+        return role.getText();
     }
 
     @Override
@@ -199,7 +204,7 @@ public class User implements Serializable {
 
         return new EqualsBuilder()
                 .append(this.login, user.login)
-                .append(this.password,user.password).isEquals();
+                .append(this.password, user.password).isEquals();
     }
 
     @Override

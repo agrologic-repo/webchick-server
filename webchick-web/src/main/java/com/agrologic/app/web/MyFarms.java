@@ -8,11 +8,12 @@ package com.agrologic.app.web;
 
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.model.CellinkDto;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.CellinkCriteria;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -22,9 +23,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 public class MyFarms extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -47,103 +49,91 @@ public class MyFarms extends HttpServlet {
             logger.error("Unauthorized access!");
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
-            UserDto user = (UserDto) request.getSession().getAttribute("user");
-            String nameParam = request.getParameter("name");
-            if (nameParam == null) {
-                nameParam = "";
-            }
-
-            String stateParam = request.getParameter("state");
-            if (stateParam == null) {
-                stateParam = "";
-            }
-
+            User user = (User) request.getSession().getAttribute("user");
+            String name = request.getParameter("name");
             String typeParam = request.getParameter("type");
-            if (typeParam == null) {
-                typeParam = "";
-            }
+            String stateParam = request.getParameter("state");
+            String indexParam = request.getParameter("index");
 
             Integer state = null;
             try {
                 state = Integer.parseInt(stateParam);
+                if (state == -1) {
+                    state = null;
+                }
             } catch (Exception e) {
-                state = -1;
+                state = null;
             }
 
-            String index = request.getParameter("index");
-            if (index == null) {
-                index = "0";
+            Integer index = null;
+            try {
+                index = Integer.parseInt(indexParam);
+            } catch (Exception e) {
+                index = null;
             }
 
             try {
-                CellinkDao cellinkDao = new CellinkDaoImpl();
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                int count = 0;
+                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                CellinkCriteria criteria = new CellinkCriteria();
+                criteria.setUserId(user.getId());
+                criteria.setRole(user.getRole().getValue());
+                criteria.setCompany(user.getCompany());
+                criteria.setState(state);
+                criteria.setName(name);
+                criteria.setType(typeParam);
+                criteria.setIndex(index);
+
+                int count;
+                Collection<Cellink> cellinks;
                 switch (user.getRole()) {
                     default:
+                    case USER:
                         logger.info("retrieve all cellinks that belongs to  " + user);
-                        List<CellinkDto> cellinks = cellinkDao.getAll(user.getId(), state, typeParam, nameParam);
-                        for (CellinkDto cellink : cellinks) {
-                            List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellink.getId());
+                        cellinks = cellinkDao.getAll(criteria);
+                        for (Cellink cellink : cellinks) {
+                            Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
                             cellink.setControllers(controllers);
                         }
-                        request.getSession().setAttribute("cellinks", cellinks);
-                        count = cellinkDao.count(user.getId(), user.getRole(), null, state, typeParam, nameParam);
-                        setTableParameters(request, index, count);
+                        count = cellinkDao.count(criteria);
                         break;
-
-                    case UserRole.REGULAR:
-                        logger.info("retrieve all cellinks that belongs to  " + user);
-                        cellinks = cellinkDao.getAll(user.getId(), state, typeParam, nameParam);
-                        for (CellinkDto cellink : cellinks) {
-                            List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellink.getId());
+                    case DISTRIBUTOR:
+                        logger.info("retrieve all cellinks that belongs to distributor " + user);
+                        cellinks = cellinkDao.getAll(criteria);
+                        for (Cellink cellink : cellinks) {
+                            Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
                             cellink.setControllers(controllers);
                         }
-                        request.getSession().setAttribute("cellinks", cellinks);
-                        count = cellinkDao.count(user.getId(), user.getRole(), null, state, typeParam, nameParam);
-                        setTableParameters(request, index, count);
+                        count = cellinkDao.count(criteria);
                         break;
-                    case UserRole.ADVANCED:
-                        cellinks = cellinkDao.getAll(user.getRole(), user.getCompany(), state, typeParam, nameParam, index);
-                        for (CellinkDto cellink : cellinks) {
-                            List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellink.getId());
+
+                    case ADMIN:
+                        cellinks = cellinkDao.getAll(criteria);
+                        for (Cellink cellink : cellinks) {
+                            Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
                             cellink.setControllers(controllers);
                         }
-                        request.getSession().setAttribute("cellinks", cellinks);
-                        count = cellinkDao.count(user.getId(), user.getRole(), user.getCompany(), state, typeParam,
-                                nameParam);
-                        setTableParameters(request, index, count);
-                        break;
-
-                    case UserRole.ADMINISTRATOR:
-                        try {
-                            cellinks = cellinkDao.getAll(user.getRole(), user.getCompany(), state, typeParam, nameParam,
-                                    index);
-
-                            for (CellinkDto cellink : cellinks) {
-                                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellink.getId());
-                                cellink.setControllers(controllers);
-                            }
-                            request.getSession().setAttribute("cellinks", cellinks);
-                        } catch (NumberFormatException ex) {
-                        }
-
-                        count = cellinkDao.count(user.getId(), user.getRole(), null, state, typeParam, nameParam);
-                        setTableParameters(request, index, count);
+                        count = cellinkDao.count(criteria);
                         break;
                 }
+                request.getSession().setAttribute("cellinks", cellinks);
+                setTableParameters(request, index, count);
                 response.sendRedirect("./my-farms.jsp");
             } catch (SQLException ex) {
                 // error page
-                logger.error("Error durring sql query running ", ex);
+                logger.error("Error during sql query running ", ex);
             } finally {
                 out.close();
             }
         }
     }
 
-    private void setTableParameters(HttpServletRequest request, String index, int count) {
-        if (index.equals("0")) {
+    private void setTableParameters(HttpServletRequest request, Integer index, int count) {
+        if (index == null) {
+            index = 0;
+        }
+
+        if (index.equals(0)) {
             int from = 0;
             int to = ((count - from) > 25
                     ? 25
@@ -158,7 +148,7 @@ public class MyFarms extends HttpServlet {
             request.getSession().setAttribute("to", to);
             request.getSession().setAttribute("of", of);
         } else {
-            int from = Integer.parseInt(index);
+            int from = index;
             int to = from + ((count - from) > 25
                     ? 25
                     : (count - from));

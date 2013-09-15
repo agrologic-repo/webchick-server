@@ -7,8 +7,9 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.model.CellinkDto;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Cellink;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -43,8 +44,8 @@ public class CellinkNameServlet extends HttpServlet {
 
         try {
             Long cellinkId = (Long) request.getSession().getAttribute("cellinkId");
-            CellinkDao cellinkDao = new CellinkDaoImpl();
-            CellinkDto cellink = cellinkDao.getById(cellinkId);
+            CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+            Cellink cellink = cellinkDao.getById(cellinkId);
 
             out.println("<table>");
             out.println("<tr>");

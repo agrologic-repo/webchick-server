@@ -1,16 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.table.TableOfHistoryCreator;
@@ -25,15 +18,9 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.*;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class TableFlockHistory extends HttpServlet {
     private static final List<Long> historyDataIdList = new ArrayList<Long>();
-    private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(TableFlockHistory.class);
+    private static final long serialVersionUID = 123456789101112L;
 
     static {
         historyDataIdList.add(Long.valueOf(800));
@@ -83,6 +70,7 @@ public class TableFlockHistory extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
+
                 long flockId = Long.parseLong(request.getParameter("flockId"));
                 int fromDay = -1;
                 int toDay = -1;
@@ -101,15 +89,14 @@ public class TableFlockHistory extends HttpServlet {
                 }
 
                 try {
-                    FlockDao flockDao = new FlockDaoImpl();
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
                     List<Map<Integer, Data>> historyDataList = new ArrayList<Map<Integer, Data>>();
                     List<String> columnTitles = new ArrayList<String>();
-
                     historyDataList = createHistoryByGrowDay(columnTitles, historyByGrowDay);
                     out.println("<p>");
-                    out.println(
-                            "<table class=table-list cellpadding=1 cellspacing=1 border=1 style=behavior:url(tablehl.htc) url(sort.htc);>");
+                    out.println("<table class=table-list cellpadding=1 "
+                            + "cellspacing=1 border=1 style=behavior:url(tablehl.htc) url(sort.htc);>");
                     out.println("<tr>");
 
                     for (String title : columnTitles) {
@@ -123,28 +110,24 @@ public class TableFlockHistory extends HttpServlet {
                     while (growdayIter.hasNext()) {
                         Integer growDay = growdayIter.next();
                         Iterator<Map<Integer, Data>> historyIter = historyDataList.iterator();
-
                         out.println("<tr>");
-
                         while (historyIter.hasNext()) {
                             try {
                                 Map<Integer, Data> interestData = historyIter.next();
                                 Data data = interestData.get(growDay);
-
-                                if (data.getId() == 800) {
+                                if (data == null) {
+                                    out.println("<td align=center>&nbsp;</td>");
+                                } else if (data.getId() == 800) {
                                     out.println("<td align=center>" + growDay + "</td>");
                                 } else {
                                     out.println("<td align=center>" + valueByType(data) + "</td>");
                                 }
                             } catch (Exception e) {
-                                out.println("<td align=center>&nbsp;</td>");
                                 logger.error(e);
                             }
                         }
-
                         out.println("</tr>");
                     }
-
                     out.println("</table>");
                 } catch (Exception ex) {
                     logger.error("Unknown error. ", ex);
@@ -232,7 +215,7 @@ public class TableFlockHistory extends HttpServlet {
 
         for (Long dataId : historyDataIdList) {
             try {
-                Data data = dataDao.getById(dataId, (long) 1);
+                Data data = dataDao.getById(dataId, 1L);
 
                 if (dataId == 800) {
                     columnTitles.add(data.getLabel());

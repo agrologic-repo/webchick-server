@@ -7,11 +7,11 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -55,13 +55,12 @@ public class FlockManagment extends HttpServlet {
             Long flockId = Long.parseLong(request.getParameter("flockId"));
 
             try {
-                FlockDao flockDao = new FlockDaoImpl();
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
 

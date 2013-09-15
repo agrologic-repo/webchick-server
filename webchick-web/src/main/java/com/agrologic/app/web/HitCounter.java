@@ -1,11 +1,6 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-//~--- JDK imports ------------------------------------------------------------
+import com.agrologic.app.model.UserRole;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,7 +12,7 @@ import java.sql.*;
 
 public class HitCounter extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private int role = UserRole.ADMINISTRATOR;
+    private UserRole role = UserRole.ADMIN;
 
     public HitCounter() {
         super();
@@ -29,9 +24,7 @@ public class HitCounter extends HttpServlet {
         String r = request.getParameter("role");
 
         if (r != null) {
-            int urole = Integer.parseInt(r);
-
-            role = urole;
+            role = UserRole.get(Integer.parseInt(r));
         }
 
         updateHitCounter();
@@ -44,9 +37,7 @@ public class HitCounter extends HttpServlet {
         String r = request.getParameter("role");
 
         if (r != null) {
-            int urole = Integer.parseInt(r);
-
-            role = urole;
+            role = UserRole.get(Integer.parseInt(r));
         }
 
         updateHitCounter();
@@ -109,14 +100,13 @@ public class HitCounter extends HttpServlet {
 //      g.fillRect(0, 0, width, height);
 //      g.setColor(Color.BLACK);
 //      g.drawString(hits, 0, height);
-//      if(role == UserRole.ADMINISTRATOR) {
+//      if(role ==  UserRole.ADMIN) {
 //          response.setContentType("image/png");
 //          OutputStream os = response.getOutputStream();
 //          ImageIO.write(buffer, "png", os);
 //          os.close();
 //      }
         PrintWriter out = response.getWriter();
-
         out.println("<div class=\"hitcount\">");
         out.println("<p>");
         out.println(hits);
@@ -131,7 +121,8 @@ public class HitCounter extends HttpServlet {
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/agrodb", "root", "agrologic");
+            connection = DriverManager
+                    .getConnection("jdbc:mysql://localhost:3306/agrodb", "root", "agrologic");
         } catch (Exception e) {
             e.printStackTrace();
         }

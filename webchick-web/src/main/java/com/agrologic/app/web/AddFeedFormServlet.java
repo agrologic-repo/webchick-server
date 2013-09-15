@@ -6,18 +6,13 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FeedDao;
-import com.agrologic.app.dao.FeedTypeDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FeedDaoImpl;
-import com.agrologic.app.dao.impl.FeedTypeDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FeedDto;
-import com.agrologic.app.model.FeedTypeDto;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.FeedDaoImpl;
+import com.agrologic.app.dao.mysql.impl.FeedTypeDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Feed;
+import com.agrologic.app.model.FeedType;
+import com.agrologic.app.model.Flock;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -27,13 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class AddFeedFormServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -65,10 +56,10 @@ public class AddFeedFormServlet extends HttpServlet {
             String numberAccount = request.getParameter("numberAccount");
 
             try {
-                FeedTypeDao feedTypeDao = new FeedTypeDaoImpl();
-                FeedTypeDto feedType = feedTypeDao.getById(feedTypeId);
-                FeedDao feedDao = new FeedDaoImpl();
-                FeedDto feed = new FeedDto();
+                FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDaoImpl.class);
+                FeedType feedType = feedTypeDao.getById(feedTypeId);
+                FeedDao feedDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedDaoImpl.class);
+                Feed feed = new Feed();
 
                 feed.setFlockId(flockId);
                 feed.setType(feedTypeId);
@@ -78,13 +69,13 @@ public class AddFeedFormServlet extends HttpServlet {
                 feed.setTotal(feed.getAmount() * feedType.getPrice());
                 feedDao.insert(feed);
 
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
-                List<FeedDto> feedList = feedDao.getAllByFlockId(flockId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
+                List<Feed> feedList = feedDao.getAllByFlockId(flockId);
                 int feedAmount = 0;
                 float feedTotalCost = 0;
 
-                for (FeedDto g : feedList) {
+                for (Feed g : feedList) {
                     feedAmount += g.getAmount();
                     feedTotalCost += g.getTotal();
                 }
@@ -94,12 +85,11 @@ public class AddFeedFormServlet extends HttpServlet {
                 flockDao.update(flock);
                 logger.info("Feed added successfully to the database");
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
 

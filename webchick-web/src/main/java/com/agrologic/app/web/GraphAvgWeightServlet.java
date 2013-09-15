@@ -10,7 +10,6 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
@@ -29,9 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-//~--- JDK imports ------------------------------------------------------------
-
 public class GraphAvgWeightServlet extends HttpServlet {
+    public static final int AVERAGE_WEIGHT_1_ID = 2933;
+    public static final int AVERAGE_WEIGHT_2_ID = 2934;
+    public static final int AVERAGE_WEIGHT_3_ID = 2935;
+    public static final int AVERAGE_WEIGHT_4_ID = 2936;
 
     private static final long serialVersionUID = 15234586465851L;
 
@@ -76,23 +77,23 @@ public class GraphAvgWeightServlet extends HttpServlet {
             }
 
             try {
-                FlockDao flockDao = new FlockDaoImpl();
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
                 Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 List<Map<Integer, Data>> dataHistroryList = new ArrayList<Map<Integer, Data>>();
-                Data data1 = dataDao.getById(Long.valueOf(2933));
+                Data data1 = dataDao.getById(Long.valueOf(AVERAGE_WEIGHT_1_ID));
 
                 dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
 
-                Data data2 = dataDao.getById(Long.valueOf(2934));
+                Data data2 = dataDao.getById(Long.valueOf(AVERAGE_WEIGHT_2_ID));
 
                 dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
 
-                Data data3 = dataDao.getById(Long.valueOf(2935));
+                Data data3 = dataDao.getById(Long.valueOf(AVERAGE_WEIGHT_3_ID));
 
                 dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data3));
 
-                Data data4 = dataDao.getById(Long.valueOf(2936));
+                Data data4 = dataDao.getById(Long.valueOf(AVERAGE_WEIGHT_4_ID));
 
                 dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data4));
 
@@ -107,7 +108,6 @@ public class GraphAvgWeightServlet extends HttpServlet {
                 axisTitles.add(data4.getLabel());
 
                 HistoryGraph avgweightGraph = new HistoryGraph();
-
                 avgweightGraph.setDataHistoryList(dataHistroryList);
                 avgweightGraph.createChart(title, xAxisLabel, yAxisLabel);
                 request.getSession().setAttribute("fromDay", fromDay);
@@ -117,9 +117,7 @@ public class GraphAvgWeightServlet extends HttpServlet {
                 out.close();
             } catch (Exception ex) {
                 logger.error("Unknown error. ", ex);
-
                 Graph24Empty graph = new Graph24Empty(GraphType.BLANK, "");
-
                 ChartUtilities.writeChartAsPNG(out, graph.getChart(), 600, 300);
                 out.flush();
                 out.close();

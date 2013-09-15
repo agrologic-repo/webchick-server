@@ -18,7 +18,7 @@ import java.util.*;
  * {@inheritDoc}
  */
 public class ProgramRelayDaoImpl implements ProgramRelayDao {
-    private final Logger logger = LoggerFactory.getLogger(RelayDaoImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(ProgramRelayDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     protected DaoFactory dao;
@@ -137,10 +137,9 @@ public class ProgramRelayDaoImpl implements ProgramRelayDao {
      */
     @Override
     public List<ProgramRelay> getAllProgramRelays(Long programId) throws SQLException {
-        String sqlQuery = "select * from programrelays where ProgramID=? and TEXT not Like '%None%' and " +
-                "Text not Like '%Damy%'";
+        String sqlQuery = "select * from programrelays where ProgramID=? and TEXT not Like '%'?'%' and Text not Like '%'?'%'";
         logger.debug("Get all relays assigned to program without those None and Dummy");
-        return jdbcTemplate.query(sqlQuery, RowMappers.programRelay());
+        return jdbcTemplate.query(sqlQuery, new Object[]{programId, "None", "Damy"}, RowMappers.programRelay());
     }
 
     /**
@@ -175,16 +174,6 @@ public class ProgramRelayDaoImpl implements ProgramRelayDao {
         logger.debug("Get all program relays with given language id ");
         return jdbcTemplate.query(sqlQuery, params, RowMappers.programRelay());
     }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public List<Long> getRelayNumberTypes(Long programId) throws SQLException {
-//        String sqlQuery = "select distinct DataID FROM programrelays where ProgramID=?";
-//        logger.debug("Get relay data id's ");
-//        return jdbcTemplate.query(sqlQuery, new Object[]{programId}, RowMappers.listLong());
-//    }
 
     /**
      * {@inheritDoc}

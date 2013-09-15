@@ -1,4 +1,4 @@
-<%@ page import="com.agrologic.app.model.LanguageDto" %>
+<%@ page import="com.agrologic.app.model.Language" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ include file="disableCaching.jsp" %>
@@ -7,12 +7,13 @@
 <%@ page import="com.agrologic.app.model.SystemState" %>
 <%@ page import="java.util.Collection" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
+    Collection<Language> languages = (Collection<Language>) request.getSession().getAttribute("languages");
     Collection<SystemState> systemStateNames = (Collection<SystemState>) request.getSession().getAttribute("systemstateNames");
 
     String translateLangStr = (String) request.getParameter("translateLang");
@@ -107,7 +108,7 @@
                                 <th>Text</th>
                                 <th>Translate
                                     <select id="Lang_Filter" name="Lang_Filter" onchange="return filterLanguages();">
-                                        <%for (LanguageDto l : languages) {%>
+                                        <%for (Language l : languages) {%>
                                         <option value="<%=l.getId()%>"><%=l.getLanguage()%>
                                         </option>
                                         <%}%>

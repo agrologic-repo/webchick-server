@@ -1,14 +1,9 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.CellinkDto;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -18,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 public class UserInfoServlet extends HttpServlet {
 
@@ -48,13 +43,13 @@ public class UserInfoServlet extends HttpServlet {
                 Long userId = Long.parseLong(request.getParameter("userId"));
 
                 try {
-                    UserDao userDao = new UserDaoImpl();
-                    UserDto editUser = userDao.getById(userId);
-                    CellinkDao cellinkDao = new CellinkDaoImpl();//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
-                    List<CellinkDto> cellinks = (List<CellinkDto>) cellinkDao.getAllUserCellinks(editUser.getId());
-                    ControllerDao controllerDao = new ControllerDaoImpl();
-                    for (CellinkDto c : cellinks) {
-                        List<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
+                    UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
+                    User editUser = userDao.getById(userId);
+                    CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                    Collection<Cellink> cellinks = cellinkDao.getAllUserCellinks(editUser.getId());
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    for (Cellink c : cellinks) {
+                        Collection<Controller> controllers = controllerDao.getAllByCellink(c.getId());
                         c.setControllers(controllers);
                     }
                     logger.info("retrieve user and user cellinks and all controllers of each cellink");

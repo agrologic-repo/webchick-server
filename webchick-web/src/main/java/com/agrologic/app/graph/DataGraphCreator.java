@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.graph;
 
-
 import com.agrologic.app.model.Data;
 
 import java.util.*;
@@ -15,8 +14,7 @@ import java.util.Map.Entry;
 
 /**
  * Title: DataForGraphCreator.java <br> Description: <br> Copyright: Copyright
- * 2010 <br> Company: Agro Logic Ltd.
- * <br>
+ * 2010 <br> Company: Agro Logic Ltd. <br>
  *
  * @author Valery Manakhimov <br>
  * @version 0.1.1 <br>
@@ -35,11 +33,14 @@ public class DataGraphCreator {
         Map<Integer, Data> histDataByGrowDay = new TreeMap<Integer, Data>();
         Set<Entry<Integer, String>> entries = history.entrySet();
         for (Entry entry : entries) {
-            Data dataFromHist = getDataFromHistory(data, (String) entry.getValue());
-            if (dataFromHist != null) {
-                histDataByGrowDay.put((Integer) entry.getKey(), dataFromHist);
-                if (entry.getKey() == null) {
-                    System.out.println(entry);
+            if (entry.getValue().equals("-1")) {
+                Data tempData = (Data) data.clone();
+                tempData.setValue(0L);
+                histDataByGrowDay.put((Integer) entry.getKey(), tempData);
+            } else {
+                Data dataFromHist = getDataFromHistory(data, (String) entry.getValue());
+                if (dataFromHist != null) {
+                    histDataByGrowDay.put((Integer) entry.getKey(), dataFromHist);
                 }
             }
         }
@@ -51,7 +52,8 @@ public class DataGraphCreator {
      *
      * @param searchData the data that encapsulate all field except value.
      * @param histString the string which all history pairs data and value .
-     * @return foundData the data object with value from history string, or null.
+     * @return foundData the data object with value from history string, or
+     *         null.
      */
     private static Data getDataFromHistory(Data searchData, String histString) {
         StringTokenizer token = new StringTokenizer(histString, " ");
@@ -71,7 +73,7 @@ public class DataGraphCreator {
                     return foundData;
                 }
             } catch (NoSuchElementException e) {
-                System.err.println(e.getMessage());
+                //System.err.println(e.getMessage());
             }
         }
         return null;

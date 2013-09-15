@@ -61,14 +61,10 @@ public class DatabaseManager {
         databaseGeneralService.setDaoType(DaoType.DERBY);
         databaseGeneralService.initDaoByType();
         databaseCreator = new DatabaseCreator(databaseGeneralService);
-//        databaseCreator.dropAllTables();
-//        runRemoveOldData();
         databaseCreator.createAllTables();
     }
 
     public synchronized void runInsertLoadedData() {
-        databaseGeneralService.setDaoType(DaoType.DERBY);
-        databaseGeneralService.initDaoByType();
         if (databaseInsertion == null) {
             databaseInsertion = new DatabaseInsertion(databaseGeneralService, databaseLoader);
         }

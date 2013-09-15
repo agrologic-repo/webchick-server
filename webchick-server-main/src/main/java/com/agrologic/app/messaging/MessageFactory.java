@@ -65,15 +65,27 @@ public class MessageFactory {
     }
 
     /**
-     *  Creates request message that used to change value of specified data type on controller .
+     * Creates request message that used to change value of specified data type on controller .
      *
-     * @param netname  the type of the controller and its network index
-     * @param dataType the data type that have to be changed
+     * @param netname   the type of the controller and its network index
+     * @param dataType  the data type that have to be changed
      * @param propValue the new value to send
      * @return the write request message that was created
      */
     public RequestMessage createWriteRequest(String netname, Long dataType, Long propValue) {
         return new RequestMessage(MessageType.REQUEST_TO_WRITE, netname, dataType, propValue);
+    }
+
+    /**
+     * Create the set of messages to get daily reports from controller. This message are used when new flock
+     * opened and age of bird was increased .
+     *
+     * @param netname the type of the controller and its network index
+     * @param growDay the age of birds we're going to get data for
+     * @return request message for daily to be used to grab daily report
+     */
+    private RequestMessage createDailyReportRequests(String netname, int growDay) {
+        return new RequestMessage(MessageType.REQUEST_HISTORY, netname, growDay);
     }
 
     /**

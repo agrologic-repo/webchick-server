@@ -3,18 +3,19 @@
 <%@ include file="../../disableCaching.jsp" %>
 <%@ include file="../../language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.CellinkDto" %>
+<%@ page import="com.agrologic.app.model.Cellink" %>
 
 <jsp:directive.page import="com.agrologic.app.web.CellinkState"/>
 <jsp:directive.page import="java.util.Collection"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
-//UserDto user = (UserDto) getServletContext().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
+//User user = (User) getServletContext().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    Collection<UserDto> users = (Collection<UserDto>) request.getSession().getAttribute("users");
+    Collection<User> users = (Collection<User>) request.getSession().getAttribute("users");
     Collection<String> companies = (Collection<String>) request.getSession().getAttribute("companies");
     int from = (Integer) request.getSession().getAttribute("from");
     int to = (Integer) request.getSession().getAttribute("to");
@@ -398,7 +399,7 @@
                 </thead>
                 <tbody>
                 <% int rowCount = 0;%>
-                <% for (UserDto u : users) {%>
+                <% for (User u : users) {%>
                 <% if ((rowCount % 2) == 0) {%>
                 <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
                         <%} else {%>
@@ -419,8 +420,8 @@
                         onclick="window.document.location='./userinfo.html?userId=<%=u.getId()%>'"><%=u.getCompany()%>
                     </td>
                     <td align="center">
-                        <% Collection<CellinkDto> cellinks = u.getCellinks();
-                            for (CellinkDto cellink : cellinks) {
+                        <% Collection<Cellink> cellinks = u.getCellinks();
+                            for (Cellink cellink : cellinks) {
                                 if (cellink.getCellinkState().getValue() == CellinkState.STATE_ONLINE || cellink.getCellinkState().getValue() == CellinkState.STATE_START) {%>
                         <img src="../../img/online.gif" onmouseover="this.src='img/honline.gif'"
                              onmouseout="this.src='img/online.gif'"

@@ -16,7 +16,7 @@ import java.util.*;
 
 public class SystemStateDaoImpl implements SystemStateDao {
     protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(SystemStateDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert jdbcInsertTranslate;
@@ -85,7 +85,7 @@ public class SystemStateDaoImpl implements SystemStateDao {
                     systemState.getUnicodeText()};
             batch.add(values);
         }
-        jdbcTemplate.batchUpdate("insert into systemStatebylanguage values (?,?,?) ", batch);
+        jdbcTemplate.batchUpdate(sqlQuery, batch);
     }
 
     @Override
@@ -122,67 +122,4 @@ public class SystemStateDaoImpl implements SystemStateDao {
         return jdbcTemplate.query(sqlQuery, RowMappers.systemState());
 
     }
-
-//    @Override
-//    public Collection<ProgramSystemState> getAllProgramSystemStates(Long programId) throws SQLException {
-//        String sqlQuery = "select * from programsysstates where ProgramID=? ";
-//        PreparedStatement prepstmt = null;
-//        Connection con = null;
-//
-//        try {
-//            con = dao.getConnection();
-//            prepstmt = con.prepareStatement(sqlQuery);
-//            prepstmt.setLong(1, programId);
-//            return SystemStateUtil.makeProgramSystemStateList(prepstmt.executeQuery());
-//        } catch (SQLException e) {
-//            throw new SQLException("Cannot Retrieve ProgramSystemState From DataBase", e);
-//        } finally {
-//            prepstmt.close();
-//            dao.closeConnection(con);
-//        }
-//    }
-
-//    @Override
-//    public Collection<ProgramSystemState> getSelectedProgramSystemStates(Long programId) throws SQLException {
-//        String sqlQuery = "select * from programsysstates where ProgramID=? and TEXT not Like '%None%' "
-//                + "and Text not Like '%Damy%' order by DataID, SystemStateNumber";
-//        PreparedStatement prepstmt = null;
-//        Connection con = null;
-//
-//        try {
-//            con = dao.getConnection();
-//            prepstmt = con.prepareStatement(sqlQuery);
-//            prepstmt.setLong(1, programId);
-//            return SystemStateUtil.makeProgramSystemStateList(prepstmt.executeQuery());
-//        } catch (SQLException e) {
-//            throw new SQLException("Cannot Retrieve ProgramSystemState From DataBase", e);
-//        } finally {
-//            prepstmt.close();
-//            dao.closeConnection(con);
-//        }
-//    }
-//
-//    @Override
-//    public Collection<ProgramSystemState> getAllProgramSystemStates(Long programId, Long langId) throws SQLException {
-//        String sqlQuery =
-//                "select * from programsysstates as pss "
-//                        + " inner join systemstatebylanguage ssbl on "
-//                        + " ssbl.SystemStateID=pss.systemstatetextid and ssbl.langid=? and pss.programid=? and pss.text not like '%None%' "
-//                        + " and pss.Text not Like '%None%' and pss.Text not Like '%Damy%' order by pss.DataID,pss.Number ";
-//        PreparedStatement prepstmt = null;
-//        Connection con = null;
-//
-//        try {
-//            con = dao.getConnection();
-//            prepstmt = con.prepareStatement(sqlQuery);
-//            prepstmt.setLong(1, langId);
-//            prepstmt.setLong(2, programId);
-//            return SystemStateUtil.makeProgramSystemStateList(prepstmt.executeQuery());
-//        } catch (SQLException e) {
-//            throw new SQLException("Cannot Retrieve ProgramSystemState From DataBase", e);
-//        } finally {
-//            prepstmt.close();
-//            dao.closeConnection(con);
-//        }
-//    }
 }

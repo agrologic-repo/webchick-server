@@ -3,24 +3,25 @@
 <%@ include file="language.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 
-<%@ page import="com.agrologic.app.model.CellinkDto" %>
+<%@ page import="com.agrologic.app.model.Cellink" %>
 <%@ page import="com.agrologic.app.web.CellinkState" %>
 <%@ page import="java.util.Collection" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    Collection<UserDto> users = (Collection<UserDto>) request.getSession().getAttribute("users");
+    Collection<User> users = (Collection<User>) request.getSession().getAttribute("users");
     String uid = request.getParameter("userId");
     Long userId = Long.parseLong(uid);
-    UserDto selectedUser = getUserCellinks(users, userId);
+    User selectedUser = getUserCellinks(users, userId);
 
-    Collection<CellinkDto> cellinks = selectedUser.getCellinks();
+    Collection<Cellink> cellinks = selectedUser.getCellinks();
 %>
-<%! UserDto getUserCellinks(Collection<UserDto> users, Long userId) {
-    for (UserDto u : users) {
+<%! User getUserCellinks(Collection<User> users, Long userId) {
+    for (User u : users) {
         if (u.getId() == userId) {
             return u;
         }
@@ -117,7 +118,7 @@
                                     </th>
                                     <th align="center" width="150px"><%=session.getAttribute("table.col.cellink.name")%>
                                     </th>
-                                    <%if (user.getRole() == UserRole.ADMINISTRATOR) {%>
+                                    <%if (user.getRole() == UserRole.ADMIN) {%>
                                     <th align="center"
                                         width="100px"><%=session.getAttribute("table.col.cellink.password")%>
                                     </th>
@@ -132,7 +133,7 @@
                                 <tbody>
                                 <%
                                     int rows = 0;
-                                    for (CellinkDto cellink : cellinks) {
+                                    for (Cellink cellink : cellinks) {
                                         if ((rows % 2) == 0) {%>
                                 <tr class="even">
                                         <%} else {%>
@@ -142,7 +143,7 @@
                                     </td>
                                     <td align="left" style="padding-left:10px;"><%=cellink.getName()%>
                                     </td>
-                                    <%if (user.getRole() == UserRole.ADMINISTRATOR) {%>
+                                    <%if (user.getRole() == UserRole.ADMIN) {%>
                                     <td><%=cellink.getPassword()%>
                                     </td>
                                     <%}%>

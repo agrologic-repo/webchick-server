@@ -6,8 +6,9 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.graph.daily.Graph;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.Graph24IOH;
@@ -58,7 +59,7 @@ public class Graph24HourIOHServlet extends HttpServlet {
 
 
         try {
-            FlockDao flockDao = new FlockDaoImpl();
+            FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
             Long resetTime = new Long(flockDao.getResetTime(flockId, growDay));
 
             if (resetTime != null) {

@@ -3,21 +3,22 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<jsp:directive.page import="com.agrologic.app.model.CellinkDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Cellink"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
 
-    Collection<UserDto> users = (Collection<UserDto>) request.getSession().getAttribute("users");
+    Collection<User> users = (Collection<User>) request.getSession().getAttribute("users");
     Long userId = Long.parseLong(request.getParameter("userId"));
-    UserDto editUser = findUserToEdit(users, userId);
-    Collection<CellinkDto> cellinks = editUser.getCellinks();
+    User editUser = findUserToEdit(users, userId);
+    Collection<Cellink> cellinks = editUser.getCellinks();
 %>
-<%! UserDto findUserToEdit(Collection<UserDto> users, Long userId) {
-    for (UserDto u : users) {
+<%! User findUserToEdit(Collection<User> users, Long userId) {
+    for (User u : users) {
         if (u.getId().equals(userId)) {
             return u;
         }
@@ -84,10 +85,12 @@
                             <td>
                                 <h2>add cellink </h2>
 
-                                <div><p style="color:red;">Boxes with an asterisk next to them are required</p></div>
+                                <div>
+                                    <p style="color:red;">Boxes with an asterisk next to them are required</p>
+                                </div>
+                                <input id="Nuserid" readonly type="hidden" name="Nuserid" class=rightTitles
+                                       value="<%=editUser.getId()%>">
                                 <table>
-                                    <input id="Nuserid" readonly type="hidden" name="Nuserid" class=rightTitles
-                                           value="<%=editUser.getId()%>">
                                     <tr>
                                         <td class="">Cellink name *</td>
                                         <td><input id="Ncellinkname" type="text" name="Ncellinkname"
@@ -108,7 +111,7 @@
                                         <td>
                                             <select id="Ntype" name="Ntype" style="width:120px">
                                                 <option value="" selected></option>
-                                                <% for (String type : CellinkDto.getTypeList()) {%>
+                                                <% for (String type : Cellink.getTypeList()) {%>
                                                 <option value="<%=type %>"><%=type %>
                                                 </option>
                                                 <%}%>

@@ -6,14 +6,15 @@ package com.agrologic.app.dao.derby;
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Language;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import static org.junit.Assert.*;
 import org.junit.*;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static org.junit.Assert.*;
+
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -84,15 +85,15 @@ public class DerbyLanguageDaoTest extends BaseDaoTestCase {
     @Test
     public void testAddManyLanguages() throws SQLException {
 
-        // if database not ampty remove all
-        List<Language> list = (List<Language>) dao.geAll();
+        // if database not empty remove all
+        Collection<Language> list = dao.geAll();
         if (list.size() > 0) {
             for (Language l : list) {
                 dao.remove(l.getId());
             }
         }
 
-        List<Language> languages = new ArrayList<Language>();
+        Collection<Language> languages = new ArrayList<Language>();
         Language english = new Language();
         english.setId(Long.valueOf(1));
         english.setLanguage("English");
@@ -113,7 +114,7 @@ public class DerbyLanguageDaoTest extends BaseDaoTestCase {
             dao.insert(l);
         }
 
-        list = (List<Language>) dao.geAll();
+        list = dao.geAll();
         assertEquals(languages.size(), list.size());
     }
 }

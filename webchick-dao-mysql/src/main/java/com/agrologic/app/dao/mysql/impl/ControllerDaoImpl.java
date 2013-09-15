@@ -19,16 +19,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+/**
+ * An implementation of {@link ControllerDao} that is based on JdbcTemplate and working
+ * with database.
+ *
+ * @author Valery Manakhimov
+ */
 public class ControllerDaoImpl implements ControllerDao {
     protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
+    protected final Logger logger = LoggerFactory.getLogger(ControllerDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
+    protected final SimpleJdbcInsert jdbcInsert;
 
     public ControllerDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
         this.jdbcTemplate = jdbcTemplate;
@@ -44,6 +47,9 @@ public class ControllerDaoImpl implements ControllerDao {
     public void insert(Controller controller) throws SQLException {
         logger.debug("Creating controller with name [{}]", controller.getName());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        if (controller.getId() != null) {
+            valuesToInsert.put("controllerid", controller.getId());
+        }
         valuesToInsert.put("cellinkid", controller.getCellinkId());
         valuesToInsert.put("title", controller.getTitle());
         valuesToInsert.put("netname", controller.getNetName());
@@ -91,6 +97,25 @@ public class ControllerDaoImpl implements ControllerDao {
     /**
      * {@inheritDoc}
      */
+    @Override
+    public void insertControllerDataValues(Long controllerId, Iterator<Map.Entry<Long, Data>> dataValues)
+            throws SQLException {
+        String sql = "insert into controllerdata (dataid,controllerid,value) VALUES(?,?,-1) ";
+        List<Object[]> batch = new ArrayList<Object[]>();
+        while (dataValues.hasNext()) {
+            Map.Entry<Long, Data> entry = dataValues.next();
+            Object[] values = new Object[]{
+                    entry.getKey(),
+                    controllerId
+            };
+            batch.add(values);
+        }
+        jdbcTemplate.batchUpdate(sql, batch);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void resetControllerData(Long id) throws SQLException {
         Validate.notNull(id, "Id can not be null");
         logger.debug("Set data value to -1 on controller with id [{}]", id);
@@ -104,8 +129,9 @@ public class ControllerDaoImpl implements ControllerDao {
     public void updateControllerData(Long id, Long dataId, Long value) throws SQLException {
         Validate.notNull(id, "Id can not be null");
         logger.debug("Set data value on controller with id [{}]", id);
-        jdbcTemplate.update("insert into controllerdata (ControllerID,DataID,Value) "
-                + "values (?,?,?) on duplicate key update value=values(Value)", new Object[]{id, dataId, value});
+        String sql = "insert into controllerdata (ControllerID,DataID,Value) "
+                + "values (?,?,?) on duplicate key update value=values(Value)";
+        jdbcTemplate.update(sql, new Object[]{id, dataId, value});
     }
 
     /**
@@ -140,9 +166,9 @@ public class ControllerDaoImpl implements ControllerDao {
     @Override
     public void updateControllerGraph(Long id, String values, Timestamp updateTime) throws SQLException {
         logger.debug("Set graphs data of controller with id [{}]", id);
-        String sqlQuery = "insert into graph24hours (ControllerID,Dataset,UpdateTime) "
+        String sql = "insert into graph24hours (ControllerID,Dataset,UpdateTime) "
                 + "values (?,?,?) on duplicate key update Dataset=values(Dataset) , UpdateTime=VALUES(UpdateTime)";
-        jdbcTemplate.update(sqlQuery, new Object[]{id, values, updateTime});
+        jdbcTemplate.update(sql, new Object[]{id, values, updateTime});
     }
 
     /**
@@ -152,9 +178,9 @@ public class ControllerDaoImpl implements ControllerDao {
     public void updateControllerHistogram(Long id, String plate, String values, Timestamp updateTime)
             throws SQLException {
         logger.debug("Set histogram data of controller with id [{}]", id);
-        String sqlQuery = "insert into histogram24hour (ControllerID, Plate, Histogram, UpdateTime) "
+        String sql = "insert into histogram24hour (ControllerID, Plate, Histogram, UpdateTime) "
                 + "values(?,?,?,?) on duplicate key update Histogram=values(Histogram) , UpdateTime=values(UpdateTime)";
-        jdbcTemplate.update(sqlQuery, new Object[]{id, plate, values, updateTime});
+        jdbcTemplate.update(sql, new Object[]{id, plate, values, updateTime});
     }
 
     /**
@@ -163,15 +189,15 @@ public class ControllerDaoImpl implements ControllerDao {
     @Override
     public void removeControllerData(Long id) throws SQLException {
         logger.debug("Delete controller data of controller with id [{}]", id);
-        String sqlQuery = "delete from controllerdata where ControllerID=?";
-        jdbcTemplate.update(sqlQuery, new Object[]{id});
+        String sql = "delete from controllerdata where ControllerID=?";
+        jdbcTemplate.update(sql, new Object[]{id});
     }
 
     @Override
     public void removeChangedValue(Long id, Long dataId) throws SQLException {
         logger.debug("Delete controller data that was sent to change to controller with id [{}]", id);
-        String sqlQuery = "delete from newcontrollerdata where ControllerID=? and DataID=?";
-        jdbcTemplate.update(sqlQuery, new Object[]{id, dataId});
+        String sql = "delete from newcontrollerdata where ControllerID=? and DataID=?";
+        jdbcTemplate.update(sql, new Object[]{id, dataId});
     }
 
     /**
@@ -180,9 +206,9 @@ public class ControllerDaoImpl implements ControllerDao {
     @Override
     public void sendNewDataValueToController(Long id, Long dataId, Long value) throws SQLException {
         logger.debug("Add new value to change on controller with id [{}]", id);
-        String sqlQuery = "insert into newcontrollerdata (ControllerID,DataID,Value) "
+        String sql = "insert into newcontrollerdata (ControllerID,DataID,Value) "
                 + "values(?,?,?) on duplicate key update Value=values(Value)";
-        jdbcTemplate.update(sqlQuery, new Object[]{id, dataId, value});
+        jdbcTemplate.update(sql, new Object[]{id, dataId, value});
     }
 
     /**
@@ -192,9 +218,9 @@ public class ControllerDaoImpl implements ControllerDao {
     public void saveNewDataValueOnController(Long id, Long dataId, Long value)
             throws SQLException {
         logger.debug("Add new value to change on controller with id [{}]", id);
-        String sqlQuery = "insert into newcontrollerdata (ControllerID,DataID,Value) "
+        String sql = "insert into newcontrollerdata (ControllerID,DataID,Value) "
                 + "values(?,?,?) on duplicate key update Value=values(Value)";
-        jdbcTemplate.update(sqlQuery, new Object[]{id, dataId, value});
+        jdbcTemplate.update(sql, new Object[]{id, dataId, value});
     }
 
     /**
@@ -203,14 +229,12 @@ public class ControllerDaoImpl implements ControllerDao {
     @Override
     public final Timestamp getUpdatedGraphTime(Long id) throws SQLException {
         logger.debug("Get updated time of graphs on controller with id [{}]", id);
-        String sqlQuery = "select UpdateTime as time from graph24hours where ControllerID=? ";
-        List<Timestamp> result = jdbcTemplate.query(sqlQuery, new Object[]{id}, new RowMapper<Timestamp>() {
-            @Override
-            public Timestamp mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getTimestamp(rowNum);
-            }
-        });
-        return result.get(0);
+        String sql = "select UpdateTime from graph24hours where controllerid =? ";
+        List<Timestamp> timeList = jdbcTemplate.queryForList(sql, new Object[]{id}, Timestamp.class);
+        if (timeList.isEmpty()) {
+            return null;
+        }
+        return timeList.get(0);
     }
 
     /**
@@ -219,16 +243,10 @@ public class ControllerDaoImpl implements ControllerDao {
      * @param id
      */
     @Override
-    public Timestamp getUpdatedHistoryTime(Long id) throws SQLException {
+    public Timestamp getHistogramUpdatedTime(Long id) throws SQLException {
         logger.debug("Get updated time of histogram on controller with id [{}]", id);
-        String sqlQuery = "select UpdateTime as time from history24hours where ControllerID=?";
-        List<Timestamp> result = jdbcTemplate.query(sqlQuery, new Object[]{id}, new RowMapper<Timestamp>() {
-            @Override
-            public Timestamp mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getTimestamp(rowNum);
-            }
-        });
-        return result.get(0);
+        String sql = "select UpdateTime as time from history24hours where ControllerID=?";
+        return jdbcTemplate.queryForObject(sql, Timestamp.class, id);
     }
 
     /**
@@ -237,8 +255,8 @@ public class ControllerDaoImpl implements ControllerDao {
     @Override
     public Controller getById(Long id) throws SQLException {
         logger.debug("Get controller with id [{}]", id);
-        String sqlQuery = "select * from controllers where controllerid=?";
-        List<Controller> controllers = jdbcTemplate.query(sqlQuery, new Object[]{id}, RowMappers.controller());
+        String sql = "select * from controllers where controllerid=?";
+        List<Controller> controllers = jdbcTemplate.query(sql, new Object[]{id}, RowMappers.controller());
         if (controllers.isEmpty()) {
             return null;
         }
@@ -251,14 +269,12 @@ public class ControllerDaoImpl implements ControllerDao {
     @Override
     public String getControllerGraph(Long id) throws SQLException {
         logger.debug("Get string with graphs values of controller with id [{}]", id);
-        String sqlQuery = "select Dataset from graph24hours where ControllerID=?";
-        List<String> result = jdbcTemplate.query(sqlQuery, new Object[]{id}, new RowMapper<String>() {
-            @Override
-            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getString(rowNum);
-            }
-        });
-        return result.get(0);
+        String sql = "select Dataset from graph24hours where ControllerID=?";
+        List<String> graphString = jdbcTemplate.queryForList(sql, new Object[]{id}, String.class);
+        if (graphString.isEmpty()) {
+            return null;
+        }
+        return graphString.get(0);
     }
 
     /**
@@ -267,11 +283,10 @@ public class ControllerDaoImpl implements ControllerDao {
     @Override
     public boolean isDataReady(Long userId) throws SQLException {
         logger.debug("Check if any data of given user already loaded ");
-        String sqlQuery = "select dataid from controllerdata where controllerid in "
+        String sql = "select dataid from controllerdata where controllerid in "
                 + "(select controllerid from controllers where cellinkid in "
                 + "(select cellinkid from cellinks where userid=? ))";
-
-        List<Integer> result = jdbcTemplate.query(sqlQuery, new Object[]{userId}, new RowMapper<Integer>() {
+        List<Integer> result = jdbcTemplate.query(sql, new Object[]{userId}, new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getInt(rowNum);
@@ -286,8 +301,8 @@ public class ControllerDaoImpl implements ControllerDao {
     @Override
     public Collection<String> getControllerNames() throws SQLException {
         logger.debug("Get list of controller names");
-        String sqlQuery = "select distinct controllername from controllers";
-        List<String> result = jdbcTemplate.queryForList(sqlQuery, String.class);
+        String sql = "select distinct controllername from controllers";
+        List<String> result = jdbcTemplate.queryForList(sql, String.class);
         return result;
     }
 
@@ -297,8 +312,8 @@ public class ControllerDaoImpl implements ControllerDao {
     @Override
     public Collection<Controller> getAll() throws SQLException {
         logger.debug("Get all controllers ");
-        String sqlQuery = "select * from controllers";
-        return jdbcTemplate.query(sqlQuery, RowMappers.controller());
+        String sql = "select * from controllers";
+        return jdbcTemplate.query(sql, RowMappers.controller());
     }
 
     /**
@@ -307,8 +322,8 @@ public class ControllerDaoImpl implements ControllerDao {
     @Override
     public Collection<Controller> getAllByCellink(Long cellinkId) throws SQLException {
         logger.debug("Get all controllers that belongs to cellink with id [{}]", cellinkId);
-        String sqlQuery = "select * from controllers where cellinkid=?";
-        return jdbcTemplate.query(sqlQuery, new Object[]{cellinkId}, RowMappers.controller());
+        String sql = "select * from controllers where cellinkid=?";
+        return jdbcTemplate.query(sql, new Object[]{cellinkId}, RowMappers.controller());
     }
 
     /**
@@ -317,7 +332,7 @@ public class ControllerDaoImpl implements ControllerDao {
     @Override
     public Collection<Controller> getActiveCellinkControllers(Long cellinkId) throws SQLException {
         logger.debug("Get all controllers that belongs to active cellink with id [{}]", cellinkId);
-        String sqlQuery = "select * from controllers where cellinkid=? and active=1";
-        return jdbcTemplate.query(sqlQuery, new Object[]{cellinkId}, RowMappers.controller());
+        String sql = "select * from controllers where cellinkid=? and active=1";
+        return jdbcTemplate.query(sql, new Object[]{cellinkId}, RowMappers.controller());
     }
 }

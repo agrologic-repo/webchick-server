@@ -2,19 +2,12 @@ package com.agrologic.app.utils;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 
 public class Unicode2ASCII {
     public static String toHTML(String paramString) {
-        String str1        = paramString;
-        String str2        = "";
+        String str1 = paramString;
+        String str2 = "";
         char[] arrayOfChar = str1.toCharArray();
 
         for (int i = 0; i < arrayOfChar.length; ++i) {
@@ -31,8 +24,8 @@ public class Unicode2ASCII {
     }
 
     public static String toJAVA(String paramString) {
-        String str1        = paramString;
-        String str2        = "";
+        String str1 = paramString;
+        String str2 = "";
         char[] arrayOfChar = str1.toCharArray();
 
         for (int i = 0; i < arrayOfChar.length; ++i) {
@@ -55,9 +48,9 @@ public class Unicode2ASCII {
     }
 
     public static String fromHTMLToJava(String paramString) {
-        String str1         = paramString;
-        String str2         = "";
-        String ignoreChars  = "&#x";
+        String str1 = paramString;
+        String str2 = "";
+        String ignoreChars = "&#x";
         String replaceChars = "-";
 
         str2 = str1.replaceAll(ignoreChars, replaceChars);
@@ -67,7 +60,7 @@ public class Unicode2ASCII {
 //      str2 = str2.replaceAll(ignoreChars, replaceChars);
         str2 = str2.replaceAll(";", "");
 
-        String str4        = "";
+        String str4 = "";
         char[] arrayOfChar = str2.toCharArray();
 
         for (int i = 0; i < arrayOfChar.length; ++i) {
@@ -81,7 +74,7 @@ public class Unicode2ASCII {
         }
 
         byte[] buf = str4.getBytes();
-        String s   = new String(buf, 0, buf.length);
+        String s = new String(buf, 0, buf.length);
 
         return str4;
     }
@@ -89,7 +82,7 @@ public class Unicode2ASCII {
     public static void writeOutput(String str) {
         try {
             FileOutputStream fos = new FileOutputStream("test.txt");
-            Writer           out = new OutputStreamWriter(fos, "UTF8");
+            Writer out = new OutputStreamWriter(fos, "UTF8");
 
             out.write(str);
             out.close();
@@ -98,7 +91,7 @@ public class Unicode2ASCII {
         }
     }
 
-//  public static void writeProperty(String str) {
+    //  public static void writeProperty(String str) {
 //
 //      Locale locale = Locale.US;
 //      String s = locale.toString();
@@ -111,10 +104,10 @@ public class Unicode2ASCII {
         StringBuilder buffer = new StringBuilder();
 
         try {
-            FileInputStream   fis = new FileInputStream("test.txt");
+            FileInputStream fis = new FileInputStream("test.txt");
             InputStreamReader isr = new InputStreamReader(fis, "UTF8");
-            Reader            in  = new BufferedReader(isr);
-            int               ch;
+            Reader in = new BufferedReader(isr);
+            int ch;
 
             while ((ch = in.read()) > -1) {
                 buffer.append((char) ch);
@@ -141,39 +134,39 @@ public class Unicode2ASCII {
             return null;
         }
 
-        StringBuffer buffer             = new StringBuffer(input.length());
-        boolean      precedingBackslash = false;
+        StringBuffer buffer = new StringBuffer(input.length());
+        boolean precedingBackslash = false;
 
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
 
             if (precedingBackslash) {
                 switch (c) {
-                case 'f' :
-                    c = '\f';
+                    case 'f':
+                        c = '\f';
 
-                    break;
+                        break;
 
-                case 'n' :
-                    c = '\n';
+                    case 'n':
+                        c = '\n';
 
-                    break;
+                        break;
 
-                case 'r' :
-                    c = '\r';
+                    case 'r':
+                        c = '\r';
 
-                    break;
+                        break;
 
-                case 't' :
-                    c = '\t';
+                    case 't':
+                        c = '\t';
 
-                    break;
+                        break;
 
-                case 'u' :
-                    String hex = input.substring(i + 1, i + 5);
+                    case 'u':
+                        String hex = input.substring(i + 1, i + 5);
 
-                    c = (char) Integer.parseInt(hex, 16);
-                    i += 4;
+                        c = (char) Integer.parseInt(hex, 16);
+                        i += 4;
                 }
 
                 precedingBackslash = false;
@@ -197,7 +190,7 @@ public class Unicode2ASCII {
         jaString = Unicode2ASCII.fromHTMLToJava(jaString);
         writeOutput(jaString);
 
-        String inputString   = readInput();
+        String inputString = readInput();
         String displayString = jaString + " " + inputString;
 
         new ShowString(displayString, "Conversion Demo");

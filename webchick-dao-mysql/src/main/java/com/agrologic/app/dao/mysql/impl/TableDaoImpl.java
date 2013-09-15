@@ -2,17 +2,20 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.TableDao;
-import com.agrologic.app.dao.mappers.TableUtil;
+import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.Table;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.*;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.*;
 
 public class TableDaoImpl implements TableDao {
     protected final DaoFactory dao;
@@ -29,208 +32,70 @@ public class TableDaoImpl implements TableDao {
 
     @Override
     public void insert(Table table) throws SQLException {
-        String sqlQuery = "insert into screentable values (?,?,?,?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setObject(1, null);
-            prepstmt.setLong(2, table.getScreenId());
-            prepstmt.setLong(3, table.getProgramId());
-            prepstmt.setString(4, table.getTitle());
-            prepstmt.setString(5, table.getDisplay());
-            prepstmt.setInt(6, table.getPosition());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException(CANNOT_INSERT_TABLE, e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Creating table with title [{}]", table.getTitle());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("screenid", table.getScreenId());
+        valuesToInsert.put("programid", table.getProgramId());
+        valuesToInsert.put("title", table.getTitle());
+        valuesToInsert.put("displayonscreen", table.getDisplay());
+        valuesToInsert.put("position", table.getPosition());
+        jdbcInsert.execute(valuesToInsert);
     }
 
     @Override
     public void update(Table table) throws SQLException {
-        String sqlQuery = "update screentable set Title=? , Position=? ,ScreenID=? where TableID=? and ProgramID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, table.getTitle());
-            prepstmt.setInt(2, table.getPosition());
-            prepstmt.setLong(3, table.getScreenId());
-            prepstmt.setLong(4, table.getId());
-            prepstmt.setLong(5, table.getProgramId());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException(CANNOT_UPDATE_TABLE, e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Update table with id [{}]", table.getId());
+        jdbcTemplate.update("update screens set Title=?,Position=?,Descript=? "
+                + "where ScreenID=? and ProgramID=?",
+                new Object[]{table.getTitle(), table.getPosition(), table.getScreenId(), table.getId(),
+                        table.getProgramId()});
     }
 
     @Override
     public void remove(Long programId, Long screenId, Long tableId) throws SQLException {
-        String sqlQuery = "delete from screentable where TableID=? and ScreenID=? and ProgramID=? ";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, tableId);
-            prepstmt.setLong(2, screenId);
-            prepstmt.setLong(3, programId);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException(CANNOT_DELETE_TABLE, e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        Validate.notNull(programId, "Program Id can not be null");
+        Validate.notNull(screenId, "Screen Id can not be null");
+        logger.debug("Delete table with id [{}]", tableId);
+        jdbcTemplate.update("delete from screentable where TableID=? and ScreenID=? and ProgramID=? ",
+                new Object[]{tableId, screenId, programId});
     }
 
-    public void insert(Collection<Table> tableList) throws SQLException {
-        if ((tableList == null) || tableList.isEmpty()) {
-            return;
-        }
+    public void insert(final Collection<Table> tables) throws SQLException {
+        logger.debug("Insert collection of tables ");
+        final String sql = "insert into screentable values (?,?,?,?,?,?)";
 
-        String sqlQuery = "insert into screentable values (?,?,?,?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
-        try {
-            con = dao.getConnection();
-
-            // turn off autocommit
-            con.setAutoCommit(false);
-            prepstmt = con.prepareStatement(sqlQuery);
-
-            for (Table table : tableList) {
-                prepstmt.setLong(1, table.getId());
-                prepstmt.setLong(2, table.getScreenId());
-                prepstmt.setLong(3, table.getProgramId());
-                prepstmt.setString(4, table.getTitle());
-                prepstmt.setString(5, table.getDisplay());
-                prepstmt.setInt(6, table.getPosition());
-                prepstmt.addBatch();
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Table table = Lists.newArrayList(tables).get(i);
+                ps.setLong(1, table.getId());
+                ps.setLong(2, table.getScreenId());
+                ps.setLong(3, table.getProgramId());
+                ps.setString(4, table.getTitle());
+                ps.setString(5, table.getDisplay());
+                ps.setInt(6, table.getPosition());
             }
-            prepstmt.executeBatch();
-            con.commit();
-            con.setAutoCommit(true);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    dao.printSQLException(ex);
-                    throw new SQLException("Transaction is being rolled back");
-                }
+
+            @Override
+            public int getBatchSize() {
+                return tables.size();
             }
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    public void insertTranslation(Collection<Table> tableList) throws SQLException {
-        String sqlQuery = "insert into tablebylanguage values (?,?,?) ";
-
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            // turn off autocommit
-            prepstmt = con.prepareStatement(sqlQuery);
-            for (Table table : tableList) {
-                prepstmt.setLong(1, table.getId());
-                prepstmt.setLong(2, table.getLangId());
-                prepstmt.setString(3, table.getUnicodeTitle());
-                try {
-                    prepstmt.executeUpdate();
-                } catch (Exception e) {
-                    // if duplicate raw id
-                    e.printStackTrace();
-                }
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    @Override
-    public void insertExsitTable(Table table) throws SQLException {
-        String sqlQuery = "insert into screentable values (?,?,?,?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, table.getId());
-            prepstmt.setLong(2, table.getScreenId());
-            prepstmt.setLong(3, table.getProgramId());
-            prepstmt.setString(4, table.getTitle());
-            prepstmt.setString(5, table.getDisplay());
-            prepstmt.setInt(6, table.getPosition());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Caught SQL SQLException : " + e.getMessage());
-            e.printStackTrace();
-
-            throw new SQLException("Cannot Insert ScreenTable To The DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        });
     }
 
     @Override
     public void insertDefaultTables(Long oldProgramId, Long newProgramId) throws SQLException {
-//        String sqlQuery = "insert into screentable (TableID, ScreenID,ProgramID, Title, DisplayOnScreen, Position ) " +
-//                        "(select TableID, ScreenID, ?, Title, DisplayOnScreen, Position " +
-//                        "from screentable where ProgramID=?)";
-        String sqlQuery = "insert into screentable (TableID, ScreenID,ProgramID, Title, DisplayOnScreen, Position ) " +
+        logger.debug("Inserting tables from one program to another ");
+        String sql = "insert into screentable (TableID, ScreenID,ProgramID, Title, DisplayOnScreen, Position ) " +
                 "(select TableID, ScreenID, ?, Title, DisplayOnScreen, Position from screentable where ProgramID=?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, oldProgramId);
-            prepstmt.setLong(2, newProgramId);
-
-            int result = prepstmt.executeUpdate();
-
-            System.out.println("Number effected rows  : " + result);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Insert Default ScreenTable To DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.update(sql, new Object[]{oldProgramId, newProgramId});
     }
 
     @Override
     public void insertTableTranslation(Long tableId, Long langId, String translation) throws SQLException {
         String sqlQuery =
-                "insert into tablebylanguage values (?,?,?)on duplicate key update UnicodeTitle=values(UnicodeTitle)";
+                "insert into tablebylanguage values (?,?,?) on duplicate key update UnicodeTitle=values(UnicodeTitle)";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -250,67 +115,69 @@ public class TableDaoImpl implements TableDao {
     }
 
     @Override
-    public void moveTable(Table table, Long oldScreenId) throws SQLException {
-        String sqlQuery = "update screentable set Title=? , Position=? ,ScreenID=? "
-                + "where TableID=? and ScreenID=? and ProgramID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
+    public void insertTranslation(final Collection<Table> tables) throws SQLException {
+        logger.debug("Insert collection translation of tables ");
+        final String sql = "insert into tablebylanguage values (?,?,?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, table.getTitle());
-            prepstmt.setInt(2, table.getPosition());
-            prepstmt.setLong(3, table.getScreenId());
-            prepstmt.setLong(4, table.getId());
-            prepstmt.setLong(5, oldScreenId);
-            prepstmt.setLong(6, table.getProgramId());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException("Cannot Update ScreenTable In DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Table table = Lists.newArrayList(tables).get(i);
+                ps.setLong(1, table.getId());
+                ps.setLong(2, table.getLangId());
+                ps.setString(3, table.getUnicodeTitle() == null ? "" : table.getUnicodeTitle());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return tables.size();
+            }
+        });
     }
 
     @Override
-    public void saveChanges(Map<Long, String> showMap, Map<Long, Integer> positionMap, Long screenId, Long programId) throws SQLException {
-        String sqlQuery =
-                "update screentable set DisplayOnScreen=?, Position=? where TableID=? and ScreenID=? and ProgramID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
+    public void moveTable(Table table, Long oldScreenId) throws SQLException {
+        logger.debug("Move table from one screen to another ");
+        String sqlQuery = "update screentable set Title=? , Position=? ,ScreenID=? "
+                + "where TableID=? and ScreenID=? and ProgramID=?";
 
-        try {
-            con = dao.getConnection();
-            con.setAutoCommit(false);
-            prepstmt = con.prepareStatement(sqlQuery);
+        jdbcTemplate.update(sqlQuery, new Object[]{table.getTitle(), table.getPosition(), table.getScreenId(),
+                table.getId(), oldScreenId, table.getProgramId()});
+    }
 
-            Set<Long> keys = showMap.keySet();
+    @Override
+    public void saveChanges(final Map<Long, String> showMap, final Map<Long, Integer> positionMap, final Long screenId,
+                            final Long programId) throws SQLException {
 
-            for (Long tableId : keys) {
-                final String show = showMap.get(tableId);
-                Integer pos = positionMap.get(tableId);
+        logger.debug("Save changes of table position and show ");
+        final String sql = "update screentable set DisplayOnScreen=?, Position=? where TableID=? and ScreenID=? " +
+                "and ProgramID=?";
+        final List<Long> tableIds = new ArrayList(showMap.size());
+        final List<String> showFlags = new ArrayList(showMap.size());
+        final List<Integer> positions = new ArrayList(showMap.size());
+        Set<Long> keys = showMap.keySet();
+        for (Long tableId : keys) {
+            tableIds.add(tableId);
+            showFlags.add(showMap.get(tableId));
+            positions.add(positionMap.get(tableId));
+        }
 
-                prepstmt.setString(1, show);
-                prepstmt.setInt(2, pos);
-                prepstmt.setLong(3, tableId);
-                prepstmt.setLong(4, screenId);
-                prepstmt.setLong(5, programId);
-                prepstmt.addBatch();
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setString(1, showFlags.get(i));
+                ps.setInt(2, positions.get(i));
+                ps.setLong(3, tableIds.get(i));
+                ps.setLong(4, screenId);
+                ps.setLong(5, programId);
             }
 
-            prepstmt.executeBatch();
-            con.commit();
-            con.setAutoCommit(true);
-        } catch (SQLException e) {
-            System.out.println("Caught SQL SQLException : " + e.getMessage());
-
-            throw new SQLException("Cannot Save Changes In ScreenTable DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+            @Override
+            public int getBatchSize() {
+                return showMap.size();
+            }
+        });
     }
 
     @Override
@@ -320,202 +187,51 @@ public class TableDaoImpl implements TableDao {
 
     @Override
     public Table getById(Long programId, Long screenId, Long tableId, Long langId) throws SQLException {
-        return getTableById(programId, screenId, tableId, langId);
-    }
-
-    @Override
-    public Table getTableById(Long programId, Long screenId, Long tableId, Long langId) throws SQLException {
+        logger.debug("Get tables by program with id [{}]", programId);
         String sqlQuery = "select * from screentable "
                 + "left join tablebylanguage on tablebylanguage.tableid=screentable.tableid "
                 + "and tablebylanguage.langid=? "
                 + "where screentable.programid=? and screentable.screenid=? and screentable.tableid=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
+        List<Table> tables = jdbcTemplate.query(sqlQuery, new Object[]{langId, programId, screenId, tableId},
+                RowMappers.table());
+        return tables.get(0);
+    }
 
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, langId);
-            prepstmt.setLong(2, programId);
-            prepstmt.setLong(3, screenId);
-            prepstmt.setLong(4, tableId);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return TableUtil.makeTable(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException(CANNOT_RETRIEVE_TABLE, e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+    @Override
+    public Collection<Table> getScreenTables(Long programId, Long screenId, Boolean showAll) throws SQLException {
+        logger.debug("Get tables by program with id [{}]", programId);
+        String sqlQuery = "select * from screentable where programid=? and screenid =? ";
+        if (!showAll) {
+            sqlQuery = sqlQuery.concat(" and DisplayOnScreen='yes'");
         }
+        sqlQuery = sqlQuery.concat(" order by Position");
+        return jdbcTemplate.query(sqlQuery, new Object[]{programId, screenId}, RowMappers.table());
+    }
+
+    @Override
+    public Collection<Table> getScreenTables(Long programId, Long screenId, Long langId, Boolean showAll)
+            throws SQLException {
+        String sqlQuery = "select * from screentable"
+                + " left join tablebylanguage on tablebylanguage.tableid=screentable.tableid"
+                + " and tablebylanguage.langid=? where programid=? and screenid=?";
+        if (!showAll) {
+            sqlQuery = sqlQuery.concat(" and DisplayOnScreen='yes'");
+        }
+        sqlQuery = sqlQuery.concat(" order by Position");
+        return jdbcTemplate.query(sqlQuery, new Object[]{langId, programId, screenId}, RowMappers.table());
+    }
+
+    @Override
+    public Collection<Table> getAllWithTranslation() throws SQLException {
+        logger.debug("Get all tables with translation title ");
+        String sqlQuery = "SELECT * FROM SCREENTABLE S INNER "
+                + "JOIN TABLEBYLANGUAGE T ON S.TABLEID=T.TABLEID ";
+        return jdbcTemplate.query(sqlQuery, RowMappers.table());
     }
 
     @Override
     public Collection<Table> getAll() throws SQLException {
         String sqlQuery = "select * from screentable";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            return TableUtil.makeTableList(rs);
-        } catch (SQLException e) {
-            System.out.println("Caught SQL SQLException : " + e.getMessage());
-
-            throw new SQLException("Cannot Retrieve ScreenTable From DataBase");
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    @Override
-    public Collection<Table> getAllScreenTables(Long programId, Long screenId, String display) throws SQLException {
-        String sqlQuery = "select * from screentable order by Position";
-
-        if (!programId.equals("-1")) {
-            sqlQuery = "select * from (" + sqlQuery + ") as a where a.ProgramID=" + programId + " order by ScreenID ";
-        }
-
-        if (!screenId.equals("-1")) {
-            sqlQuery = "select * from (" + sqlQuery + ") as a where a.ScreenID=" + screenId + " order by ScreenID ";
-        }
-
-        if (display.equals("")) {
-            sqlQuery = "select * from (" + sqlQuery + ") as b where b.DisplayOnScreen='" + display + "'";
-        }
-
-        sqlQuery = "select * from (" + sqlQuery + ") as b order by Position";
-
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-
-            return TableUtil.makeTableList(rs);
-        } catch (SQLException e) {
-            System.out.println("Caught SQL SQLException : " + e.getMessage());
-
-            throw new SQLException("Cannot Retrieve ScreenTable From DataBase");
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    @Override
-    public Collection<Table> getAllScreenTables(Long programId, Long screenId, Long langId) throws SQLException {
-        return getAllScreenTables(programId, screenId, langId, SHOW_ALL);
-    }
-
-    @Override
-    public Collection<Table> getAllScreenTables(Long programId, Long screenId, Long langId, int showCondition)
-            throws SQLException {
-        String sqlQuery = "select * from screentable st "
-                + "left join tablebylanguage tl on tl.tableid=st.tableid and tl.langid=? "
-                + "where st.programid=? and st.screenid=?";
-
-        switch (showCondition) {
-            default:
-            case SHOW_ALL:
-                sqlQuery = sqlQuery.concat(" order by st.Position");
-                break;
-            case SHOW_UNCHECKED:
-                sqlQuery = sqlQuery.concat(" and DisplayOnScreen='no' order by st.Position");
-                break;
-            case SHOW_CHECKED:
-                sqlQuery = sqlQuery.concat(" and DisplayOnScreen='yes' order by st.Position");
-                break;
-        }
-
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, langId);
-            prepstmt.setLong(2, programId);
-            prepstmt.setLong(3, screenId);
-            ResultSet rs = prepstmt.executeQuery();
-            return TableUtil.makeTableList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETRIEVE_TABLE, e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    @Override
-    public Collection<Table> getScreenTables(Long programId, Long screenId, Long langId, boolean showAll) throws SQLException {
-        String sqlQuery = "select * from screentable"
-                + " left join tablebylanguage on tablebylanguage.tableid=screentable.tableid"
-                + " and tablebylanguage.langid=?" + " where programid=? and screenid=?";
-
-        if (!showAll) {
-            sqlQuery = sqlQuery.concat(" and DisplayOnScreen='yes'");
-        }
-
-        sqlQuery = sqlQuery.concat(" order by Position");
-
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, langId);
-            prepstmt.setLong(2, programId);
-            prepstmt.setLong(3, screenId);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            return TableUtil.makeTableList(rs);
-        } catch (SQLException e) {
-            System.out.println("Caught SQL SQLException : " + e.getMessage());
-
-            throw new SQLException("Cannot Retrieve ScreenTable From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    @Override
-    public Collection<Table> getAllWithTranslation() throws SQLException {
-        String sqlQuery = "SELECT * FROM SCREENTABLE S INNER "
-                + "JOIN TABLEBYLANGUAGE T ON S.TABLEID=T.TABLEID ";// GROUP BY S.TABLEID, T.LANGID ";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-            return TableUtil.makeTableList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException(CANNOT_RETRIEVE_TABLE, e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        return jdbcTemplate.query(sqlQuery, RowMappers.table());
     }
 }

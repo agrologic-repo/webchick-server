@@ -4,15 +4,16 @@
 
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.graph.GenerateGraph" %>
-<%@ page import="com.agrologic.app.model.ControllerDto" %>
+<%@ page import="com.agrologic.app.model.Controller" %>
 
 <jsp:directive.page import="com.agrologic.app.model.Program"/>
 <jsp:directive.page import="com.agrologic.app.model.Screen"/>
-<jsp:directive.page import="com.agrologic.app.model.UserDto"/>
+<jsp:directive.page import="com.agrologic.app.model.User"/>
 <jsp:directive.page import="java.io.PrintWriter"/>
 <jsp:directive.page import="java.util.Collection"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -21,7 +22,7 @@
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long screenId = Long.parseLong((String) request.getParameter("screenId"));
-    ControllerDto controller = (ControllerDto) request.getSession().getAttribute("controller");
+    Controller controller = (Controller) request.getSession().getAttribute("controller");
     Program program = controller.getProgram();
     Collection<Screen> screens = program.getScreens();
     Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");

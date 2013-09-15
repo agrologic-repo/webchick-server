@@ -7,8 +7,9 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.model.ControllerDto;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Controller;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -56,9 +57,8 @@ public class ActivateControllerServlet extends HttpServlet {
                 String message = "";
 
                 try {
-                    ControllerDao controllerDao = new ControllerDaoImpl();
-                    ControllerDto controller = controllerDao.getById(controllerId);
-
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    Controller controller = controllerDao.getById(controllerId);
                     if ((active != null) && "ON".equals(active.toUpperCase())) {
                         message = "Controller with ID " + controller.getId() + " activated .";
                         controller.setActive(true);
@@ -66,7 +66,6 @@ public class ActivateControllerServlet extends HttpServlet {
                         message = "Controller with ID " + controller.getId() + " deactivated .";
                         controller.setActive(false);
                     }
-
                     controllerDao.update(controller);
                     logger.info(message);
                     request.getSession().setAttribute("message", message);

@@ -12,16 +12,19 @@ import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.ControllerDaoImpl;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.*;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 public class DerbyControllerDaoImpl extends ControllerDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyControllerDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyControllerDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        super(jdbcTemplate, dao);
     }
 
     @Override
@@ -132,41 +135,27 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insert(Controller controller) throws SQLException {
-        insertControllers(controller);
-        insertControllerDataValues(controller.getId(), controller.getDataValues());
+        logger.debug("Creating controller with name [{}]", controller.getName());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("CONTROLLERID", controller.getId());
+        valuesToInsert.put("CELLINKID", controller.getCellinkId());
+        valuesToInsert.put("TITLE", controller.getTitle());
+        valuesToInsert.put("NETNAME", controller.getNetName());
+        valuesToInsert.put("CONTROLLERNAME", controller.getName());
+        valuesToInsert.put("PROGRAMID", controller.getProgramId());
+        valuesToInsert.put("AREA", controller.getArea());
+        valuesToInsert.put("ACTIVE", controller.isActive());
+        jdbcInsert.execute(valuesToInsert);
     }
 
-    private void insertControllers(Controller controller) throws SQLException {
-        String sqlQuery = "INSERT INTO CONTROLLERS "
-                + "(CONTROLLERID, CELLINKID, TITLE, NETNAME, CONTROLLERNAME, PROGRAMID, AREA, ACTIVE) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setObject(1, controller.getId());
-            prepstmt.setLong(2, controller.getCellinkId());
-            prepstmt.setString(3, controller.getTitle());
-            prepstmt.setString(4, controller.getNetName());
-            prepstmt.setString(5, controller.getName());
-            prepstmt.setLong(6, controller.getProgramId());
-            prepstmt.setInt(7, controller.getArea());
-            prepstmt.setBoolean(8, controller.isActive());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot New Controller To The DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insertControllerDataValues(Long controllerId, Iterator<Map.Entry<Long, Data>> dataValues)
             throws SQLException {
@@ -181,7 +170,6 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
 
             while (dataValues.hasNext()) {
                 Map.Entry<Long, Data> entry = dataValues.next();
-
                 prepstmt.setLong(1, entry.getKey());
                 prepstmt.setLong(2, controllerId);
                 prepstmt.addBatch();
@@ -192,7 +180,6 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
             con.setAutoCommit(true);
         } catch (SQLException e) {
             dao.printSQLException(e);
-
             if (con != null) {
                 try {
                     con.rollback();
@@ -213,47 +200,18 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
         String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         String sqlInsertQuery = "INSERT INTO CONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
         String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
-        PreparedStatement prepstmtSelect = null;
-        PreparedStatement prepstmtInsert = null;
-        PreparedStatement prepstmtUpdate = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmtSelect = con.prepareStatement(sqlSelectQuery);
-            prepstmtInsert = con.prepareStatement(sqlInsertQuery);
-            prepstmtUpdate = con.prepareStatement(sqlUpdateQuery);
-            prepstmtSelect.setLong(1, controllerId);
-            prepstmtSelect.setLong(2, dataId);
-
-            ResultSet rs = prepstmtSelect.executeQuery();
-
-            if (rs.next()) {
-
-                // turn off autocommit
-                int exist = rs.getInt("EXIST");
-
-                if (exist == 1) {
-                    prepstmtUpdate.setLong(1, value);
-                    prepstmtUpdate.setLong(2, controllerId);
-                    prepstmtUpdate.setLong(3, dataId);
-                    prepstmtUpdate.executeUpdate();
-                } else {
-                    prepstmtInsert.setLong(1, controllerId);
-                    prepstmtInsert.setLong(2, dataId);
-                    prepstmtInsert.setLong(3, value);
-                    prepstmtInsert.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Can't insert new row to controllerdata table ", e);
-        } finally {
-            prepstmtSelect.close();
-            prepstmtInsert.close();
-            prepstmtUpdate.close();
-            dao.closeConnection(con);
+        int exist = jdbcTemplate.queryForInt(sqlSelectQuery,
+                controllerId, dataId);
+        if (exist == 1) {
+            jdbcTemplate.update(sqlUpdateQuery, value, controllerId, dataId);
+        } else {
+            SimpleJdbcInsert jdbcControllerDataInsert = new SimpleJdbcInsert(jdbcTemplate);
+            jdbcControllerDataInsert.setTableName("CONTROLLERDATA");
+            Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+            valuesToInsert.put("controllerid", controllerId);
+            valuesToInsert.put("dataid", dataId);
+            valuesToInsert.put("value", value);
+            jdbcInsert.execute(valuesToInsert);
         }
     }
 
@@ -262,6 +220,7 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
         final String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         final String sqlInsertQuery = "INSERT INTO CONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
         final String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
+
         PreparedStatement prepstmtSelect = null;
         PreparedStatement prepstmtInsert = null;
         PreparedStatement prepstmtUpdate = null;
@@ -329,47 +288,20 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
 
     public void updateControllerGraph(Long controllerId, String values, Timestamp updateTime) throws SQLException {
         final String sqlSelectQuery = "SELECT COUNT(DATASET) AS EXIST FROM GRAPH24HOURS WHERE CONTROLLERID=?";
-        final String sqlInsertQuery = "INSERT INTO GRAPH24HOURS (CONTROLLERID, DATASET, UPDATETIME) VALUES (?, ?, ?)";
         final String sqlUpdateQuery = "UPDATE GRAPH24HOURS SET DATASET=? ,UPDATETIME=? WHERE CONTROLLERID=?";
-        PreparedStatement prepstmtSelect = null;
-        PreparedStatement prepstmtInsert = null;
-        PreparedStatement prepstmtUpdate = null;
-        Connection con = null;
 
-        try {
-            con = dao.getConnection();
-            prepstmtSelect = con.prepareStatement(sqlSelectQuery);
-            prepstmtInsert = con.prepareStatement(sqlInsertQuery);
-            prepstmtUpdate = con.prepareStatement(sqlUpdateQuery);
-            prepstmtSelect.setLong(1, controllerId);
+        int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId);
 
-            ResultSet rs = prepstmtSelect.executeQuery();
-
-            if (rs.next()) {
-
-                // turn off autocommit
-                int exist = rs.getInt("exist");
-
-                if (exist == 1) {
-                    prepstmtUpdate.setString(1, values);
-                    prepstmtUpdate.setTimestamp(2, updateTime);
-                    prepstmtUpdate.setLong(3, controllerId);
-                    prepstmtUpdate.executeUpdate();
-                } else {
-                    prepstmtInsert.setLong(1, controllerId);
-                    prepstmtInsert.setString(2, values);
-                    prepstmtInsert.setTimestamp(3, updateTime);
-                    prepstmtInsert.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Transaction is being rolled back");
-        } finally {
-            prepstmtSelect.close();
-            prepstmtInsert.close();
-            prepstmtUpdate.close();
-            dao.closeConnection(con);
+        if (exist == 1) {
+            jdbcTemplate.update(sqlUpdateQuery, values, updateTime);
+        } else {
+            SimpleJdbcInsert jdbcControllerDataInsert = new SimpleJdbcInsert(jdbcTemplate);
+            jdbcControllerDataInsert.setTableName("GRAPH24HOURS");
+            Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+            valuesToInsert.put("dataset", values);
+            valuesToInsert.put("updatetime", updateTime);
+            valuesToInsert.put("controllerId", controllerId);
+            jdbcControllerDataInsert.execute(valuesToInsert);
         }
     }
 

@@ -3,16 +3,16 @@
 <%@ include file="language.jsp" %>
 
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ page import="com.agrologic.app.web.UserRole" %>
+<%@ page import="com.agrologic.app.model.UserRole" %>
 <%
     long userId = Long.parseLong(request.getParameter("userId"));
     long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
 
     request.getSession().setAttribute("cellinkId", cellinkId);
 
-    Integer role = (Integer) request.getSession().getAttribute("role");
+    UserRole role = (UserRole) request.getSession().getAttribute("role");
     if (role == null) {
-        role = 1;
+        role = UserRole.USER;
     }
 
     HashMap<Long, Long> nextScrIdsByCntrl = (HashMap<Long, Long>) request.getSession().getAttribute("nextScrIdsByCntrl");
@@ -554,7 +554,7 @@ function keyDown(val) {
                             </a>
                             <% String access = (String) request.getSession().getAttribute("access");%>
                             <% if (!access.toLowerCase().equals("regular")) {%>
-                            <%if (role == UserRole.REGULAR) {%>
+                            <%if (role == UserRole.USER) {%>
                             <img src="img/cellinks.png" border="0" hspace="5"/>
                             <a href="<%=request.getContextPath()%>/my-farms.html?userId=<%=userId%>">
                                 <%=session.getAttribute("button.myfarms")%>

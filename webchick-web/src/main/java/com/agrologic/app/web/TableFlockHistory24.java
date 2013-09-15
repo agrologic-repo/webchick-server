@@ -6,8 +6,9 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.excel.DataForExcelCreator;
 import com.agrologic.app.model.DataFormat;
 import org.apache.log4j.Logger;
@@ -20,11 +21,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class TableFlockHistory24 extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static String outfile;
@@ -55,6 +51,9 @@ public class TableFlockHistory24 extends HttpServlet {
 
             try {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
+                String test = request.getParameter("flockId");
+                System.out.println(test);
+
                 int fromDay = -1;
                 int toDay = -1;
                 StringBuilder range = new StringBuilder();
@@ -79,7 +78,7 @@ public class TableFlockHistory24 extends HttpServlet {
                     growDay = 1;
                 }
 
-                FlockDao flockDao = new FlockDaoImpl();
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
                 Long resetTime = new Long(flockDao.getResetTime(flockId, growDay));
 
                 if (resetTime != null) {

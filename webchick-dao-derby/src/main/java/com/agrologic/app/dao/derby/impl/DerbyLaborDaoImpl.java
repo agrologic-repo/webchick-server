@@ -5,14 +5,16 @@ import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.LaborDaoImpl;
 import com.agrologic.app.model.Labor;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
 
 public class DerbyLaborDaoImpl extends LaborDaoImpl implements CreatebleDao, RemovebleDao {
 
-    public DerbyLaborDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyLaborDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
+
 
     @Override
     public void createTable() throws SQLException {

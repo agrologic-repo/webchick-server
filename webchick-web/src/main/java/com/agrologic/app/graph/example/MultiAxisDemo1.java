@@ -6,7 +6,6 @@
 package com.agrologic.app.graph.example;
 
 
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -21,11 +20,10 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
+import javax.swing.*;
+import java.awt.*;
+
 //~--- JDK imports ------------------------------------------------------------
-
-import java.awt.Dimension;
-
-import javax.swing.JPanel;
 
 public class MultiAxisDemo1 extends ApplicationFrame {
     public MultiAxisDemo1(String paramString) {
@@ -40,9 +38,9 @@ public class MultiAxisDemo1 extends ApplicationFrame {
     }
 
     private static JFreeChart createChart() {
-        XYDataset  localXYDataset1 = createDataset("Series 1", 100.0D, new Minute(), 200);
+        XYDataset localXYDataset1 = createDataset("Series 1", 100.0D, new Minute(), 200);
         JFreeChart localJFreeChart = ChartFactory.createTimeSeriesChart("Multiple Axis Demo 1", "Time of Day",
-                                         "Primary Range Axis", localXYDataset1, true, true, false);
+                "Primary Range Axis", localXYDataset1, true, true, false);
 
         localJFreeChart.addSubtitle(new TextTitle("Four datasets and four range axes."));
 
@@ -92,15 +90,15 @@ public class MultiAxisDemo1 extends ApplicationFrame {
     }
 
     private static XYDataset createDataset(String paramString, double paramDouble,
-            RegularTimePeriod paramRegularTimePeriod, int paramInt) {
-        TimeSeries        localTimeSeries        = new TimeSeries(paramString);
+                                           RegularTimePeriod paramRegularTimePeriod, int paramInt) {
+        TimeSeries localTimeSeries = new TimeSeries(paramString);
         RegularTimePeriod localRegularTimePeriod = paramRegularTimePeriod;
-        double            d                      = paramDouble;
+        double d = paramDouble;
 
         for (int i = 0; i < paramInt; ++i) {
             localTimeSeries.add(localRegularTimePeriod, d);
             localRegularTimePeriod = localRegularTimePeriod.next();
-            d                      *= (1.0D + (Math.random() - 0.495D) / 10.0D);
+            d *= (1.0D + (Math.random() - 0.495D) / 10.0D);
         }
 
         TimeSeriesCollection localTimeSeriesCollection = new TimeSeriesCollection();

@@ -10,10 +10,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.Data" %>
-<%@ page import="com.agrologic.app.model.HistorySettingDto" %>
+<%@ page import="com.agrologic.app.model.HistorySetting" %>
 <%@ page import="java.util.Collection" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -26,12 +27,12 @@
 
     Long programId = Long.parseLong(request.getParameter("programId"));
     Collection<Data> historyData = (Collection<Data>) request.getSession().getAttribute("historyData");
-    Collection<HistorySettingDto> historySettingData = (Collection<HistorySettingDto>) request.getSession().getAttribute("historySettingData");
+    Collection<HistorySetting> historySettingData = (Collection<HistorySetting>) request.getSession().getAttribute("historySettingData");
 %>
 
-<%! String historySettingChecked(Collection<HistorySettingDto> historySettingData, Long dataId) {
+<%! String historySettingChecked(Collection<HistorySetting> historySettingData, Long dataId) {
     if (historySettingData != null) {
-        for (HistorySettingDto hsd : historySettingData) {
+        for (HistorySetting hsd : historySettingData) {
             if (hsd.getDataId() == dataId) {
                 if (hsd.getChecked().equals("true"))
                     return "checked";

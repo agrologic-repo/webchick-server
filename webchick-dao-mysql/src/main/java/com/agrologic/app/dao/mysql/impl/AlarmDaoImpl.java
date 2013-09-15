@@ -14,6 +14,12 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ * An implementation of {@link AlarmDao} that is based on JdbcTemplate and working
+ * with database.
+ *
+ * @author Valery Manakhimov
+ */
 public class AlarmDaoImpl implements AlarmDao {
     protected final DaoFactory dao;
     private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
@@ -43,7 +49,7 @@ public class AlarmDaoImpl implements AlarmDao {
     }
 
     @Override
-    public void update(Alarm alarm) throws SQLException {
+    public void update(Alarm alarm) {
         logger.debug("Update alarm with id [{}]", alarm.getId());
         jdbcTemplate.update("update alarmnames set Name=? where ID=?", new Object[]{alarm.getText(), alarm.getId()});
     }
@@ -74,7 +80,8 @@ public class AlarmDaoImpl implements AlarmDao {
     public void insertTranslation(Long alarmId, Long langId, String translation) {
         logger.debug("Creating alarm translation with id [{}] and language id [{}] ", alarmId, langId);
         String sqlQuery =
-                "insert into alarmbylanguage values (?,?,?) on duplicate key update UnicodeName=values(UnicodeName)";
+                "insert into alarmbylanguage(alarmid,langid,unicodename) values (?,?,?) " +
+                        "on duplicate key update UnicodeName=values(UnicodeName)";
         jdbcTemplate.update(sqlQuery, new Object[]{alarmId, langId, translation});
     }
 
@@ -92,7 +99,8 @@ public class AlarmDaoImpl implements AlarmDao {
                     alarm.getUnicodeText()};
             batch.add(values);
         }
-        jdbcTemplate.batchUpdate("insert into alarmbylanguage values (?,?,?) ", batch);
+        jdbcTemplate.batchUpdate("insert into alarmbylanguage values (?,?,?) ",
+                batch);
     }
 
     @Override

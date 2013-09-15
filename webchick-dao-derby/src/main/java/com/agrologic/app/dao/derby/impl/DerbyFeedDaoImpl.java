@@ -6,15 +6,17 @@ import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.FeedDaoImpl;
 import com.agrologic.app.model.Feed;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
 
 public class DerbyFeedDaoImpl extends FeedDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
 
-    public DerbyFeedDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyFeedDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
+
 
     @Override
     public boolean tableExist() throws SQLException {

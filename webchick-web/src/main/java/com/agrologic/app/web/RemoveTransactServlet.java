@@ -1,20 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.TransactionDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.TransactionDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
-import com.agrologic.app.model.TransactionDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.TransactionDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.Transaction;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,13 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class RemoveTransactServlet extends HttpServlet {
 
     /**
@@ -57,8 +43,8 @@ public class RemoveTransactServlet extends HttpServlet {
             Long transactId = Long.parseLong(request.getParameter("transactId"));
 
             try {
-                TransactionDao transactDao = new TransactionDaoImpl();
-                TransactionDto transact = transactDao.getById(transactId);
+                TransactionDao transactDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDaoImpl.class);
+                Transaction transact = transactDao.getById(transactId);
 
                 if (transact == null) {
                     logger.info("Transaction " + transactId + " can't be removed");
@@ -68,28 +54,27 @@ public class RemoveTransactServlet extends HttpServlet {
                     transactDao.remove(transact.getId());
                     logger.info("Transaction removed successfully from the datebase");
 
-                    List<TransactionDto> transacts = transactDao.getAllByFlockId(flockId);
+                    List<Transaction> transacts = transactDao.getAllByFlockId(flockId);
                     float expenses = 0;
                     float revenues = 0;
 
-                    for (TransactionDto t : transacts) {
+                    for (Transaction t : transacts) {
                         expenses += t.getExpenses();
                         revenues += t.getRevenues();
                     }
 
-                    FlockDao flockDao = new FlockDaoImpl();
-                    FlockDto flock = flockDao.getById(flockId);
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                    Flock flock = flockDao.getById(flockId);
 
                     flock.setExpenses(expenses);
                     flock.setRevenues(revenues);
                     flockDao.update(flock);
 
-                    ControllerDao controllerDao = new ControllerDaoImpl();
-                    List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                    for (ControllerDto controller : controllers) {
-                        List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                    for (Controller controller : controllers) {
+                        Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                         controller.setFlocks(flocks);
                     }
 

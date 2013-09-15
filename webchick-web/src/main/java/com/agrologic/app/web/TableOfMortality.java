@@ -10,7 +10,6 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.table.TableOfHistoryCreator;
 import org.apache.log4j.Logger;
@@ -71,7 +70,7 @@ public class TableOfMortality extends HttpServlet {
                 }
 
                 try {
-                    FlockDao flockDao = new FlockDaoImpl();
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     Data data1 = dataDao.getById(Long.valueOf(3017), Long.valueOf(1));

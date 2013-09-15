@@ -19,6 +19,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Observable;
 
@@ -86,7 +87,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
 
     private void initControllerMessageManagers(Configuration settingPreferences) throws ObjectDoesNotExist {
         DatabaseLoadAccessor dla = dbManager.getDatabaseLoader();
-        List<Controller> tempControllers =
+        Collection<Controller> tempControllers =
                 dla.getUser().getCellinkById(Long.parseLong(settingPreferences.getCellinkId())).getControllers();
 
         // Here we transform each controller into
@@ -330,9 +331,6 @@ public final class SocketThread extends Observable implements Runnable, Network 
     public synchronized void setThreadState(NetworkState networkState) {
         synchronized (this) {
             this.networkState = networkState;
-            if (networkState == NetworkState.STATE_STOP) {
-                System.out.println("Stopped");
-            }
         }
     }
 

@@ -7,14 +7,10 @@ package com.agrologic.app.ui;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.FocusTraversalPolicy;
-
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
- *
  * @author Administrator
  */
 public class IndexedFocusTraversalPolicy extends FocusTraversalPolicy {
@@ -26,7 +22,7 @@ public class IndexedFocusTraversalPolicy extends FocusTraversalPolicy {
 
     @Override
     public Component getComponentAfter(Container aContainer, Component aComponent) {
-        int atIndex   = components.indexOf(aComponent);
+        int atIndex = components.indexOf(aComponent);
         int nextIndex = (atIndex + 1) % components.size();
 
         return components.get(nextIndex);
@@ -34,7 +30,7 @@ public class IndexedFocusTraversalPolicy extends FocusTraversalPolicy {
 
     @Override
     public Component getComponentBefore(Container aContainer, Component aComponent) {
-        int atIndex   = components.indexOf(aComponent);
+        int atIndex = components.indexOf(aComponent);
         int nextIndex = (atIndex + components.size() - 1) % components.size();
 
         return components.get(nextIndex);

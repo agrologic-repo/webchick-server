@@ -524,7 +524,7 @@
                 <Component class="javax.swing.JLabel" name="jLabel10">
                   <Properties>
                     <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="text" type="java.lang.String" value="Gaz"/>
+                    <Property name="text" type="java.lang.String" value="Gas"/>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -558,7 +558,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnAddGas">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Add Gaz"/>
+                    <Property name="text" type="java.lang.String" value="Add Gas"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddGasActionPerformed"/>

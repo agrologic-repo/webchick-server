@@ -2,13 +2,14 @@ package com.agrologic.app.model;
 
 public class Medicine {
     private Integer amount;
-    private Long    flockId;
-    private Long    id;
-    private String  name;
-    private Float   price;
-    private Float   total;
+    private Long flockId;
+    private Long id;
+    private String name;
+    private Float price;
+    private Float total;
 
-    public Medicine() {}
+    public Medicine() {
+    }
 
     public Long getId() {
         return id;
@@ -70,11 +71,11 @@ public class Medicine {
 
         final Medicine other = (Medicine) obj;
 
-        if ((this.id != other.id) && ((this.id == null) ||!this.id.equals(other.id))) {
+        if ((this.id != other.id) && ((this.id == null) || !this.id.equals(other.id))) {
             return false;
         }
 
-        if ((this.flockId != other.flockId) && ((this.flockId == null) ||!this.flockId.equals(other.flockId))) {
+        if ((this.flockId != other.flockId) && ((this.flockId == null) || !this.flockId.equals(other.flockId))) {
             return false;
         }
 
@@ -86,19 +87,19 @@ public class Medicine {
         int hash = 7;
 
         hash = 47 * hash + ((this.id != null)
-                            ? this.id.hashCode()
-                            : 0);
+                ? this.id.hashCode()
+                : 0);
         hash = 47 * hash + ((this.flockId != null)
-                            ? this.flockId.hashCode()
-                            : 0);
+                ? this.flockId.hashCode()
+                : 0);
 
         return hash;
     }
 
     @Override
     public String toString() {
-        return "MedicineDto{" + "id=" + id + "amount=" + amount + "name=" + name + "price=" + price + "total=" + total
-               + '}';
+        return "Medicine{" + "id=" + id + "amount=" + amount + "name=" + name + "price=" + price + "total=" + total
+                + '}';
     }
 }
 

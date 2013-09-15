@@ -8,9 +8,12 @@
 
     <context:property-placeholder location="/derby.properties"/>
 
-
-    <bean id="alarmDao" class="com.agrologic.app.dao.derby.impl.DerbyAlarmDaoImpl" parent="daoParent">
+    <bean id="jdbcTemplateBasedDaoParent" abstract="true">
         <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="alarmDao" class="com.agrologic.app.dao.derby.impl.DerbyAlarmDaoImpl" parent="jdbcTemplateBasedDaoParent">
+        <constructor-arg index="1" ref="daoFactory"/>
     </bean>
 
     <bean id="programAlarmDao" class="com.agrologic.app.dao.derby.impl.DerbyProgramAlarmDaoImpl" parent="daoParent">
@@ -50,22 +53,67 @@
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
-    <bean id="controllerDao" class="com.agrologic.app.dao.derby.impl.DerbyControllerDaoImpl" parent="daoParent"/>
-    <bean id="distribDao" class="com.agrologic.app.dao.derby.impl.DerbyDistribDaoImpl" parent="daoParent"/>
-    <bean id="feedDao" class="com.agrologic.app.dao.derby.impl.DerbyFeedDaoImpl" parent="daoParent"/>
-    <bean id="feedTypeDao" class="com.agrologic.app.dao.derby.impl.DerbyFeedTypeDaoImpl" parent="daoParent"/>
-    <bean id="flockDao" class="com.agrologic.app.dao.derby.impl.DerbyFlockDaoImpl" parent="daoParent"/>
-    <bean id="fuelDao" class="com.agrologic.app.dao.derby.impl.DerbyFuelDaoImpl" parent="daoParent"/>
-    <bean id="laborDao" class="com.agrologic.app.dao.derby.impl.DerbyLaborDaoImpl" parent="daoParent"/>
-    <bean id="userDao" class="com.agrologic.app.dao.derby.impl.DerbyUserDaoImpl" parent="daoParent"/>
+    <bean id="controllerDao" class="com.agrologic.app.dao.derby.impl.DerbyControllerDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="cellinkDao" class="com.agrologic.app.dao.derby.impl.DerbyCellinkDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="userDao" class="com.agrologic.app.dao.derby.impl.DerbyUserDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="distribDao" class="com.agrologic.app.dao.derby.impl.DerbyDistribDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="feedDao" class="com.agrologic.app.dao.derby.impl.DerbyFeedDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="feedTypeDao" class="com.agrologic.app.dao.derby.impl.DerbyFeedTypeDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="flockDao" class="com.agrologic.app.dao.derby.impl.DerbyFlockDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="fuelDao" class="com.agrologic.app.dao.derby.impl.DerbyFuelDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="laborDao" class="com.agrologic.app.dao.derby.impl.DerbyLaborDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="languageDao" class="com.agrologic.app.dao.derby.impl.DerbyLanguageDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="spreadDao" class="com.agrologic.app.dao.derby.impl.DerbySpreadDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="transactionDao" class="com.agrologic.app.dao.derby.impl.DerbyTransactionDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="workerDao" class="com.agrologic.app.dao.derby.impl.DerbyWorkerDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="medicineDao" class="com.agrologic.app.dao.derby.impl.DerbyMedicineDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="gasDao" class="com.agrologic.app.dao.derby.impl.DerbyGasDaoImpl" parent="daoParent">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
     <bean id="schemaDao" class="com.agrologic.app.dao.derby.impl.DerbySchemaDaoImpl" parent="daoParent"/>
-    <bean id="languageDao" class="com.agrologic.app.dao.derby.impl.DerbyLanguageDaoImpl" parent="daoParent"/>
-    <bean id="spreadDao" class="com.agrologic.app.dao.derby.impl.DerbySpreadDaoImpl" parent="daoParent"/>
-    <bean id="transactionDao" class="com.agrologic.app.dao.derby.impl.DerbyTransactionDaoImpl" parent="daoParent"/>
-    <bean id="workerDao" class="com.agrologic.app.dao.derby.impl.DerbyWorkerDaoImpl" parent="daoParent"/>
-    <bean id="cellinkDao" class="com.agrologic.app.dao.derby.impl.DerbyCellinkDaoImpl" parent="daoParent"/>
-    <bean id="medicineDao" class="com.agrologic.app.dao.derby.impl.DerbyMedicineDaoImpl" parent="daoParent"/>
-    <bean id="gasDao" class="com.agrologic.app.dao.derby.impl.DerbyGasDaoImpl" parent="daoParent"/>
     <bean id="versionDao" class="com.agrologic.app.dao.derby.impl.DerbyVersionDaoImpl" parent="daoParent"/>
 
     <bean id="daoFactory" class="com.agrologic.app.dao.derby.impl.DerbyDaoFactory" factory-method="instance"/>

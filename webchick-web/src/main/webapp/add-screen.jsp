@@ -9,7 +9,8 @@
 <jsp:directive.page import="com.agrologic.app.model.Screen"/>
 <jsp:directive.page import="java.util.Collection"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;

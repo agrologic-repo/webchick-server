@@ -6,13 +6,17 @@
 package com.agrologic.app.dao;
 
 //~--- non-JDK imports --------------------------------------------------------
+
 import com.agrologic.app.model.Data;
+import org.junit.*;
+
 import java.sql.SQLException;
 import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -65,9 +69,7 @@ public class DataDaoTest {
 
     @Test
     public void getSetclock() throws SQLException {
-        long cid = 392;
-        Data setClock = dao.getSetClockByController(cid);
-        System.out.println(setClock);
+        dao.getSetClockByController(392L);
     }
 }
 

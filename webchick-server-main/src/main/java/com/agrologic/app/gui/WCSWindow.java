@@ -12,9 +12,6 @@
 package com.agrologic.app.gui;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.VersionDao;
 import com.agrologic.app.except.JarFileWasNotFound;
 import com.agrologic.app.except.StartProgramException;
 import com.agrologic.app.model.Cellink;
@@ -173,12 +170,12 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         });
         initServerSocketThread();
 
-        try {
-            String version = DbImplDecider.use(DaoType.MYSQL).getDao(VersionDao.class).getVersion();
-        } catch (RuntimeException e) {
-            logger.debug("Cannot get database version ", e);
-            openConfiguration();
-        }
+//        try {
+//            String version = DbImplDecider.use(DaoType.MYSQL).getDao(VersionDao.class).getVersion();
+//        } catch (RuntimeException e) {
+//            logger.debug("Cannot get database version ", e);
+//            openConfiguration();
+//        }
     }
 
     public final void initServerSocketThread() {

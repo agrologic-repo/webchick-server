@@ -5,14 +5,16 @@ import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.SpreadDaoImpl;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
 
 public class DerbySpreadDaoImpl extends SpreadDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbySpreadDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbySpreadDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
+
 
     @Override
     public boolean tableExist() throws SQLException {

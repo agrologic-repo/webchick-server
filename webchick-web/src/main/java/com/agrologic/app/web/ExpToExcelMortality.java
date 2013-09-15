@@ -10,7 +10,6 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.excel.DataForExcelCreator;
 import com.agrologic.app.excel.WriteToExcel;
 import com.agrologic.app.model.Data;
@@ -53,7 +52,7 @@ public class ExpToExcelMortality extends HttpServlet {
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                FlockDao flockDao = new FlockDaoImpl();
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
                 Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId);
                 List<List<String>> histotyDataList = new ArrayList<List<String>>();
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);

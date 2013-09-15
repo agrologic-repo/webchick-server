@@ -10,7 +10,8 @@ import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.model.Table;
 import com.agrologic.app.utils.DateLocal;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,11 +21,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class EditTableFormServlet extends HttpServlet {
 
     /**
@@ -43,7 +39,7 @@ public class EditTableFormServlet extends HttpServlet {
         /**
          * Logger for this class and subclasses
          */
-        final Logger logger = Logger.getLogger(EditTableFormServlet.class);
+        final Logger logger = LoggerFactory.getLogger(EditTableFormServlet.class);
 
         response.setContentType("text/html;charset=UTF-8");
 
@@ -62,8 +58,9 @@ public class EditTableFormServlet extends HttpServlet {
                 Integer newPosition = Integer.parseInt(request.getParameter("Nposition"));
                 TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-
                 try {
+                    logger.error(String.format(" programId %d  oldScreenId %d tableId %d", programId, oldScreenId,
+                            tableId));
                     Table table = tableDao.getById(programId, oldScreenId, tableId);
                     if (table != null) {
                         table.setTitle(newTitle);

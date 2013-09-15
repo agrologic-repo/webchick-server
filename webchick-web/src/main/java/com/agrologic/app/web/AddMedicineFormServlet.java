@@ -1,20 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.MedicineDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.MedicineDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
-import com.agrologic.app.model.MedicineDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.MedicineDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.Medicine;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,13 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class AddMedicineFormServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -62,8 +48,8 @@ public class AddMedicineFormServlet extends HttpServlet {
             String total = request.getParameter("total");
 
             try {
-                MedicineDao medicineDao = new MedicineDaoImpl();
-                MedicineDto medicine = new MedicineDto();
+                MedicineDao medicineDao = DbImplDecider.use(DaoType.MYSQL).getDao(MedicineDaoImpl.class);
+                Medicine medicine = new Medicine();
 
                 medicine.setFlockId(flockId);
                 medicine.setAmount(Integer.parseInt(amount));
@@ -73,25 +59,24 @@ public class AddMedicineFormServlet extends HttpServlet {
                 medicineDao.insert(medicine);
                 logger.info("Medicine added successfully to the database");
 
-                List<MedicineDto> medicines = medicineDao.getAllByFlockId(flockId);
+                List<Medicine> medicines = medicineDao.getAllByFlockId(flockId);
                 float totalMedicine = 0;
 
-                for (MedicineDto m : medicines) {
+                for (Medicine m : medicines) {
                     totalMedicine += m.getTotal();
                 }
 
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
 
                 flock.setTotalMedic(totalMedicine);
                 flockDao.update(flock);
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
 

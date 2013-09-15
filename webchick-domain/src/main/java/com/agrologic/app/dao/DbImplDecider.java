@@ -5,7 +5,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * This decider create instance of deciders by given DaoType {DERBY or MySQL }  and return bean object
+ * This decider create instance of decider by given DaoType {DERBY or MySQL }
+ * and return bean object
  */
 public class DbImplDecider {
     public DbImplDecider(ApplicationContext daoContext) {
@@ -18,7 +19,9 @@ public class DbImplDecider {
 
     public static DbImplDecider use(DaoType daoType) {
         Validate.notNull(daoType, "Dao Type should not be null!");
-        return daoType == DaoType.MYSQL ? MySqlHolder.mysqlInstance : DerbyHolder.derbyInstance;
+        return daoType == DaoType.MYSQL ?
+                MySqlHolder.mysqlInstance :
+                DerbyHolder.derbyInstance;
     }
 
     private static class MySqlHolder {

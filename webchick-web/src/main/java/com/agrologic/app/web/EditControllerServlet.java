@@ -10,8 +10,7 @@ import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.model.ControllerDto;
+import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Program;
 import org.apache.log4j.Logger;
 
@@ -56,8 +55,8 @@ public class EditControllerServlet extends HttpServlet {
                 Long controllerId = Long.parseLong(request.getParameter("controllerId"));
 
                 try {
-                    ControllerDao controllerDao = new ControllerDaoImpl();
-                    ControllerDto editController = controllerDao.getById(controllerId);
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    Controller editController = controllerDao.getById(controllerId);
 
                     logger.info("retrieve controller to edit");
 

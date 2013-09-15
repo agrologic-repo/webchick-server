@@ -9,11 +9,11 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.CellinkDto" %>
+<%@ page import="com.agrologic.app.model.Cellink" %>
 <%@ page import="com.agrologic.app.web.CellinkState" %>
 <%@ page import="java.util.Collection" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -26,16 +26,16 @@
     } catch (Exception e) {
         state = -1;
     }
-    Collection<CellinkDto> cellinks = (Collection<CellinkDto>) request.getSession().getAttribute("cellinks");
+    Collection<Cellink> cellinks = (Collection<Cellink>) request.getSession().getAttribute("cellinks");
     int from = (Integer) request.getSession().getAttribute("from");
     int to = (Integer) request.getSession().getAttribute("to");
     int of = (Integer) request.getSession().getAttribute("of");
     int tableline = 25;
 %>
 
-<%! int countCellinksByState(Collection<CellinkDto> cellinks, int state) {
+<%! int countCellinksByState(Collection<Cellink> cellinks, int state) {
     int count = 0;
-    for (CellinkDto cellink : cellinks) {
+    for (Cellink cellink : cellinks) {
         if (cellink.getState() == state) {
             count++;
         }
@@ -43,12 +43,12 @@
     return count;
 }
 %>
-<%! Collection<CellinkDto> getCellinksByState(Collection<CellinkDto> cellinks, int state) {
+<%! Collection<Cellink> getCellinksByState(Collection<Cellink> cellinks, int state) {
     if (state == -1) {
         return cellinks;
     }
-    Collection<CellinkDto> cellinkList = new ArrayList<CellinkDto>();
-    for (CellinkDto cellink : cellinks) {
+    Collection<Cellink> cellinkList = new ArrayList<Cellink>();
+    for (Cellink cellink : cellinks) {
         if (cellink.getState() == state) {
             cellinkList.add(cellink);
         }
@@ -80,7 +80,7 @@
             return false;
         }
         function disconnectCellink(cellinkId) {
-            if (!confirm("Do you sure ?")) {
+            if (!confirm("Are you sure ?")) {
                 return;
             }
             window.location.replace("./disconnect-cellink.html?userId=<%=user.getId()%>&cellinkId=" + cellinkId);
@@ -100,7 +100,7 @@
                 return;
             }
 
-            if (!confirm("Do you sure ?")) {
+            if (!confirm("Are you sure ?")) {
                 return;
             }
 
@@ -173,7 +173,7 @@
                 </h2>
             </td>
         </tr>
-        <%for (CellinkDto cellink : cellinks) {%>
+        <%for (Cellink cellink : cellinks) {%>
         <tr>
             <td width="100%">
                 <form id="formFarms" name="formFarms" style="display:inline">
@@ -209,7 +209,7 @@
                                             <table class="table-list-small" border="0">
                                                 <tr>
                                                     <td>
-                                                        <hr></hr>
+                                                        <hr/>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -276,7 +276,7 @@
                                             <table class="table-list-small" border="0">
                                                 <tr>
                                                     <td>
-                                                        <hr></hr>
+                                                        <hr/>
                                                     </td>
                                                 </tr>
                                                 <tr>

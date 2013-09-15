@@ -238,7 +238,7 @@ public class CellinkState {
                 break;
 
             default:
-                color = "white";
+                color = "#000000";
 
                 break;
         }

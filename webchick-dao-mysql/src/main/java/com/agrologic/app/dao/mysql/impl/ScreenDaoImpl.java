@@ -19,7 +19,7 @@ import java.util.*;
 public class ScreenDaoImpl implements ScreenDao {
 
     protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(ScreenDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 

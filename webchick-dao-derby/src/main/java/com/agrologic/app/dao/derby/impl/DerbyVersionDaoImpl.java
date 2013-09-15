@@ -7,13 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Valery
- * Date: 5/2/13
- * Time: 11:42 AM
- * To change this template use File | Settings | File Templates.
- */
 public class DerbyVersionDaoImpl implements VersionDao {
 
     protected DaoFactory dao;
@@ -22,6 +15,7 @@ public class DerbyVersionDaoImpl implements VersionDao {
     public DerbyVersionDaoImpl(DaoFactory daoFactory) {
         dao = daoFactory;
     }
+
     @Override
     public String getVersion() {
         String sqlQuery = "SELECT VERSION()";

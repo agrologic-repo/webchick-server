@@ -14,10 +14,10 @@ import javax.swing.*;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class WebchickDBCreator extends javax.swing.JFrame {
-
     private static final String CLEAR_TEXT = "";
     private static final String NO_CELLINKS = "User exist . But no cellinks found for this user ";
     private static final String CHOOSE_CELLINK = "User exist . Please select farm from list ";
@@ -301,7 +301,7 @@ public class WebchickDBCreator extends javax.swing.JFrame {
                     User user = userDao.getById(userId);
                     if (user.getValidate() == true) {
                         CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
-                        List<Cellink> cellinks = (List<Cellink>) cellinkDao.getAllUserCellinks(userId);
+                        Collection<Cellink> cellinks = cellinkDao.getAllUserCellinks(userId);
                         if (cellinks.size() == 0) {
                             lblFindUserStatus.setText(NO_CELLINKS);
                         } else {
@@ -358,7 +358,7 @@ public class WebchickDBCreator extends javax.swing.JFrame {
                     Configuration conf = new Configuration();
                     conf.setLanguage(((LanguageEntry) cmbLanguages.getSelectedItem()).getLang());
                     String path = txtDatabaseDir.getText();
-                    delete(new File(path + "\\agrodb"));
+                    delete(new File(path + "\\agrodb_for_tests"));
                     System.setProperty("derby.system.home", path);
                     DatabaseManager dbMgr = new DatabaseManager(DaoType.MYSQL);
                     String userId = txtUserId.getText();
@@ -370,15 +370,17 @@ public class WebchickDBCreator extends javax.swing.JFrame {
                     lblCreatingStatus.setText(CREATING_EMBEDDED_DATABASE);
                     dbMgr.runCreateTablesTask();
                     lblCreatingStatus.setText(START_INSERT_DATA_TO_THE_EMBEDDED_DATABASE);
-                    dbMgr.runInsertLoadedData();
+//                    dbMgr.runInsertLoadedData();
                     dbMgr.finish();
                     prgBarCreateStatus.setIndeterminate(false);
                     prgBarCreateStatus.setVisible(false);
                     lblCreatingStatus.setText(DONE);
                     btnCreate.setEnabled(true);
                     btnCreate.setText("Close");
-                } catch (SQLException ex) {
+                } catch (Exception ex) {
                     ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                    System.exit(0);
                 }
             }
         });
@@ -411,7 +413,7 @@ public class WebchickDBCreator extends javax.swing.JFrame {
     public void initLanguage() {
         LanguageDao langDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
         try {
-            List<Language> languages = (List<Language>) langDao.geAll();
+            Collection<Language> languages = (Collection<Language>) langDao.geAll();
             List<LanguageEntry> entries = new ArrayList<LanguageEntry>();
             for (Language c : languages) {
                 entries.add(new LanguageEntry(c.getId(), c.getLanguage()));

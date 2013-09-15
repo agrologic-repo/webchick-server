@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
@@ -18,11 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class TranslateData extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -55,11 +44,10 @@ public class TranslateData extends HttpServlet {
 
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             Data translate = dataDao.getById(dataId, langId);
-
+            System.out.println("test translation " + translate);
             response.setContentType("text/xml");
             response.setHeader("Cache-Control", "no-cache");
             out.print("<message>");
-
             if (translate.getId() != null) {
                 out.print(translate.getUnicodeLabel());
                 System.out.println(translate.getUnicodeLabel());
@@ -67,7 +55,6 @@ public class TranslateData extends HttpServlet {
                 out.print("no translation");
                 System.out.println("no translation");
             }
-
             out.println("</message>");
         } catch (Exception ex) {
             response.setContentType("text/xml");

@@ -2,7 +2,7 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ page import="com.agrologic.app.model.ControllerDto" %>
+<%@ page import="com.agrologic.app.model.Controller" %>
 <%@ page import="com.agrologic.app.model.Data" %>
 <%@ page import="java.util.regex.Matcher" %>
 <jsp:directive.page import="java.util.regex.Pattern"/>
@@ -11,13 +11,13 @@
     Long screenId = Long.parseLong(request.getParameter("screenId"));
     Long tableId = Long.parseLong(request.getParameter("tableId"));
     Long dataId = Long.parseLong(request.getParameter("dataId"));
-    Collection<ControllerDto> controllers = (Collection<ControllerDto>) request.getSession().getAttribute("controllers");
-    ControllerDto controller = getController(controllers, controllerId);
+    Collection<Controller> controllers = (Collection<Controller>) request.getSession().getAttribute("controllers");
+    Controller controller = getController(controllers, controllerId);
     Data data = controller.getInterestData(screenId, tableId, dataId);
 
 %>
-<%! ControllerDto getController(Collection<ControllerDto> controllers, Long controllerId) {
-    for (ControllerDto c : controllers) {
+<%! Controller getController(Collection<Controller> controllers, Long controllerId) {
+    for (Controller c : controllers) {
         if (c.getId().equals(controllerId)) {
             return c;
         }

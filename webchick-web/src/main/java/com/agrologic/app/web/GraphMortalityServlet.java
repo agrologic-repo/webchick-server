@@ -1,14 +1,6 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
@@ -24,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
-
-//~--- JDK imports ------------------------------------------------------------
 
 public class GraphMortalityServlet extends HttpServlet {
 
@@ -70,13 +60,13 @@ public class GraphMortalityServlet extends HttpServlet {
                 }
 
                 try {
-                    FlockDao flockDao = new FlockDaoImpl();
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
                     List<Map<Integer, Data>> dataHistroryList = new ArrayList<Map<Integer, Data>>();
                     List<String> axisTitles = new ArrayList<String>();
                     Locale currLocale = (Locale) request.getSession().getAttribute("currLocale");
                     String lang = currLocale.toString().substring(0, 2);
-                    LanguageDao languageDao = new LanguageDaoImpl();
+                    LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                     long langId = languageDao.getLanguageId(lang);
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     Data data1 = dataDao.getById(Long.valueOf(3017));

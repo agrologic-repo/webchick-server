@@ -16,11 +16,11 @@ public class DataLabel extends JLabel implements DataChangeListener {
         setText("<html>" + event.getNewString() + "</html>");
     }
 
-//    public void setText(Long value) {
-//        String svalue = value.toString();
-//        setText(svalue);
-//        revalidate();
-//        repaint();
-//        invalidate();
-//    }
+    public void setText(Long value) {
+        String svalue = value.toString();
+        setText(svalue);
+        revalidate();
+        repaint();
+        invalidate();
+    }
 }

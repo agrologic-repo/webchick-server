@@ -5,11 +5,8 @@
  */
 package com.agrologic.app.graph.daily;
 
-
-
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.utils.DateLocal;
-
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.DateAxis;
@@ -35,47 +32,41 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.util.UnitType;
 
-//~--- JDK imports ------------------------------------------------------------
-
-import java.awt.Color;
-import java.awt.Font;
-
+import java.awt.*;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-
 import java.util.Locale;
 
+//~--- JDK imports ------------------------------------------------------------
+
 /**
- * Title: Graph24HumidTemp <br>
- * Description: <br>
- * Copyright:   Copyright (c) 2009 <br>
- * Company:     Agro Logic LTD. <br>
- * @author      Valery Manakhimov <br>
- * @version     1.1 <br>
+ * Title: Graph24HumidTemp <br> Description: <br> Copyright: Copyright (c) 2009
+ * <br> Company: Agro Logic LTD. <br>
+ *
+ * @author Valery Manakhimov <br>
+ * @version 1.1 <br>
  */
 public class Graph24IOH extends AbstractGraph {
+
     int rendi, seri;
 
     public Graph24IOH(GraphType type, String values, Long currnetTime) {
         super(type, values);
         this.currentTime = currnetTime;
-        chart            = createChart();
+        chart = createChart();
     }
 
     public Graph24IOH(GraphType type, String values, Long currnetTime, Locale locale) {
         super(type, values);
         this.currentTime = currnetTime;
-        this.locale      = locale;
+        this.locale = locale;
         initLaguage();
-
-        // chart = createChart();
     }
 
     @Override
     public final JFreeChart createChart() {
         if (!isEmpty()) {
             DateAxis dateaxis = new DateAxis(dictinary.get("graph.ioh.axis.time"));
-
             dateaxis.setDateFormatOverride(new SimpleDateFormat("HH"));
             dateaxis.setLabelPaint(Color.BLACK);
             dateaxis.setLabelFont(new Font("Dialog", Font.PLAIN, 16));
@@ -92,13 +83,13 @@ public class Graph24IOH extends AbstractGraph {
             tempAxis.setTickLabelFont(new Font("Dialog", Font.BOLD, 12));
 
             // Create tooltip and URL generators
-            SimpleDateFormat           dateFormat = new SimpleDateFormat();
-            StandardXYToolTipGenerator ttg        =
-                new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT, dateFormat,
-                                               NumberFormat.getInstance());
-            TimeSeriesURLGenerator urlg     = new TimeSeriesURLGenerator(dateFormat, "", "series", "values");
+            SimpleDateFormat dateFormat = new SimpleDateFormat();
+            StandardXYToolTipGenerator ttg =
+                    new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT, dateFormat,
+                            NumberFormat.getInstance());
+            TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(dateFormat, "", "series", "values");
             StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg,
-                                                  urlg);
+                    urlg);
 
             renderer.setBaseShapesVisible(true);
             renderer.setBaseShapesFilled(true);
@@ -107,7 +98,6 @@ public class Graph24IOH extends AbstractGraph {
 
             // ////////////////////////////////////////////////////
             NumberAxis humidityAxis = new NumberAxis(dictinary.get("graph.ioh.axis.humidity"));
-
             humidityAxis.setAutoRangeIncludesZero(true);
             humidityAxis.setLabelFont(new Font("Dialog", Font.PLAIN, 16));
             humidityAxis.setTickLabelFont(new Font("Dialog", Font.BOLD, 12));
@@ -126,8 +116,7 @@ public class Graph24IOH extends AbstractGraph {
             plot.setRangePannable(true);
             plot.setRangeAxis(1, humidityAxis);
             plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
-            tempAxis.setLowerBound(minY - 1);
-            tempAxis.setUpperBound(maxY + 1);
+
 
             XYDataset humDataset = createHumDataset();
 
@@ -135,7 +124,7 @@ public class Graph24IOH extends AbstractGraph {
             plot.mapDatasetToRangeAxis(1, 1);
 
             StandardXYItemRenderer renderer2 = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg,
-                                                   urlg);
+                    urlg);
 
             renderer2.setShapesFilled(true);
             renderer2.setBaseShapesVisible(true);
@@ -154,6 +143,8 @@ public class Graph24IOH extends AbstractGraph {
             legendTitle.setItemFont(new Font("Dialog", Font.PLAIN, 16));
             legendTitle.setPosition(RectangleEdge.TOP);
             legendTitle.setMargin(new RectangleInsets(UnitType.ABSOLUTE, 0.0D, 4.0D, 0.0D, 4.0D));
+            tempAxis.setLowerBound(minY - 10);
+            tempAxis.setUpperBound(maxY + 10);
         } else {
             final XYPlot xyplot = new XYPlot();
 
@@ -173,9 +164,10 @@ public class Graph24IOH extends AbstractGraph {
 
     /**
      * Set color of series.
-     * @param chart JFreeChart.
+     *
+     * @param chart       JFreeChart.
      * @param seriesIndex Index of series to set color of (0 = first series)
-     * @param color New color to set.
+     * @param color       New color to set.
      */
     public void setSeriesColor(JFreeChart chart, int seriesIndex, Color color) {
         if (chart != null) {
@@ -183,8 +175,8 @@ public class Graph24IOH extends AbstractGraph {
 
             try {
                 if (plot instanceof CategoryPlot) {
-                    CategoryPlot         categoryPlot = chart.getCategoryPlot();
-                    CategoryItemRenderer cir          = categoryPlot.getRenderer();
+                    CategoryPlot categoryPlot = chart.getCategoryPlot();
+                    CategoryItemRenderer cir = categoryPlot.getRenderer();
 
                     cir.setSeriesPaint(seriesIndex, color);
                 } else if (plot instanceof PiePlot) {
@@ -192,8 +184,8 @@ public class Graph24IOH extends AbstractGraph {
 
                     piePlot.setSectionPaint(seriesIndex, color);
                 } else if (plot instanceof XYPlot) {
-                    XYPlot         xyPlot = chart.getXYPlot();
-                    XYItemRenderer xyir   = xyPlot.getRenderer();
+                    XYPlot xyPlot = chart.getXYPlot();
+                    XYItemRenderer xyir = xyPlot.getRenderer();
 
                     xyir.setSeriesPaint(seriesIndex, color);
                 } else {
@@ -201,7 +193,7 @@ public class Graph24IOH extends AbstractGraph {
                 }
             } catch (Exception e) {    // e.g. invalid seriesIndex
                 System.err.println("Error setting color '" + color + "' for series '" + seriesIndex + "' of chart '"
-                                   + chart + "': " + e);
+                        + chart + "': " + e);
             }
         }
     }
@@ -220,22 +212,24 @@ public class Graph24IOH extends AbstractGraph {
             if (isEmpty()) {
                 return timeSeriesCollection;
             } else {
-                DateLocal        now          = DateLocal.now();
-                DateLocal        yday         = now.addDays(-1);
-                Day              today        = new Day(SerialDate.createInstance(now.getDate(), now.getMonth(), now.getYear()));
-                Day              yesterday    = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
-                int              hour         = getHour();
+                DateLocal now = DateLocal.now();
+                DateLocal yday = now.addDays(-1);
+                Day today = new Day(SerialDate.createInstance(now.getDate(), now.getMonth(), now.getYear()));
+                Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
+                int hour = getHour();
                 final TimeSeries insideseries = new TimeSeries(dictinary.get("graph.ioh.series.inside"));
 
                 for (int i = IN_TEMP_INDEX + DAY_HOURS - 1; i >= IN_TEMP_INDEX; i--, hour--) {
-                    String value      = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
-                    float  floatValue = Float.valueOf(value);
+                    String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
+                    float floatValue = Float.valueOf(value);
 
-                    insideseries.add(new Hour( /* hour */hour, today), floatValue);
+                    insideseries.add(new Hour( /*
+                             * hour
+                             */hour, today), floatValue);
 
                     if (hour == 0) {
                         today = yesterday;
-                        hour  = DAY_HOURS;    // testing
+                        hour = DAY_HOURS;    // testing
                     }
 
                     if (maxY < floatValue) {
@@ -255,14 +249,16 @@ public class Graph24IOH extends AbstractGraph {
                 final TimeSeries outsideseries = new TimeSeries(dictinary.get("graph.ioh.series.outside"));
 
                 for (int i = OUT_TEMP_INDEX + DAY_HOURS - 1; i >= OUT_TEMP_INDEX; i--, hour--) {
-                    String value      = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
-                    float  floatValue = Float.valueOf(value);
+                    String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
+                    float floatValue = Float.valueOf(value);
 
-                    outsideseries.add(new Hour( /* hour */hour, today), floatValue);
+                    outsideseries.add(new Hour( /*
+                             * hour
+                             */hour, today), floatValue);
 
                     if (hour == 0) {
                         today = yesterday;
-                        hour  = DAY_HOURS;    // testing
+                        hour = DAY_HOURS;    // testing
                     }
 
                     if (maxY < floatValue) {
@@ -292,27 +288,29 @@ public class Graph24IOH extends AbstractGraph {
         if (isEmpty()) {
             return timeSeriesCollection;
         } else {
-            DateLocal now       = DateLocal.now();
-            DateLocal yday      = now.addDays(-1);
-            int       day       = now.getDate();
-            int       month     = now.getMonth();
-            int       year      = now.getYear();
-            Day       today     = new Day(SerialDate.createInstance(day, month, year));
-            Day       yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
+            DateLocal now = DateLocal.now();
+            DateLocal yday = now.addDays(-1);
+            int day = now.getDate();
+            int month = now.getMonth();
+            int year = now.getYear();
+            Day today = new Day(SerialDate.createInstance(day, month, year));
+            Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
 
             // testing
-            int              hr             = (int) (currentTime / 100) - 1;
+            int hr = (int) (currentTime / 100) - 1;
             final TimeSeries humidityseries = new TimeSeries(dictinary.get("graph.ioh.series.humidity"));
 
             for (int i = HUMIDITY_INDEX + DAY_HOURS - 1; i >= HUMIDITY_INDEX; i--, hr--) {
-                String value    = DataFormat.formatToStringValue(DataFormat.HUMIDITY, Long.valueOf(datasetString[i]));
-                int    intValue = Integer.valueOf(value);
+                String value = DataFormat.formatToStringValue(DataFormat.HUMIDITY, Long.valueOf(datasetString[i]));
+                int intValue = Integer.valueOf(value);
 
-                humidityseries.add(new Hour( /* hour */hr, today), intValue);
+                humidityseries.add(new Hour( /*
+                         * hour
+                         */hr, today), intValue);
 
                 if (hr == 0) {
                     today = yesterday;
-                    hr    = DAY_HOURS;
+                    hr = DAY_HOURS;
                 }
 
                 if (maxY < intValue) {
@@ -335,12 +333,8 @@ public class Graph24IOH extends AbstractGraph {
     }
 
     public void hideSeries(int rendIndex, int serIndex) {
-
 //      XYItemRenderer rend = chart.getXYPlot().getRenderer(rendIndex);
 //      boolean bool = rend.getItemVisible(serIndex, 0);
 //      rend.setSeriesVisible(serIndex, false);
     }
 }
-
-
-

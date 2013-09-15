@@ -7,7 +7,8 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,8 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -41,26 +40,22 @@ public class DisconnectCellinks extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            CellinkDao cellinkDao = new CellinkDaoImpl();
+            CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
             Long userId = Long.parseLong(request.getParameter("userId"));
             String cellinkIds = request.getParameter("cellinkIds");
             String[] cellinkIdsStrings = null;
-
             cellinkIdsStrings = cellinkIds.split("and");
-
             StringBuilder sb = new StringBuilder();
-
             for (int i = 0; i < cellinkIdsStrings.length; i++) {
                 try {
                     long cellinkId = Long.parseLong(cellinkIdsStrings[i]);
-
-                    cellinkDao.disconnectStarted(cellinkId);
-                    cellinkDao.disconnect(cellinkId);
+                    cellinkDao.changeState(cellinkId, CellinkState.STATE_START, CellinkState.STATE_STOP);
+                    cellinkDao.changeState(cellinkId, CellinkState.STATE_RUNNING, CellinkState.STATE_STOP);
                     sb.append(cellinkId).append(",");
                 } catch (SQLException ex) {
-                    Logger.getLogger(DisconnectCellinks.class.getName()).log(Level.SEVERE, null, ex);
+
                 } catch (NumberFormatException ex) {
-                    Logger.getLogger(DisconnectCellinks.class.getName()).log(Level.SEVERE, null, ex);
+
                 }
             }
 

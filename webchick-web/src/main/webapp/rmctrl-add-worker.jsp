@@ -9,14 +9,14 @@
 
 <jsp:directive.page import="com.agrologic.app.dao.WorkerDao"/>
 <jsp:directive.page import="com.agrologic.app.dao.impl.WorkerDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.WorkerDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Worker"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    WorkerDao workerDao = new WorkerDaoImpl();
-    Collection<WorkerDto> workerList = workerDao.getAllByCellinkId(cellinkId);
+    WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDaoImpl.class);
+    Collection<Worker> workerList = workerDao.getAllByCellinkId(cellinkId);
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
@@ -118,7 +118,7 @@
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
-            <% for (WorkerDto w : workerList) {%>
+            <% for (Worker w : workerList) {%>
             <tr>
                 <td><%=w.getName() %>
                 </td>

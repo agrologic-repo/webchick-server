@@ -6,13 +6,19 @@ import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.CellinkDaoImpl;
 import com.agrologic.app.model.Cellink;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DerbyCellinkDaoImpl extends CellinkDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
+    public final static String APP_SCHEMA = "APP";
+    public final static String ALARMNAMES_TABLE = "ALARMNAMES";
+    public final static String ALARMBYLANGUAGE_TABLE = "ALARMBYLANGUAGE";
 
-    public DerbyCellinkDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyCellinkDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
 
     @Override
@@ -63,32 +69,20 @@ public class DerbyCellinkDaoImpl extends CellinkDaoImpl implements CreatebleDao,
 
     @Override
     public void insert(Cellink cellink) throws SQLException {
-        String sqlQuery = "INSERT INTO CELLINKS "
-                + "(CELLINKID, NAME, PASSWORD, USERID, TIME, PORT, IP, STATE, SCREENID, ACTUAL) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, cellink.getId());
-            prepstmt.setString(2, cellink.getName());
-            prepstmt.setString(3, cellink.getPassword());
-            prepstmt.setLong(4, cellink.getUserId());
-            prepstmt.setTimestamp(5, cellink.getTime());
-            prepstmt.setInt(6, cellink.getPort());
-            prepstmt.setString(7, cellink.getIp());
-            prepstmt.setInt(8, cellink.getState());
-            prepstmt.setLong(9, cellink.getScreenId());
-            prepstmt.setBoolean(10, cellink.isActual());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException("Cannot Insert new Cellink to the DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Creating cellink with name [{}]", cellink.getName());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("cellinkid", cellink.getId());
+        valuesToInsert.put("name", cellink.getName());
+        valuesToInsert.put("password", cellink.getPassword());
+        valuesToInsert.put("userid", cellink.getUserId());
+        valuesToInsert.put("sim", cellink.getSimNumber());
+        valuesToInsert.put("type", cellink.getType());
+        valuesToInsert.put("version", cellink.getVersion());
+        valuesToInsert.put("time", cellink.getTime());
+        valuesToInsert.put("state", cellink.getState());
+        valuesToInsert.put("screenid", cellink.getScreenId());
+        valuesToInsert.put("actual", cellink.isActual());
+        jdbcInsert.execute(valuesToInsert);
     }
 
     @Override

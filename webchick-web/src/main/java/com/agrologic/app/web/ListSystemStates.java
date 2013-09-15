@@ -4,8 +4,7 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.LanguageDao;
 import com.agrologic.app.dao.SystemStateDao;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
-import com.agrologic.app.model.LanguageDto;
+import com.agrologic.app.model.Language;
 import com.agrologic.app.model.SystemState;
 import org.apache.log4j.Logger;
 
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
 
 public class ListSystemStates extends HttpServlet {
 
@@ -53,8 +51,8 @@ public class ListSystemStates extends HttpServlet {
                         translateLang = 1;    // default program
                     }
 
-                    LanguageDao langDao = new LanguageDaoImpl();
-                    List<LanguageDto> languages = langDao.geAll();
+                    LanguageDao langDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+                    Collection<Language> languages = langDao.geAll();
 
                     logger.info("retrieve system state names!");
                     request.getSession().setAttribute("languages", languages);

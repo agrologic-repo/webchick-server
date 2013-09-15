@@ -12,18 +12,18 @@
 <jsp:directive.page import="com.agrologic.app.dao.impl.LaborDaoImpl"/>
 
 <jsp:directive.page import="com.agrologic.app.dao.impl.WorkerDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.LaborDto"/>
-<jsp:directive.page import="com.agrologic.app.model.WorkerDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Labor"/>
+<jsp:directive.page import="com.agrologic.app.model.Worker"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    LaborDao laborDao = new LaborDaoImpl();
-    Collection<LaborDto> laborList = laborDao.getAllByFlockId(flockId);
+    LaborDao laborDao = DbImplDecider.use(DaoType.MYSQL).getDao(LaborDaoImpl.class);
+    Collection<Labor> laborList = laborDao.getAllByFlockId(flockId);
 
-    WorkerDao workerDao = new WorkerDaoImpl();
-    Collection<WorkerDto> workerList = workerDao.getAllByCellinkId(cellinkId);
+    WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDaoImpl.class);
+    Collection<Worker> workerList = workerDao.getAllByCellinkId(cellinkId);
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -119,7 +119,7 @@
                 <td>
                     <select id="workersids" name="workersids">
                         <option value="0" select></option>
-                        <% for (WorkerDto w : workerList) {%>
+                        <% for (Worker w : workerList) {%>
                         <option value="<%=w.getId() %>"><%=w.getName() %>
                         </option>
                         <%}%>
@@ -134,10 +134,10 @@
                 </td>
             </tr>
             <%String name = "";%>
-            <% for (LaborDto l : laborList) {%>
+            <% for (Labor l : laborList) {%>
             <tr>
                 <td>
-                    <%for (WorkerDto w : workerList) {%>
+                    <%for (Worker w : workerList) {%>
                     <%
                         if (w.getId().equals(l.getWorkerId())) {
                             name = w.getName();

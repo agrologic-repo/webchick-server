@@ -1,23 +1,12 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.FuelDao;
-import com.agrologic.app.dao.GasDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.FuelDaoImpl;
-import com.agrologic.app.dao.impl.GasDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
-import com.agrologic.app.model.FuelDto;
-import com.agrologic.app.model.GasDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.FuelDaoImpl;
+import com.agrologic.app.dao.mysql.impl.GasDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.Fuel;
+import com.agrologic.app.model.Gas;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -27,13 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class SaveEnergyForm extends HttpServlet {
 
     /**
@@ -72,8 +57,8 @@ public class SaveEnergyForm extends HttpServlet {
             String totalCostFuel = request.getParameter("totalFuel");
 
             try {
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
 
                 flock.setGasBegin(Integer.parseInt(beginGas));
                 flock.setGasEnd(Integer.parseInt(endGas));
@@ -89,10 +74,10 @@ public class SaveEnergyForm extends HttpServlet {
                 flock.setTotalFuel(flock.calcTotalFuelCost());
                 flockDao.update(flock);
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
                 logger.info("retrieve user and user cellinks and all controllers of each cellink");
@@ -106,13 +91,13 @@ public class SaveEnergyForm extends HttpServlet {
         }
     }
 
-    public void sumAddGas(FlockDto flock) throws SQLException {
-        GasDao gazDao = new GasDaoImpl();
-        List<GasDto> gazList = gazDao.getAllByFlockId(flock.getFlockId());
+    public void sumAddGas(Flock flock) throws SQLException {
+        GasDao gazDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDaoImpl.class);
+        List<Gas> gazList = gazDao.getAllByFlockId(flock.getFlockId());
         int gazAmount = 0;
         float gazTotalCost = 0;
 
-        for (GasDto g : gazList) {
+        for (Gas g : gazList) {
             gazAmount += g.getAmount();
             gazTotalCost += g.getTotal();
         }
@@ -121,13 +106,13 @@ public class SaveEnergyForm extends HttpServlet {
         flock.setTotalGas(gazTotalCost);
     }
 
-    public void sumAddFuel(FlockDto flock) throws SQLException {
-        FuelDao fuelDao = new FuelDaoImpl();
-        List<FuelDto> fuelList = fuelDao.getAllByFlockId(flock.getFlockId());
+    public void sumAddFuel(Flock flock) throws SQLException {
+        FuelDao fuelDao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDaoImpl.class);
+        List<Fuel> fuelList = fuelDao.getAllByFlockId(flock.getFlockId());
         int fuelAmount = 0;
         float fuelTotalCost = 0;
 
-        for (FuelDto g : fuelList) {
+        for (Fuel g : fuelList) {
             fuelAmount += g.getAmount();
             fuelTotalCost += g.getTotal();
         }

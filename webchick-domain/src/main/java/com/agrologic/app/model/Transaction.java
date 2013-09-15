@@ -2,12 +2,13 @@ package com.agrologic.app.model;
 
 public class Transaction {
     private Float expanses;
-    private Long   flockId;
-    private Long   id;
+    private Long flockId;
+    private Long id;
     private String name;
-    private Float  revenues;
+    private Float revenues;
 
-    public Transaction() {}
+    public Transaction() {
+    }
 
     public String getName() {
         return name;
@@ -61,7 +62,7 @@ public class Transaction {
 
         final Transaction other = (Transaction) obj;
 
-        if ((this.id != other.id) && ((this.id == null) ||!this.id.equals(other.id))) {
+        if ((this.id != other.id) && ((this.id == null) || !this.id.equals(other.id))) {
             return false;
         }
 
@@ -73,16 +74,16 @@ public class Transaction {
         int hash = 3;
 
         hash = 29 * hash + ((this.id != null)
-                            ? this.id.hashCode()
-                            : 0);
+                ? this.id.hashCode()
+                : 0);
 
         return hash;
     }
 
     @Override
     public String toString() {
-        return "TransactionDto{" + "id=" + id + "flockId=" + flockId + "revenues=" + revenues + "expanses=" + expanses
-               + '}';
+        return "Transaction{" + "id=" + id + "flockId=" + flockId + "revenues=" + revenues + "expanses=" + expanses
+                + '}';
     }
 }
 

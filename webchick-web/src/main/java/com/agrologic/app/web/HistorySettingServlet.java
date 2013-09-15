@@ -1,19 +1,12 @@
 package com.agrologic.app.web;
 
-
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
-
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.HistorySettingDao;
-import com.agrologic.app.dao.impl.HistorySettingDaoImpl;
+import com.agrologic.app.dao.mysql.impl.HistorySettingDaoImpl;
 import com.agrologic.app.model.Data;
-import com.agrologic.app.model.HistorySettingDto;
+import com.agrologic.app.model.HistorySetting;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,9 +17,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
-
-//~--- JDK imports ------------------------------------------------------------
-
 
 public class HistorySettingServlet extends HttpServlet {
 
@@ -56,8 +46,8 @@ public class HistorySettingServlet extends HttpServlet {
                 Long programId = Long.parseLong(request.getParameter("programId"));
 
                 try {
-                    HistorySettingDao historySettingDao = new HistorySettingDaoImpl();
-                    List<HistorySettingDto> histSettingList = historySettingDao.getHistorySetting(programId);
+                    HistorySettingDao historySettingDao = DbImplDecider.use(DaoType.MYSQL).getDao(HistorySettingDaoImpl.class);
+                    List<HistorySetting> histSettingList = historySettingDao.getHistorySetting(programId);
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     List<Data> historyData = dataDao.getHistoryDataList();
 

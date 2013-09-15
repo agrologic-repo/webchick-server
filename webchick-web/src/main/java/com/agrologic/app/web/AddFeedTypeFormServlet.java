@@ -1,14 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FeedTypeDao;
-import com.agrologic.app.dao.impl.FeedTypeDaoImpl;
-import com.agrologic.app.model.FeedTypeDto;
+import com.agrologic.app.dao.mysql.impl.FeedTypeDaoImpl;
+import com.agrologic.app.model.FeedType;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -19,11 +15,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class AddFeedTypeFormServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -53,8 +44,8 @@ public class AddFeedTypeFormServlet extends HttpServlet {
             String price = request.getParameter("price");
 
             try {
-                FeedTypeDao feedTypeDao = new FeedTypeDaoImpl();
-                FeedTypeDto feedType = new FeedTypeDto();
+                FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDaoImpl.class);
+                FeedType feedType = new FeedType();
 
                 feedType.setFeedType(name);
                 feedType.setPrice(Float.parseFloat(price));

@@ -1,6 +1,5 @@
 package com.agrologic.app.dao;
 
-
 import com.agrologic.app.model.Alarm;
 
 import java.sql.SQLException;
@@ -13,6 +12,18 @@ import java.util.Collection;
  * @author Valery Manakhimov
  */
 public interface AlarmDao {
+    /**
+     * schema name
+     */
+    public final static String APP_SCHEMA = "APP";
+    /**
+     * the alarm names
+     */
+    public final static String ALARMNAMES_TABLE = "ALARMNAMES";
+    /**
+     * alarm by language
+     */
+    public final static String ALARMBYLANGUAGE_TABLE = "ALARMBYLANGUAGE";
 
     /**
      * Insert a new alarm row to table alarms .

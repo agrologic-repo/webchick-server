@@ -1,16 +1,17 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ include file="disableCaching.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ page import="com.agrologic.app.model.CellinkDto" %>
+<%@ page import="com.agrologic.app.model.Cellink" %>
 
-<jsp:directive.page import="com.agrologic.app.model.UserDto"/>
+<jsp:directive.page import="com.agrologic.app.model.User"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    CellinkDto cellink = (CellinkDto) request.getSession().getAttribute("cellink");
+    Cellink cellink = (Cellink) request.getSession().getAttribute("cellink");
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

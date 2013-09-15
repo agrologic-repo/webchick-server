@@ -6,8 +6,10 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.UserDaoImpl;
+import com.agrologic.app.model.UserRole;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
@@ -59,9 +61,9 @@ public class TotalUserPieChart extends HttpServlet {
                 try {
                     DefaultPieDataset dataset = new DefaultPieDataset();
                     JFreeChart jfc;
-                    UserDao userDao = new UserDaoImpl();
-                    final int admins = userDao.getAllByRole(UserRole.ADMINISTRATOR).size();
-                    final int regular = userDao.getAllByRole(UserRole.REGULAR).size();
+                    UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
+                    final int admins = userDao.getAllByRole(UserRole.ADMIN.getValue()).size();
+                    final int regular = userDao.getAllByRole(UserRole.USER.getValue()).size();
 
                     dataset = new DefaultPieDataset();
                     dataset.setValue("Administrator", new Integer(admins));

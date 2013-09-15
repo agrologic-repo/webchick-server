@@ -6,14 +6,17 @@ import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.UserDaoImpl;
 import com.agrologic.app.model.User;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class DerbyUserDaoImpl extends UserDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyUserDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyUserDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
 
     @Override
@@ -62,34 +65,19 @@ public class DerbyUserDaoImpl extends UserDaoImpl implements CreatebleDao, Dropa
 
     @Override
     public void insert(User user) throws SQLException {
-        String sqlQuery =
-                "INSERT INTO USERS (USERID, NAME, PASSWORD, FIRSTNAME, LASTNAME, ROLE, STATE, PHONE, EMAIL, COMPANY)"
-                        + " VALUES (?,?,?,?,?,?,?,?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, user.getId());
-            prepstmt.setString(2, user.getLogin());
-            prepstmt.setString(3, user.getPassword());
-            prepstmt.setString(4, user.getFirstName());
-            prepstmt.setString(5, user.getLastName());
-            prepstmt.setInt(6, user.getUserRole().getValue());
-            prepstmt.setInt(7, user.getState());
-            prepstmt.setString(8, user.getPhone());
-            prepstmt.setString(9, user.getEmail());
-            prepstmt.setString(10, user.getCompany());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Insert New User To The DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Creating user with id [{}]", user.getId());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("userid", user.getId());
+        valuesToInsert.put("name", user.getLogin());
+        valuesToInsert.put("password", user.getPassword());
+        valuesToInsert.put("firstname", user.getFirstName());
+        valuesToInsert.put("lastname", user.getLastName());
+        valuesToInsert.put("role", user.getRole().getValue());
+        valuesToInsert.put("state", user.getState());
+        valuesToInsert.put("phone", user.getPhone());
+        valuesToInsert.put("email", user.getEmail());
+        valuesToInsert.put("company", user.getCompany());
+        jdbcInsert.execute(valuesToInsert);
     }
 
     @Override

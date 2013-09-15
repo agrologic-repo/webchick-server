@@ -3,25 +3,26 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<jsp:directive.page import="com.agrologic.app.model.CellinkDto"/>
-<jsp:directive.page import="com.agrologic.app.model.ControllerDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Cellink"/>
+<jsp:directive.page import="com.agrologic.app.model.Controller"/>
 <jsp:directive.page import="com.agrologic.app.model.Program"/>
 <jsp:directive.page import="com.agrologic.app.web.CellinkState"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    UserDto editUser = (UserDto) request.getSession().getAttribute("edituser");
+    User editUser = (User) request.getSession().getAttribute("edituser");
     Long userId = Long.parseLong(request.getParameter("userId"));
-    Collection<CellinkDto> cellinks = editUser.getCellinks();
+    Collection<Cellink> cellinks = editUser.getCellinks();
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    CellinkDto cellink = findCellinkToEdit(cellinks, cellinkId);
-    Collection<ControllerDto> controllers = cellink.getControllers();
+    Cellink cellink = findCellinkToEdit(cellinks, cellinkId);
+    Collection<Controller> controllers = cellink.getControllers();
 %>
-<%! UserDto findUserToEdit(Collection<UserDto> users, Long userId) {
-    for (UserDto u : users) {
+<%! User findUserToEdit(Collection<User> users, Long userId) {
+    for (User u : users) {
         if (u.getId().equals(userId)) {
             return u;
         }
@@ -30,8 +31,8 @@
 }
 %>
 
-<%! CellinkDto findCellinkToEdit(Collection<CellinkDto> cellinks, Long cellinkId) {
-    for (CellinkDto c : cellinks) {
+<%! Cellink findCellinkToEdit(Collection<Cellink> cellinks, Long cellinkId) {
+    for (Cellink c : cellinks) {
         if (c.getId().equals(cellinkId)) {
             return c;
         }
@@ -39,8 +40,8 @@
     return null;
 }
 %>
-<%! public UserDto getChoosedUser(Collection<UserDto> users, Long userId) {
-    for (UserDto u : users) {
+<%! public User getChoosedUser(Collection<User> users, Long userId) {
+    for (User u : users) {
         if (u.getId().equals(userId)) {
             return u;
         }
@@ -49,8 +50,8 @@
 }
 %>
 
-<%! public CellinkDto getChoosedCellink(Collection<CellinkDto> cellinks, Long cellinkId) {
-    for (CellinkDto c : cellinks) {
+<%! public Cellink getChoosedCellink(Collection<Cellink> cellinks, Long cellinkId) {
+    for (Cellink c : cellinks) {
         if (c.getId().equals(cellinkId)) {
             return c;
         }
@@ -230,7 +231,7 @@
                                                 </thead>
                                                 <tbody>
                                                 <% int rowCount = 0;%>
-                                                <%for (ControllerDto controller : controllers) {%>
+                                                <%for (Controller controller : controllers) {%>
                                                 <% if ((rowCount % 2) == 0) {%>
                                                 <tr class="odd" onMouseOver="changeOdd(this);"
                                                     onmouseout="changeOdd(this)">
@@ -246,7 +247,7 @@
                                                     <td align="center"><%=controller.getNetName()%>
                                                     </td>
                                                     <td align="center">
-                                                        <%if (user.getRole() != UserRole.REGULAR) {%>
+                                                        <%if (user.getRole() != UserRole.USER) {%>
                                                         <a href="./all-screens.html?programId=<%=controller.getProgramId() %>">
                                                             <%=((Program) controller.getProgram()).getName() %>
                                                         </a>
@@ -270,7 +271,7 @@
                                                             <%=session.getAttribute("button.edit")%>
                                                         </a>
                                                     </td>
-                                                    <% if (user.getRole() != UserRole.REGULAR) {%>
+                                                    <% if (user.getRole() != UserRole.USER) {%>
                                                     <td align="center">
                                                         <img src="img/close.png" style="cursor: pointer" border="0"
                                                              hspace="5"/>
@@ -288,7 +289,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <%if (user.getRole() == UserRole.REGULAR) {%>
+                                            <%if (user.getRole() == UserRole.USER) {%>
                                             <button name="btnCancel" type="button"
                                                     onclick='return back("./my-farms.html?userId=<%=editUser.getId() %>");'>
                                                 <%=session.getAttribute("button.cancel") %>

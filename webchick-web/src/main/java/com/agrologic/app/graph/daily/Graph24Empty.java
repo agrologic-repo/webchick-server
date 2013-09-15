@@ -6,24 +6,23 @@
 package com.agrologic.app.graph.daily;
 
 
-
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataset;
 
-//~--- JDK imports ------------------------------------------------------------
+import java.awt.*;
 
-import java.awt.Color;
-import java.awt.Font;
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Title: Graph24Blank <br>
  * Description: <br>
  * Copyright:   Copyright (c) 2009 <br>
  * Company:     Agro Logic LTD. <br>
- * @author      Valery Manakhimov <br>
- * @version     1.1 <br>
+ *
+ * @author Valery Manakhimov <br>
+ * @version 1.1 <br>
  */
 public final class Graph24Empty {
     JFreeChart chart;

@@ -3,7 +3,8 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -27,7 +28,7 @@
     <table border="0" cellPadding=1 cellSpacing=1 width="100%" style="line-height: 25px;">
         <tr>
             <td>
-                <%if (user.getRole() == UserRole.ADMINISTRATOR) {%>
+                <%if (user.getRole() == UserRole.ADMIN) {%>
                 <h1><%=session.getAttribute("home.page.header")%> - <%=session.getAttribute("user.role.admin")%>
                 </h1>
                 <%} else {%>
@@ -49,7 +50,7 @@
                     </a>
                         - <%=session.getAttribute("label.maintenance.descript")%>
                     </li>
-                    <%if (user.getRole() == UserRole.ADMINISTRATOR) {%>
+                    <%if (user.getRole() == UserRole.ADMIN) {%>
                     <li><a href="view-result.html"><%=session.getAttribute("label.preview")%>
                     </a>
                         - <%=session.getAttribute("label.preview.descript")%>

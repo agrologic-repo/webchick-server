@@ -6,48 +6,39 @@
 package com.agrologic.app.excel;
 
 
-
 import jxl.Workbook;
 import jxl.WorkbookSettings;
-
 import jxl.format.Border;
 import jxl.format.BorderLineStyle;
 import jxl.format.Colour;
 import jxl.format.UnderlineStyle;
-
-import jxl.write.Label;
-import jxl.write.WritableCellFormat;
-import jxl.write.WritableFont;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import jxl.write.WriteException;
+import jxl.write.*;
 import jxl.write.biff.RowsExceededException;
-
 import org.apache.log4j.Logger;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.io.File;
 import java.io.IOException;
-
 import java.util.List;
 import java.util.Locale;
+
+//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Title: WriteToExcel.java <br>
  * Description: <br>
  * Copyright:   Copyright  2010 <br>
  * Company:     Agro Logic Ltd. <br>
- * @author      Valery Manakhimov <br>
- * @version     0.1.1 <br>
+ *
+ * @author Valery Manakhimov <br>
+ * @version 0.1.1 <br>
  */
 public class WriteToExcel {
-    private Logger             logger = Logger.getLogger(WriteToExcel.class);
+    private Logger logger = Logger.getLogger(WriteToExcel.class);
     private List<List<String>> cellDataList;
 
-//  private WritableCellFormat timesBoldUnderline;
+    //  private WritableCellFormat timesBoldUnderline;
 //  private WritableCellFormat times;
-    private String       inputFile;
+    private String inputFile;
     private List<String> titles;
 
     public void setOutputFile(String inputFile) {
@@ -55,17 +46,13 @@ public class WriteToExcel {
     }
 
     public void write() throws IOException, WriteException {
-        File             file       = new File(inputFile);
+        File file = new File(inputFile);
         WorkbookSettings wbSettings = new WorkbookSettings();
-
         wbSettings.setLocale(new Locale("en", "EN"));
 
         WritableWorkbook workbook = Workbook.createWorkbook(file, wbSettings);
-
         workbook.createSheet("Report", 0);
-
         WritableSheet excelSheet = workbook.getSheet(0);
-
         createTitles(excelSheet);
         createContent(excelSheet);
         workbook.write();
@@ -97,7 +84,7 @@ public class WriteToExcel {
     private void addTitle(WritableSheet sheet, int column, int row, String title)
             throws WriteException, RowsExceededException {
         WritableCellFormat wcf = getTitleFormat();
-        Label              label;
+        Label label;
 
         label = new Label(column, row, title, wcf);
         sheet.addCell(label);
@@ -107,7 +94,7 @@ public class WriteToExcel {
 
         /* Format the Font */
         WritableFont wf = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD, true,
-                                           UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
+                UnderlineStyle.NO_UNDERLINE, Colour.BLACK);
         WritableCellFormat cf = new WritableCellFormat(wf);
 
         cf.setBackground(Colour.ICE_BLUE);
@@ -120,7 +107,7 @@ public class WriteToExcel {
     private void addLabel(WritableSheet sheet, int column, int row, String s)
             throws WriteException, RowsExceededException {
         WritableCellFormat wcf = getLabelFormat();
-        Label              label;
+        Label label;
 
         label = new Label(column, row, s, wcf);
         sheet.addCell(label);
@@ -129,7 +116,7 @@ public class WriteToExcel {
     public WritableCellFormat getLabelFormat() throws WriteException {
 
         /* Format the Font */
-        WritableFont       wf = new WritableFont(WritableFont.COURIER, 10, WritableFont.BOLD);
+        WritableFont wf = new WritableFont(WritableFont.COURIER, 10, WritableFont.BOLD);
         WritableCellFormat cf = new WritableCellFormat(wf);
 
         cf.setWrap(true);

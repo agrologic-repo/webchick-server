@@ -1,17 +1,12 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.CellinkDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.CellinkDto;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.User;
+import com.agrologic.app.model.UserRole;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -21,14 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class ListUserServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -60,48 +49,35 @@ public class ListUserServlet extends HttpServlet {
                 logger.error("Unauthorized access!");
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
-                UserDto user = (UserDto) request.getSession().getAttribute("user");
+                User user = (User) request.getSession().getAttribute("user");
 
                 try {
-                    if ((user.getRole() == UserRole.REGULAR) || (user.getRole() == UserRole.ADVANCED)) {
+                    if ((user.getRole() == UserRole.USER) || (user.getRole() == UserRole.DISTRIBUTOR)) {
                         logger.info("access denied for user " + user);
                         request.getRequestDispatcher("./access-denied.jsp").forward(request, response);
                     } else {
-                        UserDao userDao = new UserDaoImpl();
-                        List<UserDto> users = new ArrayList<UserDto>();
+                        UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
                         String paramRole = request.getParameter("role");
-
-                        if ((paramRole == null) || "0".equals(paramRole)) {
-                            paramRole = "0";
+                        Integer role = null;
+                        if ((paramRole != null) && !"0".equals(paramRole)) {
+                            role = Integer.parseInt(paramRole);
                         }
-
-                        int role = Integer.parseInt(paramRole);
                         String company = request.getParameter("company");
-
-                        if ((company == null) || company.equals("All")) {
-                            company = "All";
+                        if ((company != null) && company.equals("All")) {
+                            company = null;
                         }
+                        String search = request.getParameter("searchText");
 
-                        String searchText = request.getParameter("searchText");
-
-                        if (searchText == null) {
-                            searchText = "";
-                        }
-
-                        users = userDao.getAll(role, company, searchText);
-
-                        CellinkDao cellinkDao = new CellinkDaoImpl();
-
-                        for (UserDto u : users) {
-                            List<CellinkDto> cellinks = cellinkDao.getAllUserCellinks(u.getId());
-
+                        Collection<User> users = userDao.getAll(role, company, search);
+                        CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                        for (User u : users) {
+                            Collection<Cellink> cellinks = cellinkDao.getAllUserCellinks(u.getId());
                             u.setCellinks(cellinks);
                         }
-
                         logger.info("retrieve all users ");
                         request.getSession().setAttribute("users", users);
 
-                        List<String> companies = userDao.getUserCompanies();
+                        Collection<String> companies = userDao.getUserCompanies();
 
                         request.getSession().setAttribute("companies", companies);
                         request.getRequestDispatcher("./all-users.jsp?role=" + paramRole).forward(request, response);

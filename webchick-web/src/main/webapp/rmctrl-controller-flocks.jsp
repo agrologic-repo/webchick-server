@@ -1,15 +1,15 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
-<%@ page import="com.agrologic.app.model.ControllerDto" %>
-<%@ page import="com.agrologic.app.model.FlockDto" %>
+<%@ page import="com.agrologic.app.model.Controller" %>
+<%@ page import="com.agrologic.app.model.Flock" %>
 
 <jsp:directive.page import="java.util.Collection"/>
 
 <%
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    Collection<ControllerDto> controllers = (Collection<ControllerDto>) request.getSession().getAttribute("controllers");
+    Collection<Controller> controllers = (Collection<Controller>) request.getSession().getAttribute("controllers");
     String direction = (String) request.getSession().getAttribute("dir");
     String align;
     if (direction.equals("ltr")) {
@@ -166,7 +166,7 @@
                                                 <td align="center">
                                                     <select style="width:135px" id="house_Filter"
                                                             name="house_Filter">
-                                                        <%for (ControllerDto c : controllers) { %>
+                                                        <%for (Controller c : controllers) { %>
                                                         <option value="<%=c.getId() %>"><%=c.getTitle()%>
                                                         </option>
                                                         <%}%>
@@ -196,10 +196,10 @@
                                                 <td align="center">&nbsp;</td>
                                                 <td align="center">&nbsp;</td>
                                             </tr>
-                                            <% for (ControllerDto controller : controllers) {%>
-                                            <% Collection<FlockDto> flocks = controller.getFlocks(); %>
+                                            <% for (Controller controller : controllers) {%>
+                                            <% Collection<Flock> flocks = controller.getFlocks(); %>
                                             <% if (flocks != null && flocks.size() > 0) {%>
-                                            <% for (FlockDto flock : flocks) {%>
+                                            <% for (Flock flock : flocks) {%>
                                             <% long fid = flock.getFlockId(); %>
                                             <input id="controllerId" type="hidden"
                                                    value="<%=flock.getControllerId() %>"></input>

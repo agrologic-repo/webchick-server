@@ -7,11 +7,9 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.ControllerDto;
+import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.model.Flock;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -48,10 +46,10 @@ public class FlockGraphServlet extends HttpServlet {
             String currGrowDay = request.getParameter("growDay");
 
             try {
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                ControllerDto controller = controllerDao.getById(flock.getControllerId());
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Controller controller = controllerDao.getById(flock.getControllerId());
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 Data data = dataDao.getGrowDay(flock.getControllerId());
 

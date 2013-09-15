@@ -1,14 +1,9 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.CellinkDto;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -21,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class AddCellinkFormServlet extends HttpServlet {
 
@@ -52,31 +46,30 @@ public class AddCellinkFormServlet extends HttpServlet {
             final String password = request.getParameter("Npassword");
             final String simNumber = request.getParameter("Nsim");
             final String Ntype = request.getParameter("Ntype");
-            final CellinkDto cellink = new CellinkDto();
+            final Cellink cellink = new Cellink();
 
             cellink.setUserId(userId);
             cellink.setName(cellinkName);
             cellink.setPassword(password);
             cellink.setType(Ntype);
             cellink.setIp("");
-            cellink.setPort((int) 0);
-            cellink.setState((int) 0);
+            cellink.setPort(0);
+            cellink.setState(0);
             cellink.setScreenId((long) 1);
             cellink.setSimNumber(simNumber);
             cellink.setActual(true);
             cellink.setTime(new Timestamp(System.currentTimeMillis()));
 
             try {
-                UserDao userDao = new UserDaoImpl();
-                CellinkDao cellinkDao = new CellinkDaoImpl();
-                ControllerDao controllerDao = new ControllerDaoImpl();
-
+                UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
+                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 cellinkDao.insert(cellink);
                 logger.info("Cellink " + cellink + " successfully added !");
                 request.getSession().setAttribute("message", "Cellink successfully added !");
                 request.getSession().setAttribute("error", false);
 
-                Collection<UserDto> users = new ArrayList<UserDto>();
+                Collection<User> users = new ArrayList<User>();
                 String paramRole = request.getParameter("role");
 
                 if ((paramRole == null) || "3".equals(paramRole)) {
@@ -84,19 +77,15 @@ public class AddCellinkFormServlet extends HttpServlet {
                     paramRole = "3";
                 } else {
                     int role = Integer.parseInt(paramRole);
-
                     users = userDao.getAllByRole(role);
                 }
 
-                for (UserDto u : users) {
-                    List<CellinkDto> cellinks = (List<CellinkDto>) cellinkDao.getAllUserCellinks(u.getId());
-
-                    for (CellinkDto c : cellinks) {
-                        List<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
-
+                for (User u : users) {
+                    Collection<Cellink> cellinks = cellinkDao.getAllUserCellinks(u.getId());
+                    for (Cellink c : cellinks) {
+                        Collection<Controller> controllers = controllerDao.getAllByCellink(c.getId());
                         c.setControllers(controllers);
                     }
-
                     u.setCellinks(cellinks);
                 }
 

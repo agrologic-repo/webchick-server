@@ -62,8 +62,8 @@ public class SaveFlockFormServlet extends HttpServlet {
 //
 //
 //              try {
-//                  FlockDao flockDao = new FlockDaoImpl();
-//                  FlockDto flock = flockDao.getById(flockId);
+//                  FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+//                   Flock flock = flockDao.getById(flockId);
 //                  flock.setQuantityMale(quantityMale);
 //                  flock.setQuantityFemale(quantityFemale);
 //                  flock.setPriceChickFemale(malePrice);

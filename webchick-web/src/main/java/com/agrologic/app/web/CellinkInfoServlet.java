@@ -1,13 +1,10 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.CellinkDto;
-import com.agrologic.app.model.ControllerDto;
+import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Program;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -49,13 +46,13 @@ public class CellinkInfoServlet extends HttpServlet {
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     List<Program> programs = (List<Program>) programDao.getAll();
                     request.getSession().setAttribute("programs", programs);
-                    UserDao userDao = new UserDaoImpl();
-                    UserDto editUser = userDao.getById(userId);
-                    CellinkDao cellinkDao = new CellinkDaoImpl();
-                    CellinkDto c = (CellinkDto) cellinkDao.getById(cellinkId);
-                    ControllerDao controllerDao = new ControllerDaoImpl();
-                    Collection<ControllerDto> controllers = controllerDao.getAllByCellinkId(c.getId());
-                    for (ControllerDto ctrl : controllers) {
+                    UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
+                    User editUser = userDao.getById(userId);
+                    CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                    Cellink c = (Cellink) cellinkDao.getById(cellinkId);
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    Collection<Controller> controllers = controllerDao.getAllByCellink(c.getId());
+                    for (Controller ctrl : controllers) {
                         Program program = programDao.getById(ctrl.getProgramId());
                         ctrl.setProgram(program);
                     }

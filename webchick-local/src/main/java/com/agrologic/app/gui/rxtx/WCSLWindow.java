@@ -16,6 +16,7 @@ import com.agrologic.app.util.LocalUtil;
 import com.agrologic.app.util.ObjectSizeFetcher;
 import com.agrologic.app.util.PropertyFileUtil;
 import com.agrologic.app.util.Windows;
+import com.google.common.collect.Lists;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -27,7 +28,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.Collection;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -158,7 +159,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
             Long cellinkId = Long.parseLong(configuration.getCellinkId());
             logger.info("Get controllers from database");
 
-            List<Controller> controllers =
+            Collection<Controller> controllers =
                     dbManager.getDatabaseLoader().getUser().getCellinkById(cellinkId).getControllers();
             int size = controllers.size();
 
@@ -166,11 +167,11 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
             JPanel mainScreenPanelHolder = new JPanel(null);
             mainScreenPanels = new MainScreenPanel[size];
             for (int i = 0; i < size; i++) {
-                mainScreenPanels[i] = new MainScreenPanel(dbManager, controllers.get(i));
+                mainScreenPanels[i] = new MainScreenPanel(dbManager, Lists.newArrayList(controllers).get(i));
                 mainScreenPanelHolder.add(mainScreenPanels[i]);
             }
 
-            int colsOnScreen = ScreenUI.COL_NUMBERS;
+            int colsOnScreen = ScreenUI.MAIN_SCREEN_COL_NUMBERS;
             Dimension dimension = calcMaximumDimension(size);
             setMainScreenLocation(dimension, size, colsOnScreen);
             for (int i = 0; i < mainScreenPanels.length; i++) {
@@ -192,7 +193,7 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
 
             for (int i = 0; i < controllers.size(); i++) {
                 ObjectSizeFetcher.getObjectSize();
-                secondScreenPanels[i] = new SecondScreenPanel(dbManager, controllers.get(i));
+                secondScreenPanels[i] = new SecondScreenPanel(dbManager, Lists.newArrayList(controllers).get(i));
                 mainScreenPanels[i].addSecondPanel(secondScreenPanels[i]);
                 mainScreenPanelHolder.add(secondScreenPanels[i]);
                 secondScreenPanels[i].setMainScreenPanel(mainScreenPanels[i]);
@@ -454,7 +455,6 @@ public class WCSLWindow extends JFrame implements PropertyChangeListener {
                     LocalUtil.sleep(random.nextInt(100));
                     //Make random progress.
                     p.waitFor();
-                    System.out.println(p.exitValue());
                     progress += random.nextInt(2);
                     setProgress(Math.min(progress, 100));
                 }

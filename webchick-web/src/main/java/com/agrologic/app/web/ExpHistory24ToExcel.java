@@ -6,12 +6,13 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.excel.DataForExcelCreator;
 import com.agrologic.app.excel.WriteToExcel;
 import com.agrologic.app.model.DataFormat;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.model.Flock;
 import com.agrologic.app.utils.FileDownloadUtil;
 import org.apache.log4j.Logger;
 
@@ -59,7 +60,7 @@ public class ExpHistory24ToExcel extends HttpServlet {
         Locale locale = Locale.ENGLISH;
 
         try {
-            FlockDao flockDao = new FlockDaoImpl();
+            FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
             Long resetTime = new Long(flockDao.getResetTime(flockId, growDay));
 
             if (resetTime != null) {
@@ -104,19 +105,15 @@ public class ExpHistory24ToExcel extends HttpServlet {
             history24ByHour = parseHistory24(resetTime, values5);
             allHistory24DataForExcel.add(DataForExcelCreator.createDataHistory24List(history24ByHour,
                     DataFormat.DEC_4));
-
             List<String> tableTitles = new ArrayList<String>();
-
             tableTitles.add("Grow day " + growDay + "\nHour(24)");
             tableTitles.add(title1);
             tableTitles.add(title2);
             tableTitles.add(title3);
             tableTitles.add(title4);
             tableTitles.add(title5);
-
-            FlockDto flock = flockDao.getById(flockId);
-
-            outfile = "c:/flock-" + flock.getFlockName() + "-history.xls";
+            Flock flock = flockDao.getById(flockId);
+            outfile = "C:/flock-" + flock.getFlockName() + "-history.xls";
 
             WriteToExcel excel = new WriteToExcel();
 

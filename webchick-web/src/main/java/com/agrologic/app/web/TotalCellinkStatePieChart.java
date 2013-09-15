@@ -1,13 +1,14 @@
 
 /*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Cellink;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -23,28 +24,26 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.Collection;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class TotalCellinkStatePieChart extends HttpServlet {
+
     private static final long serialVersionUID = 1177210028733322431L;
     private DefaultPieDataset dataset = new DefaultPieDataset();
-
     // private DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     private JFreeChart jfc;
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
      *
      * @param request  servlet request
      * @param response servlet response
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CellinkDao cellinkDao = new CellinkDaoImpl();//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+        CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         setValues(cellinkDao);
 
         // jfc = ChartFactory.createPieChart("Cellinks Grouped By States", dataset, true, true, false);
@@ -93,20 +92,30 @@ public class TotalCellinkStatePieChart extends HttpServlet {
     }
 
     private void setValues(CellinkDao cellinkDao) {
-        int online = 0,
-                offline = 0,
-                running = 0;
-
+        int online = 0;
+        int offline = 0;
+        int running = 0;
         try {
-            online = cellinkDao.getAll(CellinkState.STATE_ONLINE).size();
-            offline = cellinkDao.getAll(CellinkState.STATE_OFFLINE).size();
-            offline += cellinkDao.getAll(CellinkState.STATE_STOP).size();
-            offline += cellinkDao.getAll(CellinkState.STATE_UNKNOWN).size();
-            offline += cellinkDao.getAll(CellinkState.STATE_START).size();
-            running = cellinkDao.getAll(CellinkState.STATE_RUNNING).size();
+            Collection<Cellink> cellinks = cellinkDao.getAll();
+            for (Cellink cellink : cellinks) {
+                switch (cellink.getState()) {
+                    case CellinkState.STATE_ONLINE:
+                        online++;
+                        break;
+                    case CellinkState.STATE_UNKNOWN:
+                    case CellinkState.STATE_START:
+                    case CellinkState.STATE_STOP:
+                    case CellinkState.STATE_OFFLINE:
+                        offline++;
+                        break;
+                    case CellinkState.STATE_RUNNING:
+                        running++;
+                        break;
+                }
+            }
         } catch (SQLException e) {
+            e.printStackTrace();
         }
-
         dataset.setValue("Offline", new Integer(offline));
         dataset.setValue("Running", new Integer(running));
         dataset.setValue("Online", new Integer(online));
@@ -115,7 +124,8 @@ public class TotalCellinkStatePieChart extends HttpServlet {
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 
     /**
-     * Handles the HTTP <code>GET</code> method.
+     * Handles the HTTP
+     * <code>GET</code> method.
      *
      * @param request  servlet request
      * @param response servlet response
@@ -129,7 +139,8 @@ public class TotalCellinkStatePieChart extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP
+     * <code>POST</code> method.
      *
      * @param request  servlet request
      * @param response servlet response
@@ -152,6 +163,3 @@ public class TotalCellinkStatePieChart extends HttpServlet {
         return "Short description";
     }    // </editor-fold>
 }
-
-
-

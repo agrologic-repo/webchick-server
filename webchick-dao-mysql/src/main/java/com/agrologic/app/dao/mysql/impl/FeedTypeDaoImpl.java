@@ -3,6 +3,10 @@ package com.agrologic.app.dao.mysql.impl;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.FeedTypeDao;
 import com.agrologic.app.model.FeedType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,11 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FeedTypeDaoImpl implements FeedTypeDao {
+    protected final DaoFactory dao;
+    private final Logger logger = LoggerFactory.getLogger(FeedTypeDaoImpl.class);
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    protected DaoFactory dao;
-
-    public FeedTypeDaoImpl(DaoFactory daoFactory) {
-        dao = daoFactory;
+    public FeedTypeDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("feedtypes");
+        this.dao = dao;
     }
 
     private FeedType makeFeedType(ResultSet rs) throws SQLException {

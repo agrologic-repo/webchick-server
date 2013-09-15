@@ -6,9 +6,10 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.model.Flock;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -49,8 +50,8 @@ public class CloseFlockServlet extends HttpServlet {
         String endDate = request.getParameter("endDate");
 
         try {
-            FlockDao flockDao = new FlockDaoImpl();
-            FlockDto flock = flockDao.getById(flockId);
+            FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+            Flock flock = flockDao.getById(flockId);
 
             flockDao.close(flockId, endDate);
             logger.info("Flock  " + flock + "successfully closed !");

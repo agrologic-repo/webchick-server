@@ -1,12 +1,13 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
+<%@ page import="com.agrologic.app.dao.DaoType" %>
+<%@ page import="com.agrologic.app.dao.DbImplDecider" %>
 <%@ page import="com.agrologic.app.dao.LanguageDao" %>
+<%@ page import="com.agrologic.app.model.Language" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
-<jsp:directive.page import="com.agrologic.app.dao.impl.LanguageDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.LanguageDto"/>
-<jsp:directive.page import="com.agrologic.app.model.UserDto"/>
+<% User user = (User) request.getSession().getAttribute("user");
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -15,8 +16,8 @@
     Long systemstateId = Long.parseLong(request.getParameter("systemstateId"));
     String systemstateName = request.getParameter("systemstateName");
     Long translateLang = Long.parseLong(request.getParameter("translateLang"));
-    LanguageDao languageDao = new LanguageDaoImpl();
-    LanguageDto langDto = languageDao.getById(translateLang);
+    LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+    Language lang = languageDao.getById(translateLang);
 %>
 
 <%@page contentType="text/html" pageEncoding="windows-1252" %>
@@ -86,9 +87,9 @@
                   onsubmit="return validate();">
                 <table width="100%" align="left" border="0">
                     <input type="hidden" id="systemstateId" name="systemstateId" value="<%=systemstateId%>">
-                    <input type="hidden" id="langId" name="langId" value="<%=langDto.getId() %>">
+                    <input type="hidden" id="langId" name="langId" value="<%=lang.getId() %>">
                     <tr>
-                        <td align="left">Insert &nbsp;<%=systemstateName%> in <%=langDto.getLanguage() %>
+                        <td align="left">Insert &nbsp;<%=systemstateName%> in <%=lang.getLanguage() %>
                     </tr>
                     <tr>
                         <td align="left"><input id="Ntranslate" type="text" name="Ntranslate">&nbsp;</td>

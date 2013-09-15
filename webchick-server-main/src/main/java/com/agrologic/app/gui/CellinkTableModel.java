@@ -1,11 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.gui;
-
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
@@ -15,31 +8,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Title: CellinkTableModel <br> Description: <br> Copyright: Copyright (c) 2009
- * <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class CellinkTableModel extends AbstractTableModel {
-    private static final String[] COLUMN_NAMES     = {
-        "ID", "Name", "User", "IP Address", "Port", "Time", "Status", "Logging"
+    private static final String[] COLUMN_NAMES = {
+            "ID", "Name", "User", "IP Address", "Port", "Time", "Status", "Logging"
     };
-    public static final int       COL_ID           = 0;
-    public static final int       COL_IP_ADDRESS   = 3;
-    public static final int       COL_NAME         = 1;
-    public static final int       COL_PORT         = 4;
-    public static final int       COL_STATUS       = 6;
-    public static final int       COL_TIME         = 5;
-    public static final int       COL_USER         = 2;
-    public static final int       COL_WITH_LOGGING = 7;
-    private static final long     serialVersionUID = 1L;
-    private static final Class[]  COLUMN_CLASSES   = {
-        Long.class, String.class, String.class, String.class, Integer.class, String.class, CellinkState.class,
-        Boolean.class
+    public static final int COL_ID = 0;
+    public static final int COL_IP_ADDRESS = 3;
+    public static final int COL_NAME = 1;
+    public static final int COL_PORT = 4;
+    public static final int COL_STATUS = 6;
+    public static final int COL_TIME = 5;
+    public static final int COL_USER = 2;
+    public static final int COL_WITH_LOGGING = 7;
+    private static final long serialVersionUID = 1L;
+    private static final Class[] COLUMN_CLASSES = {
+            Long.class, String.class, String.class, String.class, Integer.class, String.class, CellinkState.class,
+            Boolean.class
     };
-    private boolean       debug = true;
+    private boolean debug = true;
     private List<Cellink> cellinks;
 
     public CellinkTableModel() {
@@ -89,35 +75,35 @@ public class CellinkTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Object[] cellinkObjects = cellinks.toArray();
-        Cellink  cellink        = (Cellink) cellinkObjects[rowIndex];
+        Cellink cellink = (Cellink) cellinkObjects[rowIndex];
 
         switch (columnIndex) {
-        case COL_ID :
-            return cellink.getId();
+            case COL_ID:
+                return cellink.getId();
 
-        case COL_NAME :
-            return cellink.getName();
+            case COL_NAME:
+                return cellink.getName();
 
-        case COL_USER :
-            return cellink.getPassword();
+            case COL_USER:
+                return cellink.getPassword();
 
-        case COL_IP_ADDRESS :
-            return cellink.getIp();
+            case COL_IP_ADDRESS:
+                return cellink.getIp();
 
-        case COL_PORT :
-            return cellink.getPort();
+            case COL_PORT:
+                return cellink.getPort();
 
-        case COL_TIME :
-            return cellink.getTime().toString();
+            case COL_TIME:
+                return cellink.getTime().toString();
 
-        case COL_STATUS :
-            return cellink.getCellinkState();
+            case COL_STATUS:
+                return cellink.getCellinkState();
 
-        case COL_WITH_LOGGING :
-            return cellink.isWithLogging();
+            case COL_WITH_LOGGING:
+                return cellink.isWithLogging();
 
-        default :
-            throw new IllegalArgumentException("Illegal column index");
+            default:
+                throw new IllegalArgumentException("Illegal column index");
         }
     }
 
@@ -136,49 +122,49 @@ public class CellinkTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object value, int row, int col) {
         Object[] cellinkObjects = cellinks.toArray();
-        Cellink  cellink        = (Cellink) cellinkObjects[row];
+        Cellink cellink = (Cellink) cellinkObjects[row];
 
         switch (col) {
-        case COL_ID :
-            cellink.setId((Long) value);
+            case COL_ID:
+                cellink.setId((Long) value);
 
-            break;
+                break;
 
-        case COL_NAME :
-            cellink.setName((String) value);
+            case COL_NAME:
+                cellink.setName((String) value);
 
-            break;
+                break;
 
-        case COL_USER :
-            cellink.setPassword((String) value);
+            case COL_USER:
+                cellink.setPassword((String) value);
 
-            break;
+                break;
 
-        case COL_IP_ADDRESS :
-            cellink.setIp((String) value);
+            case COL_IP_ADDRESS:
+                cellink.setIp((String) value);
 
-            break;
+                break;
 
-        case COL_PORT :
-            cellink.setPort((Integer) value);
+            case COL_PORT:
+                cellink.setPort((Integer) value);
 
-            break;
+                break;
 
 //      case COL_TIME:
 //          cellink.setTime(new Timestamp).toString();
 //          break;
-        case COL_STATUS :
-            cellink.getCellinkState();
+            case COL_STATUS:
+                cellink.getCellinkState();
 
-            break;
+                break;
 
-        case COL_WITH_LOGGING :
-            cellink.setWithLogging(((Boolean) value).booleanValue());
+            case COL_WITH_LOGGING:
+                cellink.setWithLogging(((Boolean) value).booleanValue());
 
-            break;
+                break;
 
-        default :
-            throw new IllegalArgumentException("Illegal column index");
+            default:
+                throw new IllegalArgumentException("Illegal column index");
         }
 
         fireTableCellUpdated(row, col);

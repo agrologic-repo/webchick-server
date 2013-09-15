@@ -25,6 +25,7 @@ public class RestartApplicationTest {
     }
 
     @Test(expected = JarFileWasNotFound.class)
+    @Ignore
     public void isGetJarFileThrowFileWasNotFoundException() throws Exception {
         String jarName = "webchick-server-test.jar";
         File expected = new File(jarName);

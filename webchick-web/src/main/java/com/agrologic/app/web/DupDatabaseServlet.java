@@ -1,14 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.impl.ConnectorDao;
+import com.agrologic.app.config.Configuration;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.VersionDao;
 import com.agrologic.app.utils.FileDownloadUtil;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.log4j.Logger;
 
@@ -18,24 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
-/**
- * @author Administrator
- */
+
 public class DupDatabaseServlet extends HttpServlet {
-    private final static String DATABASE_DRIVER = "database.driver";
-    private final static String DATABASE_PASSWORD = "database.password";
-    private final static String DATABASE_URL = "database.url";
-    private final static String DATABASE_USER = "database.user";
     private static final long serialVersionUID = 1L;
     private final Logger logger = Logger.getLogger(DupDatabaseServlet.class);
-    private ConnectorDao conDao;
     private Process process;
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        conDao = new ConnectorDao();
-    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -100,13 +83,13 @@ public class DupDatabaseServlet extends HttpServlet {
     }    // </editor-fold>
 
     private String makeBackupDB() {
-        BasicDataSource bds = (BasicDataSource) conDao.getDataSource();
-        String userName = bds.getUsername();
-        String password = bds.getPassword();
-        String dbName = bds.getUrl();
+        Configuration CONFIG = new Configuration();
+        String userName = CONFIG.getDbUser();
+        String password = CONFIG.getDbPassword();
+        String dbName = CONFIG.getDbUrl();
         int dbIndex = dbName.lastIndexOf("/");
-
-        dbName = dbName.substring(dbIndex + 1);
+        int askChar = dbName.lastIndexOf("?");
+        dbName = dbName.substring(dbIndex + 1, askChar);
 
         String mysqlPath = System.getenv("MYSQL_HOME");
         File backupFile;
@@ -118,7 +101,7 @@ public class DupDatabaseServlet extends HttpServlet {
             mysqlPath = System.getenv("MYSQL_HOME") + "\\bin\\mysqldump";
             logger.info("Opening mysql from " + mysqlPath);
             String tomcatTempDir = SystemUtils.getJavaIoTmpDir().getAbsolutePath();
-            backupFile = new File(tomcatTempDir + File.pathSeparator + "database.sql");
+            backupFile = new File(tomcatTempDir + File.separator + "database.sql");
         }
 
         try {
@@ -178,10 +161,9 @@ public class DupDatabaseServlet extends HttpServlet {
 
     private String getMySQLPath() {
         String mySqlPath = getPath();
-        String version = conDao.getMySQLVersion();
-
+        VersionDao versionDao = DbImplDecider.use(DaoType.MYSQL).getDao(VersionDao.class);
+        String version = versionDao.getVersion();
         mySqlPath = mySqlPath + "MySql\\MySql Server " + version + "\\bin";
-
         return mySqlPath;
     }
 }

@@ -6,14 +6,16 @@ import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.MedicineDaoImpl;
 import com.agrologic.app.model.Medicine;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
 
 public class DerbyMedicineDaoImpl extends MedicineDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyMedicineDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyMedicineDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
+
 
     @Override
     public void createTable() throws SQLException {

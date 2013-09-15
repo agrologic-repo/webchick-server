@@ -12,7 +12,8 @@
 
 <jsp:directive.page import="java.util.Collection"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -23,7 +24,7 @@
     Program program = (Program) request.getSession().getAttribute("program");
     Collection<Data> dataRelays = (Collection<Data>) request.getSession().getAttribute("dataRelays");
     Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("programs");
-    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
+    Collection<Language> languages = (Collection<Language>) request.getSession().getAttribute("languages");
 %>
 <%! Screen getCurrentScreen(Long screenId, Collection<Screen> screens) {
 
@@ -112,7 +113,7 @@
                             <form id="formFilterLanguages" name="formFilterLanguages">
                                 Language&nbsp;
                                 <select id="Lang_Filter" name="Lang_Filter" onchange="return filterLanguages();">
-                                    <%for (LanguageDto l : languages) {%>
+                                    <%for (Language l : languages) {%>
                                     <option value="<%=l.getId()%>"><%=l.getLanguage()%>
                                     </option>
                                     <%}%>

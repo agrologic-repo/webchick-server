@@ -6,14 +6,16 @@ import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.GasDaoImpl;
 import com.agrologic.app.model.Gas;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
 
 public class DerbyGasDaoImpl extends GasDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyGasDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyGasDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
+
 
     @Override
     public boolean tableExist() throws SQLException {

@@ -9,14 +9,14 @@
 
 <jsp:directive.page import="com.agrologic.app.dao.GasDao"/>
 <jsp:directive.page import="com.agrologic.app.dao.impl.GasDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.GasDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Gas"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    GasDao gazDao = new GasDaoImpl();
-    Collection<GasDto> gazList = gazDao.getAllByFlockId(flockId);
+    GasDao gazDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDaoImpl.class);
+    Collection<Gas> gazList = gazDao.getAllByFlockId(flockId);
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -153,7 +153,7 @@
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
-            <%for (GasDto gaz : gazList) {%>
+            <%for (Gas gaz : gazList) {%>
             <tr>
                 <td><%=gaz.getAmount()%>
                 </td>

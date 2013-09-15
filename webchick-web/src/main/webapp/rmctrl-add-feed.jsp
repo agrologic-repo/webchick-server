@@ -13,17 +13,17 @@
 <jsp:directive.page import="com.agrologic.app.dao.impl.FeedDaoImpl"/>
 
 <jsp:directive.page import="com.agrologic.app.dao.impl.FeedTypeDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.FeedDto"/>
-<jsp:directive.page import="com.agrologic.app.model.FeedTypeDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Feed"/>
+<jsp:directive.page import="com.agrologic.app.model.FeedType"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    FeedDao feedDao = new FeedDaoImpl();
-    Collection<FeedDto> feedList = feedDao.getAllByFlockId(flockId);
-    FeedTypeDao feedTypeDao = new FeedTypeDaoImpl();
-    Collection<FeedTypeDto> feedTypeList = feedTypeDao.getAllByCellinkId(cellinkId);
+    FeedDao feedDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedDaoImpl.class);
+    Collection<Feed> feedList = feedDao.getAllByFlockId(flockId);
+    FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDaoImpl.class);
+    Collection<FeedType> feedTypeList = feedTypeDao.getAllByCellinkId(cellinkId);
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -142,7 +142,7 @@
                 <td>
                     <select id="feedtypeid" name="feedtypeid">
                         <option value="0" select></option>
-                        <% for (FeedTypeDto f : feedTypeList) {%>
+                        <% for (FeedType f : feedTypeList) {%>
                         <option value="<%=f.getId() %>"><%=f.getFeedType() %>
                         </option>
                         <%}%>
@@ -154,7 +154,7 @@
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
-            <%for (FeedDto feed : feedList) {%>
+            <%for (Feed feed : feedList) {%>
             <tr>
                 <td><%=feed.getAmount()%>
                 </td>
@@ -162,7 +162,7 @@
                 </td>
                 <%String feedType = "";%>
                 <td>
-                    <%for (FeedTypeDto f : feedTypeList) {%>
+                    <%for (FeedType f : feedTypeList) {%>
                     <%
                         if (feed.getType().equals(f.getId())) {
                             feedType = f.getFeedType();

@@ -10,7 +10,8 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.model.Program;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.User;
+import com.agrologic.app.model.UserRole;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -66,23 +67,24 @@ public class ListProgramServlet extends HttpServlet {
                         index = "0";
                     }
 
-                    UserDto user = (UserDto) request.getSession().getAttribute("user");
+                    User user = (User) request.getSession().getAttribute("user");
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     int count = programDao.count();
                     Collection<Program> programs = new ArrayList<Program>();
                     Collection<Program> allPrograms = programDao.getAll();
-                    switch (user.getRole()) {
-                        case UserRole.REGULAR:
+                    UserRole userRole = user.getRole();
+                    switch (userRole) {
+                        case USER:
                             programs = programDao.getAllByUserId(searchText, user.getId());
                             setTableParameters(request, index, count);
                             break;
 
-                        case UserRole.ADMINISTRATOR:
+                        case ADMIN:
                             programs = programDao.getAll(searchText, index);
                             setTableParameters(request, index, count);
                             break;
 
-                        case UserRole.ADVANCED:
+                        case DISTRIBUTOR:
                             programs = programDao.getAllByUserCompany(searchText, user.getCompany());
                             setTableParameters(request, index, count);
                             break;

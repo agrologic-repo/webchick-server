@@ -1,10 +1,4 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.derby.impl;
-
 
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.DaoFactory;
@@ -12,14 +6,16 @@ import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.DistribDaoImpl;
 import com.agrologic.app.model.Distrib;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
 
 public class DerbyDistribDaoImpl extends DistribDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyDistribDaoImpl(DaoFactory daoFactory) {
-        super(daoFactory);
+    public DerbyDistribDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
+        super(jdbcTemplate, daoFactory);
     }
+
 
     @Override
     public void createTable() throws SQLException {

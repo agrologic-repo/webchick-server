@@ -4,80 +4,32 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 public class Controller implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    public static final long OFF_STATE_DELAY = TimeUnit.MINUTES.toMillis(10);
-    private boolean on = true;
-    private boolean active;
-    private Integer area;
-    private Long cellinkId;
-    private long graphUpdateTime;
+    private static final long serialVersionUID = 166073822830898227L;
+    private static final long OFF_STATE_DELAY = TimeUnit.MINUTES.toMillis(10);
     private Long id;
+    private Long cellinkId;
+    private Long programId;
+    private Long offStateTime;
+    private Long graphUpdateTime;
+    private String title;
     private String name;
     private String netName;
-    private long offStateTime;
-    private HashMap<Long, Data> onlineData;
+    private Integer area;
+    private Data setClock;
+    private boolean on = true;
+    private boolean active;
     private Program program;
-    private Long programId;
-    private String title;
-    private int networkOkCount;
+    private Collection<Flock> flocks;
+    private HashMap<Long, Data> onlineData;
+    public static final int COLUMN_NUMBERS = 4;
 
     public Controller() {
-        // recieve message counter
-        networkOkCount = 4;
         onlineData = new LinkedHashMap<Long, Data>();
-    }
-
-    public void decNetworkOkCount() {
-        networkOkCount--;
-    }
-
-    public boolean isNetworkOkCounter() {
-        return networkOkCount == 0 ? true : false;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getNetName() {
-        return netName;
-    }
-
-    public void setNetName(String netName) {
-        this.netName = netName;
-    }
-
-    public Long getTerminalId() {
-        return cellinkId;
-    }
-
-    public Long getCellinkId() {
-        return cellinkId;
-    }
-
-    public void setCellinkId(Long cellinkId) {
-        this.cellinkId = cellinkId;
     }
 
     public String getName() {
@@ -88,12 +40,36 @@ public class Controller implements Serializable {
         this.name = name;
     }
 
-    public Integer getArea() {
-        return area;
+    public Long getCellinkId() {
+        return cellinkId;
     }
 
-    public void setArea(Integer area) {
-        this.area = area;
+    public void setCellinkId(Long cellinkId) {
+        this.cellinkId = cellinkId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNetName() {
+        return netName;
+    }
+
+    public void setNetName(String netName) {
+        this.netName = netName;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Long getProgramId() {
@@ -104,16 +80,46 @@ public class Controller implements Serializable {
         this.programId = programId;
     }
 
-    public long getGraphUpdateTime() {
+    public Integer getArea() {
+        return (area == null)
+                ? 0
+                : area;
+    }
+
+    public void setArea(Integer area) {
+        this.area = area;
+    }
+
+    public Program getProgram() {
+        return program;
+    }
+
+    public void setProgram(Program program) {
+        this.program = program;
+    }
+
+    public List<Screen> getScreens() {
+        return program.getScreens();
+    }
+
+    public void setScreens(List<Screen> screens) {
+        this.program.setScreens(screens);
+    }
+
+    public void setSetClock(Data setClock) {
+        this.setClock = setClock;
+    }
+
+    public Data getSetClock() {
+        return setClock;
+    }
+
+    public Long getGraphUpdateTime() {
         return graphUpdateTime;
     }
 
     public void setGraphUpdateTime(long graphUpdateTime) {
         this.graphUpdateTime = graphUpdateTime;
-    }
-
-    public long timeSinceGraphUpdated() {
-        return System.currentTimeMillis() - graphUpdateTime;
     }
 
     public boolean isActive() {
@@ -138,7 +144,7 @@ public class Controller implements Serializable {
      */
     public void switchOn() {
         on = true;
-        offStateTime = 0;
+        offStateTime = 0L;
     }
 
     /**
@@ -175,14 +181,6 @@ public class Controller implements Serializable {
         }
     }
 
-    public Program getProgram() {
-        return program;
-    }
-
-    public void setProgram(Program program) {
-        this.program = program;
-    }
-
     /**
      * Initialize online data map of controller object.
      *
@@ -202,6 +200,42 @@ public class Controller implements Serializable {
 
     public Map getOnlineData() {
         return onlineData;
+    }
+
+    public Collection<Table> getSellectedScreenTables(Long screenId) {
+        for (Screen s : program.getScreens()) {
+            if (s.getId() == screenId) {
+                return s.getTables();
+            }
+        }
+        return new ArrayList<Table>();
+    }
+
+    public Data getInterestData(Long screenId, Long tableId, Long dataId) {
+        for (Screen s : program.getScreens()) {
+            if (s.getId().equals(screenId)) {
+                Collection<Table> tables = s.getTables();
+                for (Table t : tables) {
+                    if (t.getId().equals(tableId)) {
+                        for (Data d : t.getDataList()) {
+                            if (d.getId().equals(dataId)) {
+                                return d;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public Collection<Flock> getFlocks() {
+        return flocks;
+    }
+
+    public void setFlocks(Collection<Flock> flocks) {
+        this.flocks = flocks;
     }
 
     @Override

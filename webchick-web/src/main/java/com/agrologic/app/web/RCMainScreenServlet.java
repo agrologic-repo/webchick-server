@@ -1,9 +1,6 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -17,7 +14,6 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RCMainScreenServlet extends HttpServlet {
@@ -54,8 +50,8 @@ public class RCMainScreenServlet extends HttpServlet {
             checkRealTimeSessionTimeout(request, logger);
 
             try {
-                CellinkDao cellinkDao = new CellinkDaoImpl();
-                CellinkDto cellink = cellinkDao.getById(cellinkId);
+                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                Cellink cellink = cellinkDao.getById(cellinkId);
 
                 if (cellink.getState() == CellinkState.STATE_ONLINE) {
                     cellink.setState(CellinkState.STATE_START);
@@ -67,12 +63,12 @@ public class RCMainScreenServlet extends HttpServlet {
                 logger.info("Connect to cellink " + cellink);
                 request.getSession().setAttribute("cellink", cellink);
 
-                LanguageDao languageDao = new LanguageDaoImpl();
+                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                 long langId = languageDao.getLanguageId(lang);    // get language id
 
                 // get all controllers connected to cellink
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(new Long(cellinkId));
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(new Long(cellinkId));
                 final DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 final TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                 final ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
@@ -84,7 +80,7 @@ public class RCMainScreenServlet extends HttpServlet {
                 final ProgramSystemStateDao programSystemStateDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramSystemStateDao.class);
                 Map<Long, Long> nextScrIdsByCntrl = new HashMap<Long, Long>();
 
-                for (ControllerDto controller : controllers) {
+                for (Controller controller : controllers) {
 
                     // get asigned to controller program
                     Program program = programDao.getById(controller.getProgramId());
@@ -96,8 +92,7 @@ public class RCMainScreenServlet extends HttpServlet {
                     nextScrIdsByCntrl.put(controller.getId(), nsid);
 
                     Data setClock = dataDao.getSetClockByController(controller.getId());
-
-                    controller.setSetClock(setClock);
+                    //controller.setSetClock(setClock);
 
                     // get program relays
                     program.setProgramRelays(programRelayDao.getAllProgramRelays(program.getId(), langId));

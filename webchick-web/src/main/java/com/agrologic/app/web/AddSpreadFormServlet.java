@@ -5,15 +5,11 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.SpreadDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.SpreadDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
-import com.agrologic.app.model.SpreadDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.SpreadDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.Spread;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -23,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -60,8 +57,8 @@ public class AddSpreadFormServlet extends HttpServlet {
             String total = request.getParameter("total");
 
             try {
-                SpreadDao spreadDao = new SpreadDaoImpl();
-                SpreadDto spread = new SpreadDto();
+                SpreadDao spreadDao = DbImplDecider.use(DaoType.MYSQL).getDao(SpreadDaoImpl.class);
+                Spread spread = new Spread();
 
                 spread.setFlockId(flockId);
                 spread.setAmount(Integer.parseInt(amount));
@@ -71,13 +68,13 @@ public class AddSpreadFormServlet extends HttpServlet {
                 spread.setTotal(Float.parseFloat(total));
                 spreadDao.insert(spread);
 
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
-                List<SpreadDto> spreadList = spreadDao.getAllByFlockId(flockId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
+                List<Spread> spreadList = spreadDao.getAllByFlockId(flockId);
                 int addSpreadAmount = 0;
                 float addSpreadSum = 0;
 
-                for (SpreadDto s : spreadList) {
+                for (Spread s : spreadList) {
                     addSpreadAmount += s.getAmount();
                     addSpreadSum += s.getTotal();
                 }
@@ -86,11 +83,11 @@ public class AddSpreadFormServlet extends HttpServlet {
                 flock.setTotalSpread(addSpreadSum);
                 flockDao.update(flock);
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
 

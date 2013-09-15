@@ -3,19 +3,20 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.ControllerDto" %>
+<%@ page import="com.agrologic.app.model.Controller" %>
 
 <jsp:directive.page import="com.agrologic.app.model.Program"/>
 <jsp:directive.page import="java.util.Collection"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    ControllerDto editController = (ControllerDto) request.getSession().getAttribute("editcontroller");
+    Controller editController = (Controller) request.getSession().getAttribute("editcontroller");
     Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("programs");
     Collection<String> controllernames = (Collection<String>) request.getSession().getAttribute("controllernames");
 %>
@@ -161,7 +162,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <%if (user.getRole() == UserRole.ADMINISTRATOR) {%>
+                    <%if (user.getRole() == UserRole.ADMIN) {%>
                     <button name="btnCancel"
                             onclick='return back("./cellinkinfo.html?userId=<%=userId %>&cellinkId=<%=cellinkId%>");'>
                         <%=session.getAttribute("button.cancel") %>

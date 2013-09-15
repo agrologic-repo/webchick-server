@@ -10,13 +10,13 @@
 
 <jsp:directive.page import="com.agrologic.app.dao.GasDao"/>
 <jsp:directive.page import="com.agrologic.app.dao.impl.GasDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.GasDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Gas"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    GasDao gasDao = new GasDaoImpl();
-    Collection<GasDto> gazList = gasDao.getAllByFlockId(flockId);
+    GasDao gasDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDaoImpl.class);
+    Collection<Gas> gazList = gasDao.getAllByFlockId(flockId);
 
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -34,16 +34,16 @@
             if (amountG.value == "") {
                 amountG.value = "0";
             }
-            var amountGaz = parseInt(amountG.value);
+            var amountGas = parseInt(amountG.value);
 
             var priceG = document.getElementById(price);
             if (priceG.value == "") {
                 priceG.value = "0.0";
             }
-            var priceGaz = parseFloat(priceG.value);
+            var priceGas = parseFloat(priceG.value);
 
             var totalCost = 0.0;
-            var totalCost = amountGaz * priceGaz;
+            var totalCost = amountGas * priceGas;
             document.getElementById(total).value = totalCost;
         }
         function validate() {
@@ -77,10 +77,10 @@
 
         }
     </script>
-    <title>Add Gaz</title>
+    <title>Add Gas</title>
 </head>
 <body>
-<h1>Add Gaz</h1>
+<h1>Add Gas</h1>
 <br>
 <button type="button" onclick='self.close();'>Close</button>
 <table id="msg" class="errMsg" align="center" style="display: none;">
@@ -120,7 +120,7 @@
 
         </tr>
         <%
-            for (GazDto gaz : gazList) {%>
+            for (Gas gaz : gazList) {%>
         <tr>
             <td><%=gaz.getAmount() %>
             </td>

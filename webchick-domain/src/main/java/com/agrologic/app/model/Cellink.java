@@ -1,39 +1,46 @@
 package com.agrologic.app.model;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.net.Socket;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Cellink implements Comparable<Cellink>, Serializable {
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * network traffic should\shouldn't displayed in log flag.
-     */
-    private Boolean withLogging = false;
-    private List<CellinkListener> cellinkStateListeners = new LinkedList<CellinkListener>();
-    private Boolean actual;
-    private List<Controller> controllers;
+    private static final long serialVersionUID = 1234567891234567L;
     private Long id;
+    private Long userId;
+    private Long screenId;
     private String ip;
     private String name;
     private String password;
-    private Integer port;
-    private Long screenId;
-    private String simNumber;
-    private int state;
-    private Timestamp time;
-    private String type;
-    private Long userId;
-    private Boolean validate;
     private String version;
+    private String type;
+    private String simNumber;
+    private Integer port;
+    private Integer state;
+    private Timestamp time;
+    private Boolean validate;
+    private Boolean actual;
+    private Boolean withLogging = false;
+    private Collection<Controller> controllers;
+    private Collection<CellinkListener> cellinkStateListeners = new LinkedList<CellinkListener>();
+
+    /**
+     * List of Strings for cellink types.
+     */
+    private static final List<String> CELLINK_TYPES = new ArrayList<String>();
+
+    static {
+        CELLINK_TYPES.add("WEB");
+        CELLINK_TYPES.add("PC");
+        CELLINK_TYPES.add("PC&WEB");
+        CELLINK_TYPES.add("MINSERVER");
+    }
 
     public Cellink() {
         this.controllers = new ArrayList<Controller>();
@@ -52,8 +59,8 @@ public class Cellink implements Comparable<Cellink>, Serializable {
         return name;
     }
 
-    public void setName(String farmName) {
-        this.name = farmName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -64,36 +71,20 @@ public class Cellink implements Comparable<Cellink>, Serializable {
         this.password = password;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public void setTime(Timestamp time) {
-        this.time = time;
-    }
-
-    public Timestamp getTime() {
-        return time;
-    }
-
-    public void setPort(int port) {
-        this.setPort((Integer) port);
-    }
-
     public int getPort() {
         return port;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setPort(int port) {
+        this.port = port;
     }
 
     public String getIp() {
         return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     public Long getScreenId() {
@@ -110,7 +101,15 @@ public class Cellink implements Comparable<Cellink>, Serializable {
 
     public void setState(Integer state) {
         this.state = state;
-        fireCellinkStateChanged(new CellinkEvent(id, new CellinkState(state)));
+        try {
+            fireCellinkStateChanged(new CellinkEvent(id, new CellinkState(state)));
+        } catch (NullPointerException e) {
+            // this method works for local version
+        }
+    }
+
+    public CellinkState getCellinkState() {
+        return CellinkState.intToState(state);
     }
 
     public Boolean isActual() {
@@ -122,7 +121,7 @@ public class Cellink implements Comparable<Cellink>, Serializable {
     }
 
     public String getVersion() {
-        return (version == null)
+        return ((version == null) || version.equals(""))
                 ? "N/A"
                 : version;
     }
@@ -132,11 +131,27 @@ public class Cellink implements Comparable<Cellink>, Serializable {
     }
 
     public boolean getValidate() {
-        return isValidate();
+        return validate;
     }
 
     public void setValidate(boolean validate) {
         this.validate = validate;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
     }
 
     public String getSimNumber() {
@@ -155,30 +170,6 @@ public class Cellink implements Comparable<Cellink>, Serializable {
         this.type = type;
     }
 
-    public void registrate(Socket socket) {
-        setIp(socket.getInetAddress().getHostAddress());
-        setPort(socket.getPort());
-        setTime(new Timestamp(System.currentTimeMillis()));
-    }
-
-    public CellinkState getCellinkState() {
-        return CellinkState.intToState(getState());
-    }
-
-    /**
-     * @param port the port to set
-     */
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-
-    /**
-     * @return the validate
-     */
-    public boolean isValidate() {
-        return validate;
-    }
-
     /**
      * Returns whether network traffic should  displayed in  log .
      *
@@ -194,10 +185,6 @@ public class Cellink implements Comparable<Cellink>, Serializable {
      * @param withLogging the log flag
      */
     public void setWithLogging(Boolean withLogging) {
-        if (withLogging == true) {
-            System.out.println();
-        }
-
         this.withLogging = withLogging;
     }
 
@@ -206,36 +193,34 @@ public class Cellink implements Comparable<Cellink>, Serializable {
      *
      * @return an unmodifiable view of the list of controllers.
      */
-    public List<Controller> getControllers() {
+    public Collection<Controller> getControllers() {
         if (controllers == null) {
             controllers = new ArrayList<Controller>();
         }
-
-        return Collections.unmodifiableList(controllers);
+        return Collections.unmodifiableList((List<? extends Controller>) controllers);
     }
 
     /**
-     * Set list of controllers to cellink object
+     * Set collection of controllers to cellink object
      *
-     * @param list the list of controllers
+     * @param controllers the controllers of controllers
      */
-    public void setControllers(List<Controller> list) {
-        if (controllers == null) {
-            controllers = new ArrayList<Controller>();
-        }
-
-        for (Controller controller : list) {
-            this.controllers.add(controller);
+    public void setControllers(Collection<Controller> controllers) {
+        for (Controller controller : controllers) {
+            addController(controller);
         }
     }
 
     /**
-     * Add controller object to list of controllers
+     * Add controller object to collection of controllers
      *
      * @param controller the controller
      */
     public void addController(Controller controller) {
-        this.controllers.add(controller);
+        if (controllers == null) {
+            controllers = new ArrayList<Controller>();
+        }
+        controllers.add(controller);
     }
 
     /**
@@ -245,7 +230,7 @@ public class Cellink implements Comparable<Cellink>, Serializable {
      * @return the controller at the specified position in this list of controllers
      */
     public Controller getController(int index) {
-        return controllers.get(index);
+        return Lists.newArrayList(controllers).get(index);
     }
 
     /**
@@ -255,7 +240,8 @@ public class Cellink implements Comparable<Cellink>, Serializable {
      * @param controller - controller to be stored at the specified position
      */
     public void setController(int index, Controller controller) {
-        controllers.set(index, controller);
+        //controllers.set(index, controller);
+        Lists.newArrayList(controllers).set(index, controller);
     }
 
     /**
@@ -289,6 +275,34 @@ public class Cellink implements Comparable<Cellink>, Serializable {
         }
     }
 
+    public boolean isOnline() {
+        if ((getState() == CellinkState.STATE_OFFLINE) || (getState() == CellinkState.STATE_STOP)
+                || (getState() == CellinkState.STATE_UNKNOWN)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public String getImageByState() {
+        String imageName = "img/" + CellinkState.stateToString(state) + ".gif";
+
+        return imageName;
+    }
+
+    public static List<String> getTypeList() {
+        return CELLINK_TYPES;
+    }
+
+    public String getFormatedTime() {
+        Date now = new Date(time.getTime());
+        String DATE_FORMAT = "HH:mm:ss dd/MM/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        String datetime = sdf.format(now);
+
+        return datetime;
+    }
+
     /**
      * This method is fired with cellink state were changed.
      *
@@ -298,6 +312,12 @@ public class Cellink implements Comparable<Cellink>, Serializable {
         for (CellinkListener listener : cellinkStateListeners) {
             listener.cellinkChanged(event);
         }
+    }
+
+    public void registrate(Socket socket) {
+        setIp(socket.getInetAddress().getHostAddress());
+        setPort(socket.getPort());
+        setTime(new Timestamp(System.currentTimeMillis()));
     }
 
     @Override

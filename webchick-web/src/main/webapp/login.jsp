@@ -40,7 +40,6 @@
     }
     session.setAttribute("domain", domain);
     logger.info(domain);
-    System.out.println(domain);
 %>
 
 <%!

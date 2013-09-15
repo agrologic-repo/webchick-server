@@ -1,16 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.graph.CombinedXYGraph;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
@@ -28,8 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-//~--- JDK imports ------------------------------------------------------------
 
 public class GraphMinMaxHumidityServlet extends HttpServlet {
 
@@ -76,7 +67,7 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
                 try {
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     Data data = dataDao.getById(Long.valueOf(3002));
-                    FlockDao flockDao = new FlockDaoImpl();
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
                     Map<Integer, Data> interestData = createDataSet(historyByGrowDay, data);
 

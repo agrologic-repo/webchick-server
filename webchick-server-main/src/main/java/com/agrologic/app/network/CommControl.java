@@ -85,12 +85,11 @@ public class CommControl {
                     }
                     if (readBuffer.isReady()) {
                         stop = true;
-
                         response.parsingReceiveBuffer(readBuffer);
                     } else {
                         readBuffer.checkTimeout();
                     }
-                    Thread.sleep(1);
+                    Thread.sleep(5);
                 }
             }
             logger.debug("End read from input stream");
@@ -181,7 +180,6 @@ public class CommControl {
         for (byte b : buffer) {
             sendBuffer[i++] = b;
         }
-        System.out.println(new String(sendBuffer, 0, sendBuffer.length));
 
         return sendBuffer;
     }
@@ -201,7 +199,7 @@ public class CommControl {
     }
 
     public void clearInputStreamWithDelayForSilence() {
-        final int DELAY_SILENCE_TIME = (int) TimeUnit.SECONDS.toMillis(5);// wait 3 seconds
+        final int DELAY_SILENCE_TIME = (int) TimeUnit.SECONDS.toMillis(1);// wait 1 second
         // wait for silence
         try {
             while (availableData() > 0) {
@@ -278,7 +276,8 @@ public class CommControl {
             return false;
         }
         final CommControl other = (CommControl) obj;
-        if (this.socket != other.socket && (this.socket == null || !this.socket.equals(other.socket))) {
+        if (this.socket != other.socket && (this.socket == null
+                || !this.socket.equals(other.socket))) {
             return false;
         }
         return true;

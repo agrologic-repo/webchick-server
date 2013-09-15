@@ -1,9 +1,6 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -56,21 +53,21 @@ public class RCGraphServlet extends HttpServlet {
 
             try {
 
-//              IUserDao userDao = new UserDaoImpl();
-//              UserDto user = userDao.getById(userId);
+//              IUserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);;
+//              User user = userDao.getById(userId);
 //              request.getSession().setAttribute("user", user);
-                CellinkDao cellinkDao = new CellinkDaoImpl();
-                CellinkDto cellink = cellinkDao.getById(cellinkId);
+                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                Cellink cellink = cellinkDao.getById(cellinkId);
 
                 // cellink.setTime(new Timestamp(System.currentTimeMillis()));
                 cellinkDao.update(cellink);
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                ControllerDto controller = controllerDao.getById(controllerId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Controller controller = controllerDao.getById(controllerId);
                 ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                 Program program = programDao.getById(controller.getProgramId());
 
-                LanguageDao languageDao = new LanguageDaoImpl();
+                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                 long langId = languageDao.getLanguageId(lang);
                 ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
                 ;

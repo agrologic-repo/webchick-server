@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE preferences SYSTEM "http://java.sun.com/dtd/preferences.dtd">
 <preferences EXTERNAL_XML_VERSION="1.0">
-    <root type="user">
-        <map/>
-        <node name="webchick-config">
-            <map>
-                <entry key="protocol" value="0"/>
-                <entry key="language" value="Hebrew"/>
-                <entry key="server.ip" value="192.168.1.101"/>
-                <entry key="server.port" value="5500"/>
-                <entry key="keepalive.timeout" value="3"/>
-                <entry key="com.port" value="COM3"/>
-                <entry key="database.driver" value="com.mysql.jdbc.Driver"/>
-                <entry key="database.url" value="jdbc:mysql://localhost:3306/agrodb?autoReconnect=true"/>
-                <entry key="database.user" value="root"/>
-                <entry key="database.password" value="agro1950"/>
-                <entry key="com.baud" value="2400"/>
-                <entry key="com.sot" value="25000"/>
-                <entry key="com.eot" value="2000"/>
-                <entry key="com.next" value="500"/>
-                <entry key="com.maxerr" value="3"/>
-                <entry key="runatstartup" value="true"/>
-                <entry key="access" value="regular"/>
-                <entry key="webchick.uri" value="http://localhost:8080/webchick/startpage.html"/>
-                <entry key="cellink.id" value="180"/>
-                <entry key="user.id" value="79"/>
-                <entry key="pc.comm" value="1"/>
-                <entry key="server.comport" value="COM99"/>
-                <entry key="role" value="1"/>
-            </map>
-        </node>
-    </root>
+  <root type="user">
+    <map/>
+    <node name="webchick-config">
+      <map>
+        <entry key="protocol" value="3"/>
+        <entry key="language" value="English"/>
+        <entry key="server.ip" value="192.168.1.101"/>
+        <entry key="server.port" value="5500"/>
+        <entry key="keepalive.timeout" value="3"/>
+        <entry key="com.port" value="COM3"/>
+        <entry key="database.driver" value="com.mysql.jdbc.Driver"/>
+        <entry key="database.url" value="jdbc:mysql://localhost:3306/agrodb?autoReconnect=true"/>
+        <entry key="database.user" value="root"/>
+        <entry key="database.password" value="agro1950"/>
+        <entry key="com.baud" value="9600"/>
+        <entry key="com.sot" value="25000"/>
+        <entry key="com.eot" value="2000"/>
+        <entry key="com.next" value="500"/>
+        <entry key="com.maxerr" value="3"/>
+        <entry key="runatstartup" value="true"/>
+        <entry key="access" value="regular"/>
+        <entry key="webchick.uri" value="http://localhost:8080/webchick/startpage.html"/>
+        <entry key="cellink.id" value="167"/>
+        <entry key="user.id" value="155"/>
+        <entry key="pc.comm" value="1"/>
+        <entry key="server.comport" value="COM3"/>
+        <entry key="role" value="1"/>
+      </map>
+    </node>
+  </root>
 </preferences>

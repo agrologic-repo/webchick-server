@@ -1,7 +1,6 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -98,8 +97,8 @@ public class ViewResultServlet extends HttpServlet {
                     program.setProgramRelays(programRelays);
 
                     List<Data> dataRelays = dataDao.getRelays();
-                    LanguageDao languageDao = new LanguageDaoImpl();
-                    List<LanguageDto> langList = languageDao.geAll();
+                    LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+                    Collection<Language> langList = languageDao.geAll();
 
                     logger.info("retrieve program data relay!");
                     request.getSession().setAttribute("dataRelays", dataRelays);

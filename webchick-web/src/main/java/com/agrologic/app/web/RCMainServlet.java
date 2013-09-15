@@ -7,8 +7,9 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.model.CellinkDto;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Cellink;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -47,10 +48,10 @@ public class RCMainServlet extends HttpServlet {
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
             Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-            CellinkDao cellinkDao = new CellinkDaoImpl();// DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+            CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
 
             try {
-                CellinkDto cellink = cellinkDao.getById(cellinkId);
+                Cellink cellink = cellinkDao.getById(cellinkId);
 
                 if (cellink.getState() == CellinkState.STATE_ONLINE) {
                     cellink.setState(CellinkState.STATE_START);

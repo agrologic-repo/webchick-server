@@ -5,14 +5,16 @@ import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.rxtx.DataController;
-import com.agrologic.app.network.rxtx.SocketThread;
 import com.agrologic.app.util.Windows;
 import org.apache.log4j.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,12 +37,11 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
     private List<MainScreenPanel> otherMainScreens;
     private Controller controller;
     private DatabaseManager dbManager;
-    private SocketThread nwt;
     private Timer timerDB;
     private static Logger logger = Logger.getLogger(MainScreenPanel.class);
 
     /**
-     * Creates new form MainScreenPanell
+     * Creates new form MainScreenPanel
      */
     public MainScreenPanel(DatabaseManager dbManager, Controller controller) {
         initComponents();
@@ -62,7 +63,6 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                 secondScreenPanel.startTimerThread();
 
                 Rectangle rect = secondScreenPanel.getBounds();
-
                 scrollPane.setBounds(rect.x, rect.y, rect.width, rect.height);
                 holderPanel.setBounds(rect.x, rect.y, rect.width, rect.height);
                 holderPanel.setPreferredSize(rect.getSize());
@@ -174,13 +174,13 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
         Runnable task = new SwingWorker() {
 
             private DatabaseAccessor dbaccessor;
-            private List<Data> dl = null;
+            private List<Data> dataList = null;
 
             @Override
             protected Object doInBackground() throws Exception {
                 try {
                     dbaccessor = dbManager.getDatabaseGeneralService();
-                    dl = (List<Data>) dbaccessor.getDataDao().getControllerData(controller.getId());
+                    dataList = (List<Data>) dbaccessor.getDataDao().getControllerDataValues(controller.getId());
                 } catch (SQLException e) {
                     e.printStackTrace();
                 } catch (NullPointerException e) {
@@ -196,10 +196,10 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                 // This has to be done in the EDT because currently JTableBinding
                 // is not smart enough to realize that the notification comes in another
                 // thread and do a SwingUtilities.invokeLater. So we are force to execute this
-                // in the EDT. Seee http://markmail.org/thread/6ehh76zt27qc5fis and
+                // in the EDT. See http://markmail.org/thread/6ehh76zt27qc5fis and
                 // https://beansbinding.dev.java.net/issues/show_bug.cgi?id=60
                 for (DataController df : dataControllerList) {
-                    Iterator<Data> iter = dl.iterator();
+                    Iterator<Data> iter = dataList.iterator();
                     while (iter.hasNext()) {
                         Data data = iter.next();
                         if (df.getId().equals(data.getId())) {
@@ -207,9 +207,41 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                         }
                     }
                 }
+
+                if (isAlarmOnController(dataList)) {
+                    try {
+                        BufferedImage image = ImageIO.read(getClass().getResource("/images/alarm.gif"));
+                        btnHouse.setIcon(new ImageIcon(image));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    btnHouse.setIcon(null);
+                }
             }
         };
         executorService.execute(task);
+    }
+
+    private boolean isAlarmOnController(Collection<Data> onScreenData) {
+        boolean result = false;
+
+        for (Data d : onScreenData) {
+            if (d.getId().compareTo(Long.valueOf(3154)) == 0) {
+                try {
+//                    int mask = 0x0001;
+                    int val = (d.getValue().intValue());
+                    //int on   = val&mask;
+                    if (val > 0) {
+                        result = true;
+                    }
+                } catch (Exception e) {
+                    return result;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**

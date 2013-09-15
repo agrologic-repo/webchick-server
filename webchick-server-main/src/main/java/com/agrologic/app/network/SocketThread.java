@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.network;
 
 import com.agrologic.app.config.Configuration;
@@ -24,6 +20,7 @@ import java.net.SocketException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -185,7 +182,6 @@ public class SocketThread implements Runnable {
         responseMessage = (ResponseMessage) commControl.read();
 //        if (responseMessage.getErrorCode() == Message.SOT_ERROR) {
         if (responseMessage.getErrorCodes().equals(Message.ErrorCodes.SOT_ERROR)) {
-
             errCount++;
         }
 
@@ -318,7 +314,8 @@ public class SocketThread implements Runnable {
                 }
                 setThreadState(NetworkState.STATE_BUSY);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.debug("Connection to cellink [{}] lost .", cellink, e);
+                throw new IOException(e);
             }
         }
         reqIndex.nextIndex();
@@ -328,7 +325,7 @@ public class SocketThread implements Runnable {
         cellink.setState(CellinkState.STATE_RUNNING);
         cellinkDao.update(cellink);
 
-        List<Controller> tempControllers = (List<Controller>) controllerDao.getActiveCellinkControllers(cellink.getId());
+        Collection<Controller> tempControllers = controllerDao.getActiveCellinkControllers(cellink.getId());
         // Here we transform each controller into
         // the observer the manager of messages
         for (Controller c : tempControllers) {
@@ -360,16 +357,9 @@ public class SocketThread implements Runnable {
                     commControl.close();
                     stopThread = true;
                 }
-            } else {
-                //checking the state of terminal
-                state = cellinkDao.getState(cellink.getId());
-                if (state == CellinkState.STATE_START
-                        || state == CellinkState.STATE_RESTART) {
-                    setThreadState(NetworkState.STATE_STARTING);
-                }
             }
         }
-        RestartApplication.sleep(100);
+        RestartApplication.sleep(300);
     }
 
     private void acceptCellink() {

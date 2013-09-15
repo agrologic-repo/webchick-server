@@ -1,17 +1,11 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -21,13 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class SaveMeterForm extends HttpServlet {
 
     /**
@@ -60,13 +49,13 @@ public class SaveMeterForm extends HttpServlet {
             String priceWaterMeter = request.getParameter("priceWaterMeter");
 
             try {
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
                 flock.setElectBegin(Integer.parseInt(startElectMeter));
                 flock.setElectEnd(Integer.parseInt(endElectMeter));
                 flock.setCostElect(Float.parseFloat(priceElectMeter));
                 flock.setQuantityElect(Integer.parseInt(endElectMeter) - Integer.parseInt(startElectMeter));
-                flock.setTotalElect(flock.calcTotalelectCost());
+                flock.setTotalElect(flock.calcTotalElectCost());
                 flock.setWaterBegin(Integer.parseInt(startWaterMeter));
                 flock.setWaterEnd(Integer.parseInt(endWaterMeter));
                 flock.setCostWater(Float.parseFloat(priceWaterMeter));
@@ -74,10 +63,10 @@ public class SaveMeterForm extends HttpServlet {
                 flock.setTotalWater(flock.calcTotalWaterCost());
                 flockDao.update(flock);
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
                 logger.info("retrieve user and user cellinks and all controllers of each cellink");

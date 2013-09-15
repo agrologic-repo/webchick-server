@@ -1,9 +1,6 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.*;
 import org.apache.log4j.Logger;
 
@@ -58,19 +55,19 @@ public class RCScreensServlet extends HttpServlet {
 
             try {
 
-//              IUserDao userDao = new UserDaoImpl();
-//              UserDto user = userDao.getById(userId);
+//              IUserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);;
+//              User user = userDao.getById(userId);
 //              request.getSession().setAttribute("user", user);
-                CellinkDao cellinkDao = new CellinkDaoImpl();
-                CellinkDto cellink = cellinkDao.getById(cellinkId);
+                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                Cellink cellink = cellinkDao.getById(cellinkId);
 
                 // cellink.setTime(new Timestamp(System.currentTimeMillis()));
                 cellinkDao.update(cellink);
 
-                LanguageDao languageDao = new LanguageDaoImpl();
+                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                 long langId = languageDao.getLanguageId(lang);
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
                 ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                 final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
 
@@ -79,7 +76,7 @@ public class RCScreensServlet extends HttpServlet {
                 TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
-                for (ControllerDto controller : controllers) {
+                for (Controller controller : controllers) {
                     if (controller.getId() == controllerId) {
                         Program program = programDao.getById(controller.getProgramId());
                         List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId());

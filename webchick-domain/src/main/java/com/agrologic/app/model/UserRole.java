@@ -12,15 +12,15 @@ public enum UserRole {
     /**
      * the role is regular user , role value is 1
      */
-    USER(1, "USER"),
+    USER(2, "USER"),
     /**
      * the role is distributor , role value is 2
      */
-    DISTRIBUTOR(2, "DISTRIBUTOR"),
+    DISTRIBUTOR(3, "DISTRIBUTOR"),
     /**
      * the role is administrator , role value is 3a
      */
-    ADMIN(3, "ADMIN");
+    ADMIN(1, "ADMIN");
 
     private int value;
 
@@ -33,6 +33,7 @@ public enum UserRole {
 
     /**
      * Return role value
+     *
      * @return the role value
      */
     public int getValue() {
@@ -41,6 +42,7 @@ public enum UserRole {
 
     /**
      * Return role text
+     *
      * @return the role text
      */
     public String getText() {
@@ -49,20 +51,20 @@ public enum UserRole {
 
     public static UserRole get(int role) {
         switch (role) {
-        case 0 :
-            return UserRole.GUEST;
+            case 0:
+                return UserRole.GUEST;
 
-        case 1 :
-            return UserRole.USER;
+            case 1:
+                return UserRole.ADMIN;
 
-        case 2 :
-            return UserRole.DISTRIBUTOR;
+            case 2:
+                return UserRole.USER;
 
-        case 3 :
-            return UserRole.ADMIN;
+            case 3:
+                return UserRole.DISTRIBUTOR;
 
-        default :
-            return UserRole.UNKNOWN;
+            default:
+                return UserRole.UNKNOWN;
         }
     }
 }

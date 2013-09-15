@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context crossContext="true" debug="5" docBase="webchick" path="/webchick" reloadable="true">
-    <Resource auth="Container"
-              type="javax.sql.DataSource"
-              driverClassName="com.mysql.jdbc.Driver"
-              name="jdbc/AgroDB"
-              username="root"
-              password="agro1950"
-              url="jdbc:mysql://localhost:3306/agrodb"
-              maxActive="500" maxIdle="50"
-              maxWait="10000"
-              factory="org.apache.commons.dbcp.BasicDataSourceFactory"
-              validationQuery="select 1"/>
+    <!--<Resource auth="Container"-->
+    <!--driverClassName="com.mysql.jdbc.Driver"-->
+    <!--factory="org.apache.commons.dbcp.BasicDataSourceFactory"-->
+    <!--maxActive="500" maxIdle="50"-->
+    <!--maxWait="10000" name="jdbc/AgroDB"-->
+    <!--password="pass123$"-->
+    <!--type="javax.sql.DataSource"-->
+    <!--url="jdbc:mysql://localhost:3306/agrodb"-->
+    <!--username="root"-->
+    <!--validationQuery="select 1"/>-->
 </Context>

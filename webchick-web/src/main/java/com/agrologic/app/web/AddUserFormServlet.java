@@ -1,14 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.User;
+import com.agrologic.app.model.UserRole;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -19,11 +15,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class AddUserFormServlet extends HttpServlet {
 
     /**
@@ -59,7 +50,7 @@ public class AddUserFormServlet extends HttpServlet {
         String newCompanyList = request.getParameter("Ncompanylist");
         String newCompany = request.getParameter("Ncompany");
         String newCompanyCheckBox = request.getParameter("newCompany");
-        UserDto user = new UserDto();
+        User user = new User();
 
         user.setLogin(login);
 
@@ -70,7 +61,7 @@ public class AddUserFormServlet extends HttpServlet {
         user.setLastName(lastName);
         user.setPhone(phone);
         user.setEmail(email);
-        user.setRole(getUserRole(role));
+        user.setRole(UserRole.get(getUserRole(role)));
 
         if ("ON".equals(newCompanyCheckBox)) {
             user.setCompany(newCompany);
@@ -79,7 +70,7 @@ public class AddUserFormServlet extends HttpServlet {
         }
 
         try {
-            UserDao userDao = new UserDaoImpl();
+            UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
 
             userDao.insert(user);
             logger.info("user " + user + " successfully added !");

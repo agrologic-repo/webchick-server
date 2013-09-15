@@ -17,7 +17,6 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -48,7 +47,7 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
     public void tearDown() {
     }
 
-//    @Test
+    //    @Test
     public void testCreateTable() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -56,13 +55,13 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
         assertTrue(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testDropTable() throws SQLException {
         ((DerbyFlockDaoImpl) dao).dropTable();
         assertFalse(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testInsert() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -77,7 +76,7 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
         assertEquals(flock, dao.getById(flockId));
     }
 
-//    @Test
+    //    @Test
     public void testRemove() throws SQLException {
         dao.remove(flockId);
         flock = dao.getById(flockId);
@@ -88,13 +87,13 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
     public void testRemoveFlockHistory() throws SQLException {
         Integer growDay = dao.getUpdatedGrowDayHistory(flockId);
         for (int i = growDay; i > 0; i--) {
-            dao.removeHistoryByGrowDay(flockId, i);
+            dao.removeAllHistoryInFlockByGrowDay(flockId, i);
         }
         Integer updatedGrowDay = dao.getUpdatedGrowDayHistory(flockId);
         assertNotSame(growDay, updatedGrowDay);
     }
 
-//    @Test
+    //    @Test
     public void testGetFlockByController() throws SQLException {
         long cid = 57;
         Flock flock = dao.getOpenFlockByController(cid);
@@ -107,13 +106,13 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
         System.out.println(growDay);
     }
 
-//    @Test
+    //    @Test
     public void testGetUpdatedGrowDayHistory24() throws SQLException {
         Integer growDay = dao.getUpdatedGrowDayHistory24(flockId);
         System.out.println(growDay);
     }
 
-//    @Test
+    //    @Test
     public void testUpdateHistoryByGrowDay() throws SQLException {
         long id = 1;
         int growday = 1;
@@ -129,7 +128,7 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
         dao.updateHistoryByGrowDay(id, growday, values);
     }
 
-//    @Test
+    //    @Test
     public void testGetAllHistoryByFlock() throws SQLException {
 
         Map<Integer, String> map = dao.getAllHistoryByFlock(flockId);
@@ -143,7 +142,7 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
 //        }
     }
 
-//    @Test
+    //    @Test
     public void testCopyFlockHistory() throws SQLException {
         long flockIdMySql = 137;
         long flockIdDerby = 1;
@@ -155,7 +154,7 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
 
         Set<Entry<Integer, String>> entries = historyByFlockDerby.entrySet();
         for (Entry<Integer, String> entry : entries) {
-            dao.removeHistoryByGrowDay(flockIdDerby, entry.getKey());
+            dao.removeAllHistoryInFlockByGrowDay(flockIdDerby, entry.getKey());
         }
 
         entries = historyByFlockMySQL.entrySet();

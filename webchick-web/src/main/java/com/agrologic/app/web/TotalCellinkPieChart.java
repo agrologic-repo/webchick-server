@@ -7,7 +7,9 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.CellinkCriteria;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
@@ -52,11 +54,14 @@ public class TotalCellinkPieChart extends HttpServlet {
                 try {
                     DefaultPieDataset dataset = new DefaultPieDataset();
                     JFreeChart jfc;
-                    CellinkDao cellinkDao = new CellinkDaoImpl();// DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
-                    final int offline = cellinkDao.getAll(CellinkState.STATE_OFFLINE).size();
-                    final int running = cellinkDao.getAll(CellinkState.STATE_RUNNING).size();
-                    final int online = cellinkDao.getAll(CellinkState.STATE_START).size()
-                            + cellinkDao.getAll(CellinkState.STATE_ONLINE).size();
+                    CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);// DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                    CellinkCriteria criteria = new CellinkCriteria();
+                    criteria.setState(CellinkState.STATE_OFFLINE);
+                    final int offline = cellinkDao.getAll(criteria).size();
+                    criteria.setState(CellinkState.STATE_RUNNING);
+                    final int running = cellinkDao.getAll(criteria).size();
+                    criteria.setState(CellinkState.STATE_ONLINE);
+                    final int online = cellinkDao.getAll(criteria).size();
 
                     dataset = new DefaultPieDataset();
                     dataset.setValue("Online", new Integer(online));

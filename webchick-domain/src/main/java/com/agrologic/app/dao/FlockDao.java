@@ -18,31 +18,42 @@ public interface FlockDao {
 
     void update(Flock flock) throws SQLException;
 
-    void updateFlockDetail(Flock flock) throws SQLException;
-
     void remove(Long flockId) throws SQLException;
 
-    Flock getById(Long flockId) throws SQLException;
+    void close(Long flockId, String endDate) throws SQLException;
 
-    Flock getOpenFlockByController(Long controllerId) throws SQLException;
-
-    Integer getUpdatedGrowDayHistory(Long flockId) throws SQLException;
-
-    Integer getUpdatedGrowDayHistory24(Long flockId) throws SQLException;
-
-    public Map<String, String> getHistoryN();// throws SQLException;
+    void updateFlockDetail(Flock flock) throws SQLException;
 
     void updateHistoryByGrowDay(Long flockId, Integer growDay, String values) throws SQLException;
 
     void updateHistory24ByGrowDay(Long flockId, Integer growDay, String dnum, String values) throws SQLException;
 
-    void removeHistoryByGrowDay(Long flockId, Integer growDay) throws SQLException;
+    void removeAllHistoryInFlockByGrowDay(Long flockId, Integer growDay) throws SQLException;
 
-    void removeHistoryByFlock(Long flockId) throws SQLException;
+    void removeAllHistoryInFlock(Long flockId) throws SQLException;
 
-    void removeHistory24ByFlock(Long flockId) throws SQLException;
+    void removeAllHistoryOf24hourInFlock(Long flockId) throws SQLException;
+
+    String getHistory24(Long flockId, Integer growDay, String dn) throws SQLException;
+
+    String getDNHistory24(String dn) throws SQLException;
+
+    Integer getResetTime(Long flockId, Integer growDay) throws SQLException;
+
+    Integer getUpdatedGrowDayHistory(Long flockId) throws SQLException;
+
+    Integer getUpdatedGrowDayHistory24(Long flockId) throws SQLException;
+
+
+    Flock getById(Long flockId) throws SQLException;
+
+    Flock getOpenFlockByController(Long controllerId) throws SQLException;
 
     Collection<Flock> getAll() throws SQLException;
+
+    Collection<Flock> getAllFlocksByController(Long controllerId) throws SQLException;
+
+    Map<String, String> getHistoryN();
 
     Map<Integer, String> getAllHistoryByFlock(Long flockId) throws SQLException;
 

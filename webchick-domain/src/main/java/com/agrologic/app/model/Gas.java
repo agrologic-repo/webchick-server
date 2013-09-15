@@ -2,14 +2,15 @@ package com.agrologic.app.model;
 
 public class Gas {
     private Integer amount;
-    private String  date;
-    private Long    flockId;
-    private Long    id;
+    private String date;
+    private Long flockId;
+    private Long id;
     private Integer numberAccount;
-    private Float   price;
-    private Float   total;
+    private Float price;
+    private Float total;
 
-    public Gas() {}
+    public Gas() {
+    }
 
     public Long getId() {
         return id;
@@ -76,10 +77,7 @@ public class Gas {
             return false;
         }
         final Gas other = (Gas) obj;
-        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return !(!this.id.equals(other.id) && (this.id == null || !this.id.equals(other.id)));
     }
 
     @Override
@@ -91,7 +89,8 @@ public class Gas {
 
     @Override
     public String toString() {
-        return "Gas{" + "amount=" + amount + ", date=" + date + ", flockId=" + flockId + ", id=" + id + ", numberAccount=" + numberAccount + ", price=" + price + ", total=" + total + '}';
+        return "Gas{" + "amount=" + amount + ", date=" + date + ", flockId=" + flockId + ", id=" + id + "," +
+                " numberAccount=" + numberAccount + ", price=" + price + ", total=" + total + '}';
     }
 }
 

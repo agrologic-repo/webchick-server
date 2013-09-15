@@ -21,7 +21,7 @@ import java.util.*;
 
 public class ProgramAlarmDaoImpl implements ProgramAlarmDao {
     protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(ProgramAlarmDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
@@ -66,12 +66,12 @@ public class ProgramAlarmDaoImpl implements ProgramAlarmDao {
      */
     @Override
     public void remove(Long dataId, Integer digitNumber, Long programId) throws SQLException {
-        String sqlQuery = "delete from programalarms where DataId=? and DigitNumber=? and ProgramID=?";
         Validate.notNull(dataId, "Data id  can not be null");
         Validate.notNull(digitNumber, "Digit number  can not be null");
         Validate.notNull(programId, "Program id can not be null");
         logger.debug("Delete program alarm with dataid: [{}] ,  digitNumber: [{}] , program id: [{}] ",
                 new String[]{dataId.toString(), digitNumber.toString(), programId.toString()});
+        String sqlQuery = "delete from programalarms where DataId=? and DigitNumber=? and ProgramID=?";
         jdbcTemplate.update(sqlQuery, new Object[]{dataId, digitNumber, programId});
     }
 
@@ -128,6 +128,16 @@ public class ProgramAlarmDaoImpl implements ProgramAlarmDao {
             batch.add(values);
         }
         jdbcTemplate.batchUpdate("insert into programalarms values (?,?,?,?,?,?)", batch);
+
+    }
+
+    @Override
+    public void removeAllProgramAlarms(Long programId) throws SQLException {
+        Validate.notNull(programId, "Program id can not be null");
+        logger.debug("Delete program alarm with dataid: [{}] ,  digitNumber: [{}] , program id: [{}] ",
+                new String[]{programId.toString()});
+        String sqlQuery = "delete from programalarms where ProgramID=?";
+        jdbcTemplate.update(sqlQuery, new Object[]{programId});
 
     }
 

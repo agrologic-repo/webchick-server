@@ -6,7 +6,7 @@
     <node name="webchick-config">
       <map>
         <entry key="protocol" value="0"/>
-        <entry key="language" value="English"/>
+        <entry key="language" value="Hebrew"/>
         <entry key="server.ip" value="192.168.1.101"/>
         <entry key="server.port" value="5500"/>
         <entry key="keepalive.timeout" value="3"/>
@@ -23,8 +23,8 @@
         <entry key="runatstartup" value="true"/>
         <entry key="access" value="regular"/>
         <entry key="webchick.uri" value="http://localhost:8080/webchick/startpage.html"/>
-        <entry key="cellink.id" value="14"/>
-        <entry key="user.id" value="16"/>
+        <entry key="cellink.id" value="1"/>
+        <entry key="user.id" value="2"/>
         <entry key="pc.comm" value="1"/>
         <entry key="server.comport" value="COM3"/>
         <entry key="role" value="1"/>

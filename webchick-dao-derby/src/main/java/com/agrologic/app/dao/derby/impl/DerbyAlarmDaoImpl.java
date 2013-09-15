@@ -10,9 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.*;
 
 public class DerbyAlarmDaoImpl extends AlarmDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
-    public final static String APP_SCHEMA = "APP";
-    public final static String ALARMNAMES_TABLE = "ALARMNAMES";
-    public final static String ALARMBYLANGUAGE_TABLE = "ALARMBYLANGUAGE";
 
     public DerbyAlarmDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
         super(jdbcTemplate, daoFactory);

@@ -6,9 +6,11 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.User;
+import com.agrologic.app.model.UserRole;
 import com.agrologic.app.utils.Base64;
 import org.apache.log4j.Logger;
 
@@ -50,11 +52,11 @@ public class EditUserFormServlet extends HttpServlet {
             logger.error("Unauthorized access!");
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
-            UserDto currUser = (UserDto) request.getSession().getAttribute("user");
-            UserDto user = new UserDto();
+            User currUser = (User) request.getSession().getAttribute("user");
+            User user = new User();
             String forwardLink = "";
 
-            if (currUser.getRole() == UserRole.ADMINISTRATOR) {
+            if (currUser.getRole() == UserRole.ADMIN) {
                 Long userId = Long.parseLong(request.getParameter("Nuserid"));
                 String login = request.getParameter("Nusername");
                 String password = request.getParameter("Npassword");
@@ -77,7 +79,7 @@ public class EditUserFormServlet extends HttpServlet {
                 user.setLastName(lastName);
                 user.setPhone(phoneNumber);
                 user.setEmail(email);
-                user.setRole(role);
+                user.setRole(UserRole.get(role));
 
                 if ("on".equals(newCompanyCheckBox)) {
                     user.setCompany(newCompany);
@@ -105,7 +107,7 @@ public class EditUserFormServlet extends HttpServlet {
                 forwardLink = "./my-profile.jsp?userId=" + user.getId();
             }
 
-            UserDao userDao = new UserDaoImpl();
+            UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
 
             try {
                 userDao.update(user);

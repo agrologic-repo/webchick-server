@@ -54,7 +54,6 @@ public class RemoveScreenServlet extends HttpServlet {
 
                 try {
                     ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                    ;
                     TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
@@ -64,11 +63,10 @@ public class RemoveScreenServlet extends HttpServlet {
                         request.getSession().setAttribute("error", true);
                         request.getRequestDispatcher("./all-screens.html").forward(request, response);
                     } else {
-                        Collection<Table> tables = tableDao.getAllScreenTables(programId, screenId, "");
+                        Collection<Table> tables = tableDao.getScreenTables(programId, screenId, false);
                         for (Table t : tables) {
                             dataDao.removeDataFromTable(programId, screenId, t.getId());
                         }
-
                         screenDao.remove(programId, screenId);
                         logger.info("Screen " + screenId + " successfully removed !");
                         request.getSession().setAttribute("message", "Screen successfully  removed !");

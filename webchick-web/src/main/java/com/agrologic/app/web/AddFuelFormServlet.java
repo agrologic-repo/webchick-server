@@ -6,15 +6,11 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.FuelDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.FuelDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
-import com.agrologic.app.model.FuelDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.FuelDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.Fuel;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,13 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class AddFuelFormServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -63,9 +55,8 @@ public class AddFuelFormServlet extends HttpServlet {
             String total = request.getParameter("total");
 
             try {
-                FuelDao fuelDao = new FuelDaoImpl();
-                FuelDto fuel = new FuelDto();
-
+                FuelDao fuelDao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDaoImpl.class);
+                Fuel fuel = new Fuel();
                 fuel.setFlockId(flockId);
                 fuel.setAmount(Integer.parseInt(amount));
                 fuel.setDate(date);
@@ -75,13 +66,13 @@ public class AddFuelFormServlet extends HttpServlet {
                 fuelDao.insert(fuel);
                 logger.info("Fuel added successfully to the datebase");
 
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
-                List<FuelDto> fuelList = fuelDao.getAllByFlockId(flockId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
+                List<Fuel> fuelList = fuelDao.getAllByFlockId(flockId);
                 int fuelAmount = 0;
                 float fuelTotalCost = 0;
 
-                for (FuelDto g : fuelList) {
+                for (Fuel g : fuelList) {
                     fuelAmount += g.getAmount();
                     fuelTotalCost += g.getTotal();
                 }
@@ -90,12 +81,11 @@ public class AddFuelFormServlet extends HttpServlet {
                 flock.setTotalFuel(fuelTotalCost);
                 flockDao.update(flock);
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
 

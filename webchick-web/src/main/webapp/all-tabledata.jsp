@@ -4,9 +4,11 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<jsp:directive.page import="java.util.Collection"/>
+<jsp:directive.page import="com.google.common.collect.Lists"/>
+<%@ page import="java.util.Collection" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -17,8 +19,8 @@
     long tableId = Long.parseLong(request.getParameter("tableId"));
     long screenId = screen.getId();
     long programId = screen.getProgramId();
-    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
-    String ptl = (String) request.getParameter("translateLang");
+    Collection<Language> languages = (Collection<Language>) request.getSession().getAttribute("languages");
+    String ptl = request.getParameter("translateLang");
     if (ptl == null) {
         ptl = "1";
     }
@@ -140,10 +142,11 @@
                         Table table = getTableToEdit(tableId, tables);
                         int size = table.getDataList().size();
                         int lastPos = 1;
-                        if (size > 0) {
-                            lastPos = (table.getDataList().get(size - 1)).getPosition() + 1;
-                        }
                         Collection<Data> dataList = table.getDataList();
+                        if (size > 0) {
+                            lastPos = Lists.newArrayList(dataList).get(size - 1).getPosition() + 1;
+                        }
+
                     %>
                     <tr>
                         <td>
@@ -191,7 +194,7 @@
                                     <th class="leftHeader" width="240px">Text
                                         <select id="Lang_Filter" name="Lang_Filter"
                                                 onchange="return filterLanguages(<%=programId%>,<%=screenId%>, <%=tableId%>);">
-                                            <%for (LanguageDto l : languages) { %>
+                                            <%for (Language l : languages) { %>
                                             <option value="<%=l.getId()%>"><%=l.getLanguage()%>
                                             </option>
                                             <%}%>

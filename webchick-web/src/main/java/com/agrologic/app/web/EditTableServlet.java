@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Data;
@@ -22,11 +16,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class EditTableServlet extends HttpServlet {
 
     /**
@@ -60,7 +49,7 @@ public class EditTableServlet extends HttpServlet {
                     ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
                     Screen screen = screenDao.getById(programId, screenId);
                     TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
-                    Collection<Table> tables = tableDao.getAllScreenTables(screen.getProgramId(), screen.getId(), "");
+                    Collection<Table> tables = tableDao.getScreenTables(screen.getProgramId(), screen.getId(), true);
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
                     for (Table table : tables) {
@@ -74,7 +63,7 @@ public class EditTableServlet extends HttpServlet {
                     request.getRequestDispatcher("./edit-table.jsp?tableId=" + tableId).forward(request, response);
                 } catch (SQLException ex) {
 
-                    // error page
+
                 }
             }
         } finally {

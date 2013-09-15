@@ -49,9 +49,9 @@ public class RCProgramRelays extends HttpServlet {
              */
 
 //          Long controllerId = Long.parseLong(request.getParameter("controllerId"));
-//          ControllerDao controllerDao = new ControllerDaoImpl();
+//          ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
 //
-//          ControllerDto controller = controllerDao.getById(controllerId);
+//          Controller controller = controllerDao.getById(controllerId);
 //
 //          List<ProgramRelay> programRelays = controller.getProgram().getProgramRelays();
 //          List<ProgramRelay> relayList = getProgramRelaysByRelayType(programRelays, data.getId());

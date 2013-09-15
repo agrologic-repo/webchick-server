@@ -7,11 +7,11 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.CellinkDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.CellinkDto;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -42,7 +42,7 @@ public class EditCellinkServlet extends HttpServlet {
             throws ServletException, IOException {
 
         /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ListUserServlet.class);
+        final Logger logger = Logger.getLogger(EditCellinkServlet.class);
 
         response.setContentType("text/html;charset=UTF-8");
 
@@ -57,22 +57,20 @@ public class EditCellinkServlet extends HttpServlet {
                 Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
 
                 try {
-                    UserDao userDao = new UserDaoImpl();
-                    UserDto editUser = userDao.getById(userId);
+                    UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
+                    User editUser = userDao.getById(userId);
+                    editUser.setCellinks(new ArrayList<Cellink>());
 
-                    editUser.setCellinks(new ArrayList<CellinkDto>());
-
-                    CellinkDao cellinkDao = new CellinkDaoImpl();
-                    CellinkDto c = (CellinkDto) cellinkDao.getById(cellinkId);
-
+                    CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                    Cellink c = (Cellink) cellinkDao.getById(cellinkId);
                     editUser.addCellink(c);
+
                     logger.info("retrieve user and user cellinks to edit");
                     request.getSession().setAttribute("edituser", editUser);
                     request.getRequestDispatcher("./edit-cellink.jsp?userId=" + userId + "&celinkId="
                             + cellinkId).forward(request, response);
                 } catch (SQLException ex) {
-
-                    // error page
+                    logger.debug("Can not retrieve cellink to edit ", ex);
                 }
             }
         } finally {

@@ -6,9 +6,10 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.User;
 import com.agrologic.app.utils.Base64;
 import org.apache.log4j.Logger;
 
@@ -49,8 +50,8 @@ public class EditProfileFormServlet extends HttpServlet {
             logger.error("Unauthorized access!");
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
-            UserDto currUser = (UserDto) request.getSession().getAttribute("user");
-            UserDto user = new UserDto();
+            User currUser = (User) request.getSession().getAttribute("user");
+            User user = new User();
             String forwardLink = "";
             String password = request.getParameter("Npassword");
             String firstName = request.getParameter("Nfname");
@@ -69,7 +70,7 @@ public class EditProfileFormServlet extends HttpServlet {
             user.setEmail(email);
             forwardLink = "./my-profile.jsp?userId=" + user.getId();
 
-            UserDao userDao = new UserDaoImpl();
+            UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
 
             try {
                 userDao.update(user);

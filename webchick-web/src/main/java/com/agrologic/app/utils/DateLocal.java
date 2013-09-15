@@ -8,9 +8,7 @@ package com.agrologic.app.utils;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.sql.Timestamp;
-
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 
 /**
@@ -18,8 +16,9 @@ import java.util.Date;
  * Description: <br>
  * Copyright:   Copyright (c) 2009 <br>
  * Company:     Agro Logic LTD. <br>
- * @author      Valery Manakhimov <br>
- * @version     1.1 <br>
+ *
+ * @author Valery Manakhimov <br>
+ * @version 1.1 <br>
  */
 public class DateLocal extends java.util.Date {
     public DateLocal(int date, int month, int year) {
@@ -52,7 +51,7 @@ public class DateLocal extends java.util.Date {
 
     public DateLocal addDays(int days) {
         return new DateLocal(super.getHours(), super.getMinutes(), super.getDate() + days, super.getMonth() + 1,
-                             super.getYear() + 1900);
+                super.getYear() + 1900);
     }
 
     public static DateLocal now() {
@@ -62,10 +61,10 @@ public class DateLocal extends java.util.Date {
     }
 
     public static String currentDate() {
-        Timestamp        time        = new Timestamp(System.currentTimeMillis());
-        Date             now         = new Date(time.getTime());
-        String           DATE_FORMAT = "hh:mm dd/M/yyyy";
-        SimpleDateFormat sdf         = new SimpleDateFormat(DATE_FORMAT);
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        Date now = new Date(time.getTime());
+        String DATE_FORMAT = "hh:mm dd/M/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 
         return sdf.format(now);
     }

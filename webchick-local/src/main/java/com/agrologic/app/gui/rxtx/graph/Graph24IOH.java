@@ -179,8 +179,6 @@ public class Graph24IOH extends AbstractGraph {
                     XYPlot xyPlot = chart.getXYPlot();
                     XYItemRenderer xyir = xyPlot.getRenderer();
                     xyir.setSeriesPaint(seriesIndex, color);
-                } else {
-                    System.out.println("setSeriesColor() unsupported plot: " + plot);
                 }
             } catch (Exception e) {    // e.g. invalid seriesIndex
                 System.err.println("Error setting color '" + color + "' for series '" + seriesIndex + "' of chart '"

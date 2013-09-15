@@ -3,6 +3,10 @@ package com.agrologic.app.dao.mysql.impl;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.TransactionDao;
 import com.agrologic.app.model.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,11 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionDaoImpl implements TransactionDao {
+    protected final DaoFactory dao;
+    private final Logger logger = LoggerFactory.getLogger(TransactionDaoImpl.class);
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    protected DaoFactory dao;
-
-    public TransactionDaoImpl(DaoFactory daoFactory) {
-        dao = daoFactory;
+    public TransactionDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("transactions");
+        this.dao = dao;
     }
 
     private Transaction makeTransaction(ResultSet rs) throws SQLException {

@@ -6,15 +6,11 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.WorkerDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.WorkerDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
-import com.agrologic.app.model.WorkerDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.WorkerDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.Worker;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -57,8 +53,8 @@ public class RemoveWorkerServlet extends HttpServlet {
             Long workerId = Long.parseLong(request.getParameter("workerId"));
 
             try {
-                WorkerDao workerDao = new WorkerDaoImpl();
-                WorkerDto worker = workerDao.getById(workerId);
+                WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDaoImpl.class);
+                Worker worker = workerDao.getById(workerId);
 
                 if (worker == null) {
                     logger.info("Worker " + workerId + " can't be removed");
@@ -68,16 +64,13 @@ public class RemoveWorkerServlet extends HttpServlet {
                     workerDao.remove(worker.getId());
                     logger.info("Worker removed successfully from the datebase");
 
-                    FlockDao flockDao = new FlockDaoImpl();
-                    ControllerDao controllerDao = new ControllerDaoImpl();
-                    List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
-
-                    for (ControllerDto controller : controllers) {
-                        List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
+                    for (Controller controller : controllers) {
+                        Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                         controller.setFlocks(flocks);
                     }
-
                     request.getSession().setAttribute("controllers", controllers);
                     request.getRequestDispatcher("./rmctrl-add-worker.jsp?celinkId=" + cellinkId + "&flockId="
                             + flockId).forward(request, response);

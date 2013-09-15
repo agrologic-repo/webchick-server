@@ -27,20 +27,18 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
     private MainScreenPanel mainScreenPanel;
     private DatabaseManager dbManager;
     private Controller controller;
-    private TreeMap<Screen, TreeMap<Table, List<DataController>>> screenTableDataMap;
     private Timer timerDB;
+    private Dimension dim;
+    private TreeMap<Screen, TreeMap<Table, List<DataController>>> screenTableDataMap;
     private static Logger logger = LoggerFactory.getLogger(SecondScreenPanel.class);
 
-    /**
-     * @param dbManager
-     * @param controller
-     */
     public SecondScreenPanel(DatabaseManager dbManager, Controller controller) {
         initComponents();
         setVisible(false);
         this.dbManager = dbManager;
         this.controller = controller;
         this.lblTitle.setText("<html>" + controller.getTitle() + "</html>");
+        this.dim = Windows.screenResolution();
     }
 
     public void startTimerThread() {
@@ -58,24 +56,10 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         timerDB = null;
     }
 
-    public void removeLoadedControllerData() {
-        screenTableDataMap = null;
-        Component[] comps = tabsPane.getComponents();
-        for (Component c : comps) {
-            tabsPane.remove(c);
-        }
-        System.gc();
-    }
-
     public void initLoadedControllerData() {
         logger.info("Initialization second screen ");
 
-        DatabaseAccessor dbaccess = dbManager.getDatabaseGeneralService();
-        if (screenTableDataMap != null) {
-            return;
-        }
         screenTableDataMap = new TreeMap<Screen, TreeMap<Table, List<DataController>>>();
-
         Program program = controller.getProgram();
         for (Screen screen : program.getScreens()) {
             if (!skipScreen(screen)) {
@@ -85,39 +69,8 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                     try {
                         for (Table table : tableList) {
                             List<DataController> dataControllerList = new ArrayList<DataController>();
-                            Collection<Data> dataList = table.getDataList();
-                            for (Data d : dataList) {
-                                DataController newData = new DataController(d);
-                                if (program.getProgramRelays() == null) {
-                                    try {
-                                        List<ProgramRelay> programRelays = dbaccess.getProgramRelayDao()
-                                                .getAllProgramRelays(program.getId(),
-                                                        dbManager.getDatabaseLoader().getLangId());
-                                        program.setProgramRelays(programRelays);
-                                        List<ProgramAlarm> programAlarms = dbaccess.getProgramAlarmDao()
-                                                .getAllProgramAlarms(program.getId(),
-                                                        dbManager.getDatabaseLoader().getLangId());
-                                        program.setProgramAlarms(programAlarms);
-                                    } catch (SQLException ex) {
-                                        ex.printStackTrace();
-                                    }
-                                }
-                                if (newData.getIsRelay()) {
-                                    try {
-                                        newData.setProgramRelays(program.getProgramRelays());
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                if (newData.isSystemState()) {
-                                    try {
-                                        newData.setProgramSystemStates(program.getProgramSystemStates());
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                dataControllerList.add(newData);
-                            }
+                            initDataComponents(dbManager.getDatabaseGeneralService(), program, dataControllerList,
+                                    table.getDataList());
                             tableDataMap.put(table, dataControllerList);
                         }
                     } catch (NullPointerException e) {
@@ -130,37 +83,64 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         }
     }
 
+    private void initDataComponents(DatabaseAccessor dbaccess, Program program, List<DataController> dataControllerList,
+                                    Collection<Data> dataList) {
+        for (Data d : dataList) {
+            DataController newData = new DataController(d);
+            if (program.getProgramRelays() == null) {
+                try {
+                    List<ProgramRelay> programRelays = dbaccess.getProgramRelayDao()
+                            .getAllProgramRelays(program.getId(), dbManager.getDatabaseLoader().getLangId());
+                    program.setProgramRelays(programRelays);
+                    List<ProgramAlarm> programAlarms = dbaccess.getProgramAlarmDao()
+                            .getAllProgramAlarms(program.getId(), dbManager.getDatabaseLoader().getLangId());
+                    program.setProgramAlarms(programAlarms);
+                } catch (SQLException ex) {
+                    logger.debug("Error during initialization data components ", ex);
+                }
+            }
+            if (newData.getIsRelay()) {
+                try {
+                    newData.setProgramRelays(program.getProgramRelays());
+                } catch (Exception e) {
+                    logger.debug("Cannot set program relays ", e);
+                }
+            }
+            if (newData.isSystemState()) {
+                try {
+                    newData.setProgramSystemStates(program.getProgramSystemStates());
+                } catch (Exception e) {
+                    logger.debug("Cannot set program system state ", e);
+                }
+            }
+            dataControllerList.add(newData);
+        }
+    }
+
     public void initScreenComponents() {
-        int heightt = 0;
-        int widthh = 0;
+
         ListIterator<Screen> listIter = removeUnusedScreen();
         moveBackwards(listIter);
         while (listIter.hasNext()) {
             Screen screen = listIter.next();
-            int tableCount = 0;
-            int x = 0;
-            int y = 0;
-            int maxHeight = 0;
-            int maxWidth = 0;
             JPanel screenPanel = new JPanel(null);
             if (screen.getTitle().equals("Graphs")) {
                 logger.info("Initialization screen with graphs {} ", screen);
                 screenPanel = new Graphs24HourPanel(controller.getId());
                 screenPanel.setPreferredSize(new Dimension(screenPanel.getWidth(), screenPanel.getHeight()));
-                JScrollPane scrollPane = new JScrollPane(screenPanel);
-                scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-                scrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT_INCREMENT);
-                tabsPane.add("<html>" + screen.getUnicodeTitle() + "</html>", scrollPane);
-                Dimension dim = Windows.screenResolution();
-                tabsPane.setSize(dim.width - 10, dim.height - 140);
+                addScreenPanelToTabsPane(screen, screenPanel);
             } else {
                 logger.info("Initialization screen without graphs {} ", screen);
                 TreeMap<Table, List<DataController>> tableDataMap = screenTableDataMap.get(screen);
                 try {
-                    Iterator<Table> iterTable = tableDataMap.keySet().iterator();
-                    while (iterTable.hasNext()) {
-                        Table table = iterTable.next();
+                    int tableCount = 0;
+                    int x = 0;
+                    int y = 0;
+                    int maxHeight = 0;
+                    int maxWidth = 0;
+                    Iterator<Table> iterator = tableDataMap.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        Table table = iterator.next();
                         List<DataController> dataControllerList = tableDataMap.get(table);
                         JPanel tablePanel = initTablePanel(table, dataControllerList, x, y);
                         tablePanel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
@@ -173,7 +153,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                             maxWidth = rect.width;
                         }
                         tableCount++;
-                        if (tableCount % COL_NUMBERS == 0) {
+                        if (tableCount % OTHER_SCREEN_COL_NUMBERS == 0) {
                             y += maxHeight;
                             x = 0;
                             maxHeight = 0;
@@ -182,23 +162,54 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                             x += rect.getSize().width;
                         }
                     }
-                    heightt = y + maxHeight;
-                    widthh = getMaxLength(screenPanel.getComponents()) * 4;
-                    screenPanel.setPreferredSize(new Dimension(widthh, heightt));
-                    JScrollPane scrollPane = new JScrollPane(screenPanel);
-                    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-                    scrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT_INCREMENT);
-                    tabsPane.add("<html>" + screen.getUnicodeTitle() + "</html>", scrollPane);
-                    Dimension dim = Windows.screenResolution();
-                    tabsPane.setSize(dim.width - 10, dim.height - 160);
+                    int height = y + maxHeight;
+                    int width = getMaxLength(screenPanel.getComponents()) * 4;
+                    screenPanel.setPreferredSize(new Dimension(width, height));
+                    addScreenPanelToTabsPane(screen, screenPanel);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
-        Dimension dim = Windows.screenResolution();
         setSize(dim.width, dim.height - 110);
+    }
+
+    /**
+     * Add screen panel that was created to tabs pane with scroll pane .
+     *
+     * @param screen      the screen with data
+     * @param screenPanel the screen panel
+     */
+    private void addScreenPanelToTabsPane(Screen screen, JPanel screenPanel) {
+        JScrollPane scrollPane = new JScrollPane(screenPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT_INCREMENT);
+        tabsPane.add("<html>" + screen.getUnicodeTitle() + "</html>", scrollPane);
+        tabsPane.setSize(dim.width - 10, dim.height - 160);
+    }
+
+    private JPanel initTablePanel(final Table table, List<DataController> dataList, int x, int y) {
+        JPanel pnlTitle = new JPanel(null);
+        JLabel tableTitle = new TableLabel("<html>" + table.getUnicodeTitle() + "</html>");
+        pnlTitle.add(tableTitle);
+        pnlTitle.setBackground(Color.LIGHT_GRAY);
+
+        DataPanel dataPanel = new DataPanel(dataList, controller, dbManager.getDatabaseGeneralService());
+        dataPanel.setProgramAlarms(controller.getProgram().getProgramAlarms());
+        dataPanel.setProgramRelays(controller.getProgram().getProgramRelays());
+        dataPanel.initComponents();
+        int width = dataPanel.getWidth();
+        int height = 20;
+
+        tableTitle.setBounds(DataComponent.X_OFFSET, DataComponent.Y_OFFSET, width - 5, height);
+        pnlTitle.setBounds(DataComponent.X_OFFSET, DataComponent.Y_OFFSET, width, height + 5);
+
+        JPanel tablePanel = new JPanel(null);
+        tablePanel.add(pnlTitle);
+        tablePanel.add(dataPanel);
+        tablePanel.setBounds(x, y, dataPanel.getWidth() + 5, dataPanel.getHeight() + pnlTitle.getHeight() + 10);
+        return tablePanel;
     }
 
     /**
@@ -244,37 +255,15 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         }
     }
 
-    private JPanel initTablePanel(final Table table, List<DataController> dataList, int x, int y) {
-        JLabel tableTitle = new TableLabel("<html>" + table.getUnicodeTitle() + "</html>");
-        JPanel pnlTitle = new JPanel(null);
-        pnlTitle.add(tableTitle);
-        pnlTitle.setBackground(Color.LIGHT_GRAY);
-        DataPanel dataPanel = new DataPanel(dataList, controller, dbManager.getDatabaseGeneralService());
-        dataPanel.setProgramAlarms(controller.getProgram().getProgramAlarms());
-        dataPanel.setProgramRelays(controller.getProgram().getProgramRelays());
-        dataPanel.initComponents();
-        int width = dataPanel.getWidth();
-        int height = 20;
-
-        tableTitle.setBounds(DataComponent.X_OFFSET, DataComponent.Y_OFFSET, width - 5, height);
-        pnlTitle.setBounds(DataComponent.X_OFFSET, DataComponent.Y_OFFSET, width, height + 5);
-
-        JPanel tablePanel = new JPanel(null);
-        tablePanel.add(pnlTitle);
-        tablePanel.add(dataPanel);
-        tablePanel.setBounds(x, y, dataPanel.getWidth() + 5, dataPanel.getHeight() + pnlTitle.getHeight() + 10);
-        return tablePanel;
-    }
-
     private int getMaxLength(Component[] components) {
         if (components == null || components.length == 0) {
             return -1;
         }
 
         int maxLength = 0;
-        for (Component c : components) {
-            if (c instanceof JPanel) {
-                int width = ((JPanel) c).getBounds().width;
+        for (Component component : components) {
+            if (component instanceof JPanel) {
+                int width = component.getBounds().width;
                 if (maxLength < width) {
                     maxLength = width;
                 }
@@ -324,6 +313,16 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         mainScreenPanel.showMainScreen();
     }//GEN-LAST:event_showMainScreenPanel
 
+    public void removeLoadedControllerData() {
+        screenTableDataMap = null;
+        Component[] comps = tabsPane.getComponents();
+        for (Component c : comps) {
+            tabsPane.remove(c);
+        }
+        System.gc();
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnHouseTitle;
     private javax.swing.JLabel lblTitle;
@@ -362,18 +361,18 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                     return;
                 }
 
-                Iterator<Screen> iterScreen = screenTableDataMap.keySet().iterator();
-                while (iterScreen.hasNext()) {
-                    Screen screen = iterScreen.next();
+                Iterator<Screen> screenIterator = screenTableDataMap.keySet().iterator();
+                while (screenIterator.hasNext()) {
+                    Screen screen = screenIterator.next();
                     TreeMap<Table, List<DataController>> tableDataMap = screenTableDataMap.get(screen);
-                    Iterator<Table> iterTable = tableDataMap.keySet().iterator();
-                    while (iterTable.hasNext()) {
-                        Table table = iterTable.next();
+                    Iterator<Table> tableIterator = tableDataMap.keySet().iterator();
+                    while (tableIterator.hasNext()) {
+                        Table table = tableIterator.next();
                         List<DataController> dataFacadeList = tableDataMap.get(table);
                         for (DataController df : dataFacadeList) {
-                            Iterator<Data> iter = dl.iterator();
-                            while (iter.hasNext()) {
-                                Data data = iter.next();
+                            Iterator<Data> dataIterator = dl.iterator();
+                            while (dataIterator.hasNext()) {
+                                Data data = dataIterator.next();
                                 if (df.getId().equals(data.getId())) {
                                     data.setFormat(df.getFormat());
                                     //df.setValue(data.getValueToUI());

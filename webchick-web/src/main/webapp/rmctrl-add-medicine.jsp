@@ -10,14 +10,14 @@
 
 <jsp:directive.page import="com.agrologic.app.dao.MedicineDao"/>
 <jsp:directive.page import="com.agrologic.app.dao.impl.MedicineDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.MedicineDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Medicine"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    MedicineDao medicineDao = new MedicineDaoImpl();
-    Collection<MedicineDto> medicineList = medicineDao.getAllByFlockId(flockId);
+    MedicineDao medicineDao = DbImplDecider.use(DaoType.MYSQL).getDao(MedicineDaoImpl.class);
+    Collection<Medicine> medicineList = medicineDao.getAllByFlockId(flockId);
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
@@ -136,7 +136,7 @@
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
-            <%for (MedicineDto medicine : medicineList) {%>
+            <%for (Medicine medicine : medicineList) {%>
             <tr>
                 <td><%=medicine.getAmount() %>
                 </td>

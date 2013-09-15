@@ -1,20 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.TransactionDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.TransactionDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
-import com.agrologic.app.model.TransactionDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.TransactionDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.Transaction;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -24,13 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class AddTransactionFormServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -61,8 +47,8 @@ public class AddTransactionFormServlet extends HttpServlet {
             String revenues = request.getParameter("revenues");
 
             try {
-                TransactionDao transactDao = new TransactionDaoImpl();
-                TransactionDto transaction = new TransactionDto();
+                TransactionDao transactDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDaoImpl.class);
+                Transaction transaction = new Transaction();
 
                 transaction.setFlockId(flockId);
                 transaction.setName(name);
@@ -70,13 +56,13 @@ public class AddTransactionFormServlet extends HttpServlet {
                 transaction.setRevenues(Float.parseFloat(revenues));
                 transactDao.insert(transaction);
 
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
-                List<TransactionDto> transactList = transactDao.getAllByFlockId(flockId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
+                List<Transaction> transactList = transactDao.getAllByFlockId(flockId);
                 float exp = 0;
                 float rev = 0;
 
-                for (TransactionDto t : transactList) {
+                for (Transaction t : transactList) {
                     exp += t.getExpenses();
                     rev += t.getRevenues();
                 }
@@ -86,12 +72,11 @@ public class AddTransactionFormServlet extends HttpServlet {
                 flockDao.update(flock);
                 logger.info("Feed added successfully to the database");
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
 

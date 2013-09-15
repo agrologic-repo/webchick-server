@@ -4,12 +4,11 @@
 
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.*" %>
-<%@ page import="com.agrologic.app.web.UserRole" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Collection" %>
 
-<jsp:directive.page import="java.util.Collection"/>
+<% User user = (User) request.getSession().getAttribute("user");
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -22,7 +21,7 @@
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long screenId = Long.parseLong(request.getParameter("screenId"));
-    Collection<ControllerDto> controllers = (Collection<ControllerDto>) request.getSession().getAttribute("controllers");
+    Collection<Controller> controllers = (Collection<Controller>) request.getSession().getAttribute("controllers");
     Collection<Data> dataRelays = (Collection<Data>) request.getSession().getAttribute("dataRelays");
     Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");
 
@@ -219,7 +218,7 @@
                 </h4>
             </td>
             <td valign="bottom">
-                <%if (user.getRole() == UserRole.ADMINISTRATOR) {%>
+                <%if (user.getRole() == UserRole.ADMIN) {%>
                 <a href="<%=request.getContextPath()%>/userinfo.html?userId=<%=userId%>">
                     <img src="img/cellinks.png" style="cursor: pointer" border="0"/>
                     &nbsp;<%=session.getAttribute("button.cellinks")%>&nbsp;
@@ -253,8 +252,8 @@
 <tbody>
 <%
     int column = 0;
-    for (ControllerDto controller : controllers) {%>
-<%if ((column % ControllerDto.COLUMN_NUMBERS) == 0) {%>
+    for (Controller controller : controllers) {%>
+<%if ((column % Controller.COLUMN_NUMBERS) == 0) {%>
 <tr>
 <%}%>
 <td valign="top">
@@ -474,7 +473,7 @@
 </table>
 <%}%>
 </td>
-<%if ((column % ControllerDto.COLUMN_NUMBERS) == 0) {%>
+<%if ((column % Controller.COLUMN_NUMBERS) == 0) {%>
 </tr>
 <%}%>
 <%}%>

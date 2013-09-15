@@ -3,6 +3,10 @@ package com.agrologic.app.dao.mysql.impl;
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.SpreadDao;
 import com.agrologic.app.model.Spread;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,16 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SpreadDaoImpl implements SpreadDao {
+    protected final DaoFactory dao;
+    private final Logger logger = LoggerFactory.getLogger(SpreadDaoImpl.class);
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
 
-    protected DaoFactory dao;
-
-    public SpreadDaoImpl(DaoFactory daoFactory) {
-        dao = daoFactory;
+    public SpreadDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("SPREAD");
+        this.dao = dao;
     }
 
     private Spread makeSpread(ResultSet rs) throws SQLException {
         Spread spread = new Spread();
-
         spread.setId(rs.getLong("ID"));
         spread.setFlockId(rs.getLong("FlockID"));
         spread.setAmount(rs.getInt("Amount"));
@@ -29,7 +37,6 @@ public class SpreadDaoImpl implements SpreadDao {
         spread.setNumberAccount(rs.getInt("NumberAccount"));
         spread.setPrice(rs.getFloat("Price"));
         spread.setTotal(rs.getFloat("Total"));
-
         return spread;
     }
 

@@ -187,6 +187,9 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
     }
 
     public Long getValueToUI() {
+//        if(value == null) {
+//            value = -1L;
+//        }
         Long valueView = value;
         if (format == null) {
             valueView = value;

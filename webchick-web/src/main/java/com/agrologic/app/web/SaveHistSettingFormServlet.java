@@ -10,9 +10,9 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.HistorySettingDao;
-import com.agrologic.app.dao.impl.HistorySettingDaoImpl;
+import com.agrologic.app.dao.mysql.impl.HistorySettingDaoImpl;
 import com.agrologic.app.model.Data;
-import com.agrologic.app.model.HistorySettingDto;
+import com.agrologic.app.model.HistorySetting;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -53,14 +53,14 @@ public class SaveHistSettingFormServlet extends HttpServlet {
             } else {
                 Long programId = Long.parseLong(request.getParameter("programId"));
                 String historySettingMapStr = request.getParameter("historySettingMap");
-                List<HistorySettingDto> historySettingList = new ArrayList<HistorySettingDto>();
+                List<HistorySetting> historySettingList = new ArrayList<HistorySetting>();
                 String[] historySettingPairs = historySettingMapStr.split(";");
 
                 for (String s : historySettingPairs) {
                     StringTokenizer st = new StringTokenizer(s, ",");
                     Long dataId = Long.parseLong(st.nextToken());
                     String checked = st.nextToken();
-                    HistorySettingDto hs = new HistorySettingDto();
+                    HistorySetting hs = new HistorySetting();
 
                     hs.setProgramId(programId);
                     hs.setDataId(dataId);
@@ -69,7 +69,7 @@ public class SaveHistSettingFormServlet extends HttpServlet {
                 }
 
                 try {
-                    HistorySettingDao historySettingDao = new HistorySettingDaoImpl();
+                    HistorySettingDao historySettingDao = DbImplDecider.use(DaoType.MYSQL).getDao(HistorySettingDaoImpl.class);
 
                     historySettingDao.saveHistorySetting(historySettingList);
                     historySettingList = historySettingDao.getHistorySetting(programId);

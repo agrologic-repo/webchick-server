@@ -3,14 +3,15 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.ActionSetDto" %>
+<%@ page import="com.agrologic.app.model.ActionSet" %>
 
-<jsp:directive.page import="com.agrologic.app.model.LanguageDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Language"/>
 <%@ page import="com.agrologic.app.model.Program" %>
 <%@ page import="com.agrologic.app.model.Screen" %>
 <%@ page import="java.util.Collection" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -18,13 +19,13 @@
     Program program = (Program) request.getSession().getAttribute("program");
     Screen screen = (Screen) request.getSession().getAttribute("screen");
     long programId = screen.getProgramId();
-    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
+    Collection<Language> languages = (Collection<Language>) request.getSession().getAttribute("languages");
     String ptl = (String) request.getParameter("translateLang");
     if (ptl == null) {
         ptl = "1";
     }
     Long translateLang = Long.parseLong(ptl);
-    Collection<ActionSetDto> actionsets = (Collection<ActionSetDto>) request.getSession().getAttribute("actionset");
+    Collection<ActionSet> actionsets = (Collection<ActionSet>) request.getSession().getAttribute("actionset");
 %>
 
 
@@ -170,7 +171,7 @@
                                     <th class="leftHeader" width="240px">Text
                                         <select id="Lang_Filter" name="Lang_Filter"
                                                 onchange="return filterLanguages(<%=programId%>,<%=screen.getId()%>);">
-                                            <%for (LanguageDto l : languages) { %>
+                                            <%for (Language l : languages) { %>
                                             <option value="<%=l.getId()%>"><%=l.getLanguage()%>
                                             </option>
                                             <%}%>
@@ -182,7 +183,7 @@
                                     <th align="center" width="100px">Position</th>
                                     </thead>
                                     <% int cnt = 0;%>
-                                    <%for (ActionSetDto asd : actionsets) {%>
+                                    <%for (ActionSet asd : actionsets) {%>
                                     <% if ((cnt % 2) == 0) {%>
                                     <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
                                             <%} else {%>

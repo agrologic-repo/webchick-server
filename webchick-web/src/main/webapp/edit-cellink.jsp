@@ -3,11 +3,12 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.CellinkDto" %>
+<%@ page import="com.agrologic.app.model.Cellink" %>
 
 <jsp:directive.page import="java.util.Collection"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -18,15 +19,15 @@
     Boolean errorFlag = (Boolean) request.getSession().getAttribute("error");
     request.getSession().setAttribute("error", null);
 
-    UserDto editUser = (UserDto) request.getSession().getAttribute("edituser");
+    User editUser = (User) request.getSession().getAttribute("edituser");
     Long userId = Long.parseLong(request.getParameter("userId"));
-    Collection<CellinkDto> cellinks = editUser.getCellinks();
+    Collection<Cellink> cellinks = editUser.getCellinks();
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    CellinkDto cellink = findCellinkToEdit(cellinks, cellinkId);
+    Cellink cellink = findCellinkToEdit(cellinks, cellinkId);
 %>
 
-<%! UserDto findUserToEdit(Collection<UserDto> users, Long userId) {
-    for (UserDto u : users) {
+<%! User findUserToEdit(Collection<User> users, Long userId) {
+    for (User u : users) {
         if (u.getId().equals(userId)) {
             return u;
         }
@@ -35,8 +36,8 @@
 }
 %>
 
-<%! CellinkDto findCellinkToEdit(Collection<CellinkDto> cellinks, Long cellinkId) {
-    for (CellinkDto c : cellinks) {
+<%! Cellink findCellinkToEdit(Collection<Cellink> cellinks, Long cellinkId) {
+    for (Cellink c : cellinks) {
         if (c.getId().equals(cellinkId)) {
             return c;
         }
@@ -54,17 +55,29 @@
     <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
     <script type="text/javascript">
+        function reset() {
+            document.getElementById("msgCellinkName").innerHTML = "";
+            document.getElementById("msgPassword").innerHTML = "";
+        }
         function validate() {
-            if (document.editForm.Ncellinkname.value == "") {
-                alert('Enter user name');
-                document.editForm.Ncellinkname.focus();
+            var valid = true;
+            reset();
+            if (document.addForm.Ncellinkname.value == "") {
+                document.getElementById("msgCellinkName").innerHTML = "&nbsp;Cellink name can't be empty";
+                document.getElementById("msgCellinkName").style.color = "RED";
+                document.addForm.Ncellinkname.focus();
+                valid = false;
+            }
+
+            if (document.addForm.Npassword.value == "") {
+                document.getElementById("msgPassword").innerHTML = "&nbsp;Password can't be empty";
+                document.getElementById("msgPassword").style.color = "RED";
+                document.addForm.Npassword.focus();
+                valid = false;
+            }
+
+            if (!valid) {
                 return false;
-            } else if (document.editForm.Npassword.value == "") {
-                alert('Enter password');
-                document.editForm.Npassword.focus();
-                return false;
-            } else {
-                document.editForm.submit();
             }
         }
         function back(link) {
@@ -78,7 +91,7 @@
     <%@include file="usermenuontop.jsp" %>
 </div>
 <div id="main-shell">
-    <form action="./editcellink.html" method="post" id="editForm">
+    <form id="editForm" name="editForm" action="./editcellink.html?userId=<%=editUser.getId()%>" method="post">
         <table border="0" cellPadding=1 cellSpacing=1 width="100%">
             <tr>
                 <td width="483">
@@ -113,8 +126,8 @@
                             <td class="">Type</td>
                             <td>
                                 <select id="Ntype" name="Ntype" style="width:120px">
-                                    <option value="n/a" selected>
-                                            <% for (String type : CellinkDto.getTypeList()) {%>
+                                    <option value="N/A">
+                                            <% for (String type : Cellink.getTypeList()) {%>
                                     <option value="<%=type%>"><%=type%>
                                             <%}%>
                                 </select>
@@ -129,10 +142,11 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <button id="btnBack" name="btnBack" onclick="window.history.back();">
+                    <button id="btnBack" name="btnBack"
+                            onclick='return back("./userinfo.html?userId=<%=editUser.getId()%>");'>
                         <%=session.getAttribute("button.cancel")%>
                     </button>
-                    <button id="btnUpdate" name="btnUpdate" onclick='return validate();'>
+                    <button id="btnAdd" type="submit" name="btnAdd" onclick="return validate();">
                         <%=session.getAttribute("button.ok")%>
                     </button>
                 </td>

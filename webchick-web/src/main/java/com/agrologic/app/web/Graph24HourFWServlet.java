@@ -6,14 +6,15 @@
 package com.agrologic.app.web;
 
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.graph.daily.Graph;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.Graph24FWI;
 import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.model.DataFormat;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.model.Flock;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartUtilities;
 
@@ -56,7 +57,6 @@ public class Graph24HourFWServlet extends HttpServlet {
 
         try {
             String gd = request.getParameter("growDay");
-
             growDay = Integer.parseInt(request.getParameter("growDay"));
             range.append("( Grow day ").append(growDay);
         } catch (Exception ex) {
@@ -64,8 +64,8 @@ public class Graph24HourFWServlet extends HttpServlet {
         }
 
         try {
-            FlockDao flockDao = new FlockDaoImpl();
-            FlockDto flock = flockDao.getById(flockId);
+            FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+            Flock flock = flockDao.getById(flockId);
             Long resetTime = new Long(flockDao.getResetTime(flockId, growDay));
             if (resetTime != null) {
                 resetTime = DataFormat.convertToTimeFormat(resetTime);

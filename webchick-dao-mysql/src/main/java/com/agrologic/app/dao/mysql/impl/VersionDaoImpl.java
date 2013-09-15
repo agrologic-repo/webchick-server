@@ -14,6 +14,7 @@ public class VersionDaoImpl implements VersionDao {
     public VersionDaoImpl(DaoFactory daoFactory) {
         dao = daoFactory;
     }
+
     @Override
     public String getVersion() {
         String sqlQuery = "SELECT VERSION()";
@@ -22,12 +23,15 @@ public class VersionDaoImpl implements VersionDao {
         String version = "";
 
         try {
-            con = DriverManager.getConnection(((MySqlDaoFactory)dao).URL, ((MySqlDaoFactory)dao).USER,
-                    ((MySqlDaoFactory)dao).PASS);
+            System.out.println(" url : " + ((MySqlDaoFactory) dao).URL);
+            System.out.println(" user : " + ((MySqlDaoFactory) dao).USER);
+            System.out.println(" pass : " + ((MySqlDaoFactory) dao).PASS);
+            con = DriverManager.getConnection(((MySqlDaoFactory) dao).URL,
+                    ((MySqlDaoFactory) dao).USER,
+                    ((MySqlDaoFactory) dao).PASS);
             stmt = con.createStatement();
 
             ResultSet rs = stmt.executeQuery(sqlQuery);
-
             if (rs.next()) {
                 version = rs.getString(1);
             }

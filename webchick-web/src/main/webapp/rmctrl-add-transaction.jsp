@@ -10,14 +10,14 @@
 
 <jsp:directive.page import="com.agrologic.app.dao.TransactionDao"/>
 <jsp:directive.page import="com.agrologic.app.dao.impl.TransactionDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.TransactionDto"/>
+<jsp:directive.page import="com.agrologic.app.model.Transaction"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    TransactionDao transactDao = new TransactionDaoImpl();
-    Collection<TransactionDto> transactList = transactDao.getAll();
+    TransactionDao transactDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDaoImpl.class);
+    Collection<Transaction> transactList = transactDao.getAll();
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
@@ -114,7 +114,7 @@
                     <img src="img/plus1.gif" border="0" hspace="4"><a href="javascript:validate();">Add</a>
                 </td>
             </tr>
-            <% for (TransactionDto t : transactList) {%>
+            <% for (Transaction t : transactList) {%>
             <tr>
                 <td><%=t.getName() %>
                 </td>

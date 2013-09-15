@@ -1,17 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.LanguageDao;
 import com.agrologic.app.dao.RelayDao;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
-import com.agrologic.app.model.LanguageDto;
+import com.agrologic.app.model.Language;
 import com.agrologic.app.model.Relay;
 import org.apache.log4j.Logger;
 
@@ -22,11 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-/**
- * @author Administrator
- */
 public class ListRelays extends HttpServlet {
 
     /**
@@ -61,8 +52,8 @@ public class ListRelays extends HttpServlet {
                         translateLang = 1;    // default program
                     }
 
-                    LanguageDao langDao = new LanguageDaoImpl();
-                    List<LanguageDto> languages = langDao.geAll();
+                    LanguageDao langDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+                    Collection<Language> languages = langDao.geAll();
 
                     logger.info("retrieve relay names!");
                     request.getSession().setAttribute("languages", languages);

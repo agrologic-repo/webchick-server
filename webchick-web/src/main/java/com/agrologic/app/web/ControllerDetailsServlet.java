@@ -9,8 +9,7 @@ import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.model.ControllerDto;
+import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Program;
 import org.apache.log4j.Logger;
 
@@ -52,11 +51,11 @@ public class ControllerDetailsServlet extends HttpServlet {
         }
 
         Long controllerId = Long.parseLong(request.getParameter("controllerId"));
-        ControllerDao controllerDao = new ControllerDaoImpl();
+        ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
         ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
 
         try {
-            ControllerDto controller = controllerDao.getById(controllerId);
+            Controller controller = controllerDao.getById(controllerId);
             Program program = programDao.getById(controller.getProgramId());
             logger.info("Retreive controller details!");
             request.getSession().setAttribute("controller", controller);

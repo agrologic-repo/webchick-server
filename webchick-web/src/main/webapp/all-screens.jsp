@@ -3,13 +3,14 @@
 <%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.LanguageDto" %>
+<%@ page import="com.agrologic.app.model.Language" %>
 
 <jsp:directive.page import="com.agrologic.app.model.Program"/>
 <jsp:directive.page import="com.agrologic.app.model.Screen"/>
 <jsp:directive.page import="java.util.Collection"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -18,7 +19,7 @@
     Program program = (Program) request.getSession().getAttribute("program");
 
     Collection<Screen> screens = program.getScreens();
-    Collection<LanguageDto> languages = (Collection<LanguageDto>) request.getSession().getAttribute("languages");
+    Collection<Language> languages = (Collection<Language>) request.getSession().getAttribute("languages");
 
     String ptl = (String) request.getParameter("translateLang");
     if (ptl == null) {
@@ -247,7 +248,7 @@
                             <th class="centerHeader" width="180px">Text
                                 <select id="Lang_Filter" name="Lang_Filter"
                                         onchange="return filterLanguages(<%=program.getId()%>);">
-                                    <%for (LanguageDto l : languages) {%>
+                                    <%for (Language l : languages) {%>
                                     <option value="<%=l.getId()%>"><%=l.getLanguage()%>
                                     </option>
                                     <%}%>

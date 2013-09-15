@@ -1,17 +1,11 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.ActionSetDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.dao.impl.ActionSetDaoImpl;
-import com.agrologic.app.model.ActionSetDto;
+import com.agrologic.app.dao.mysql.impl.ActionSetDaoImpl;
+import com.agrologic.app.model.ActionSet;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.utils.DateLocal;
 import org.apache.log4j.Logger;
@@ -23,16 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class SaveProgramActionSetServlet extends HttpServlet {
 
     /**
@@ -93,11 +82,9 @@ public class SaveProgramActionSetServlet extends HttpServlet {
                 }
 
                 try {
-                    ActionSetDao actionsetDao = new ActionSetDaoImpl();
-
+                    ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDaoImpl.class);
                     actionsetDao.saveChanges(programId, screenId, showTableMap, posDataMap);
-
-                    List<ActionSetDto> actionset = actionsetDao.getAll(programId);
+                    Collection<ActionSet> actionset = actionsetDao.getAll(programId);
 
                     request.getSession().setAttribute("actionset", actionset);
 

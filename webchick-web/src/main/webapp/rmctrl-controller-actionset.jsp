@@ -6,7 +6,8 @@
 <%@ page import="com.agrologic.app.model.*" %>
 <%@ page import="java.util.Collection" %>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -20,12 +21,12 @@
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long screenId = Long.parseLong((String) request.getParameter("screenId"));
-    ControllerDto controller = (ControllerDto) request.getSession().getAttribute("controller");
+    Controller controller = (Controller) request.getSession().getAttribute("controller");
     Program program = controller.getProgram();
     Collection<Screen> screens = program.getScreens();
     Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");
 
-    Collection<ActionSetDto> actionsets = (Collection<ActionSetDto>) request.getSession().getAttribute("actionset");
+    Collection<ActionSet> actionsets = (Collection<ActionSet>) request.getSession().getAttribute("actionset");
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
     Locale currLocal = (Locale) session.getAttribute("currLocale");
     if (!oldLocal.equals(currLocal)) {
@@ -240,7 +241,7 @@
                                 <table border="0" cellPadding="2" cellSpacing="2" align="center">
                                     <% int column = 0;%>
                                     <%
-                                        for (ActionSetDto asd : actionsets) {
+                                        for (ActionSet asd : actionsets) {
                                             if ((column % 5) == 0) {
                                     %>
                                     <tr>

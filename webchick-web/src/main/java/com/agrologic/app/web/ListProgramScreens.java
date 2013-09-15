@@ -2,8 +2,7 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
-import com.agrologic.app.model.LanguageDto;
+import com.agrologic.app.model.Language;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.model.Screen;
 import org.apache.log4j.Logger;
@@ -15,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 public class ListProgramScreens extends HttpServlet {
@@ -61,13 +61,15 @@ public class ListProgramScreens extends HttpServlet {
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     Program program = programDao.getById(programId);
                     ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                    List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(program.getId(),
-                            translateLang, true);
-
+                    List<Screen> screens = (List<Screen>)
+                            screenDao.getAllScreensByProgramAndLang(
+                                    program.getId(),
+                                    translateLang,
+                                    true);
                     program.setScreens(screens);
 
-                    LanguageDao languageDao = new LanguageDaoImpl();
-                    List<LanguageDto> langList = languageDao.geAll();
+                    LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+                    Collection<Language> langList = languageDao.geAll();
 
                     request.getSession().setAttribute("program", program);
                     request.getSession().setAttribute("languages", langList);

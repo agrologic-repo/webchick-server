@@ -1,12 +1,13 @@
 package com.agrologic.app.model;
 
 public class FeedType {
-    private Long   cellinkId;
+    private Long cellinkId;
     private String feedType;
-    private Long   id;
-    private Float  price;
+    private Long id;
+    private Float price;
 
-    public FeedType() {}
+    public FeedType() {
+    }
 
     public Long getCellinkId() {
         return cellinkId;
@@ -52,7 +53,7 @@ public class FeedType {
 
         final FeedType other = (FeedType) obj;
 
-        if ((this.id != other.id) && ((this.id == null) ||!this.id.equals(other.id))) {
+        if ((this.id != other.id) && ((this.id == null) || !this.id.equals(other.id))) {
             return false;
         }
 
@@ -64,15 +65,15 @@ public class FeedType {
         int hash = 7;
 
         hash = 17 * hash + ((this.id != null)
-                            ? this.id.hashCode()
-                            : 0);
+                ? this.id.hashCode()
+                : 0);
 
         return hash;
     }
 
     @Override
     public String toString() {
-        return "FeedTypeDto{" + "id=" + id + "cellinkId=" + cellinkId + "feedType=" + feedType + "price=" + price + '}';
+        return "FeedType{" + "id=" + id + "cellinkId=" + cellinkId + "feedType=" + feedType + "price=" + price + '}';
     }
 }
 

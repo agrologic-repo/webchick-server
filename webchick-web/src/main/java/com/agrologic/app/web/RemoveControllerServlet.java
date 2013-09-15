@@ -1,15 +1,11 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.User;
+import com.agrologic.app.model.UserRole;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -20,11 +16,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class RemoveControllerServlet extends HttpServlet {
 
     /**
@@ -49,10 +40,10 @@ public class RemoveControllerServlet extends HttpServlet {
             logger.error("Unauthorized access!");
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
-            UserDto user = (UserDto) request.getSession().getAttribute("user");
+            User user = (User) request.getSession().getAttribute("user");
             String forwardLink = "";
 
-            if (user.getRole() == UserRole.ADMINISTRATOR) {
+            if (user.getRole() == UserRole.ADMIN) {
                 forwardLink = "./cellinkinfo.html";
             } else {
                 forwardLink = "./cellink-setting.html";
@@ -63,12 +54,14 @@ public class RemoveControllerServlet extends HttpServlet {
             Long controllerId = Long.parseLong(request.getParameter("controllerId"));
 
             try {
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                ControllerDto controller = controllerDao.getById(controllerId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Controller controller = controllerDao.getById(controllerId);
 
                 controllerDao.remove(controller.getId());
                 logger.info("Controller " + controller + " successfully removed !");
-                request.getSession().setAttribute("message", "Controller successfully  removed !");
+                request.getSession().setAttribute("message",
+                        "Controller with id " + controller.getId() + " and name " + controller.getName() +
+                                " successfully  removed !");
                 request.getSession().setAttribute("error", false);
                 request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
                         + cellinkId).forward(request, response);
@@ -76,7 +69,8 @@ public class RemoveControllerServlet extends HttpServlet {
 
                 // error page
                 logger.error("Error occurs while removing controlller !");
-                request.getSession().setAttribute("message", "Error occurs while removing user !");
+                request.getSession().setAttribute("message", "Error occurs while removing controller with id  " +
+                        controllerId);
                 request.getSession().setAttribute("error", true);
                 request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
                         + cellinkId).forward(request, response);

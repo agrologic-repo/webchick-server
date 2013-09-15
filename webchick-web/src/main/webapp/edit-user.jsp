@@ -6,7 +6,8 @@
 <%@ page import="java.util.Collection" %>
 
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -17,14 +18,14 @@
     Boolean errorFlag = (Boolean) request.getSession().getAttribute("error");
     request.getSession().setAttribute("error", null);
 
-    Collection<UserDto> users = (Collection<UserDto>) request.getSession().getAttribute("users");
+    Collection<User> users = (Collection<User>) request.getSession().getAttribute("users");
     Long userId = Long.parseLong(request.getParameter("userId"));
-    UserDto editUser = findUserToEdit(users, userId);
+    User editUser = findUserToEdit(users, userId);
     Collection<String> companies = (Collection<String>) request.getSession().getAttribute("companies");
 %>
 
-<%! UserDto findUserToEdit(Collection<UserDto> users, Long userId) {
-    for (UserDto u : users) {
+<%! User findUserToEdit(Collection<User> users, Long userId) {
+    for (User u : users) {
         if (u.getId().equals(userId)) {
             return u;
         }
@@ -79,7 +80,6 @@
             } else {
                 var i = document.editForm.Nrolel.selectedIndex;
                 document.editForm.Nrole.value = document.editForm.Nrolel.options[i].value;
-                alert(document.editForm.Nrole.value);
                 document.editForm.submit();
             }
         }
@@ -245,7 +245,7 @@
 <script language="Javascript">
     var length = document.editForm.Nrolel.options.length;
     var role =
-    <%= editUser.getRole()%>
+    <%= editUser.getRole().getValue() %>
     for (var i = 0; i < length; i++) {
         if (document.editForm.Nrolel.options[i].value == role) {
             document.editForm.Nrolel.selectedIndex = i;

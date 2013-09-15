@@ -5,15 +5,16 @@
 package com.agrologic.app.dao;
 
 import com.agrologic.app.model.Table;
+import org.junit.*;
+
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.*;
 
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -56,7 +57,7 @@ public class TableDaoTest {
     @Test
     public void testGetAllScreenTables() throws SQLException {
 
-        Collection<Table> tableList = dao.getAllScreenTables(programId, screenId, langId, dao.SHOW_CHECKED);
+        Collection<Table> tableList = dao.getScreenTables(programId, screenId, langId, true);
         assertEquals(1, tableList.size());
 
         List<Table> tables = (List<Table>) tableList;

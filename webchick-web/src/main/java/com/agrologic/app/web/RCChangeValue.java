@@ -10,8 +10,7 @@ import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.model.ControllerDto;
+import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
 import org.apache.log4j.Logger;
 
@@ -67,8 +66,8 @@ public class RCChangeValue extends HttpServlet {
                 svalue = clearDots(svalue);
                 value = Long.parseLong(svalue);
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                ControllerDto controller = controllerDao.getById(controllerId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Controller controller = controllerDao.getById(controllerId);
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 Data data = dataDao.getById(dataId);
 

@@ -10,11 +10,10 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.excel.DataForExcelCreator;
 import com.agrologic.app.excel.WriteToExcel;
 import com.agrologic.app.model.Data;
-import com.agrologic.app.model.FlockDto;
+import com.agrologic.app.model.Flock;
 import com.agrologic.app.utils.FileDownloadUtil;
 import org.apache.log4j.Logger;
 
@@ -89,7 +88,7 @@ public class ExpHistoryToExcel extends HttpServlet {
                 request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                FlockDao flockDao = new FlockDaoImpl();
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
 
                 /**
                  * history by grow day map
@@ -114,9 +113,8 @@ public class ExpHistoryToExcel extends HttpServlet {
                 excel.setTitleList(columnTitles);
                 excel.setCellDataList(historyData);
 
-                FlockDto flock = flockDao.getById(flockId);
-
-                outfile = "c:/flock-" + flock.getFlockName() + "-history.xls";
+                Flock flock = flockDao.getById(flockId);
+                outfile = "C:/flock-" + flock.getFlockName() + "-history.xls";
                 excel.setOutputFile(outfile);
                 excel.write();
                 FileDownloadUtil.doDownload(response, outfile, "xls");

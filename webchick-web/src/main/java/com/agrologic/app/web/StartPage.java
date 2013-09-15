@@ -7,11 +7,11 @@ package com.agrologic.app.web;
 
 
 import com.agrologic.app.dao.CellinkDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.CellinkDaoImpl;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.CellinkDto;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -50,13 +50,13 @@ public class StartPage extends HttpServlet {
             if (access.equals("regular")) {
                 request.getSession().setAttribute("access", access);
 
-                CellinkDao cellinkDao = new CellinkDaoImpl();//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
-                CellinkDto cellink = cellinkDao.getActualCellink();
+                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                Cellink cellink = cellinkDao.getActualCellink();
 
                 logger.info(cellink);
 
-                UserDao userDao = new UserDaoImpl();
-                UserDto user = userDao.getById(cellink.getUserId());
+                UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
+                User user = userDao.getById(cellink.getUserId());
 
                 logger.info(user);
                 request.getSession().setAttribute("user", user);

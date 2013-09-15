@@ -7,7 +7,9 @@ package com.agrologic.app.utils;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 
 /**
  * Reads file in UTF-8 encoding and output to STDOUT in ASCII with unicode
@@ -15,7 +17,7 @@ import java.io.*;
  */
 public class UTF8ToAscii {
     private static final char[] hexChar = {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
     };
 
     public static void main(String[] args) throws Exception {
@@ -24,8 +26,8 @@ public class UTF8ToAscii {
 //          System.out.println("Usage: java UTF8ToAscii <filename>");
 //          return;
 //      }
-        BufferedReader r    = new BufferedReader(new InputStreamReader(new FileInputStream("test.txt"), "UTF-8"));
-        String         line = r.readLine();
+        BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream("test.txt"), "UTF-8"));
+        String line = r.readLine();
 
         new ShowString(unicodeEscape(line), "Conversion Demo");
 

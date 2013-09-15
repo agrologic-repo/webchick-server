@@ -7,7 +7,8 @@
 
 <jsp:directive.page import="java.util.Collection"/>
 
-<% UserDto user = (UserDto) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
+
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -166,7 +167,7 @@
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <%if (user.getRole() == UserRole.ADMINISTRATOR) {%>
+                                <%if (user.getRole() == UserRole.ADMIN) {%>
                                 <button name="btnCancel" type="button" onclick='window.history.back()'>
                                     <%=session.getAttribute("button.cancel") %>
                                 </button>

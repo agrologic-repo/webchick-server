@@ -1,14 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
-import com.agrologic.app.dao.impl.UserDaoImpl;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -19,11 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class RemoveUserServlet extends HttpServlet {
 
     /**
@@ -49,23 +39,22 @@ public class RemoveUserServlet extends HttpServlet {
             request.getRequestDispatcher("./login.jsp").forward(request, response);
         } else {
             Long userId = Long.parseLong(request.getParameter("userId"));
-            UserDao userDao = new UserDaoImpl();
+            UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
 
             try {
-                UserDto user = userDao.getById(userId);
+                User user = userDao.getById(userId);
 
                 userDao.remove(user.getId());
                 logger.info("User " + user + "successfully removed !");
-                request.getSession().setAttribute("message", "User successfully  removed !");
+                request.getSession().setAttribute("message",
+                        "User with ID " + user.getId() + " and login " + user.getLogin() + " successfully  removed !");
                 request.getSession().setAttribute("error", false);
                 request.getRequestDispatcher("./all-users.html").forward(request, response);
             } catch (SQLException ex) {
-
-                // error page
                 logger.error("Error occurs while removing cellink !");
-                request.getSession().setAttribute("message", "Error occurs while removing user !");
+                request.getSession().setAttribute("message", "Error occurs while removing user with ID  " + userId);
                 request.getSession().setAttribute("error", true);
-                request.getRequestDispatcher("./all-cellinks.html").forward(request, response);
+                request.getRequestDispatcher("./all-users.html").forward(request, response);
             } finally {
                 out.close();
             }

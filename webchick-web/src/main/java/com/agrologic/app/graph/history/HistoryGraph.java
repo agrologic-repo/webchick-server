@@ -5,7 +5,6 @@
  */
 package com.agrologic.app.graph.history;
 
-
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
 import org.jfree.chart.ChartFactory;
@@ -34,8 +33,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-//~--- JDK imports ------------------------------------------------------------
-
 public class HistoryGraph {
 
     /**
@@ -50,6 +47,8 @@ public class HistoryGraph {
      * Line style: line
      */
     public static final String STYLE_LINE = "line";
+    public Number max = Double.MIN_VALUE;
+    public Number min = Double.MAX_VALUE;
     /**
      * The bottom coordinate of series
      */
@@ -101,6 +100,8 @@ public class HistoryGraph {
         NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
         setAxisParameters(xAxis, xAxisTitle, Color.black);
         xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        xAxis.setLowerBound(getMinValue(plot).doubleValue());
+        xAxis.setUpperBound((getMaxValue(plot).doubleValue() + 1));
 
         NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
         setAxisParameters(yAxis, yAxisTitle, Color.red);
@@ -120,9 +121,10 @@ public class HistoryGraph {
         plot.setDataset(count, seriesCollect);
         plot.mapDatasetToRangeAxis(count, count);
         plot.setRangeAxis(count, createNumberAxis(axisLabel, Color.BLUE));
-        StandardXYToolTipGenerator ttg =
-                new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
-                        new SimpleDateFormat("DD"), NumberFormat.getInstance());
+        StandardXYToolTipGenerator ttg = new StandardXYToolTipGenerator(
+                StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
+                new SimpleDateFormat("DD"), NumberFormat.getInstance());
+
         TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(
                 new SimpleDateFormat("DD"),
                 "",
@@ -199,8 +201,8 @@ public class HistoryGraph {
     }
 
     /**
-     * Set background color, domain grid line , range grind line and also set renderer of plot to
-     * XYLineAndShapeRenderer.
+     * Set background color, domain grid line , range grind line and also set
+     * renderer of plot to XYLineAndShapeRenderer.
      *
      * @param plot the given plot
      */
@@ -423,7 +425,38 @@ public class HistoryGraph {
     public void setDataHistoryList(List<Map<Integer, Data>> dataHistoryList) {
         this.dataHistoryList = dataHistoryList;
     }
+
+    /**
+     * Return min value
+     *
+     * @return
+     */
+    public Number getMinValue(XYPlot plot) {
+        XYSeriesCollection seriesCollection = (XYSeriesCollection) plot.getDataset();
+        List<XYSeries> xyseriesList = seriesCollection.getSeries();
+        for (XYSeries xyseries : xyseriesList) {
+            Number minNumberX = xyseries.getMinX();
+            if (min.doubleValue() > minNumberX.doubleValue()) {
+                min = xyseries.getMinX();
+            }
+        }
+        return min;
+    }
+
+    /**
+     * Return max value
+     *
+     * @return
+     */
+    public Number getMaxValue(XYPlot plot) {
+        XYSeriesCollection seriesCollection = (XYSeriesCollection) plot.getDataset();
+        List<XYSeries> xyseriesList = seriesCollection.getSeries();
+        for (XYSeries xyseries : xyseriesList) {
+            Number maxNumberX = xyseries.getMaxX();
+            if (max.doubleValue() < maxNumberX.doubleValue()) {
+                max = xyseries.getMaxX();
+            }
+        }
+        return max;
+    }
 }
-
-
-

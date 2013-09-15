@@ -95,12 +95,6 @@ public class ByteUtil {
 
         return newBuffer;
     }
-
-    public static void printResult(byte[] buf) {
-        for (byte b : buf) {
-            System.out.println(b);
-        }
-    }
 }
 
 

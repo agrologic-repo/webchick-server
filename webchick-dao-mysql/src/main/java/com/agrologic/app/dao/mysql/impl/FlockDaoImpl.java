@@ -2,517 +2,200 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.FlockDao;
+import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.Flock;
+import org.apache.commons.lang.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 public class FlockDaoImpl implements FlockDao {
+    protected final DaoFactory dao;
+    protected final Logger logger = LoggerFactory.getLogger(FlockDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
+    protected final SimpleJdbcInsert jdbcInsert;
 
-    protected DaoFactory dao;
-
-    public FlockDaoImpl(DaoFactory daoFactory) {
-        dao = daoFactory;
-    }
-
-    /**
-     * Help to create flock from result set .
-     *
-     * @param rs a result set
-     * @return flock an objects that encapsulates a flock attributes
-     * @throws java.sql.SQLException
-     */
-    private Flock makeFlock(ResultSet rs) throws SQLException {
-        Flock flock = new Flock();
-        flock.setFlockId(rs.getLong("FlockID"));
-        flock.setControllerId(rs.getLong("ControllerId"));
-        flock.setFlockName(rs.getString("Name"));
-        flock.setStatus(rs.getString("Status"));
-        flock.setStartDate(rs.getString("StartDate"));
-        flock.setEndDate(rs.getString("EndDate"));
-        try {
-            flock.setQuantityMale(rs.getInt("QuantityMale"));
-        } catch (SQLException ex) {
-            //
-        }
-        try {
-            flock.setCostChickMale(rs.getFloat("CostChickMale"));
-        } catch (SQLException ex) {
-            //;
-        }
-        try {
-            flock.setQuantityFemale(rs.getInt("QuantityFemale"));
-        } catch (SQLException ex) {
-            //;
-        }
-        try {
-            flock.setCostChickFemale(rs.getFloat("CostChickFemale"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setQuantityFemale(rs.getInt("QuantityFemale"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setCostChickFemale(rs.getFloat("CostChickFemale"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setTotalChicks(rs.getFloat("TotalChicks"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setGasBegin(rs.getInt("GasBegin"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setGasEnd(rs.getInt("GasEnd"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-
-            flock.setCostGas(rs.getFloat("CostGas"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setCostGasEnd(rs.getFloat("CostGasEnd"));
-        } catch (SQLException ex) {
-            ;
-        }
-
-        try {
-            flock.setGasAdd(rs.getInt("GasAdd"));
-        } catch (SQLException ex) {
-            ;
-        }
-
-        try {
-            flock.setTotalGas(rs.getFloat("TotalGas"));
-        } catch (SQLException ex) {
-            ;
-        }
-
-        try {
-            flock.setFuelBegin(rs.getInt("FuelBegin"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setFuelEnd(rs.getInt("FuelEnd"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setCostFuel(rs.getFloat("CostFuel"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setCostFuelEnd(rs.getFloat("CostFuelEnd"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setFuelAdd(rs.getInt("FuelAdd"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setTotalFuel(rs.getFloat("TotalFuel"));
-        } catch (SQLException ex) {
-            ;
-        }
-
-        try {
-            flock.setWaterBegin(rs.getInt("WaterBegin"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setWaterEnd(rs.getInt("WaterEnd"));
-        } catch (SQLException ex) {
-            ;
-        }
-
-        try {
-            flock.setFeedAdd(rs.getInt("FeedAdd"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setTotalFeed(rs.getFloat("TotalFeed"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setCostWater(rs.getFloat("CostWater"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setQuantityWater(rs.getInt("QuantityWater"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setTotalWater(rs.getFloat("TotalWater"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setElectBegin(rs.getInt("ElectBegin"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setElectEnd(rs.getInt("ElectEnd"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setCostElect(rs.getFloat("CostElect"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setQuantityElect(rs.getInt("QuantityElect"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setTotalElect(rs.getFloat("TotalElect"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setSpreadAdd(rs.getInt("SpreadAdd"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setTotalSpread(rs.getFloat("TotalSpread"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setTotalLabor(rs.getFloat("TotalLabor"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setTotalMedic(rs.getFloat("TotalMedic"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setExpenses(rs.getFloat("Expenses"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setRevenues(rs.getFloat("Revenues"));
-        } catch (SQLException ex) {
-            ;
-        }
-        try {
-            flock.setCurrency(rs.getString("Currency"));
-        } catch (SQLException ex) {
-            ;
-        }
-        return flock;
-    }
-
-    /**
-     * Help to create list of flocks from result set
-     *
-     * @param rs a result set
-     * @return users a list of Flock objects
-     * @throws java.sql.SQLException
-     */
-    private List<Flock> makeFlockList(ResultSet rs) throws SQLException {
-        List<Flock> flocks = new ArrayList<Flock>();
-
-        while (rs.next()) {
-            flocks.add(makeFlock(rs));
-        }
-
-        return flocks;
+    public FlockDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("flocks");
+        this.dao = dao;
     }
 
     @Override
     public void insert(Flock flock) throws SQLException {
-        String sqlQuery =
-                "insert into flocks (FlockID,ControllerID,Name,Status,StartDate,EndDate) values (?,?,?,?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setObject(1, null);
-            prepstmt.setLong(2, flock.getControllerId());
-            prepstmt.setString(3, flock.getFlockName());
-            prepstmt.setString(4, flock.getStatus());
-            prepstmt.setString(5, flock.getStartTime());
-            prepstmt.setString(6, flock.getEndTime());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Can not Add New Flcok To The DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Creating flock with id [{}]", flock.getFlockId());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("flockid", flock.getFlockId());
+        valuesToInsert.put("controllerid", flock.getControllerId());
+        valuesToInsert.put("name", flock.getFlockName());
+        valuesToInsert.put("status", flock.getStatus());
+        valuesToInsert.put("startdate", flock.getStartTime());
+        valuesToInsert.put("enddate", flock.getEndTime());
+        jdbcInsert.execute(valuesToInsert);
     }
 
     @Override
     public void update(Flock flock) throws SQLException {
-        String sqlQuery =
-                "update flocks set ControllerId=?, Name=?, Status=?,StartDate=?,EndDate=? where FlockID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, flock.getControllerId());
-            prepstmt.setString(2, flock.getFlockName());
-            prepstmt.setString(3, flock.getStatus());
-            prepstmt.setString(4, flock.getStartTime());
-            prepstmt.setString(5, flock.getEndTime());
-            prepstmt.setLong(6, flock.getFlockId());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.getConnection();
-
-            throw new SQLException("Cannot Update Flock In DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        String sql = "update flocks set ControllerId=?, Name=?, Status=?,StartDate=?,EndDate=? where FlockID=?";
+        logger.debug("Update flock with id [{}]", flock.getFlockId());
+        jdbcTemplate.update(sql,
+                new Object[]{flock.getControllerId(), flock.getFlockName(), flock.getStatus(), flock.getStartTime(),
+                        flock.getEndTime()});
     }
 
     @Override
     public void remove(Long flockId) throws SQLException {
-        String sqlQuery = "delete from flocks where FlockID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, flockId);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Remove Flock From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        Validate.notNull(flockId, "Flock ID can not be null");
+        logger.debug("Delete flock with id [{}]", flockId);
+        int i = jdbcTemplate.update("delete from flocks where FlockID=?", new Object[]{flockId});
     }
 
     @Override
-    public Flock getById(Long flockId) throws SQLException {
-        String sqlQuery = "select * from flocks where FlockID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
+    public void updateFlockDetail(Flock flock) throws SQLException {
+        String sql = "update flocks set "
+                + "QuantityMale=?, QuantityFemale=?, QuantityElect=?, QuantitySpread=?, QuantityWater=?, "
+                + "ElectBegin=?, ElectEnd=?, FuelBegin=?, FuelEnd=?, GasBegin=?, GasEnd=?, WaterBegin=?, "
+                + "WaterEnd=?, CostChickMale=?, CostChickFemale=?, CostElect=?, CostFuel=?, CostFuelEnd=?, CostGas=?, "
+                + "CostGasEnd=?, CostWater=?, CostSpread=?, CostMaleKg=?, FuelAdd=?, GasAdd=?, FeedAdd=?, SpreadAdd=?, "
+                + "Expenses=?, Revenues=?, "
+                + "TotalElect=?, TotalFuel=?, TotalGas=?, TotalWater=?, TotalSpread=?, TotalMedic=?, TotalChicks=?, "
+                + "TotalLabor=?, TotalFeed=?,  Currency=? where FlockID=? ";
 
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, flockId);
-            ResultSet rs = prepstmt.executeQuery();
-            if (rs.next()) {
-                return makeFlock(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
+        logger.debug("Update flock details with id [{}]", flock.getFlockId());
+        jdbcTemplate.update(sql,
+                new Object[]{
+                        flock.getQuantityMale(),
+                        flock.getQuantityFemale(),
+                        flock.getQuantityElect(),
+                        flock.getQuantitySpread(),
+                        flock.getQuantityWater(),
+                        flock.getElectBegin(),
+                        flock.getElectEnd(),
+                        flock.getFuelBegin(),
+                        flock.getFuelEnd(),
+                        flock.getGasBegin(),
+                        flock.getGasEnd(),
+                        flock.getWaterBegin(),
+                        flock.getWaterEnd(),
+                        flock.getCostChickMale(),
+                        flock.getCostChickFemale(),
+                        flock.getCostElect(),
+                        flock.getCostFuel(),
+                        flock.getCostFuelEnd(),
+                        flock.getCostGas(),
+                        flock.getCostGasEnd(),
+                        flock.getCostWater(),
+                        flock.getCostSpread(),
+                        flock.getCostMaleKg(),
+                        flock.getFuelAdd(),
+                        flock.getGasAdd(),
+                        flock.getFeedAdd(),
+                        flock.getSpreadAdd(),
+                        flock.getExpenses(),
+                        flock.getRevenues(),
+                        flock.getTotalElect(),
+                        flock.getTotalFuel(),
+                        flock.getTotalGas(),
+                        flock.getTotalWater(),
+                        flock.getTotalSpread(),
+                        flock.getTotalMedic(),
+                        flock.getTotalChicks(),
+                        flock.getTotalLabor(),
+                        flock.getTotalFeed(),
+                        flock.getCurrency(),
+                        flock.getFlockId()
 
-            throw new SQLException("Cannot Retrieve Users From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+                });
     }
 
     @Override
-    public Flock getOpenFlockByController(Long controllerId) throws SQLException {
-        String sqlQuery = "select * from flocks where ControllerID=? and Status='Open'";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, controllerId);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return makeFlock(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Users From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    @Override
-    public Integer getUpdatedGrowDayHistory(Long flockId) throws SQLException {
-        String sqlQuery = "select growday from flockhistory "
-                + "where flockid=? and growday = "
-                + "(select max(GrowDay) from flockhistory where FlockID=?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, flockId);
-            prepstmt.setLong(2, flockId);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return Integer.parseInt(rs.getString("growday"));
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Execute Query");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    @Override
-    public Integer getUpdatedGrowDayHistory24(Long flockId) throws SQLException {
-        String sqlQuery = "select max(growday) as growday from flockhistory24 "
-                + " where flockid=? and DNum ="
-                + " (select max(DNum) from flockhistory24 where FlockID=?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, flockId);
-            prepstmt.setLong(2, flockId);
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                try {
-                    return Integer.parseInt(rs.getString("growday"));
-                } catch (Exception e) {
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Users From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+    public void close(Long flockId, String endDate) throws SQLException {
+        String sql = "update flocks set Status='Close' , EndDate=? where FlockID=? ";
+        Validate.notNull(flockId, "Flock ID can not be null");
+        logger.debug("Close flock with id [{}]", flockId);
+        jdbcTemplate.update(sql, new Object[]{flockId, endDate});
     }
 
     @Override
     public void updateHistoryByGrowDay(Long flockId, Integer growDay, String values) throws SQLException {
-        String sqlQuery = "insert into flockhistory (FlockID,GrowDay,HistoryData) "
+        Validate.notNull(flockId, "Flock ID can not be null");
+        logger.debug("Update history by grow day in flock with id [{}]", flockId);
+        String sql = "insert into flockhistory (FlockID,GrowDay,HistoryData) "
                 + "VALUES (?,?,?) on duplicate key update HistoryData=VALUES(HistoryData)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
+        jdbcTemplate.update(sql, new Object[]{flockId, growDay, values});
 
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, flockId);
-            prepstmt.setInt(2, growDay);
-            prepstmt.setString(3, values);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Update flock history error ", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
     }
 
     @Override
     public void updateHistory24ByGrowDay(Long flockId, Integer growDay, String dnum, String values) throws SQLException {
-        String sqlQuery = "insert into flockhistory24 (FlockID, GrowDay, DNum, HistoryData) "
+        logger.debug("Update history 24 hours by grow day in flock with id [{}]", flockId);
+        String sql = "insert into flockhistory24 (FlockID, GrowDay, DNum, HistoryData) "
                 + "values (?,?,?,?) on duplicate key update HistoryData=values(HistoryData)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
+        jdbcTemplate.update(sql, new Object[]{flockId, growDay, dnum, values});
 
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, flockId);
-            prepstmt.setInt(2, growDay);
-            prepstmt.setString(3, dnum);
-            prepstmt.setString(4, values);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
+    }
 
-            throw new SQLException("Update flock history 24 hours error.", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+    @Override
+    public void removeAllHistoryInFlockByGrowDay(Long flockId, Integer growDay) throws SQLException {
+        logger.debug("Delete flock history in flock with id [{}]", flockId);
+        String sql = "delete from flockhistory where flockid=? and growday=?";
+        jdbcTemplate.update(sql, new Object[]{flockId, growDay});
+    }
+
+    @Override
+    public void removeAllHistoryInFlock(Long flockId) throws SQLException {
+        String sql = "delete from flockhistory where flockid=?";
+        logger.debug("Delete flock history in flock with id [{}]", flockId);
+        jdbcTemplate.update(sql, new Object[]{flockId});
+    }
+
+    @Override
+    public void removeAllHistoryOf24hourInFlock(Long flockId) throws SQLException {
+        String sql = "delete from flockhistory24 where flockid=?";
+        logger.debug("Delete flock history 24 hour in flock with id [{}]", flockId);
+        jdbcTemplate.update(sql, new Object[]{flockId});
     }
 
     public Integer getUpdatedGrowDay(Long flockId) throws SQLException {
-        String sqlQuery = "select growday from flockhistory where growday = "
+        String sql = "select growday from flockhistory where growday = "
                 + "(select max(GrowDay) from flockhistory where FlockID=?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
+        logger.debug("Get last updated history grow day in flock with id [{}]", flockId);
+        return jdbcTemplate.queryForInt(sql, new Object[]{flockId}, Integer.class);
+    }
 
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, flockId);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return Integer.parseInt(rs.getString("growday"));
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Users From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+    @Override
+    public Integer getUpdatedGrowDayHistory(Long flockId) throws SQLException {
+        String sql = "select growday from flockhistory where flockid=? and growday = "
+                + "(select max(GrowDay) from flockhistory where flockid=?)";
+        logger.debug("Get last updated history grow day in flock with id [{}]", flockId);
+        List<Integer> result = jdbcTemplate.queryForList(sql, new Object[]{flockId, flockId}, Integer.class);
+        if (result.isEmpty()) {
+            return null;
         }
+        return result.get(0);
+    }
+
+    @Override
+    public Integer getUpdatedGrowDayHistory24(Long flockId) throws SQLException {
+        String sql = "select max(growday) as growday from flockhistory24  where flockid=? and DNum ="
+                + " (select max(DNum) from flockhistory24 where FlockID=?)";
+        logger.debug("Get last updated history of 24 hours grow day in flock with id [{}]", flockId);
+        return jdbcTemplate.queryForInt(sql, new Object[]{flockId}, Integer.class);
+    }
+
+    @Override
+    public Integer getResetTime(Long flockId, Integer growDay) throws SQLException {
+        String sql = "select historydata from flockhistory24 where FlockID=? and GrowDay=? and DNum='D70'";
+        logger.debug("Get reset time for history data in flock with id [{}]", flockId);
+        return jdbcTemplate.queryForInt(sql, new Object[]{flockId, growDay}, Integer.class);
     }
 
     @Override
@@ -527,34 +210,14 @@ public class FlockDaoImpl implements FlockDao {
     }
 
     @Override
-    public Collection<Flock> getAll() throws SQLException {
-        String sqlQuery = "select * from flocks ";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sqlQuery);
-            return makeFlockList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Flocks From DataBase");
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
-    }
-
-    @Override
     public Map<Integer, String> getAllHistoryByFlock(Long flockId) throws SQLException {
-        String sqlQuery = "select * from flockhistory where flockid=?";
+        String sql = "select * from flockhistory where flockid=?";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
         try {
             con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
+            prepstmt = con.prepareStatement(sql);
             prepstmt.setLong(1, flockId);
             ResultSet rs = prepstmt.executeQuery();
             Map<Integer, String> historyByGrowDay = new TreeMap<Integer, String>();
@@ -575,7 +238,7 @@ public class FlockDaoImpl implements FlockDao {
 
     @Override
     public Map<Integer, String> getAllHistoryByFlock(Long flockId, int fromDay, int toDay) throws SQLException {
-        String sqlQuery = "select * from flockhistory where flockid=? and growday between ? and ?";
+        String sql = "select * from flockhistory where flockid=? and growday between ? and ?";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -586,7 +249,7 @@ public class FlockDaoImpl implements FlockDao {
 
         try {
             con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
+            prepstmt = con.prepareStatement(sql);
             prepstmt.setLong(1, flockId);
             prepstmt.setLong(2, fromDay);
             prepstmt.setLong(3, toDay);
@@ -611,13 +274,13 @@ public class FlockDaoImpl implements FlockDao {
 
     @Override
     public Map<Integer, String> getAllHistory24ByFlockAndDnum(Long flockId, String dnum) throws SQLException {
-        String sqlQuery = "select * from flockhistory24 where  flockid=? and dnum=?";
+        String sql = "select * from flockhistory24 where  flockid=? and dnum=?";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
         try {
             con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
+            prepstmt = con.prepareStatement(sql);
             prepstmt.setLong(1, flockId);
             prepstmt.setString(2, dnum);
             ResultSet rs = prepstmt.executeQuery();
@@ -637,21 +300,26 @@ public class FlockDaoImpl implements FlockDao {
         }
     }
 
-    @Override
-    public void removeHistoryByGrowDay(Long flockId, Integer growDay) throws SQLException {
-        String sqlQuery = "delete from flockhistory where flockid=? and growday=?";
+    public List<Integer> getHistory24GrowDays(Long flockId) throws SQLException {
+        String sql = "select distinct growday from flockhistory24 where flockid=?";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
         try {
             con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
+            prepstmt = con.prepareStatement(sql);
             prepstmt.setLong(1, flockId);
-            prepstmt.setLong(2, growDay);
-            prepstmt.executeUpdate();
+            ResultSet rs = prepstmt.executeQuery();
+
+            List<Integer> growDays = new ArrayList<Integer>();
+            while (rs.next()) {
+                Integer growDay = rs.getInt("GrowDay");
+                growDays.add(growDay);
+            }
+            return growDays;
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException("Cannot Remove Flock History On Grow Day " + growDay + " From DataBase");
+            throw new SQLException("Cannot Retrieve Users From DataBase");
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -659,19 +327,24 @@ public class FlockDaoImpl implements FlockDao {
     }
 
     @Override
-    public void removeHistoryByFlock(Long flockId) throws SQLException {
-        String sqlQuery = "delete from flockhistory where flockid=?";
+    public String getDNHistory24(String dn) throws SQLException {
+        String sql = "select name from historyn where dn=?";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
         try {
             con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, flockId);
-            prepstmt.executeUpdate();
+            prepstmt = con.prepareStatement(sql);
+            prepstmt.setString(1, dn);
+            ResultSet rs = prepstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("name");
+            } else {
+                return "";
+            }
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException("Cannot Remove Flock History From DataBase");
+            throw new SQLException("Cannot Retrieve values from History24 table", e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -679,19 +352,26 @@ public class FlockDaoImpl implements FlockDao {
     }
 
     @Override
-    public void removeHistory24ByFlock(Long flockId) throws SQLException {
-        String sqlQuery = "delete from flockhistory24 where flockid=?";
+    public String getHistory24(Long flockId, Integer growDay, String dn) throws SQLException {
+        String sql = "select * from flockhistory24 where flockid=? and growday=? and dnum=?";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
         try {
             con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
+            prepstmt = con.prepareStatement(sql);
             prepstmt.setLong(1, flockId);
-            prepstmt.executeUpdate();
+            prepstmt.setInt(2, growDay);
+            prepstmt.setString(3, dn);
+            ResultSet rs = prepstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("HistoryData");
+            } else {
+                return "";
+            }
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException("Cannot Remove Flock History 24 hour From DataBase");
+            throw new SQLException("Cannot Retrieve values from History24 table", e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -699,71 +379,38 @@ public class FlockDaoImpl implements FlockDao {
     }
 
     @Override
-    public void updateFlockDetail(Flock flock) throws SQLException {
-        String sqlQuery = "update flocks set "
-                + " QuantityMale=?, QuantityFemale=?, QuantityElect=?, QuantitySpread=?, QuantityWater=?, "
-                + " ElectBegin=?, ElectEnd=?, FuelBegin=?, FuelEnd=?, GasBegin=?, GasEnd=?, WaterBegin=?, WaterEnd=?, "
-                + " CostChickMale=?, CostChickFemale=?, CostElect=?, CostFuel=?, CostFuelEnd=?, CostGas=?, CostGasEnd=?,"
-                + " CostWater=?, CostSpread=?, CostMaleKg=?,"
-                + " FuelAdd=?, GasAdd=?, FeedAdd=?, SpreadAdd=?, "
-                + " Expenses=?, Revenues=?, "
-                + " TotalElect=?, TotalFuel=?, TotalGas=?, TotalWater=?, TotalSpread=?, TotalMedic=?, TotalChicks=?, "
-                + " TotalLabor=?, TotalFeed=?, "
-                + " Currency=? "
-                + " where FlockID=? ";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setInt(1, flock.getQuantityMale());
-            prepstmt.setInt(2, flock.getQuantityFemale());
-            prepstmt.setInt(3, flock.getQuantityElect());
-            prepstmt.setInt(4, flock.getQuantitySpread());
-            prepstmt.setInt(5, flock.getQuantityWater());
-            prepstmt.setInt(6, flock.getElectBegin());
-            prepstmt.setInt(7, flock.getElectEnd());
-            prepstmt.setInt(8, flock.getFuelBegin());
-            prepstmt.setInt(9, flock.getFuelEnd());
-            prepstmt.setInt(10, flock.getGasBegin());
-            prepstmt.setInt(11, flock.getGasEnd());
-            prepstmt.setInt(12, flock.getWaterBegin());
-            prepstmt.setInt(13, flock.getWaterEnd());
-            prepstmt.setFloat(14, flock.getCostChickMale());
-            prepstmt.setFloat(15, flock.getCostChickFemale());
-            prepstmt.setFloat(16, flock.getCostElect());
-            prepstmt.setFloat(17, flock.getCostFuel());
-            prepstmt.setFloat(18, flock.getCostFuelEnd());
-            prepstmt.setFloat(19, flock.getCostGas());
-            prepstmt.setFloat(20, flock.getCostGasEnd());
-            prepstmt.setFloat(21, flock.getCostWater());
-            prepstmt.setFloat(22, flock.getCostSpread());
-            prepstmt.setFloat(23, flock.getCostMaleKg());
-            prepstmt.setInt(24, flock.getFuelAdd());
-            prepstmt.setInt(25, flock.getGasAdd());
-            prepstmt.setInt(26, flock.getFeedAdd());
-            prepstmt.setFloat(27, flock.getSpreadAdd());
-            prepstmt.setFloat(28, flock.getExpenses());
-            prepstmt.setFloat(29, flock.getRevenues());
-            prepstmt.setFloat(30, flock.getTotalElect());
-            prepstmt.setFloat(31, flock.getTotalFuel());
-            prepstmt.setFloat(32, flock.getTotalGas());
-            prepstmt.setFloat(33, flock.getTotalWater());
-            prepstmt.setFloat(34, flock.getTotalSpread());
-            prepstmt.setFloat(35, flock.getTotalMedic());
-            prepstmt.setFloat(36, flock.getTotalChicks());
-            prepstmt.setFloat(37, flock.getTotalLabor());
-            prepstmt.setFloat(38, flock.getTotalFeed());
-            prepstmt.setString(39, flock.getCurrency());
-            prepstmt.setLong(40, flock.getFlockId());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Update FlockDto In DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+    public Flock getById(Long flockId) throws SQLException {
+        logger.debug("Get flock with id [{}]", flockId);
+        String sql = "select * from flocks where FlockID=?";
+        List<Flock> flocks = jdbcTemplate.query(sql, new Object[]{flockId}, RowMappers.flock());
+        if (flocks.isEmpty()) {
+            return null;
         }
+        return flocks.get(0);
+    }
+
+    @Override
+    public Flock getOpenFlockByController(Long controllerId) throws SQLException {
+        logger.debug("Get open flock that belongs to controller with id [{}]", controllerId);
+        String sql = "select * from flocks where ControllerID=? and Status='Open'";
+        List<Flock> flocks = jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.flock());
+        if (flocks.isEmpty()) {
+            return null;
+        }
+        return flocks.get(0);
+    }
+
+    @Override
+    public Collection<Flock> getAll() throws SQLException {
+        logger.debug("Get all flocks");
+        String sql = "select * from flocks ";
+        return jdbcTemplate.query(sql, RowMappers.flock());
+    }
+
+    @Override
+    public Collection<Flock> getAllFlocksByController(Long controllerId) throws SQLException {
+        String sql = "select * from flocks where ControllerID=?";
+        logger.debug("Get all flocks that belongs to controller with id [{}]", controllerId);
+        return jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.flock());
     }
 }

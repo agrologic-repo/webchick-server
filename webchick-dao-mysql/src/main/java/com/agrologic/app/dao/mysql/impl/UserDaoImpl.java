@@ -21,9 +21,9 @@ import java.util.Map;
 public class UserDaoImpl implements UserDao {
 
     protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
+    protected final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
+    protected final SimpleJdbcInsert jdbcInsert;
 
     public UserDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
         this.jdbcTemplate = jdbcTemplate;
@@ -39,6 +39,9 @@ public class UserDaoImpl implements UserDao {
     public void insert(User user) throws SQLException {
         logger.debug("Creating user with id [{}]", user.getLogin());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        if (user.getId() != null) {
+            valuesToInsert.put("userid", user.getId());
+        }
         valuesToInsert.put("name", user.getLogin());
         valuesToInsert.put("password", user.getPassword());
         valuesToInsert.put("firstname", user.getFirstName());

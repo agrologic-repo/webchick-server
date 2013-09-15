@@ -1,18 +1,11 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.AlarmDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.LanguageDao;
-import com.agrologic.app.dao.impl.LanguageDaoImpl;
 import com.agrologic.app.model.Alarm;
-import com.agrologic.app.model.LanguageDto;
+import com.agrologic.app.model.Language;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -23,15 +16,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class ListAlarms extends HttpServlet {
 
     /**
@@ -66,8 +53,8 @@ public class ListAlarms extends HttpServlet {
                         translateLang = 1;    // default program
                     }
 
-                    LanguageDao langDao = new LanguageDaoImpl();
-                    List<LanguageDto> languages = langDao.geAll();
+                    LanguageDao langDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+                    Collection<Language> languages = langDao.geAll();
                     request.getSession().setAttribute("languages", languages);
                     logger.debug("retrieved languages!");
 

@@ -6,35 +6,51 @@ import java.util.Map;
 
 public class CellinkState {
     public static final int STATE_OFFLINE = 0;
-    public static final int STATE_ONLINE  = 1;
-    public static final int STATE_RESTART = 6;
+    public static final int STATE_ONLINE = 1;
+    public static final int STATE_START = 2;
     public static final int STATE_RUNNING = 3;
-    public static final int STATE_START   = 2;
-    public static final int STATE_STOP    = 4;
+    public static final int STATE_STOP = 4;
     public static final int STATE_UNKNOWN = 5;
+    public static final int STATE_RESTART = 6;
 
-    /** Data transferring state requested . */
+    /**
+     * Data transferring state requested .
+     */
     public static final CellinkState START = new CellinkState(STATE_START);
 
-    /** Cellink  running in data transferring state. */
+    /**
+     * Cellink  running in data transferring state.
+     */
     public static final CellinkState RUNNING = new CellinkState(STATE_RUNNING);
 
-    /** Cellink connected in keep alive mode */
+    /**
+     * Cellink connected in keep alive mode
+     */
     public static final CellinkState ONLINE = new CellinkState(STATE_ONLINE);
 
-    /** The cellink not connected. */
+    /**
+     * The cellink not connected.
+     */
     public static final CellinkState OFFLINE = new CellinkState(STATE_OFFLINE);
 
-    /** Map of Strings to CellinkState objects. */
+    /**
+     * Map of Strings to CellinkState objects.
+     */
     private static final Map CELLINK_STATES_MAP = new HashMap();
 
-    /** The cellink is stopped. */
+    /**
+     * The cellink is stopped.
+     */
     public static final CellinkState STOP = new CellinkState(STATE_STOP);
 
-    /** The unkown state */
+    /**
+     * The unkown state
+     */
     public static final CellinkState UNKNOWN = new CellinkState(STATE_UNKNOWN);
 
-    /** The restart state */
+    /**
+     * The restart state
+     */
     public static final CellinkState RESTART = new CellinkState(STATE_RESTART);
 
     // initialize a String -> CellinkState map
@@ -64,6 +80,7 @@ public class CellinkState {
 
     /**
      * Convert a CellinkState to a String object.
+     *
      * @param state The CellinkState
      * @return The String or null
      */
@@ -73,6 +90,7 @@ public class CellinkState {
 
     /**
      * Convert a CellinkState to a String object.
+     *
      * @param state The CellinkState
      * @return The String or null
      */
@@ -92,6 +110,7 @@ public class CellinkState {
 
     /**
      * Convert a String to a CellinkState object.
+     *
      * @param str The String
      * @return The CellinkState or null
      */
@@ -101,6 +120,7 @@ public class CellinkState {
 
     /**
      * Convert a int to a CellinkState object.
+     *
      * @param i the state
      * @return cellink state
      */
@@ -125,26 +145,26 @@ public class CellinkState {
     @Override
     public String toString() {
         switch (value) {
-        case STATE_OFFLINE :
-            return "Offline";
+            case STATE_OFFLINE:
+                return "Offline";
 
-        case STATE_ONLINE :
-            return "Online";
+            case STATE_ONLINE:
+                return "Online";
 
-        case STATE_START :
-            return "Started";
+            case STATE_START:
+                return "Started";
 
-        case STATE_RUNNING :
-            return "Running";
+            case STATE_RUNNING:
+                return "Running";
 
-        case STATE_STOP :
-            return "Stopped";
+            case STATE_STOP:
+                return "Stopped";
 
-        case STATE_RESTART :
-            return "Restart";
+            case STATE_RESTART:
+                return "Restart";
 
-        default :
-            return "Unknown";
+            default:
+                return "Unknown";
         }
     }
 }

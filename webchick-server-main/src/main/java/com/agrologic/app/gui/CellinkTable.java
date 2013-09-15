@@ -1,11 +1,4 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui;
-
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoType;
@@ -86,11 +79,6 @@ public final class CellinkTable extends JTable {
                         int length = (cellinkModel.size() < cellinkListTemp.size())
                                 ? cellinkModel.size()
                                 : cellinkListTemp.size();
-
-                        if (cellinkModel.size() < cellinkListTemp.size()) {
-                            System.out.println();
-                        }
-
                         cellinkModel.addAndRemoveAbsent(cellinkListTemp);
                         cellinkModel.setReloadChanges(length, cellinkListTemp);
                     }
@@ -134,11 +122,9 @@ public final class CellinkTable extends JTable {
             if (i == row) {
                 try {
                     Cellink cellink = list.get(i);
-
                     cellink.setState(state);
                     cellinkDao.update(cellink);
                     list.get(i).setState(state);
-
                     break;
                 } catch (SQLException e) {
                     JOptionPane.showMessageDialog(CellinkTable.this, "Database Error\nFor details check log file .");

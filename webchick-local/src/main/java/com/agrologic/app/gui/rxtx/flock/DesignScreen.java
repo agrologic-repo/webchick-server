@@ -12,7 +12,7 @@ import com.agrologic.app.util.Windows;
 
 import javax.swing.*;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 
 public class DesignScreen extends javax.swing.JDialog {
 
@@ -28,7 +28,7 @@ public class DesignScreen extends javax.swing.JDialog {
         progressBar.setVisible(false);
         controllerDao = DbImplDecider.use(DaoType.DERBY).getDao(ControllerDao.class);
         try {
-            List<Controller> controllers = (List<Controller>) controllerDao.getAll();
+            Collection<Controller> controllers = controllerDao.getAll();
             cmbHouses.addItem("");
             for (Controller c : controllers) {
                 ControllerEntry ce = new ControllerEntry(c.getId(), "<html>" + c.getTitle() + "</html>");

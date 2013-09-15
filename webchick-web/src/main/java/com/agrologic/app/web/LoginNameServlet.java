@@ -1,12 +1,8 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.impl.UserDaoImpl;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.UserDao;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,12 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class LoginNameServlet extends HttpServlet {
+//    Logger logger = LoggerFactory.getLogger(LoginNameServlet.class);
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -35,20 +27,23 @@ public class LoginNameServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
-
+        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LoginNameServlet.class);
         try {
-            UserDaoImpl udi = new UserDaoImpl();
+            UserDao udi = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
+            ;
             String login = request.getParameter("loginName");
-            boolean isOk = udi.checkNewLoginName(login);
+            boolean isOk = udi.loginEnabled(login);
 
             response.setContentType("text/xml");
             response.setHeader("Cache-Control", "no-cache");
             out.print("<message>");
-
+            logger.debug("Checking login name {} " + login);
             if (isOk) {
                 out.print("login valid");
+                logger.debug("Login name {}  valid " + login);
             } else {
                 out.print("login invalid, choose another name");
+                logger.debug("Login name {}  invalid " + login);
             }
 
             out.println("</message>");
@@ -59,6 +54,7 @@ public class LoginNameServlet extends HttpServlet {
             out.print("<message>");
             out.print("exception");
             out.println("</message>");
+            logger.debug("Exception occur ");
         }
     }
 

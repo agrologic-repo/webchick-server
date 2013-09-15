@@ -6,43 +6,27 @@
 package com.agrologic.app.utils;
 
 
-
 import jxl.CellView;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
-
 import jxl.format.UnderlineStyle;
-
-import jxl.write.DateFormats;
-import jxl.write.DateTime;
-import jxl.write.Formula;
-import jxl.write.Label;
+import jxl.write.*;
 import jxl.write.Number;
-import jxl.write.NumberFormat;
-import jxl.write.NumberFormats;
-import jxl.write.WritableCellFormat;
-import jxl.write.WritableFont;
-import jxl.write.WritableImage;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.io.File;
 import java.io.IOException;
-
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+//~--- JDK imports ------------------------------------------------------------
+
 public class WriteExcelUtil {
-    private String             inputFile;
+    private String inputFile;
     private WritableCellFormat times;
     private WritableCellFormat timesBoldUnderline;
 
@@ -52,7 +36,7 @@ public class WriteExcelUtil {
 
     public void write() throws IOException, WriteException {
         try {
-            File             file       = new File(inputFile);
+            File file = new File(inputFile);
             WorkbookSettings wbSettings = new WorkbookSettings();
 
             wbSettings.setLocale(new Locale("en", "EN"));
@@ -64,8 +48,8 @@ public class WriteExcelUtil {
             WritableSheet excelSheet = workbook.getSheet(0);
 
             // WritableSheet s1 = workbook.createSheet("Report", 0);
-            URL  resource = getClass().getResource("16-Temp-Out.png");
-            File imgFile  = new File(resource.toURI());
+            URL resource = getClass().getResource("16-Temp-Out.png");
+            File imgFile = new File(resource.toURI());
 
             createLabel(excelSheet);
             createContent(excelSheet);
@@ -95,7 +79,7 @@ public class WriteExcelUtil {
         s.addCell(l);
 
         Formula f = new Formula(1, 15,
-                                "HYPERLINK(\"http://www.andykhan.com/jexcelapi\", " + "\"JExcelApi Home Page\")");
+                "HYPERLINK(\"http://www.andykhan.com/jexcelapi\", " + "\"JExcelApi Home Page\")");
 
         s.addCell(f);
     }
@@ -103,7 +87,7 @@ public class WriteExcelUtil {
     private static void writeDataSheet(WritableSheet s) throws WriteException {
 
         /* Format the Font */
-        WritableFont       wf = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
+        WritableFont wf = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
         WritableCellFormat cf = new WritableCellFormat(wf);
 
         cf.setWrap(true);
@@ -114,7 +98,7 @@ public class WriteExcelUtil {
         s.addCell(l);
 
         WritableCellFormat cf1 = new WritableCellFormat(DateFormats.FORMAT9);
-        DateTime           dt  = new DateTime(0, 1, new Date(), cf1, DateTime.GMT);
+        DateTime dt = new DateTime(0, 1, new Date(), cf1, DateTime.GMT);
 
         s.addCell(dt);
 
@@ -123,7 +107,7 @@ public class WriteExcelUtil {
         s.addCell(l);
 
         WritableCellFormat cf2 = new WritableCellFormat(NumberFormats.FLOAT);
-        Number             n   = new Number(2, 1, 3.1415926535, cf2);
+        Number n = new Number(2, 1, 3.1415926535, cf2);
 
         s.addCell(n);
         n = new Number(2, 2, -3.1415926535, cf2);
@@ -136,7 +120,7 @@ public class WriteExcelUtil {
         l = new Label(3, 0, "3dps", cf);
         s.addCell(l);
 
-        NumberFormat       dp3     = new NumberFormat("#.###");
+        NumberFormat dp3 = new NumberFormat("#.###");
         WritableCellFormat dp3cell = new WritableCellFormat(dp3);
 
         n = new Number(3, 1, 3.1415926535, dp3cell);
@@ -184,7 +168,7 @@ public class WriteExcelUtil {
 
         // Create create a bold font with unterlines
         WritableFont times10ptBoldUnderline = new WritableFont(WritableFont.TIMES, 10, WritableFont.BOLD, false,
-                                                  UnderlineStyle.SINGLE);
+                UnderlineStyle.SINGLE);
 
         timesBoldUnderline = new WritableCellFormat(times10ptBoldUnderline);
 

@@ -1,10 +1,9 @@
 
 /*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package com.agrologic.app.excel;
-
 
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
@@ -14,16 +13,12 @@ import java.util.*;
 public class DataForExcelCreator {
 
     /**
-     * Creates list with data object that holds the value from history24 string by hour.
+     * Creates list with data object that holds the value from history24 string
+     * by hour.
      *
-     * @param historyByGrowDayMap the history by grow day map
-     * @param data the object that encapsulate data.
-     * @return dataByGrowDay the data by grow day map
-     */
-    /**
-     * @param historyByHourMap
-     * @param format
-     * @return
+     * @param historyByHourMap the map of data id and 24 hour values
+     * @param format           the data format
+     * @return dataByHour the data per 24 hours
      */
     public static List<String> createDataHistory24List(final Map<Integer, String> historyByHourMap, final int format) {
         List<String> dataByHour = new ArrayList<String>();
@@ -37,7 +32,8 @@ public class DataForExcelCreator {
     }
 
     /**
-     * Creates list with data object that holds the value from history string by grow day.
+     * Creates list with data object that holds the value from history string by
+     * grow day.
      *
      * @param historyByGrowDayMap the history by grow day map
      * @param data                the object that encapsulate data.
@@ -47,33 +43,42 @@ public class DataForExcelCreator {
                                                      final Data data) {
         List<String> dataByGrowDay = new ArrayList<String>();
         Collection<String> stringValues = historyByGrowDayMap.values();
-
         for (String stringValue : stringValues) {
-            StringTokenizer token = new StringTokenizer(stringValue, " ");
+            // if history table was empty 
+            if (stringValue.equals("-1")) {
+                data.setValue(Long.parseLong("-1"));
+                String value = valueToString(data);
+                dataByGrowDay.add(value);
+            } else {
+                StringTokenizer token = new StringTokenizer(stringValue, " ");
+                boolean exist = false;
+                while (token.hasMoreElements()) {
+                    try {
+                        String dataElem = (String) token.nextElement();
+                        if (dataElem.equals(data.getType().toString())) {
+                            String svalue = (String) token.nextElement();
+                            data.setValue(Long.parseLong(svalue));
+                            String value = valueToString(data);
+                            dataByGrowDay.add(value);
+                            exist = true;
+                        } else {
+                            token.nextElement();
+                        }
+                    } catch (NoSuchElementException e) {
 
-            while (token.hasMoreElements()) {
-                try {
-                    String dataElem = (String) token.nextElement();
-
-                    if (dataElem.equals(data.getType().toString())) {
-                        String svalue = (String) token.nextElement();
-
-                        data.setValue(Long.parseLong(svalue));
-
-                        String value = valueToString(data);
-
-                        dataByGrowDay.add(value);
-                    } else {
-                        token.nextElement();
                     }
-                } catch (NoSuchElementException e) {
-                    e.printStackTrace();
+                }
+                // if data does not exist in history table
+                if (!exist) {
+                    data.setValue(Long.parseLong("-1"));
+                    String value = valueToString(data);
+                    dataByGrowDay.add(value);
                 }
             }
         }
-
         return dataByGrowDay;
     }
+
 
     /**
      * @param data
@@ -114,6 +119,3 @@ public class DataForExcelCreator {
         return dataByGrowDay;
     }
 }
-
-
-

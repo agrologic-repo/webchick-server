@@ -6,7 +6,6 @@
 package com.agrologic.app.dao.service.impl;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.TableDao;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.dao.service.DatabaseLoadAccessor;
 import com.agrologic.app.dao.service.DatabaseLoadable;
@@ -68,7 +67,7 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
                 }
             }
 
-            logger.debug("Alarm size : " + dba.getAlarmDao().getAll().size());
+//            logger.debug("Alarm size : " + dba.getAlarmDao().getAll().size());
 
             user = dba.getUserDao().getById(userId);
             if (cellinkId == -1) {
@@ -83,35 +82,46 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
             for (Cellink cellink : user.getCellinks()) {
                 // get controllers of cellink and add to cellink controller list
                 Collection<Controller> controllers = dba.getControllerDao().getActiveCellinkControllers(cellink.getId());
-                cellink.setControllers((List<Controller>) controllers);
+                cellink.setControllers((Collection<Controller>) controllers);
                 for (Controller controller : controllers) {
                     // get controller program and add to controller object
                     Program program = dba.getProgramDao().getById(controller.getProgramId());
                     controller.setProgram(program);
                     // get program relays and add to program object
-                    program.setProgramRelays((List) dba.getProgramRelayDao().getAllProgramRelays(controller.getProgramId(), langId));
+                    program.setProgramRelays((List) dba.getProgramRelayDao()
+                            .getAllProgramRelays(controller.getProgramId(), langId));
                     // get program alarms and add to program object
-                    program.setProgramAlarms((List) dba.getProgramAlarmDao().getAllProgramAlarms(controller.getProgramId(), langId));
+                    program.setProgramAlarms((List) dba.getProgramAlarmDao()
+                            .getAllProgramAlarms(controller.getProgramId(), langId));
                     // get program system states and add to program object
-                    program.setProgramSystemStates((List) dba.getProgramSystemStateDao().getAllProgramSystemStates(controller.getProgramId(), langId));
+                    program.setProgramSystemStates((List) dba.getProgramSystemStateDao()
+                            .getAllProgramSystemStates(controller.getProgramId(), langId));
                     // get program screens and add to program object
-                    Collection<Screen> screenList = dba.getScreenDao().getAllProgramScreens(controller.getProgramId(), langId);
+                    Collection<Screen> screenList = dba.getScreenDao().getAllProgramScreens(program.getId(), langId);
                     program.setScreens((List<Screen>) screenList);
                     for (Screen screen : screenList) {
                         // get screen tables and add to screen object
-                        List<Table> tableList = (List<Table>) dba.getTableDao().getAllScreenTables(controller.getProgramId(),
-                                screen.getId(), langId, TableDao.SHOW_CHECKED);
+                        List<Table> tableList = (List<Table>) dba.getTableDao()
+                                .getScreenTables(screen.getProgramId(), screen.getId(), langId, false);
                         for (Table table : tableList) {
                             // get table data and add to table object
-                            List<Data> dataList = (List<Data>) dba.getDataDao().getOnScreenDataList(controller.getProgramId(), screen.getId(), table.getId(), langId);
+
+                            List<Data> dataList = (List<Data>) dba.getDataDao()
+                                    .getOnScreenDataList(
+                                            table.getProgramId(),
+                                            table.getScreenId(),
+                                            table.getId(),
+                                            langId);
                             table.setDataList(dataList);
                         }
                         screen.setTables(tableList);
                     }
-                    List<Data> specialdataList = (List<Data>) dba.getDataDao().getSpecialData(controller.getProgramId(), langId);
+
+                    List<Data> specialdataList = (List<Data>) dba.getDataDao()
+                            .getSpecialData(controller.getProgramId(), langId);
                     program.setSpecialList(specialdataList);
 
-                    Collection<Data> dataList = dba.getDataDao().getControllerDataValues(controller.getId(), controller.getProgramId());
+                    Collection<Data> dataList = dba.getDataDao().getControllerDataValues(controller.getId());
                     Map<Long, Data> dataValues = new HashMap<Long, Data>();
                     for (Data d : dataList) {
                         dataValues.put(d.getId(), d);
@@ -124,6 +134,9 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
             logger.info(" Controller data was successfully loaded .");
         } catch (SQLException e) {
             // show error message
+            logger.info("Error during creation dao objects and/or loading data from database .\n", e);
+            throw new SQLException("Error during creation dao objects and/or loading data from database .\n", e);
+        } catch (Exception e) {
             logger.info("Error during creation dao objects and/or loading data from database .\n", e);
             throw new SQLException("Error during creation dao objects and/or loading data from database .\n", e);
         }
@@ -144,11 +157,9 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
         try {
             user = dba.getUserDao().getById(userId);
             Cellink cellink = dba.getCellinkDao().getById(cellinkId);
-            List<Controller> controllers =
-                    (List<Controller>) dba.getControllerDao().getActiveCellinkControllers(cellink.getId());
+            Collection<Controller> controllers = dba.getControllerDao().getActiveCellinkControllers(cellink.getId());
             for (Controller controller : controllers) {
-                Collection<Data> dataList = dba.getDataDao().getControllerDataValues(controller.getId(),
-                        controller.getProgramId());
+                Collection<Data> dataList = dba.getDataDao().getControllerDataValues(controller.getId());
                 Map<Long, Data> dataValues = new HashMap<Long, Data>();
                 for (Data d : dataList) {
                     dataValues.put(d.getId(), d);
@@ -209,7 +220,6 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
     @Override
     public void notifyOfThreadComplete(Thread thread) {
         threadCount--;
-        System.out.println("Threads in system" + threadCount);
     }
 
     abstract class NotifyingThread extends Thread {
@@ -238,7 +248,6 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
         public final void run() {
             try {
                 threadCount++;
-                System.out.println("Threads in system : " + threadCount);
                 doRun();
             } finally {
                 notifyListeners();

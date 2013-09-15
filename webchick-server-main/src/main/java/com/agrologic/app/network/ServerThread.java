@@ -54,6 +54,7 @@ public class ServerThread extends Observable implements Runnable {
             Integer port = configuration.getPort();
             logger.info("Try to open server on port : " + port);
             server = new ServerSocket(port, MAX_NUM_SOCKET, ia);
+            server.setSoTimeout(SERVER_SOCKET_TIMEOUT);
             logger.info("ServerSocket opened on " + server.getLocalSocketAddress());
             return true;
         } catch (BindException ex) {
@@ -103,7 +104,8 @@ public class ServerThread extends Observable implements Runnable {
                 case RUNNING:
                     try {
                         Socket socket = server.accept();//start client session
-                        SocketThread newThread = clientSessions.createSessionWithClient(socket);
+                        SocketThread newThread = clientSessions
+                                .createSessionWithClient(socket);
                         setChanged();
                         notifyObservers(newThread);
                     } catch (SocketException ex) {

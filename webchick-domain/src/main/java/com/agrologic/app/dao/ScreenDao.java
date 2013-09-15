@@ -151,7 +151,7 @@ public interface ScreenDao {
     /**
      * @see ScreenDao#getAllScreensByProgramAndLang(Long, Long, boolean)
      */
-    Collection<Screen> getAllScreensByProgramAndLang(Long programId, Long langId, boolean showAll) throws SQLException;
+    Collection<Screen> getAllScreensByProgramAndLang(Long programId, Long langId, boolean displayOnPage) throws SQLException;
 
     /**
      * Retrieve all screens from database.

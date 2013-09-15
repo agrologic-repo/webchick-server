@@ -7,17 +7,14 @@ package com.agrologic.app.utils;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import java.sql.Timestamp;
 
-import javax.servlet.http.HttpServletResponse;
-
 /**
- *
  * @author JanL
  */
 public class FileDownloadUtil {
@@ -25,10 +22,10 @@ public class FileDownloadUtil {
             throws FileNotFoundException, IOException {
 
         // export action
-        String          filename        = outfile;
-        File            fileToDownload  = new File(filename);
+        String filename = outfile;
+        File fileToDownload = new File(filename);
         FileInputStream fileInputStream = new FileInputStream(fileToDownload);
-        Timestamp       dateTimestamp   = new Timestamp(System.currentTimeMillis());
+        Timestamp dateTimestamp = new Timestamp(System.currentTimeMillis());
 
         response.setContentType("application/octet-stream");
         response.setHeader("Content-disposition", "attachment; filename=" + outfile);
@@ -48,14 +45,14 @@ public class FileDownloadUtil {
             throws FileNotFoundException, IOException {
 
         // export action
-        String          filename        = outfile;
-        File            fileToDownload  = new File(filename);
+        String filename = outfile;
+        File fileToDownload = new File(filename);
         FileInputStream fileInputStream = new FileInputStream(fileToDownload);
-        Timestamp       dateTimestamp   = new Timestamp(System.currentTimeMillis());
+        Timestamp dateTimestamp = new Timestamp(System.currentTimeMillis());
 
         response.setContentType("application/octet-stream");
         response.setHeader("Content-disposition",
-                           "attachment; filename=" + outfile + dateTimestamp + "." + fileExtension);
+                "attachment; filename=" + outfile + dateTimestamp + "." + fileExtension);
 
         int i;
 

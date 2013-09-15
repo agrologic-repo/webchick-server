@@ -1,13 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
 import com.agrologic.app.dao.ActionSetDao;
-import com.agrologic.app.dao.impl.ActionSetDaoImpl;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.mysql.impl.ActionSetDaoImpl;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -18,11 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class AddActionsetTranslationForm extends HttpServlet {
 
     /**
@@ -53,11 +44,9 @@ public class AddActionsetTranslationForm extends HttpServlet {
                 String translate = request.getParameter("Ntranslate");
 
                 try {
-                    ActionSetDao actionsetDao = new ActionSetDaoImpl();
-
+                    ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDaoImpl.class);
                     actionsetDao.insertActionSetTranslation(valueId, langId, translate);
                 } catch (SQLException ex) {
-
                     // error page
                     logger.error("Error occurs while adding translation! ", ex);
                     request.getSession().setAttribute("message", "Error occurs while adding translation!");

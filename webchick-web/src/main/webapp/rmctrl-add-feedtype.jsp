@@ -9,14 +9,14 @@
 
 <jsp:directive.page import="com.agrologic.app.dao.FeedTypeDao"/>
 <jsp:directive.page import="com.agrologic.app.dao.impl.FeedTypeDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.FeedTypeDto"/>
+<jsp:directive.page import="com.agrologic.app.model.FeedType"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    FeedTypeDao feedTypeDao = new FeedTypeDaoImpl();
-    Collection<FeedTypeDto> feedTypeList = feedTypeDao.getAllByCellinkId(cellinkId);
+    FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDaoImpl.class);
+    Collection<FeedType> feedTypeList = feedTypeDao.getAllByCellinkId(cellinkId);
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
@@ -128,7 +128,7 @@
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
-            <%for (FeedTypeDto feedType : feedTypeList) {%>
+            <%for (FeedType feedType : feedTypeList) {%>
             <tr>
                 <td><%=feedType.getFeedType()%>
                 </td>

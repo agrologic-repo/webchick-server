@@ -17,10 +17,10 @@ import java.util.logging.Logger;
 /**
  * {Insert class description here}
  *
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
  * @author Valery Manakhimov
  * @author $Author: nbweb $, (this version)
+ * @version $Revision: 1.1.1.1 $
+ * @since Build {insert version here} (MM YYYY)
  */
 public class FlockManagerService {
 
@@ -39,7 +39,7 @@ public class FlockManagerService {
     private FlockDao flockDao;
     private ControllerDao controllerDao;
     private List<Flock> flocks = new ArrayList<Flock>();
-    private List<Controller> controllers = new ArrayList<Controller>();
+    private Collection<Controller> controllers = new ArrayList<Controller>();
 
     public FlockManagerService() {
         Configuration conf = new Configuration();
@@ -88,9 +88,25 @@ public class FlockManagerService {
 
     public void removeFlock(Flock flock) {
         try {
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+            System.out.println("remove flock ");
+
+            flockDao.removeAllHistoryInFlock(flock.getFlockId());
+            flockDao.removeAllHistoryOf24hourInFlock(flock.getFlockId());
             flockDao.remove(flock.getFlockId());
-            flockDao.removeHistoryByFlock(flock.getFlockId());
-            flockDao.removeHistory24ByFlock(flock.getFlockId());
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Flock does not exist", "Error", JOptionPane.ERROR);
         }
@@ -151,10 +167,10 @@ public class FlockManagerService {
         return flocks;
     }
 
-    public List<Controller> getControllers() {
+    public Collection<Controller> getControllers() {
         try {
             if (controllers == null || controllers.isEmpty()) {
-                controllers = (List<Controller>) controllerDao.getAllByCellink(cellinkId);
+                controllers = controllerDao.getAllByCellink(cellinkId);
             }
         } catch (SQLException ex) {
             Logger.getLogger(FlockManagerService.class.getName()).log(Level.SEVERE, null, ex);

@@ -6,18 +6,13 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.LaborDao;
-import com.agrologic.app.dao.WorkerDao;
-import com.agrologic.app.dao.impl.ControllerDaoImpl;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
-import com.agrologic.app.dao.impl.LaborDaoImpl;
-import com.agrologic.app.dao.impl.WorkerDaoImpl;
-import com.agrologic.app.model.ControllerDto;
-import com.agrologic.app.model.FlockDto;
-import com.agrologic.app.model.LaborDto;
-import com.agrologic.app.model.WorkerDto;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.mysql.impl.LaborDaoImpl;
+import com.agrologic.app.dao.mysql.impl.WorkerDaoImpl;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.Labor;
+import com.agrologic.app.model.Worker;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -27,13 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
 public class AddLaborFormServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -65,11 +56,10 @@ public class AddLaborFormServlet extends HttpServlet {
 
             try {
                 Long workerId = Long.parseLong(name);
-                WorkerDao workerDao = new WorkerDaoImpl();
-                WorkerDto worker = workerDao.getById(workerId);
-                LaborDao laborDao = new LaborDaoImpl();
-                LaborDto labor = new LaborDto();
-
+                WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDaoImpl.class);
+                Worker worker = workerDao.getById(workerId);
+                LaborDao laborDao = DbImplDecider.use(DaoType.MYSQL).getDao(LaborDaoImpl.class);
+                Labor labor = new Labor();
                 labor.setFlockId(flockId);
                 labor.setWorkerId(worker.getId());
                 labor.setDate(date);
@@ -82,25 +72,24 @@ public class AddLaborFormServlet extends HttpServlet {
                 laborDao.insert(labor);
                 logger.info("Labor added successfully to the database");
 
-                List<LaborDto> labors = laborDao.getAllByFlockId(flockId);
+                List<Labor> labors = laborDao.getAllByFlockId(flockId);
                 float totalLaborsSalary = 0;
 
-                for (LaborDto l : labors) {
+                for (Labor l : labors) {
                     totalLaborsSalary += l.getSalary();
                 }
 
-                FlockDao flockDao = new FlockDaoImpl();
-                FlockDto flock = flockDao.getById(flockId);
+                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                Flock flock = flockDao.getById(flockId);
 
                 flock.setTotalLabor(totalLaborsSalary);
                 flockDao.update(flock);
 
-                ControllerDao controllerDao = new ControllerDaoImpl();
-                List<ControllerDto> controllers = controllerDao.getAllByCellinkId(cellinkId);
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
 
-                for (ControllerDto controller : controllers) {
-                    List<FlockDto> flocks = flockDao.getAllFlocksByController(controller.getId());
-
+                for (Controller controller : controllers) {
+                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                     controller.setFlocks(flocks);
                 }
 

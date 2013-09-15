@@ -7,7 +7,7 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.model.UserDto;
+import com.agrologic.app.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -49,7 +49,7 @@ public class ClearControllerData extends HttpServlet {
             Long userId = Long.parseLong(request.getParameter("userId"));
             Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             Long controllerId = Long.parseLong(request.getParameter("controllerId"));
-            UserDto user = (UserDto) request.getSession().getAttribute("user");
+            User user = (User) request.getSession().getAttribute("user");
 
             try {
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);

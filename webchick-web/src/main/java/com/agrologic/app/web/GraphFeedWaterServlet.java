@@ -10,7 +10,6 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
-import com.agrologic.app.dao.impl.FlockDaoImpl;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
@@ -29,9 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-//~--- JDK imports ------------------------------------------------------------
-
 public class GraphFeedWaterServlet extends HttpServlet {
+    public static final int FEED_CONSUPMTION_ID = 1301;
+    public static final int WATER_CONSUMPTION_ID = 1302;
+    public static final String FEED_KG_AXIST_TITLE = "Feed[KG]";
+    public static final String FEED_AND_WATER_CONSUMPTION_TITLE = "Feed And Water Consumption";
+    public static final String GROW__DAY_AXIS_TITLE = "Grow Day[Day]";
+    public static final String WATER_LITER_AXIS_TITLE = "Water[Liter]";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -74,38 +77,32 @@ public class GraphFeedWaterServlet extends HttpServlet {
                 }
 
                 try {
-                    FlockDao flockDao = new FlockDaoImpl();
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
                     Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
                     List<Map<Integer, Data>> dataHistroryList = new ArrayList<Map<Integer, Data>>();
                     List<String> axisTitles = new ArrayList<String>();
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                    Data data1 = dataDao.getById(Long.valueOf(1301));
+                    Data data1 = dataDao.getById(Long.valueOf(FEED_CONSUPMTION_ID));
 
                     axisTitles.add(data1.getLabel());
                     dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
 
-                    String title = "Feed And Water Consumption";
-                    String xAxisTitle = "Grow Day[Day]";
-                    String yAxisTitle = "Feed[KG]";
                     HistoryGraph waterFeedGraph = new HistoryGraph();
-
                     waterFeedGraph.setDataHistoryList(dataHistroryList);
-                    waterFeedGraph.createChart(title, xAxisTitle, yAxisTitle);
+                    waterFeedGraph.createChart(FEED_AND_WATER_CONSUMPTION_TITLE,
+                            GROW__DAY_AXIS_TITLE, FEED_KG_AXIST_TITLE);
 
-                    Data data2 = dataDao.getById(Long.valueOf(1302));
-
+                    Data data2 = dataDao.getById(Long.valueOf(WATER_CONSUMPTION_ID));
                     axisTitles.add(data2.getLabel());
                     dataHistroryList.clear();
                     dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
-                    waterFeedGraph.createAndAddSeriesCollection(dataHistroryList, "Water[Liter]");
+                    waterFeedGraph.createAndAddSeriesCollection(dataHistroryList, WATER_LITER_AXIS_TITLE);
                     ChartUtilities.writeChartAsPNG(out, waterFeedGraph.getChart(), 800, 600);
                     out.flush();
                     out.close();
                 } catch (Exception ex) {
                     logger.error("Unknown error. ", ex);
-
                     Graph24Empty graph = new Graph24Empty(GraphType.BLANK, "");
-
                     ChartUtilities.writeChartAsPNG(out, graph.getChart(), 600, 300);
                     out.flush();
                     out.close();

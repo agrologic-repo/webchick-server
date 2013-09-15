@@ -15,8 +15,8 @@ import java.util.Map;
  */
 public interface DataDao {
 
-    public static final String CANNOT_RETRIEVE_DATA_FROM_DATABASE = "Cannot Retrieve Data From DataBase";
-    public static final String TRANSACTION_ROLLED_BACK = "Transaction is being rolled back";
+    static final String CANNOT_RETRIEVE_DATA_FROM_DATABASE = "Cannot Retrieve Data From DataBase";
+    static final String TRANSACTION_ROLLED_BACK = "Transaction is being rolled back";
 
     /**
      * Insert a new alarm row to table alarms .
@@ -63,25 +63,29 @@ public interface DataDao {
      */
     void insertTableData(Long tableId, Long screenId, Long programId, Collection<Data> dataList) throws SQLException;
 
-    public void insertDataToTable(Long programId, Long screenId, Long tableId, Long dataId, String display,
-                                  Integer position) throws SQLException;
+    void insertDataToTable(Long programId, Long screenId, Long tableId, Long dataId, String display,
+                           Integer position) throws SQLException;
 
-    public void insertDataList(Long newProgramId, Long oldProgramId) throws SQLException;
+    void insertDataList(Long newProgramId, Long oldProgramId) throws SQLException;
 
-    public void insertSpecialData(Long programId, Long dataId, Long langId, String label) throws SQLException;
+    void insertSpecialData(Long programId, Long dataId, Long langId, String label) throws SQLException;
 
-    public void insertDataTranslation(Long dataId, Long langId, String translate) throws SQLException;
+    void insertDataTranslation(Long dataId, Long langId, String translate) throws SQLException;
 
-    public void uncheckNotUsedDataOnAllScreens(Long programId, Long controllerId) throws SQLException;
+    void uncheckNotUsedDataOnAllScreens(Long programId, Long controllerId) throws SQLException;
 
-    public void removeDataFromTable(Long programId, Long screenId, Long tableId) throws SQLException;
+    void removeDataFromTable(Long programId) throws SQLException;
 
-    public void removeDataFromTable(Long programId, Long screenId, Long tableId, Long dataId) throws SQLException;
+    void removeDataFromTable(Long programId, Long screenId) throws SQLException;
 
-    public void removeSpecialDataFromTable(Long programId, Long dataId) throws SQLException;
+    void removeDataFromTable(Long programId, Long screenId, Long tableId) throws SQLException;
 
-    public void saveChanges(Long programId, Long screenId, Long tableId, Map<Long, String> showOnTableMap,
-                            Map<Long, Integer> posOnTableMap) throws SQLException;
+    void removeDataFromTable(Long programId, Long screenId, Long tableId, Long dataId) throws SQLException;
+
+    void removeSpecialDataFromTable(Long programId, Long dataId) throws SQLException;
+
+    void saveChanges(Long programId, Long screenId, Long tableId, Map<Long, String> showOnTableMap,
+                     Map<Long, Integer> posOnTableMap) throws SQLException;
 
     Data getById(Long dataId) throws SQLException;
 
@@ -103,17 +107,17 @@ public interface DataDao {
 
     List<Data> getSystemStates() throws SQLException;
 
-    public List<Data> getTableDataList(Long programId, Long screenId, Long tableId, String display)
+    List<Data> getTableDataList(Long programId, Long screenId, Long tableId, String display)
             throws SQLException;
 
-    public List<Data> getTableDataList(Long programId, Long screenId, Long tableId, Long langId, String display)
+    List<Data> getTableDataList(Long programId, Long screenId, Long tableId, Long langId, String display)
             throws SQLException;
 
-    public List<Data> getHistoryDataList() throws SQLException;
+    List<Data> getHistoryDataList() throws SQLException;
 
-    public void clearControllerData(Long controllerId) throws SQLException;
+    void clearControllerData(Long controllerId) throws SQLException;
 
-    public void moveData(Long screenId, Long programId, Long tableId) throws SQLException;
+    void moveData(Long screenId, Long programId, Long tableId) throws SQLException;
 
     Collection<Data> getAllBySpecial(Integer special) throws SQLException;
 
@@ -121,7 +125,7 @@ public interface DataDao {
 
     Collection<Data> getControllerData(Long controllerId) throws SQLException;
 
-    Collection<Data> getControllerDataValues(Long controllerId, Long programId) throws SQLException;
+    Collection<Data> getControllerDataValues(Long controllerId) throws SQLException;
 
     Collection<Data> getOnlineTableDataList(Long controllerId, Long programId, Long screenId, Long tableId, Long langId)
             throws SQLException;
