@@ -2,8 +2,10 @@ package com.agrologic.app;
 
 import com.agrologic.app.messaging.Message;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -25,13 +27,30 @@ public class FakeMessageSystemTest {
 
     @Test
     public void testFakeMessage() throws Exception {
+        String answer = sendKeepAlive();
+        assertEquals(new String(new byte[]{22, '3', '\r'}), answer);
+    }
+
+    private String sendKeepAlive() throws IOException, InterruptedException {
         outputStream.write(createKeepAlive());
         Thread.sleep(1000);
         byte[] readBuffer = new byte[256];
         int length = inputStream.read(readBuffer);
-        String answer = new String(readBuffer, 0, length);
-        assertEquals(new String(new byte[]{22, '3', '\r'}), answer);
+        return new String(readBuffer, 0, length);
     }
+
+    @Test
+    public void requestFromServerAccepted() throws IOException, InterruptedException {
+        sendKeepAlive();
+        byte[] readBuffer = new byte[256];
+        int length = inputStream.read(readBuffer);
+        String request = new String(readBuffer, 0, length);
+        assertEquals("V01%T901a 111\r", request);
+    }
+
+//    private byte[] sendAnswer() {
+//
+//    }
 
     private byte[] createKeepAlive() {
         return new byte[]{Message.ProtocolBytes.STX.getValue(), 'c', 't', 'b',
