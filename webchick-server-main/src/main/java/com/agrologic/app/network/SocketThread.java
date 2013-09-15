@@ -149,6 +149,7 @@ public class SocketThread implements Runnable {
             if (cellink != null) {
                 logger.info("close connection : " + cellink);
                 RestartApplication.sleep(TimeUnit.SECONDS.toMillis(5));
+                clientSessions.closeSession(cellink.getId());
                 commControl.close();
                 try {
                     removeControllersData();

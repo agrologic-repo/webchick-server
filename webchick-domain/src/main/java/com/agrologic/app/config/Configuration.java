@@ -225,7 +225,7 @@ public class Configuration extends Observable {
         try {
             settingPreferences.exportNode(new FileOutputStream(DEFAULT_CONFIG));
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();   //TODO :
         }
     }
 

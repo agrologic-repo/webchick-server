@@ -13,6 +13,8 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Controls sessions between our server and client robots.
@@ -21,6 +23,7 @@ public class ClientSessions {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Configuration configuration;
     private final Map<Long, SocketThread> sessions = new ConcurrentHashMap<Long, SocketThread>();
+    private final ExecutorService threadPool = Executors.newCachedThreadPool();
     private final CellinkDao cellinkDao;
     private final ServerUI server;
 
@@ -33,7 +36,7 @@ public class ClientSessions {
     public synchronized SocketThread createSessionWithClient(Socket socket) throws IOException {
         SocketThread newThread = new SocketThread(this, socket, configuration);
         newThread.setServerFacade(server);
-        new Thread(newThread).start();
+        threadPool.execute(newThread);
         return newThread;
     }
 
@@ -64,5 +67,9 @@ public class ClientSessions {
 
     public synchronized void openSession(Long id, SocketThread socketThread) {
         sessions.put(id, socketThread);
+    }
+
+    public void closeSession(Long id) {
+        sessions.remove(id);
     }
 }
