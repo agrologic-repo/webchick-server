@@ -1,5 +1,7 @@
 *.class
 
+webchick-local/agrodb/
+
 screen.ser
 # Package Files #
 *.jar
