@@ -63,8 +63,8 @@ public class SerialPortControl implements SerialPortEventListener {
      * @throws SerialPortControlFailure if failed initialization .
      */
     public SerialPortControl(final String com, final Network network) throws SerialPortControlFailure {
-        Configuration c = new Configuration();
-        Integer protocol = Integer.parseInt(c.getProtocol());
+        Configuration configuration = new Configuration();
+        Integer protocol = Integer.parseInt(configuration.getProtocol());
         protocolType = Protocol.get(protocol);
         init(com);
         this.sendTime = System.currentTimeMillis();
@@ -98,7 +98,6 @@ public class SerialPortControl implements SerialPortEventListener {
      */
     private void init(final String comport) throws SerialPortControlFailure {
         try {
-            Configuration config = new Configuration();
             CommPortIdentifier portId;
             portId = CommPortIdentifier.getPortIdentifier(comport);
             serialPort = (SerialPort) portId.open("Terminal", PORT);

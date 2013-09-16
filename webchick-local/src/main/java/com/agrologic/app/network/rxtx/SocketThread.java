@@ -49,14 +49,14 @@ public final class SocketThread extends Observable implements Runnable, Network 
         super();
         this.wcsl = wcsl;
         this.networkState = NetworkState.STATE_STARTING;
-        Configuration configuration = new Configuration();
-
         this.dbManager = dbManager;
         this.requestQueue = new RequestMessageQueue();
         this.responseMessageMap = new ResponseMessageMap();
         this.controllerManagers = new ArrayList<MessageManager>();
         this.reqIndex = new RequestIndex();
+
         // sets network attributes
+        Configuration configuration = new Configuration();
         this.sotDelay = Integer.parseInt(configuration.getSotDelay());
         this.eotDelay = Integer.parseInt(configuration.getEotDelay());
         this.nxtDelay = Integer.parseInt(configuration.getNextDelay());
