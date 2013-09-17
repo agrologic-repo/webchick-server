@@ -1,0 +1,46 @@
+package com.agrologic.app.network;
+
+import com.agrologic.app.dao.CellinkDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.CellinkState;
+import org.apache.log4j.Logger;
+
+import java.sql.SQLException;
+import java.util.List;
+
+/**
+ * Monitors the status of all units (cellink) by polling .
+ * When cellink state equals to #CellinkState.STATE_START,  it means that the server already open session and putted
+ * into ClientSession map . Thus by changing #SocketThread to #NetworkState.STATE_STARTING it start running.
+ */
+public class SocketThreadStarter implements Runnable {
+    private final ServerThread serverThread;
+    private final Logger logger = Logger.getLogger(SocketThreadStarter.class);
+    private CellinkDao cellinkDao;
+
+
+    public SocketThreadStarter(ServerThread serverThread) {
+        this.serverThread = serverThread;
+        this.cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+    }
+
+    @Override
+    public void run() {
+        ClientSessions clientSessions = serverThread.getClientSessions();
+        List<Cellink> cellinks = null;
+        try {
+            cellinks = (List<Cellink>) cellinkDao.getAll();
+        } catch (SQLException e) {
+            logger.debug(e);
+        }
+        for (Cellink cellink : cellinks) {
+            int state = cellink.getState();
+            if (state == CellinkState.STATE_START || state == CellinkState.STATE_RESTART) {
+                SocketThread socketThread = clientSessions.getSessions().get(cellink.getId());
+                socketThread.setThreadState(NetworkState.STATE_STARTING);
+            }
+        }
+    }
+}
