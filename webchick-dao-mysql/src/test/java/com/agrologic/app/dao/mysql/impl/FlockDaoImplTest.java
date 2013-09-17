@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.sql.SQLException;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 public class FlockDaoImplTest extends AbstractDaoTest {
@@ -61,7 +62,15 @@ public class FlockDaoImplTest extends AbstractDaoTest {
                 "3036 0 3037 0 3038 0 3041 0 3042 0 3043 0 3044 0 -21013 -1 3566 0 3567 0 " +
                 "7715 -1 7716 -1 ";
         flockDao.updateHistoryByGrowDay(1L, 1, values);
-        Integer growDay = flockDao.getUpdatedGrowDayHistory(1L);
-        assertNotNull(growDay);
+        int growDay = flockDao.getUpdatedGrowDayHistory(1L);
+        assertEquals(1, growDay);
+    }
+
+    @Test
+    public void getUpdatedHistory24NotEmptyAfterUpdating() throws SQLException {
+        String values = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
+        flockDao.updateHistory24ByGrowDay(1L, 1, "D21", values);
+        int growDay = flockDao.getUpdatedGrowDayHistory24(1L);
+        assertEquals(1, growDay);
     }
 }

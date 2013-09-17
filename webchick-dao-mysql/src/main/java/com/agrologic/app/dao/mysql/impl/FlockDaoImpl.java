@@ -9,10 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -128,19 +126,19 @@ public class FlockDaoImpl implements FlockDao {
     public void updateHistoryByGrowDay(Long flockId, Integer growDay, String values) throws SQLException {
         Validate.notNull(flockId, "Flock ID can not be null");
         logger.debug("Update history by grow day in flock with id [{}]", flockId);
-        String sql = "insert into flockhistory (FlockID,GrowDay,HistoryData) "
-                + "VALUES (?,?,?) on duplicate key update HistoryData=VALUES(HistoryData)";
-        jdbcTemplate.update(sql, new Object[]{flockId, growDay, values});
-
+        String sql = "insert into flockhistory (FlockID,GrowDay,HistoryData) VALUES (?,?,?) " +
+                "on duplicate key update HistoryData=VALUES(HistoryData)";
+        int rows = jdbcTemplate.update(sql, new Object[]{flockId, growDay, values});
+        System.out.println(rows);
     }
 
     @Override
     public void updateHistory24ByGrowDay(Long flockId, Integer growDay, String dnum, String values) throws SQLException {
         logger.debug("Update history 24 hours by grow day in flock with id [{}]", flockId);
-        String sql = "insert into flockhistory24 (FlockID, GrowDay, DNum, HistoryData) "
-                + "values (?,?,?,?) on duplicate key update HistoryData=values(HistoryData)";
-        jdbcTemplate.update(sql, new Object[]{flockId, growDay, dnum, values});
-
+        String sql = "insert into flockhistory24 (FlockID, GrowDay, DNum, HistoryData) values (?,?,?,?) " +
+                "on duplicate key update HistoryData=values(HistoryData)";
+        int rows = jdbcTemplate.update(sql, new Object[]{flockId, growDay, dnum, values});
+        System.out.println(rows);
     }
 
     @Override
@@ -188,7 +186,11 @@ public class FlockDaoImpl implements FlockDao {
         String sql = "select max(growday) as growday from flockhistory24  where flockid=? and DNum ="
                 + " (select max(DNum) from flockhistory24 where FlockID=?)";
         logger.debug("Get last updated history of 24 hours grow day in flock with id [{}]", flockId);
-        return jdbcTemplate.queryForInt(sql, new Object[]{flockId}, Integer.class);
+        List<Integer> result = jdbcTemplate.queryForList(sql, new Object[]{flockId, flockId}, Integer.class);
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result.get(0);
     }
 
     @Override
@@ -212,170 +214,60 @@ public class FlockDaoImpl implements FlockDao {
     @Override
     public Map<Integer, String> getAllHistoryByFlock(Long flockId) throws SQLException {
         String sql = "select * from flockhistory where flockid=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sql);
-            prepstmt.setLong(1, flockId);
-            ResultSet rs = prepstmt.executeQuery();
-            Map<Integer, String> historyByGrowDay = new TreeMap<Integer, String>();
-            while (rs.next()) {
-                Integer growDay = rs.getInt("GrowDay");
-                String history = rs.getString("HistoryData");
-                historyByGrowDay.put(growDay, history);
-            }
-            return historyByGrowDay;
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve FlockHistory From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, new Object[]{flockId});
+        Map<Integer, String> historyByGrowDay = new TreeMap<Integer, String>();
+        while (rowSet.next()) {
+            Integer growDay = rowSet.getInt("GrowDay");
+            String history = rowSet.getString("HistoryData");
+            historyByGrowDay.put(growDay, history);
         }
+        return historyByGrowDay;
     }
 
     @Override
     public Map<Integer, String> getAllHistoryByFlock(Long flockId, int fromDay, int toDay) throws SQLException {
         String sql = "select * from flockhistory where flockid=? and growday between ? and ?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        if (fromDay == -1 && toDay == -1) {
-            fromDay = 0;
-            toDay = 1000;
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, new Object[]{flockId, fromDay, toDay});
+        Map<Integer, String> historyByGrowDay = new TreeMap<Integer, String>();
+        while (rowSet.next()) {
+            Integer growDay = rowSet.getInt("GrowDay");
+            String history = rowSet.getString("HistoryData");
+            historyByGrowDay.put(growDay, history);
         }
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sql);
-            prepstmt.setLong(1, flockId);
-            prepstmt.setLong(2, fromDay);
-            prepstmt.setLong(3, toDay);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            Map<Integer, String> historyByGrowDay = new TreeMap<Integer, String>();
-            while (rs.next()) {
-                Integer growDay = rs.getInt("GrowDay");
-                String history = rs.getString("HistoryData");
-                historyByGrowDay.put(growDay, history);
-            }
-            return historyByGrowDay;
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Users From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        return historyByGrowDay;
     }
 
     @Override
     public Map<Integer, String> getAllHistory24ByFlockAndDnum(Long flockId, String dnum) throws SQLException {
         String sql = "select * from flockhistory24 where  flockid=? and dnum=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sql);
-            prepstmt.setLong(1, flockId);
-            prepstmt.setString(2, dnum);
-            ResultSet rs = prepstmt.executeQuery();
-            Map<Integer, String> historyByGrowDay = new TreeMap<Integer, String>();
-            while (rs.next()) {
-                Integer growDay = rs.getInt("GrowDay");
-                String history = rs.getString("HistoryData");
-                historyByGrowDay.put(growDay, history);
-            }
-            return historyByGrowDay;
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve FlockHistory From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, new Object[]{flockId, dnum});
+        Map<Integer, String> historyByGrowDay = new TreeMap<Integer, String>();
+        while (rowSet.next()) {
+            Integer growDay = rowSet.getInt("GrowDay");
+            String history = rowSet.getString("HistoryData");
+            historyByGrowDay.put(growDay, history);
         }
+        return historyByGrowDay;
     }
 
     public List<Integer> getHistory24GrowDays(Long flockId) throws SQLException {
         String sql = "select distinct growday from flockhistory24 where flockid=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sql);
-            prepstmt.setLong(1, flockId);
-            ResultSet rs = prepstmt.executeQuery();
-
-            List<Integer> growDays = new ArrayList<Integer>();
-            while (rs.next()) {
-                Integer growDay = rs.getInt("GrowDay");
-                growDays.add(growDay);
-            }
-            return growDays;
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Users From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        List<Integer> resultsList = jdbcTemplate.queryForList(sql, new Object[]{flockId}, Integer.class);
+        return resultsList;
     }
 
     @Override
     public String getDNHistory24(String dn) throws SQLException {
         String sql = "select name from historyn where dn=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sql);
-            prepstmt.setString(1, dn);
-            ResultSet rs = prepstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getString("name");
-            } else {
-                return "";
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve values from History24 table", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        String result = jdbcTemplate.queryForObject(sql, new Object[]{dn}, String.class);
+        return result;
     }
 
     @Override
     public String getHistory24(Long flockId, Integer growDay, String dn) throws SQLException {
         String sql = "select * from flockhistory24 where flockid=? and growday=? and dnum=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sql);
-            prepstmt.setLong(1, flockId);
-            prepstmt.setInt(2, growDay);
-            prepstmt.setString(3, dn);
-            ResultSet rs = prepstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getString("HistoryData");
-            } else {
-                return "";
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve values from History24 table", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        String result = jdbcTemplate.queryForObject(sql, new Object[]{flockId, growDay, dn}, String.class);
+        return result;
     }
 
     @Override
