@@ -28,7 +28,7 @@ import java.util.Map;
 //~--- JDK imports ------------------------------------------------------------
 
 public class ExpToExcelMortality extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
     final Logger logger = Logger.getLogger(ExpToExcelMortality.class);
     private String outfile = "c:/mortality.xls";
 

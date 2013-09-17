@@ -33,7 +33,7 @@ import java.io.PrintWriter;
  * @author JanL
  */
 public class Graph24HumidTempServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

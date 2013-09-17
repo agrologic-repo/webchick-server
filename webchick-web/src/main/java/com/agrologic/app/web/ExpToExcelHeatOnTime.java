@@ -28,7 +28,7 @@ import java.util.Map;
 //~--- JDK imports ------------------------------------------------------------
 
 public class ExpToExcelHeatOnTime extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
     final Logger logger = Logger.getLogger(ExpToExcelHeatOnTime.class);
     final String outfile = "c:/heatersontime.xls";
 

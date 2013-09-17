@@ -29,7 +29,6 @@ import java.util.List;
  */
 public class AddGasFormServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
 
     /**
      * Processes requests for both HTTP

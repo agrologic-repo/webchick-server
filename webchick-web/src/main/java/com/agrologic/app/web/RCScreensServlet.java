@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class RCScreensServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
 
     /**
      * Processes requests for both HTTP

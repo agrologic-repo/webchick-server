@@ -29,7 +29,7 @@ import java.util.*;
  * @author Administrator
  */
 public class ExpHistory24ToExcel extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
     private static String outfile;
 
     /**

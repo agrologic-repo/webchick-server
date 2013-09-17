@@ -35,7 +35,7 @@ import java.util.Map;
 public class ExpHistoryToExcel extends HttpServlet {
 
     private static final List<Long> historyDataIdList = new ArrayList<Long>();
-    private static final long serialVersionUID = 1L;
+
     private static final Logger logger = Logger.getLogger(ExpHistoryToExcel.class);
     private static String outfile;
 

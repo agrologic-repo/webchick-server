@@ -17,7 +17,7 @@ import java.util.List;
 
 public class RCMainScreenAjaxNew extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+
     private static int count = 0;
     private Logger logger;
 
@@ -54,7 +54,6 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                 long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
                 long screenId = 1;
                 String lang = (String) request.getSession().getAttribute("lang");
-
                 if ((lang == null) || lang.equals("")) {
                     lang = "en";
                 }
@@ -175,6 +174,7 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                                 out.println("<img src=\"img/alarm.gif\" border=0 hspace=5 title=\"Alarm in "
                                         + controller.getTitle() + " \">");
                             }
+
                             out.println(controller.getTitle());
                             out.println("</a>");
                             out.println("<br>");

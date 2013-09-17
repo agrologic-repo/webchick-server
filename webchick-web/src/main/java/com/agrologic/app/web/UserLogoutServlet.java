@@ -29,7 +29,7 @@ import java.util.Collection;
  * @author JanL
  */
 public class UserLogoutServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
 
     /**
      * Processes requests for both HTTP

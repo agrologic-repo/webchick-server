@@ -21,13 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
 public class StartPage extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -50,7 +45,7 @@ public class StartPage extends HttpServlet {
             if (access.equals("regular")) {
                 request.getSession().setAttribute("access", access);
 
-                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                 Cellink cellink = cellinkDao.getActualCellink();
 
                 logger.info(cellink);

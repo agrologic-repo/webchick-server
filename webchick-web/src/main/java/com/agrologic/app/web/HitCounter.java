@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.sql.*;
 
 public class HitCounter extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
     private UserRole role = UserRole.ADMIN;
 
     public HitCounter() {

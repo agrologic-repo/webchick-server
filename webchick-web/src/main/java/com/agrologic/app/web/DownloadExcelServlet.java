@@ -17,7 +17,7 @@ import java.io.*;
 
 public class DownloadExcelServlet extends HttpServlet {
     public static final int BUFSIZE = 4096;
-    private static final long serialVersionUID = 1L;
+
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

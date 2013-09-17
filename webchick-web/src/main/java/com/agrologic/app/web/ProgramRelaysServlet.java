@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ProgramRelaysServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class RCMainScreenAjax extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
     private static int count = 0;
 
     /**

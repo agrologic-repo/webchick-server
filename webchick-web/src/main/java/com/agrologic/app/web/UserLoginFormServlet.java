@@ -19,7 +19,7 @@ import java.sql.SQLException;
 
 
 public class UserLoginFormServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
     private ServletContext ctx;
 
     /**
@@ -44,7 +44,6 @@ public class UserLoginFormServlet extends HttpServlet {
         String reme = request.getParameter("remember");
 
         ctx = getServletContext();
-        response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
         UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);

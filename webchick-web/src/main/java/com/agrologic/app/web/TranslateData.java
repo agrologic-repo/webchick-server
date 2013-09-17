@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class TranslateData extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
 
     /**
      * Processes requests for both HTTP

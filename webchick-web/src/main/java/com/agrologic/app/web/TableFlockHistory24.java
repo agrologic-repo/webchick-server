@@ -22,7 +22,7 @@ import java.io.PrintWriter;
 import java.util.*;
 
 public class TableFlockHistory24 extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
     private static String outfile;
 
     /**

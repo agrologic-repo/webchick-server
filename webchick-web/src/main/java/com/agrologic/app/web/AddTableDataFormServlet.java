@@ -31,7 +31,7 @@ import java.util.List;
  * @author JanL
  */
 public class AddTableDataFormServlet extends HttpServlet implements Serializable {
-    private static final long serialVersionUID = 1L;
+
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

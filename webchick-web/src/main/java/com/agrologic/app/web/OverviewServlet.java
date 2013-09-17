@@ -21,8 +21,10 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 public class OverviewServlet extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
+    /**
+     * Logger for this class and subclasses
+     */
+    final Logger logger = Logger.getLogger(ListUserCellinksServlet.class);
     private ServletContext ctx;
 
     /**
@@ -38,18 +40,13 @@ public class OverviewServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        /**
-         * Logger for this class and subclasses
-         */
-        final Logger logger = Logger.getLogger(ListUserCellinksServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
 
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
-            request.getRequestDispatcher("./login.jsp").forward(request, response);
+            response.sendRedirect("./login.jsp");
         } else {
             User user = (User) request.getSession().getAttribute("user");
             String nameParam = request.getParameter("name");
@@ -67,7 +64,7 @@ public class OverviewServlet extends HttpServlet {
                 state = null;
             }
 
-            Integer index = null;
+            Integer index;
             try {
                 index = Integer.parseInt(indexParam);
             } catch (Exception e) {

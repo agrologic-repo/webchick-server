@@ -29,7 +29,7 @@ import java.util.Map;
 
 
 public class ExpToExcelAvgWeight extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
     final Logger logger = Logger.getLogger(ExpToExcelAvgWeight.class);
     private String outfile = "c:/avgweight.xls";
 

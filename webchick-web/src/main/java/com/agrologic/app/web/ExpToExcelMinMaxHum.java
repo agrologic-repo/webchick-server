@@ -23,7 +23,7 @@ import java.util.Map;
 //~--- JDK imports ------------------------------------------------------------
 
 public class ExpToExcelMinMaxHum extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
     private String outfile = "c:/minmanhum.xls";
     final Logger logger = Logger.getLogger(ExpToExcelMinMaxHum.class);
 

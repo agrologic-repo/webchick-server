@@ -28,7 +28,7 @@ import java.util.Map;
 //~--- JDK imports ------------------------------------------------------------
 
 public class ExpToExcelFeedWater extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
     final Logger logger = Logger.getLogger(ExpToExcelFeedWater.class);
     private String outfile = "c:/feedwater.xls";
 

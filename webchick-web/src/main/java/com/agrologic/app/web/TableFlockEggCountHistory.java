@@ -27,7 +27,7 @@ import java.util.*;
  */
 public class TableFlockEggCountHistory extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+
     private static final List<Long> historyDataIdList = new ArrayList<Long>();
     private static final Logger logger = Logger.getLogger(TableFlockEggCountHistory.class);
 

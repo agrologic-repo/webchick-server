@@ -21,7 +21,7 @@ import java.io.File;
  * @author JanL
  */
 public class Log4JInitServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+
 
     @Override
     public void init(ServletConfig config) throws ServletException {
