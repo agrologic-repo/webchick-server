@@ -45,7 +45,7 @@ public class TableFlockHistory24 extends HttpServlet {
 
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
-            request.getRequestDispatcher("./login.jsp").forward(request, response);
+            response.sendRedirect("./login.jsp");
         } else {
             Locale locale = Locale.ENGLISH;
 

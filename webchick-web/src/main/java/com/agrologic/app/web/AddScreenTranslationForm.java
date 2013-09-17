@@ -44,7 +44,7 @@ public class AddScreenTranslationForm extends HttpServlet {
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 Long screenId = Long.parseLong(request.getParameter("screenId"));
                 Long langId = Long.parseLong(request.getParameter("langId"));

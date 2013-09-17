@@ -39,7 +39,7 @@ public class EditTableServlet extends HttpServlet {
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 long programId = Long.parseLong(request.getParameter("programId"));
                 long screenId = Long.parseLong(request.getParameter("screenId"));

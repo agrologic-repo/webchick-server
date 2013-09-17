@@ -47,7 +47,7 @@ public class ControllerDetailsServlet extends HttpServlet {
 
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
-            request.getRequestDispatcher("./login.jsp").forward(request, response);
+            response.sendRedirect("./login.jsp");
         }
 
         Long controllerId = Long.parseLong(request.getParameter("controllerId"));

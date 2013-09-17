@@ -58,7 +58,7 @@ public class StartPage extends HttpServlet {
                 request.getRequestDispatcher("./rmctrl-main-screen-ajax.jsp?userId=" + cellink.getUserId()
                         + "&cellinkId=" + cellink.getId()).forward(request, response);
             } else {
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             }
         } catch (Exception e) {
             logger.error(e);

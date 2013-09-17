@@ -49,7 +49,7 @@ public class TotalCellinkPieChart extends HttpServlet {
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 try {
                     DefaultPieDataset dataset = new DefaultPieDataset();

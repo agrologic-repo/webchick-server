@@ -36,7 +36,7 @@ public class RemoveUserServlet extends HttpServlet {
 
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
-            request.getRequestDispatcher("./login.jsp").forward(request, response);
+            response.sendRedirect("./login.jsp");
         } else {
             Long userId = Long.parseLong(request.getParameter("userId"));
             UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);

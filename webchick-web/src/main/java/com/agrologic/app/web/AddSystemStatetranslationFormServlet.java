@@ -45,7 +45,7 @@ public class AddSystemStatetranslationFormServlet extends HttpServlet {
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 Long systemstateId = Long.parseLong(request.getParameter("systemstateId"));
                 Long langId = Long.parseLong(request.getParameter("langId"));

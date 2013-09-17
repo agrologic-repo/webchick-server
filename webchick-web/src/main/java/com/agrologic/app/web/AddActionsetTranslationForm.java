@@ -37,7 +37,7 @@ public class AddActionsetTranslationForm extends HttpServlet {
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 Long valueId = Long.parseLong(request.getParameter("valueId"));
                 Long langId = Long.parseLong(request.getParameter("langId"));

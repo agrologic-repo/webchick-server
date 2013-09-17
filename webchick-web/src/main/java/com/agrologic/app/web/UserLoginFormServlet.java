@@ -58,7 +58,7 @@ public class UserLoginFormServlet extends HttpServlet {
             if (user.getValidate() == false) {
                 logger.error("username " + name + " and password: " + pass + " not found");
                 request.setAttribute("errormessage", "incorrect user name and/or password");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 if ((reme != null) && "ON".equals(reme.toUpperCase())) {
                     setCookies(true, name, pass, response);

@@ -85,7 +85,7 @@ public class ExpHistoryToExcel extends HttpServlet {
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
                 FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);

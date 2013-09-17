@@ -45,7 +45,7 @@ public class RCMainServlet extends HttpServlet {
 
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
-            request.getRequestDispatcher("./login.jsp").forward(request, response);
+            response.sendRedirect("./login.jsp");
         } else {
             Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);

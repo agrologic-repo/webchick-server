@@ -44,7 +44,7 @@ public class AddDataTranslationForm extends HttpServlet {
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 Long dataId = Long.parseLong(request.getParameter("dataId"));
                 Long langId = Long.parseLong(request.getParameter("langId"));

@@ -40,7 +40,7 @@ public class ProgramSystemStatesServlet extends HttpServlet {
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 Long programId = Long.parseLong(request.getParameter("programId"));
 

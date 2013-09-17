@@ -42,7 +42,7 @@ public class ListProgramScreens extends HttpServlet {
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 String programIdParam = request.getParameter("programId");
                 long programId = 1;

@@ -35,7 +35,7 @@ public class AddProgramFormServlet extends HttpServlet {
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 String name = request.getParameter("Nname");
                 Long programId = Long.parseLong(request.getParameter("Nprogramid"));

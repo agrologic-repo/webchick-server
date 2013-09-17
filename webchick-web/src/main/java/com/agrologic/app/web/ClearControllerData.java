@@ -44,7 +44,7 @@ public class ClearControllerData extends HttpServlet {
         PrintWriter out = response.getWriter();
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
-            request.getRequestDispatcher("./login.jsp").forward(request, response);
+            response.sendRedirect("./login.jsp");
         } else {
             Long userId = Long.parseLong(request.getParameter("userId"));
             Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));

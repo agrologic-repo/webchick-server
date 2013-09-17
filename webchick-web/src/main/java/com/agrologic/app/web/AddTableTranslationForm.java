@@ -44,7 +44,7 @@ public class AddTableTranslationForm extends HttpServlet {
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                request.getRequestDispatcher("./login.jsp").forward(request, response);
+                response.sendRedirect("./login.jsp");
             } else {
                 Long tableId = Long.parseLong(request.getParameter("tableId"));
                 Long langId = Long.parseLong(request.getParameter("langId"));
