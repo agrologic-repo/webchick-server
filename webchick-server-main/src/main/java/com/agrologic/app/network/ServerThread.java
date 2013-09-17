@@ -12,18 +12,12 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.*;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Observable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-/**
- * Title: ServerSocketThread <br> Description: <br> Copyright: Copyright (c) 2009 <br> Company: AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class ServerThread extends Observable implements Runnable {
     public static final int SERVER_SOCKET_TIMEOUT = 5000;
     public static final int MAX_NUM_SOCKET = 512;
@@ -32,15 +26,103 @@ public class ServerThread extends Observable implements Runnable {
     private final ClientSessions clientSessions;
     private ServerActivityStates currentState;
     private ServerSocket server;
-    private Configuration configuration;
+    private ScheduledExecutorService executor;
     private Map<Long, SocketThread> threads;
 
-    public ServerThread(Configuration serverPref, ServerUI serverFacade) {
+    public ServerThread(ServerUI serverFacade) {
         cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
-        this.configuration = serverPref;
         this.currentState = ServerActivityStates.IDLE;
-        this.clientSessions = new ClientSessions(configuration, serverFacade, cellinkDao);
+        this.clientSessions = new ClientSessions(serverFacade, cellinkDao);
         this.threads = clientSessions.getSessions();
+        this.executor = Executors.newSingleThreadScheduledExecutor();
+    }
+
+    /**
+     * Release and delete file lock.
+     */
+    public static void setCellinkOffline(Map<Long, SocketThread> threads) {
+
+        // change cellink state to offline
+        Logger log = Logger.getLogger(ServerThread.class);
+        CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+
+        try {
+            if (cellinkDao != null) {
+                log.debug("Changing cellinks state to offline state...");
+                Collection<Cellink> cellinks = cellinkDao.getAll();
+                Iterator<SocketThread> iter = threads.values().iterator();
+
+                while (iter.hasNext()) {
+                    SocketThread thread = iter.next();
+                    Cellink c = thread.getCellink();
+                    CellinkState state = c.getCellinkState();
+
+                    switch (state.getValue()) {
+                        case CellinkState.STATE_START:
+                            c.setState(CellinkState.STATE_STOP);
+                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
+                            threads.remove(c.getId());
+
+                            break;
+
+                        case CellinkState.STATE_RUNNING:
+                            c.setState(CellinkState.STATE_STOP);
+                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
+                            threads.remove(c.getId());
+
+                            break;
+
+                        case CellinkState.STATE_ONLINE:
+                            c.setState(CellinkState.STATE_STOP);
+                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
+                            threads.remove(c.getId());
+
+                            break;
+
+                        case CellinkState.STATE_RESTART:
+                            c.setState(CellinkState.STATE_STOP);
+                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
+                            threads.remove(c.getId());
+
+                            break;
+
+                        case CellinkState.STATE_UNKNOWN:
+                            c.setState(CellinkState.STATE_STOP);
+                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
+                            threads.remove(c.getId());
+
+                            break;
+
+                        case CellinkState.STATE_STOP:
+                            c.setState(CellinkState.STATE_STOP);
+                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
+                            threads.remove(c.getId());
+
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    cellinkDao.update(c);
+                }
+
+                for (Cellink c : cellinks) {
+                    if (c.getCellinkState().getValue() != CellinkState.STATE_OFFLINE) {
+                        c.setState(CellinkState.STATE_OFFLINE);
+                        cellinkDao.update(c);
+                    }
+
+                    log.debug("Cellink " + c + " offline now ");
+                }
+
+                log.debug("Cellinks state are offline now!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -50,11 +132,13 @@ public class ServerThread extends Observable implements Runnable {
      */
     private boolean startServer() {
         try {
+            Configuration configuration = new Configuration();
             InetAddress ia = InetAddress.getByName(configuration.getIp());
             Integer port = configuration.getPort();
             logger.info("Try to open server on port : " + port);
             server = new ServerSocket(port, MAX_NUM_SOCKET, ia);
             server.setSoTimeout(SERVER_SOCKET_TIMEOUT);
+            executor.scheduleAtFixedRate(new ClientConnectionPoll(), 0L, 1L, TimeUnit.SECONDS);
             logger.info("ServerSocket opened on " + server.getLocalSocketAddress());
             return true;
         } catch (BindException ex) {
@@ -206,95 +290,6 @@ public class ServerThread extends Observable implements Runnable {
         return currentState;
     }
 
-    /**
-     * Release and delete file lock.
-     */
-    public static void setCellinkOffline(Map<Long, SocketThread> threads) {
-
-        // change cellink state to offline
-        Logger log = Logger.getLogger(ServerThread.class);
-        CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
-
-        try {
-            if (cellinkDao != null) {
-                log.debug("Changing cellinks state to offline state...");
-
-                Collection<Cellink> cellinks = cellinkDao.getAll();
-                Iterator<SocketThread> iter = threads.values().iterator();
-
-                while (iter.hasNext()) {
-                    SocketThread thread = iter.next();
-                    Cellink c = thread.getCellink();
-                    CellinkState state = c.getCellinkState();
-
-                    switch (state.getValue()) {
-                        case CellinkState.STATE_START:
-                            c.setState(CellinkState.STATE_STOP);
-                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
-                            threads.remove(c.getId());
-
-                            break;
-
-                        case CellinkState.STATE_RUNNING:
-                            c.setState(CellinkState.STATE_STOP);
-                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
-                            threads.remove(c.getId());
-
-                            break;
-
-                        case CellinkState.STATE_ONLINE:
-                            c.setState(CellinkState.STATE_STOP);
-                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
-                            threads.remove(c.getId());
-
-                            break;
-
-                        case CellinkState.STATE_RESTART:
-                            c.setState(CellinkState.STATE_STOP);
-                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
-                            threads.remove(c.getId());
-
-                            break;
-
-                        case CellinkState.STATE_UNKNOWN:
-                            c.setState(CellinkState.STATE_STOP);
-                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
-                            threads.remove(c.getId());
-
-                            break;
-
-                        case CellinkState.STATE_STOP:
-                            c.setState(CellinkState.STATE_STOP);
-                            threads.get(c.getId()).setThreadState(NetworkState.STATE_STOP);
-                            threads.remove(c.getId());
-
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    cellinkDao.update(c);
-                }
-
-                for (Cellink c : cellinks) {
-                    if (c.getCellinkState().getValue() != CellinkState.STATE_OFFLINE) {
-                        c.setState(CellinkState.STATE_OFFLINE);
-                        cellinkDao.update(c);
-                    }
-
-                    log.debug("Cellink " + c + " offline now ");
-                }
-
-                log.debug("Cellinks state are offline now!");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void showThreadList() {
         Iterator<Entry<Long, SocketThread>> entries = threads.entrySet().iterator();
 
@@ -318,23 +313,6 @@ public class ServerThread extends Observable implements Runnable {
         return threads;
     }
 
-    class MonitorThread extends Thread {
-
-        @Override
-        public void run() {
-            int size = threads.size();
-
-            while (!Thread.currentThread().interrupted()) {
-                if (getServerState() == ServerActivityStates.RUNNING) {
-                    if (size != threads.size()) {
-                        logger.debug("Current thread in system =  : " + threads.size());
-                        size = threads.size();
-                    }
-                }
-            }
-        }
-    }
-
     @SuppressWarnings("PackageVisibleInnerClass")
     static class ShutdownHook extends Thread {
 
@@ -347,6 +325,43 @@ public class ServerThread extends Observable implements Runnable {
         @Override
         public void run() {
             setCellinkOffline(threads);
+        }
+    }
+
+    class MonitorThread extends Thread {
+
+        @Override
+        public void run() {
+            int size = threads.size();
+            while (!Thread.currentThread().interrupted()) {
+                if (getServerState() == ServerActivityStates.RUNNING) {
+                    if (size != threads.size()) {
+                        logger.debug("Current thread in system =  : " + threads.size());
+                        size = threads.size();
+                    }
+                }
+            }
+        }
+    }
+
+    class ClientConnectionPoll implements Runnable {
+
+        @Override
+        public void run() {
+
+            List<Cellink> cellinks = null;
+            try {
+                cellinks = (List<Cellink>) cellinkDao.getAll();
+            } catch (SQLException e) {
+                logger.debug(e);
+            }
+            for (Cellink cellink : cellinks) {
+                int state = cellink.getState();
+                if (state == CellinkState.STATE_START || state == CellinkState.STATE_RESTART) {
+                    SocketThread socketThread = clientSessions.getSessions().get(cellink.getId());
+                    socketThread.setThreadState(NetworkState.STATE_STARTING);
+                }
+            }
         }
     }
 }

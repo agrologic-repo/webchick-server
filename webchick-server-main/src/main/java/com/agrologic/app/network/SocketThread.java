@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class SocketThread implements Runnable {
+    private final ClientSessions clientSessions;
     private List<MessageManager> messageManagers;
     private Cellink cellink;
     private CellinkDao cellinkDao;
@@ -35,7 +36,6 @@ public class SocketThread implements Runnable {
     private ResponseMessageMap responseMessageMap;
     private RequestMessageQueue requestQueue;
     private ServerUI serverFacade;
-    private final ClientSessions clientSessions;
     private CommControl commControl;
     private int sotDelay;
     private int eotDelay;
@@ -53,13 +53,14 @@ public class SocketThread implements Runnable {
         this.clientSessions = null;
     }
 
-    public SocketThread(ClientSessions clientSessions, Socket socket, Configuration configuration) throws IOException {
+    public SocketThread(ClientSessions clientSessions, Socket socket) throws IOException {
         this.cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         this.controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
         this.commControl = new CommControl(socket);
         this.requestQueue = new RequestMessageQueue();
         this.responseMessageMap = new ResponseMessageMap();
         this.reqIndex = new RequestIndex();
+        Configuration configuration = new Configuration();
         this.sotDelay = Integer.parseInt(configuration.getSotDelay());
         this.eotDelay = Integer.parseInt(configuration.getEotDelay());
         this.nxtDelay = Integer.parseInt(configuration.getNextDelay());
@@ -290,6 +291,7 @@ public class SocketThread implements Runnable {
                 if (withLogger) {
                     logger.error(cellink.getName() + " [response index error]");
                 }
+
                 commControl.clearInputStreamWithDelayForSilence();
                 setThreadState(NetworkState.STATE_ERROR);
             }
@@ -343,24 +345,18 @@ public class SocketThread implements Runnable {
     }
 
     private void waitKeepAlive() throws IOException, SQLException {
-        int state = cellinkDao.getState(cellink.getId());
-        if (state == CellinkState.STATE_START || state == CellinkState.STATE_RESTART) {
-            setThreadState(NetworkState.STATE_STARTING);
-
-        } else {
-            if (isKeepAliveTime(keepAliveTime)) {
-                if (commControl.availableData() > 0) {
-                    setThreadState(NetworkState.STATE_ACCEPT_KEEP_ALIVE);
-                } else {
-                    setThreadState(NetworkState.STATE_STOP);
-                    cellink.setState(CellinkState.STATE_OFFLINE);
-                    cellinkDao.update(cellink);
-                    commControl.close();
-                    stopThread = true;
-                }
+        if (isKeepAliveTime(keepAliveTime)) {
+            if (commControl.availableData() > 0) {
+                setThreadState(NetworkState.STATE_ACCEPT_KEEP_ALIVE);
+            } else {
+                setThreadState(NetworkState.STATE_STOP);
+                cellink.setState(CellinkState.STATE_OFFLINE);
+                cellinkDao.update(cellink);
+                commControl.close();
+                stopThread = true;
             }
         }
-        RestartApplication.sleep(300);
+        RestartApplication.sleep(500);
     }
 
     private void acceptCellink() {
@@ -435,11 +431,10 @@ public class SocketThread implements Runnable {
         return cellink;
     }
 
-    private boolean isKeepAliveTime(long keepAliveOccuredTime) {
-        long timeSinceLastKeepalive = System.currentTimeMillis() - keepAliveOccuredTime;
-
+    private boolean isKeepAliveTime(long keepAliveOccurTime) {
+        long timeSinceLastKeepAlive = System.currentTimeMillis() - keepAliveOccurTime;
         int keepAliveInterval = (int) (keepAliveTimeout * TimeUnit.MINUTES.toMillis(1L));
-        return timeSinceLastKeepalive > keepAliveInterval;
+        return timeSinceLastKeepAlive > keepAliveInterval;
     }
 
     private boolean isCellinkTimedOut() throws SQLException {
@@ -523,12 +518,12 @@ public class SocketThread implements Runnable {
         return commControl;
     }
 
-    public void setNetworkState(NetworkState networkState) {
-        this.networkState = networkState;
-    }
-
     public NetworkState getNetworkState() {
         return networkState;
+    }
+
+    public void setNetworkState(NetworkState networkState) {
+        this.networkState = networkState;
     }
 
     //TODO: remove it, it's written for tests
