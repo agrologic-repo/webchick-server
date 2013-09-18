@@ -12,8 +12,8 @@
 package com.agrologic.app.gui;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.except.JarFileWasNotFound;
-import com.agrologic.app.except.StartProgramException;
+import com.agrologic.app.exception.JarFileWasNotFound;
+import com.agrologic.app.exception.StartProgramException;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
 import com.agrologic.app.network.*;
@@ -179,7 +179,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
     }
 
     public final void initServerSocketThread() {
-        this.serverSocketThread = new ServerThread(configuration, this);
+        this.serverSocketThread = new ServerThread(this);
         this.serverSocketThread.addObserver(this);
         this.serverSocketThread.addObserver(serverInfo);
 

@@ -355,8 +355,8 @@ public class WebchickDBCreator extends javax.swing.JFrame {
 
             public void run() {
                 try {
-                    Configuration conf = new Configuration();
-                    conf.setLanguage(((LanguageEntry) cmbLanguages.getSelectedItem()).getLang());
+                    Configuration configuration = new Configuration();
+                    configuration.setLanguage(((LanguageEntry) cmbLanguages.getSelectedItem()).getLang());
                     String path = txtDatabaseDir.getText();
                     delete(new File(path + "\\agrodb_for_tests"));
                     System.setProperty("derby.system.home", path);
