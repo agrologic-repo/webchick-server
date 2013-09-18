@@ -1,7 +1,7 @@
 
 package com.agrologic.app.messaging;
 
-import com.agrologic.app.except.ReadChecksumException;
+import com.agrologic.app.exception.ReadChecksumException;
 import com.agrologic.app.network.ReadBuffer;
 import com.agrologic.app.util.ByteUtil;
 import org.apache.log4j.Logger;
@@ -170,8 +170,6 @@ public final class ResponseMessage implements Message {
             logger.error("Response message initialisation error ", e);
             return;
         }
-
-        Integer.parseInt("1");
         // set parsed data
         setBuffer(messageBody.getBytes());
     }

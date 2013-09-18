@@ -244,9 +244,7 @@ public class MessageManager implements Observer {
         }
         final long timeSinceUpdated = System.currentTimeMillis() - updateTime.getTime();
         Long t = TimeUnit.HOURS.toMillis(1L);
-        System.out.println("Time ::: " + t);
         if (timeSinceUpdated > TimeUnit.HOURS.toMillis(1L)) {
-
             return true;
         }
         return false;
