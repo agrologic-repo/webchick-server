@@ -1,8 +1,8 @@
 package com.agrologic.app.network;
 
-import com.agrologic.app.except.EOTException;
-import com.agrologic.app.except.SOTException;
-import com.agrologic.app.except.TimeoutException;
+import com.agrologic.app.exception.EOTException;
+import com.agrologic.app.exception.SOTException;
+import com.agrologic.app.exception.TimeoutException;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.model.CellinkVersion;
 

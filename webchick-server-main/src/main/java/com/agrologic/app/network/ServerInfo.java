@@ -7,11 +7,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class ServerInfo extends Observable implements Observer {
-    private String ip;
-    private Integer keepalive;
     private boolean on;
     private int onlineCellinks;
-    private Integer port;
     private ServerUI serverFacade;
     private String time;
     private int totalCellinks;
@@ -20,10 +17,6 @@ public class ServerInfo extends Observable implements Observer {
         this.serverFacade = serverFacade;
         onlineCellinks = serverFacade.getCellinkTable().onlineCellinks();
         totalCellinks = serverFacade.getCellinkTable().totalCellinks();
-    }
-
-    public void setKeepalive(Integer keepalive) {
-        this.keepalive = keepalive;
     }
 
     public boolean isOn() {

@@ -182,7 +182,6 @@ public class SocketThread implements Runnable {
     private int timeoutErrorHandler(int errCount) {
 
         responseMessage = (ResponseMessage) commControl.read();
-//        if (responseMessage.getErrorCode() == Message.SOT_ERROR) {
         if (responseMessage.getErrorCodes().equals(Message.ErrorCodes.SOT_ERROR)) {
             errCount++;
         }
@@ -218,7 +217,6 @@ public class SocketThread implements Runnable {
         } else {
             responseMessage = new ResponseMessage(null);
             responseMessage.setMessageType(MessageType.ERROR);
-//            responseMessage.setErrorCode(Message.SOT_ERROR);
             responseMessage.setErrorCodes(Message.ErrorCodes.SOT_ERROR);
             responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
             if (withLogger) {
@@ -226,7 +224,7 @@ public class SocketThread implements Runnable {
             }
             errCount = 0;
             // we need at least one controller in on state
-            // otherwise we we set all controllres on
+            // otherwise we we set all controllers on
             if (allControllersOff()) {
                 setControllersOn();
             }
@@ -452,7 +450,6 @@ public class SocketThread implements Runnable {
     private void errorTimeout(int errorCount) {
         responseMessage = new ResponseMessage(null);
         responseMessage.setMessageType(MessageType.TIME_OUT_ERROR);
-//        responseMessage.setErrorCode(Message.TMO_ERROR);
         responseMessage.setErrorCodes(Message.ErrorCodes.TIME_OUT_ERROR);
         responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
         boolean withLogger = getWithLogging();

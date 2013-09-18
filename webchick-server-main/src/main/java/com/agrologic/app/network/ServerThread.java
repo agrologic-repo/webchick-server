@@ -26,7 +26,7 @@ public class ServerThread extends Observable implements Runnable {
     public static final int MAX_NUM_SOCKET = 512;
     private static final Logger logger = Logger.getLogger(ServerThread.class);
     private final CellinkDao cellinkDao;
-    private final ClientSessions clientSessions;
+    private static ClientSessions clientSessions;
     private ServerActivityStates currentState;
     private ServerSocket server;
     private ScheduledExecutorService executor;
@@ -54,9 +54,9 @@ public class ServerThread extends Observable implements Runnable {
             server = new ServerSocket(port, MAX_NUM_SOCKET, ia);
             server.setSoTimeout(SERVER_SOCKET_TIMEOUT);
 
-            executor = Executors.newScheduledThreadPool(1);
+            executor = Executors.newScheduledThreadPool(2);
             executor.scheduleAtFixedRate(new SocketThreadStarter(this), 0L, 1L, TimeUnit.SECONDS);
-//            executor.schedule(new MonitorThread(),0L,TimeUnit.SECONDS);
+            executor.scheduleAtFixedRate(new MonitorSocketThreadSize(), 0L, 1L, TimeUnit.SECONDS);
 
             logger.info("ServerSocket opened on " + server.getLocalSocketAddress());
             return true;
@@ -84,13 +84,13 @@ public class ServerThread extends Observable implements Runnable {
                     try {
                         Thread.sleep(100);
                     } catch (Exception ex) {
+
                     }
 
                     break;
 
                 case START:
                     logger.info("Start Server, please wait...");
-
                     if (startServer() == true) {
                         setServerActivityState(ServerActivityStates.RUNNING);
                         logger.info("Running");
@@ -278,21 +278,21 @@ public class ServerThread extends Observable implements Runnable {
         }
     }
 
-//    class MonitorThread extends Thread {
-//
-//        @Override
-//        public void run() {
-//            int size = threads.size();
-//            while (!Thread.currentThread().interrupted()) {
-//                if (getServerState() == ServerActivityStates.RUNNING) {
-//                    if (size != threads.size()) {
-//                        logger.debug("Current thread in system =  : " + threads.size());
-//                        size = threads.size();
-//                    }
-//                }
-//            }
-//        }
-//    }
+    class MonitorSocketThreadSize extends Thread {
+
+        @Override
+        public void run() {
+            int size = threads.size();
+            while (!Thread.currentThread().interrupted()) {
+                if (getServerState() == ServerActivityStates.RUNNING) {
+                    if (size != threads.size()) {
+                        logger.debug("Current thread in system =  : " + threads.size());
+                        size = threads.size();
+                    }
+                }
+            }
+        }
+    }
 
 }
 

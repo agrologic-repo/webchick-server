@@ -1,6 +1,5 @@
 package com.agrologic.app.network;
 
-import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.gui.ServerUI;
 import com.agrologic.app.model.Cellink;
@@ -21,20 +20,18 @@ import java.util.concurrent.Executors;
  */
 public class ClientSessions {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final Configuration configuration;
     private final Map<Long, SocketThread> sessions = new ConcurrentHashMap<Long, SocketThread>();
     private final ExecutorService threadPool = Executors.newCachedThreadPool();
     private final CellinkDao cellinkDao;
     private final ServerUI server;
 
-    public ClientSessions(Configuration configuration, ServerUI server, CellinkDao cellinkDao) {
-        this.configuration = configuration;
+    public ClientSessions(ServerUI server, CellinkDao cellinkDao) {
         this.server = server;
         this.cellinkDao = cellinkDao;
     }
 
     public synchronized SocketThread createSessionWithClient(Socket socket) throws IOException {
-        SocketThread newThread = new SocketThread(this, socket, configuration);
+        SocketThread newThread = new SocketThread(this, socket);
         newThread.setServerFacade(server);
         threadPool.execute(newThread);
         return newThread;
@@ -61,7 +58,7 @@ public class ClientSessions {
         }
     }
 
-    public Map<Long, SocketThread> getSessions() {
+    public synchronized Map<Long, SocketThread> getSessions() {
         return sessions;
     }
 
@@ -69,7 +66,7 @@ public class ClientSessions {
         sessions.put(id, socketThread);
     }
 
-    public void closeSession(Long id) {
+    public synchronized void closeSession(Long id) {
         sessions.remove(id);
     }
 }
