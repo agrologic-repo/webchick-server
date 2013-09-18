@@ -1,8 +1,8 @@
 package com.agrologic.app.network;
 
-import com.agrologic.app.except.EOTException;
-import com.agrologic.app.except.SOTException;
-import com.agrologic.app.except.TimeoutException;
+import com.agrologic.app.exception.EOTException;
+import com.agrologic.app.exception.SOTException;
+import com.agrologic.app.exception.TimeoutException;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.messaging.ResponseMessage;
 import com.agrologic.app.model.CellinkVersion;
@@ -89,7 +89,7 @@ public class CommControl {
                     } else {
                         readBuffer.checkTimeout();
                     }
-                    Thread.sleep(5);
+                    Thread.sleep(10);
                 }
             }
             logger.debug("End read from input stream");
@@ -199,14 +199,20 @@ public class CommControl {
     }
 
     public void clearInputStreamWithDelayForSilence() {
-        final int DELAY_SILENCE_TIME = (int) TimeUnit.SECONDS.toMillis(1);// wait 1 second
+        final int DELAY_SILENCE_TIME = (int) TimeUnit.SECONDS.toMillis(5);// wait 5 second
         // wait for silence
         try {
+            try {
+                clearInputStream();
+                Thread.sleep(DELAY_SILENCE_TIME);
+            } catch (InterruptedException ex) {
+
+            }
             while (availableData() > 0) {
                 synchronized (this) {
                     try {
                         clearInputStream();
-                        wait(DELAY_SILENCE_TIME);
+                        Thread.sleep(DELAY_SILENCE_TIME);
                     } catch (InterruptedException ex) {
                     }
                 }
