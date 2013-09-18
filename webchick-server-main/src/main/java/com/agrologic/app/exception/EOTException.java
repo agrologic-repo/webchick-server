@@ -1,11 +1,7 @@
-package com.agrologic.app.except;
+package com.agrologic.app.exception;
 
 public class EOTException extends Exception {
     static final String EOT_ERROR = "End of transmission character was not received during reading response bytes.";
-
-    public EOTException() {
-        this(EOT_ERROR);
-    }
 
     public EOTException(String message) {
         super(message);
