@@ -4,7 +4,7 @@
  */
 package com.agrologic.app.util;
 
-import com.agrologic.app.except.JarFileWasNotFound;
+import com.agrologic.app.exception.JarFileWasNotFound;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
