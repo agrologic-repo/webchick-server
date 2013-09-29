@@ -7,7 +7,8 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.gui.ServerUI;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.*;
@@ -24,20 +25,20 @@ import java.util.concurrent.TimeUnit;
 public class ServerThread extends Observable implements Runnable {
     public static final int SERVER_SOCKET_TIMEOUT = 5000;
     public static final int MAX_NUM_SOCKET = 512;
-    private static final Logger logger = Logger.getLogger(ServerThread.class);
-    private final CellinkDao cellinkDao;
+    private static final Logger logger = LoggerFactory.getLogger(ServerThread.class);
     private static ClientSessions clientSessions;
+    private final CellinkDao cellinkDao;
+    private final ScheduledExecutorService executor;
     private ServerActivityStates currentState;
     private ServerSocket server;
-    private ScheduledExecutorService executor;
-    private Map<Long, SocketThread> threads;
+//    private Map<Long, SocketThread> threads;
 
     public ServerThread(ServerUI serverFacade) {
         cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         this.currentState = ServerActivityStates.IDLE;
         this.clientSessions = new ClientSessions(serverFacade, cellinkDao);
-        this.threads = clientSessions.getSessions();
-
+//        this.threads = clientSessions.getSessions();
+        this.executor = Executors.newScheduledThreadPool(2);
     }
 
     /**
@@ -53,16 +54,12 @@ public class ServerThread extends Observable implements Runnable {
             logger.info("Try to open server on port : " + port);
             server = new ServerSocket(port, MAX_NUM_SOCKET, ia);
             server.setSoTimeout(SERVER_SOCKET_TIMEOUT);
-
-            executor = Executors.newScheduledThreadPool(2);
             executor.scheduleAtFixedRate(new SocketThreadStarter(this), 0L, 1L, TimeUnit.SECONDS);
-            executor.scheduleAtFixedRate(new MonitorSocketThreadSize(), 0L, 1L, TimeUnit.SECONDS);
-
+            executor.scheduleAtFixedRate(new ClientSessionsSizeMonitor(this), 0L, 1L, TimeUnit.SECONDS);
             logger.info("ServerSocket opened on " + server.getLocalSocketAddress());
             return true;
         } catch (BindException ex) {
-            logger.error("Error opening server.");
-            logger.fatal(ex);
+            logger.error("Error opening server.", ex);
             return false;
         } catch (IOException ex) {
             logger.error("Error opening server.", ex);
@@ -72,7 +69,7 @@ public class ServerThread extends Observable implements Runnable {
 
     @Override
     public void run() {
-        ShutdownHook shutdownHook = new ShutdownHook(threads);
+        ShutdownHook shutdownHook = new ShutdownHook(clientSessions.getSessions());
         Runtime.getRuntime().addShutdownHook(shutdownHook);
         boolean running = true;
 
@@ -96,7 +93,7 @@ public class ServerThread extends Observable implements Runnable {
                         logger.info("Running");
                     } else {
                         setServerActivityState(ServerActivityStates.ERROR);
-                        logger.fatal("Failed");
+                        logger.error("Failed");
                     }
 
                     break;
@@ -162,7 +159,7 @@ public class ServerThread extends Observable implements Runnable {
     public void shutdownServer() {
 
         // change cellink state to offline
-        Logger log = Logger.getLogger(ServerThread.class);
+        Logger log = LoggerFactory.getLogger(ServerThread.class);
 
         if ((server != null) && !server.isClosed()) {
             try {
@@ -184,8 +181,6 @@ public class ServerThread extends Observable implements Runnable {
                 logger.error("Error closing ServerSocket. ", ex);
             }
         }
-
-        threads.clear();
         executor.shutdown();
     }
 
@@ -208,7 +203,7 @@ public class ServerThread extends Observable implements Runnable {
     }
 
     public void showThreadList() {
-        Iterator<Entry<Long, SocketThread>> entries = threads.entrySet().iterator();
+        Iterator<Entry<Long, SocketThread>> entries = clientSessions.getSessions().entrySet().iterator();
 
         if (entries.hasNext() == false) {
             logger.debug("The thread list is empty !");
@@ -224,10 +219,6 @@ public class ServerThread extends Observable implements Runnable {
             logger.debug("The cellink id : " + cid + " the socket opened : "
                     + snt.getCommControl().getSocket().toString());
         }
-    }
-
-    public Map<Long, SocketThread> getThreadList() {
-        return threads;
     }
 
     public ClientSessions getClientSessions() {
@@ -271,29 +262,12 @@ public class ServerThread extends Observable implements Runnable {
                     }
                 }
             } catch (SQLException e) {
-                logger.debug(e);
+                logger.debug(e.getMessage(), e);
             } catch (Exception e) {
-                logger.debug(e);
+                logger.debug(e.getMessage(), e);
             }
         }
     }
-
-    class MonitorSocketThreadSize extends Thread {
-
-        @Override
-        public void run() {
-            int size = threads.size();
-            while (!Thread.currentThread().interrupted()) {
-                if (getServerState() == ServerActivityStates.RUNNING) {
-                    if (size != threads.size()) {
-                        logger.debug("Current thread in system =  : " + threads.size());
-                        size = threads.size();
-                    }
-                }
-            }
-        }
-    }
-
 }
 
 
