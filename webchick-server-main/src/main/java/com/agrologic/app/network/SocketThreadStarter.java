@@ -5,19 +5,20 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Monitors the status of all units (cellink) by polling .
+ * Monitors the status of all units (cellink) by polling and set session state starting to start communication .
  * When cellink state equals to #CellinkState.STATE_START,  it means that the server already open session and putted
  * into ClientSession map . Thus by changing #SocketThread to #NetworkState.STATE_STARTING it start running.
  */
 public class SocketThreadStarter implements Runnable {
     private final ServerThread serverThread;
-    private final Logger logger = Logger.getLogger(SocketThreadStarter.class);
+    private final Logger logger = LoggerFactory.getLogger(SocketThreadStarter.class);
     private CellinkDao cellinkDao;
 
 
@@ -33,13 +34,19 @@ public class SocketThreadStarter implements Runnable {
         try {
             cellinks = (List<Cellink>) cellinkDao.getAll();
         } catch (SQLException e) {
-            logger.debug(e);
+            logger.debug(e.getMessage(), e);
         }
         for (Cellink cellink : cellinks) {
             int state = cellink.getState();
             if (state == CellinkState.STATE_START || state == CellinkState.STATE_RESTART) {
                 SocketThread socketThread = clientSessions.getSessions().get(cellink.getId());
-                socketThread.setThreadState(NetworkState.STATE_STARTING);
+                if (socketThread != null) {
+                    socketThread.setThreadState(NetworkState.STATE_STARTING);
+                    logger.info("Session with cellink ID {} started communication ", cellink.getId());
+                } else {
+                    cellink.setState(CellinkState.STATE_OFFLINE);
+                    logger.info("Session state with cellink ID {} was set offline ", cellink.getId());
+                }
             }
         }
     }
