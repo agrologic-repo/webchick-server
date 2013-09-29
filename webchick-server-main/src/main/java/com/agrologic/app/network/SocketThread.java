@@ -10,7 +10,7 @@ import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
 import com.agrologic.app.model.Controller;
-import com.agrologic.app.util.RestartApplication;
+import com.agrologic.app.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,12 +60,14 @@ public class SocketThread implements Runnable {
         this.requestQueue = new RequestMessageQueue();
         this.responseMessageMap = new ResponseMessageMap();
         this.reqIndex = new RequestIndex();
+
         Configuration configuration = new Configuration();
         this.sotDelay = Integer.parseInt(configuration.getSotDelay());
         this.eotDelay = Integer.parseInt(configuration.getEotDelay());
         this.nxtDelay = Integer.parseInt(configuration.getNextDelay());
         this.maxError = Integer.parseInt(configuration.getMaxErrors());
         this.keepAliveTimeout = configuration.getKeepalive();
+
         this.clientSessions = clientSessions;
         this.messageManagers = new ArrayList<MessageManager>();
     }
@@ -149,8 +151,14 @@ public class SocketThread implements Runnable {
         } finally {
             if (cellink != null) {
                 logger.info("close connection : " + cellink);
-                RestartApplication.sleep(TimeUnit.SECONDS.toMillis(5));
-                clientSessions.closeSession(cellink.getId());
+                CommonUtil.sleepSeconds(5);
+
+                // check if session was removed because of duplication socket was opened before
+                SocketThread socketToClose = clientSessions.getSessions().get(cellink.getId());
+                if (socketToClose.getCommControl().equals(commControl)) {
+                    clientSessions.closeSession(cellink.getId());
+                }
+
                 commControl.close();
                 try {
                     removeControllersData();
@@ -201,8 +209,7 @@ public class SocketThread implements Runnable {
         }
         boolean withLogger = getWithLogging();
         if (withLogger) {
-            logger.debug(cellink.getName() + " error count : " + errCount);
-            logger.error(cellink.getName() + " [" + responseMessage + "]");
+            logger.error(cellink.getName() + " [" + responseMessage + "] error count : " + errCount);
         }
         setThreadState(NetworkState.STATE_DELAY);
         return errCount;
@@ -354,7 +361,7 @@ public class SocketThread implements Runnable {
                 stopThread = true;
             }
         }
-        RestartApplication.sleep(500);
+        CommonUtil.sleepMiliSeconds(100);
     }
 
     private void acceptCellink() {
@@ -513,14 +520,6 @@ public class SocketThread implements Runnable {
 
     public CommControl getCommControl() {
         return commControl;
-    }
-
-    public NetworkState getNetworkState() {
-        return networkState;
-    }
-
-    public void setNetworkState(NetworkState networkState) {
-        this.networkState = networkState;
     }
 
     //TODO: remove it, it's written for tests
