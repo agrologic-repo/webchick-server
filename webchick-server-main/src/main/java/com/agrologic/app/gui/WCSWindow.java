@@ -668,7 +668,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
     }//GEN-LAST:event_btnShowOpendSocketsActionPerformed
 
     private void btnCloseUnusedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseUnusedActionPerformed
-        Map<Long, SocketThread> threads = serverSocketThread.getThreadList();
+        Map<Long, SocketThread> threads = serverSocketThread.getClientSessions().getSessions();
         if (threads != null && !threads.isEmpty()) {
             List<SocketThread> deadThreads = new ArrayList<SocketThread>();
             Set<Entry<Long, SocketThread>> entries = threads.entrySet();
