@@ -41,21 +41,32 @@ public interface UserDao {
     void remove(Long id) throws SQLException;
 
     /**
-     * Check if login already exist in database.
-     *
-     * @param login the login name.
-     * @return true if login enabled, otherwise false .
-     * @throws SQLException if failed to check user login.
-     */
-
-    /**
      * Check if name already exist in database.
      *
      * @param name the name
      * @return true if name enabled, otherwise false .
-     * @throws SQLException
+     * @throws SQLException if failed to check user login.
      */
     Boolean loginEnabled(String name) throws SQLException;
+
+    /**
+     * Return number of users in database
+     *
+     * @return number of users
+     * @throws SQLException if failed to execute query
+     */
+    Integer count() throws SQLException;
+
+    /**
+     * Return number of users in database
+     *
+     * @param role
+     * @param company
+     * @param search
+     * @return
+     * @throws SQLException
+     */
+    Integer count(Integer role, String company, String search) throws SQLException;
 
     /**
      * Gets user by it id
@@ -112,6 +123,19 @@ public interface UserDao {
      * @throws SQLException if failed to retrieve users from the database.
      */
     Collection<User> getAll(Integer role, String company, String text) throws SQLException;
+
+    /**
+     * Retrieves users that match the specified criteria with paging index
+     *
+     * @param role    the role that represent user role in system <br> (values: -1 - all, 0 - guest, 1 - user, 2 -
+     *                administrator, 3 - distributor)
+     * @param company the company of user
+     * @param search    the text that compare to user login name
+     * @param index
+     * @return the list of users that match the criteria
+     * @throws SQLException if failed to retrieve users from the database.
+     */
+    Collection<User> getAll(Integer role, String company, String search, String index) throws SQLException;
 }
 
 

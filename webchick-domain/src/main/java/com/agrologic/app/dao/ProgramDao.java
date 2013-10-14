@@ -40,6 +40,15 @@ public interface ProgramDao {
     Integer count() throws SQLException;
 
     /**
+     * Return number of programs in database with searched text
+     *
+     * @param searchText the search text
+     * @return number of programs
+     * @throws SQLException if failed to execute query
+     */
+    Integer count(String searchText) throws SQLException;
+
+    /**
      * Return true if program with given id exist in database
      *
      * @param id program id

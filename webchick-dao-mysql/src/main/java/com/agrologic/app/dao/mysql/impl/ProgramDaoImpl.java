@@ -62,6 +62,14 @@ public class ProgramDaoImpl implements ProgramDao {
     }
 
     @Override
+    public Integer count(String searchText) throws SQLException {
+        logger.debug("Count all programs with search text ");
+        String sqlQuery = "select count(*) as count from programs where name like ?";
+        Object[] objects = new Object[]{"%" + searchText + "%"};
+        return jdbcTemplate.queryForObject(sqlQuery, objects, Integer.class);
+    }
+
+    @Override
     public Boolean isProgramWithGivenIdExist(Long id) throws SQLException {
         Program p = getById(id);
         return p != null;
