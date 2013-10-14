@@ -8,11 +8,8 @@ import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkCriteria;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.User;
-import org.apache.log4j.Logger;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,12 +17,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class OverviewServlet extends HttpServlet {
-    /**
-     * Logger for this class and subclasses
-     */
-    final Logger logger = Logger.getLogger(ListUserCellinksServlet.class);
-    private ServletContext ctx;
+public class OverviewServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP
@@ -39,16 +31,15 @@ public class OverviewServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-
+        response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
-            response.sendRedirect("./login.jsp");
+            response.sendRedirect("http://localhost:8080/webchick-web/login.jsp");
         } else {
             User user = (User) request.getSession().getAttribute("user");
-            String nameParam = request.getParameter("name");
+            String nameParam = request.getParameter("searchText");
             String stateParam = request.getParameter("state");
             String typeParam = request.getParameter("type");
             String indexParam = request.getParameter("index");
@@ -73,10 +64,10 @@ public class OverviewServlet extends HttpServlet {
                 CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 CellinkCriteria criteria = new CellinkCriteria();
-                criteria.setState(state);
-                criteria.setName(nameParam);
-                criteria.setType(typeParam);
-                criteria.setIndex(index);
+                                criteria.setState(state);
+                                criteria.setName(nameParam);
+                                criteria.setType(typeParam);
+                                criteria.setIndex(index);
 
                 int count;
                 switch (user.getRole()) {
@@ -87,7 +78,7 @@ public class OverviewServlet extends HttpServlet {
                             Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
                             cellink.setControllers(controllers);
                         }
-                        request.getSession().setAttribute("cellinks", cellinks);
+                        request.setAttribute("cellinks", cellinks);
                         count = cellinkDao.count(criteria);
                         break;
 
@@ -99,7 +90,7 @@ public class OverviewServlet extends HttpServlet {
                             Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
                             cellink.setControllers(controllers);
                         }
-                        request.getSession().setAttribute("cellinks", cellinks);
+                        request.setAttribute("cellinks", cellinks);
                         count = cellinkDao.count(criteria);
                         break;
                     case DISTRIBUTOR:
@@ -111,30 +102,25 @@ public class OverviewServlet extends HttpServlet {
                             Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
                             cellink.setControllers(controllers);
                         }
-                        request.getSession().setAttribute("cellinks", cellinks);
+                        request.setAttribute("cellinks", cellinks);
                         count = cellinkDao.count(criteria);
                         break;
 
                     case ADMIN:
                         criteria.setUserId(user.getId());
                         criteria.setRole(user.getRole().getValue());
-                        try {
                             cellinks = cellinkDao.getAll(criteria);
                             for (Cellink cellink : cellinks) {
                                 Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
                                 cellink.setControllers(controllers);
                             }
-                            request.getSession().setAttribute("cellinks", cellinks);
-                        } catch (NumberFormatException ex) {
-                        }
+                            request.setAttribute("cellinks", cellinks);
                         count = cellinkDao.count(criteria);
                         break;
                 }
                 setTableParameters(request, index, count);
-                request.getRequestDispatcher("./overview.jsp").forward(request, response);
+                request.getRequestDispatcher("./overview.jsp?searchText=" + nameParam).forward(request, response);
             } catch (SQLException ex) {
-
-                // error page
                 logger.error("Error durring sql query running ", ex);
             } finally {
                 out.close();
@@ -156,10 +142,9 @@ public class OverviewServlet extends HttpServlet {
             if (count > 0) {
                 from += 1;
             }
-
-            request.getSession().setAttribute("from", from);
-            request.getSession().setAttribute("to", to);
-            request.getSession().setAttribute("of", of);
+            request.setAttribute("from", from);
+            request.setAttribute("to", to);
+            request.setAttribute("of", of);
         } else {
             int from = index;
             int to = from + ((count - from) > 25
@@ -167,9 +152,9 @@ public class OverviewServlet extends HttpServlet {
                     : (count - from));
             int of = count;
 
-            request.getSession().setAttribute("from", from + 1);
-            request.getSession().setAttribute("to", to);
-            request.getSession().setAttribute("of", of);
+            request.setAttribute("from", from + 1);
+            request.setAttribute("to", to);
+            request.setAttribute("of", of);
         }
     }
 

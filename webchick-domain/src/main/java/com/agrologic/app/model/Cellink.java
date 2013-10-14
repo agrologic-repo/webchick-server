@@ -1,8 +1,6 @@
 package com.agrologic.app.model;
 
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.net.Socket;
@@ -285,7 +283,7 @@ public class Cellink implements Comparable<Cellink>, Serializable {
     }
 
     public String getImageByState() {
-        String imageName = "img/" + CellinkState.stateToString(state) + ".gif";
+        String imageName = "resources/images/" + CellinkState.stateToString(state) + ".gif";
 
         return imageName;
     }
@@ -325,20 +323,38 @@ public class Cellink implements Comparable<Cellink>, Serializable {
         return this.getId().compareTo(o.getId());
     }
 
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (!(obj instanceof Cellink)) {
+//            return false;
+//        }
+//
+//        Cellink other = (Cellink) obj;
+//
+//        return new EqualsBuilder().append(this.id, other.id).isEquals();
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return new HashCodeBuilder(7, 31).append(this.getId()).toHashCode();
+//    }
+
+
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Cellink)) {
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cellink)) return false;
 
-        Cellink other = (Cellink) obj;
+        Cellink cellink = (Cellink) o;
 
-        return new EqualsBuilder().append(this.id, other.id).isEquals();
+        if (!id.equals(cellink.id)) return false;
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(7, 31).append(this.getId()).toHashCode();
+        return id.hashCode();
     }
 
     @Override

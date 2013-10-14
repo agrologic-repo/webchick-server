@@ -179,8 +179,10 @@ public class CellinkDaoImpl implements CellinkDao {
     @Override
     public int count(CellinkCriteria criteria) throws SQLException {
         logger.debug("Count all cellinks ");
-        String sqlQuery = "select count(*) from cellinks";
-        return jdbcTemplate.queryForObject(sqlQuery, Integer.class);
+        String sqlQuery = "select count(*) from cellinks where name like ? and (state = ? or ? is null)";
+        Object[] objects = new Object[]{criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%",
+                criteria.getState(), criteria.getState()};
+        return jdbcTemplate.queryForObject(sqlQuery, objects, Integer.class);
     }
 
     @Override
