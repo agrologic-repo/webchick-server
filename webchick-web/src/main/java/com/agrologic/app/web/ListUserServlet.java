@@ -7,10 +7,9 @@ import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.User;
 import com.agrologic.app.model.UserRole;
-import org.apache.log4j.Logger;
+import com.agrologic.app.service.CompanyService;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,8 +17,13 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class ListUserServlet extends HttpServlet {
+public class ListUserServlet extends AbstractServlet {
 
+    private CompanyService companyService;
+
+    public ListUserServlet() {
+        companyService = new CompanyService();
+    }
 
     /**
      * Processes requests for both HTTP
@@ -33,12 +37,6 @@ public class ListUserServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /**
-         * Logger for this class and subclasses
-         */
-        final Logger logger = Logger.getLogger(ListUserServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -50,6 +48,10 @@ public class ListUserServlet extends HttpServlet {
             } else {
                 User user = (User) request.getSession().getAttribute("user");
 
+                if (!companyService.isCompaniesInSession(request)) {
+                    companyService.setCompaniesToSession(request);
+                }
+
                 try {
                     if ((user.getRole() == UserRole.USER) || (user.getRole() == UserRole.DISTRIBUTOR)) {
                         logger.info("access denied for user " + user);
@@ -58,40 +60,64 @@ public class ListUserServlet extends HttpServlet {
                         UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
                         String paramRole = request.getParameter("role");
                         Integer role = null;
-                        if ((paramRole != null) && !"0".equals(paramRole)) {
+                        if ((paramRole != null) && !"".equals(paramRole) && !"0".equals(paramRole)) {
                             role = Integer.parseInt(paramRole);
                         }
                         String company = request.getParameter("company");
-                        if ((company != null) && company.equals("All")) {
+                        if (company != null && (company.equals("All") || (company.equals("")))) {
                             company = null;
                         }
-                        String search = request.getParameter("searchText");
+                        String index = request.getParameter("index");
+                        if (index == null) {
+                            index = "0";
+                        }
 
-                        Collection<User> users = userDao.getAll(role, company, search);
+                        String search = request.getParameter("searchText");
+                        Collection<User> users = userDao.getAll(role, company, search, index);
+                        int count = userDao.count(role, company, search);
+                        setTableParameters(request, index, count);
+
                         CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                         for (User u : users) {
                             Collection<Cellink> cellinks = cellinkDao.getAllUserCellinks(u.getId());
                             u.setCellinks(cellinks);
                         }
                         logger.info("retrieve all users ");
-                        request.getSession().setAttribute("users", users);
-
-                        Collection<String> companies = userDao.getUserCompanies();
-
-                        request.getSession().setAttribute("companies", companies);
+                        request.setAttribute("users", users);
                         request.getRequestDispatcher("./all-users.jsp?role=" + paramRole).forward(request, response);
                     }
                 } catch (SQLException ex) {
-
                     // error page
                     logger.error("Error occurs during retrieve users !", ex);
-                    request.getSession().setAttribute("message", "Error occurs during retrive users !");
-                    request.getSession().setAttribute("error", true);
-                    request.getRequestDispatcher("./WEB-INF/jsp/all-users.jsp?role=0").forward(request, response);
+                    request.setAttribute("message", "Error occurs during retrieve users !");
+                    request.setAttribute("error", true);
+                    request.getRequestDispatcher("./jsp/all-users.jsp?role=0").forward(request, response);
                 }
             }
         } finally {
             out.close();
+        }
+    }
+
+    private void setTableParameters(HttpServletRequest request, String index, int count) {
+        if (index.equals("0")) {
+            int from = 1;
+            int to = 25;
+            int of = count;
+
+            request.setAttribute("from", from);
+            request.setAttribute("to", to);
+            request.setAttribute("of", of);
+        } else {
+            int from = Integer.parseInt(index);
+            int to = from + ((count - from) > 25
+                    ? 25
+                    : (count - from));
+            int of = count;
+
+            request.setAttribute("from", from);
+            request.setAttribute("to", to);
+            request.setAttribute("of", of);
         }
     }
 

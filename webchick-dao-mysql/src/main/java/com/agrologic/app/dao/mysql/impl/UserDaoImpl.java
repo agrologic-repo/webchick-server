@@ -119,9 +119,30 @@ public class UserDaoImpl implements UserDao {
      * {@inheritDoc}
      */
     @Override
+    public Integer count() throws SQLException {
+        logger.debug("Count all users ");
+        String sqlQuery = "select count(*) from users";
+        return jdbcTemplate.queryForObject(sqlQuery, Integer.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Integer count(Integer role, String company, String search) throws SQLException {
+        String sqlQuery = "select count(*) from users where " +
+                "(role=? or ? is null) and (company = ? or ? is null) and name like ? ";
+        return jdbcTemplate.queryForObject(sqlQuery,
+                new Object[]{role, role, company, company, (search == null ? "%%" : "%" + search + "%")}, Integer.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Collection<String> getUserCompanies() throws SQLException {
         logger.debug("Get all users companies ");
-        String sqlQuery = "select distinct company from users";
+        String sqlQuery = "select distinct company from users order by company";
         return jdbcTemplate.query(sqlQuery, new ParameterizedRowMapper<String>() {
             public String mapRow(ResultSet rs, int arg1) throws SQLException {
                 return rs.getString(1);
@@ -159,6 +180,17 @@ public class UserDaoImpl implements UserDao {
                 "(role=? or ? is null) and (company = ? or ? is null) and name like ? ";
         return jdbcTemplate.query(sqlQuery,
                 new Object[]{role, role, company, company, (search == null ? "%%" : "%" + search + "%")},
+                RowMappers.user());
+    }
+
+    @Override
+    public Collection<User> getAll(Integer role, String company, String search, String index) throws SQLException {
+        logger.debug("Get all users by role , company with given search text  ");
+        String sqlQuery = "select * from users where (role=? or ? is null) and (company = ? or ? is null) " +
+                "and name like ? limit ? ,25  ";
+        return jdbcTemplate.query(sqlQuery,
+                new Object[]{role, role, company, company, (search == null ? "%%" : "%" + search + "%"),
+                        index == null ? 0 : Integer.valueOf(index)},
                 RowMappers.user());
     }
 }
