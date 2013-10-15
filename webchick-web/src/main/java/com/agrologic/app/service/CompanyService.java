@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class CompanyService {
-    UserDao userDao;
+    private UserDao userDao;
 
     public CompanyService() {
         this.userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
