@@ -1,57 +1,46 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.agrologic.app.table;
-
+package com.agrologic.app.management;
 
 import com.agrologic.app.model.Data;
 
 import java.util.*;
 
-//~--- JDK imports ------------------------------------------------------------
-
-public class TableOfHistoryCreator {
+public class DataForTableCreator {
 
     /**
-     * Create history data by grow day.
+     * Create management data by grow day with specified data .
      *
-     * @param history the history map per grow day.
+     * @param history the management map per grow day.
      * @param data    the searching data .
-     * @return histDataByGrowDay the map with searched history data per grow day
+     * @return histDataByGrowDay the map with searched management data per grow day
      */
     public static Map<Integer, Data> createHistDataByGrowDay(final Map<Integer, String> history,
                                                              final Data data) {
-        Map<Integer, Data> histDataByGrowDay = new TreeMap<Integer, Data>();
+        Map<Integer, Data> growDayDataTreeMap = new TreeMap<Integer, Data>();
         Iterator<Integer> iter = history.keySet().iterator();
-
         while (iter.hasNext()) {
             Integer key = iter.next();
             Data dataFromHist = getDataFromHist(data, history.get(key));
-
             if (dataFromHist != null) {
-                histDataByGrowDay.put(key, dataFromHist);
+                growDayDataTreeMap.put(key, dataFromHist);
             } else {
-                histDataByGrowDay.put(key, null);
+                growDayDataTreeMap.put(key, null);
             }
         }
 
-        return histDataByGrowDay;
+        return growDayDataTreeMap;
     }
 
     /**
-     * Create history data by grow day.
+     * Create management data by grow day.
      *
-     * @param history    the history map per grow day.
+     * @param history    the management map per grow day.
      * @param searchData the searching data .
-     * @return histDataByGrowDay the map with searched history data per grow day
+     * @return histDataByGrowDay the map with searched management data per grow day
      */
     public static Map<Integer, Data> createEggCountHistDataByGrowDay(final Map<Integer, String> history,
                                                                      final Data searchData) {
         int SHIFT_16_BIT = 16;
         int HIGH_16BIT_ON_MASK = 0x8000;
-        int HIGH_32BIT_OFF_MASK = 0x0000FFFF;
 
         Map<Integer, Data> histDataByGrowDay = new TreeMap<Integer, Data>();
         Iterator<Integer> iter = history.keySet().iterator();
@@ -134,10 +123,6 @@ public class TableOfHistoryCreator {
         return tVal;
     }
 
-    /**
-     * @param growDays
-     * @return
-     */
     public static Map<Integer, Data> createGrowDayList(final Map<Integer, String> history, Data data) {
         Map<Integer, Data> histDataByGrowDay = new TreeMap<Integer, Data>();
         Iterator<Integer> iter = history.keySet().iterator();
@@ -150,14 +135,27 @@ public class TableOfHistoryCreator {
         }
 
         return histDataByGrowDay;
+
+    }
+
+    public static List<String> createDataList(final Set<Integer> growDays) {
+        List<String> dataByGrowDay = new ArrayList<String>();
+        Iterator<Integer> iter = growDays.iterator();
+
+        while (iter.hasNext()) {
+            Integer value = iter.next();
+            dataByGrowDay.add(value.toString());
+        }
+
+        return dataByGrowDay;
     }
 
     /**
-     * Return data object with value from history string.
+     * Return data object with value from management string.
      *
-     * @param searchData the data which encapsulate all field except value.
-     * @param histString the string with all history pairs data and value .
-     * @return foundData the data object with value from history string, or null.
+     * @param searchData the data which encapsulate all field exception value.
+     * @param histString the string with all management pairs data and value .
+     * @return foundData the data object with value from management string, or null.
      */
     private static Data getDataFromHist(Data searchData, String histString) {
         StringTokenizer token = new StringTokenizer(histString, " ");
