@@ -5,10 +5,8 @@ import com.agrologic.app.model.Data;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.model.ProgramSystemState;
 import com.agrologic.app.model.SystemState;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,7 +15,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-public class ProgramSystemStatesServlet extends HttpServlet {
+public class ProgramSystemStatesServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -29,12 +27,7 @@ public class ProgramSystemStatesServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ProgramDetailsServet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -57,25 +50,25 @@ public class ProgramSystemStatesServlet extends HttpServlet {
 
                     program.setProgramSystemStates(programSystemStates);
                     logger.info("retrieve program system states!");
-                    request.getSession().setAttribute("program", program);
+                    request.setAttribute("program", program);
 
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                    List<Data> dataSystemStates = dataDao.getSystemStates();
+                    List<Data> dataSystemStates = (List<Data>) dataDao.getSystemStates();
 
                     logger.info("retrieve program data system states!");
-                    request.getSession().setAttribute("dataSystemStates", dataSystemStates);
+                    request.setAttribute("dataSystemStates", dataSystemStates);
 
                     SystemStateDao systemStateDao = DbImplDecider.use(DaoType.MYSQL).getDao(SystemStateDao.class);
                     Collection<SystemState> systemStateNames = systemStateDao.getAll();
 
                     logger.info("retrieve syste state names!");
-                    request.getSession().setAttribute("systemStateNames", systemStateNames);
+                    request.setAttribute("systemStateNames", systemStateNames);
                     request.getRequestDispatcher("./assign-systemstates.jsp").forward(request, response);
 
                     // request.getRequestDispatcher("./program-systemstates.jsp").forward(request, response);
                 } catch (SQLException ex) {
                     logger.info("Error occurs while retrieve program system states!");
-                    request.getSession().setAttribute("message", "Error occurs while retrieve program system states!");
+                    request.setAttribute("message", "Error occurs while retrieve program system states!");
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
                 }
             }

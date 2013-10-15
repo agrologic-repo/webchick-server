@@ -64,10 +64,10 @@ public class OverviewServlet extends AbstractServlet {
                 CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 CellinkCriteria criteria = new CellinkCriteria();
-                                criteria.setState(state);
-                                criteria.setName(nameParam);
-                                criteria.setType(typeParam);
-                                criteria.setIndex(index);
+                criteria.setState(state);
+                criteria.setName(nameParam);
+                criteria.setType(typeParam);
+                criteria.setIndex(index);
 
                 int count;
                 switch (user.getRole()) {
@@ -109,12 +109,12 @@ public class OverviewServlet extends AbstractServlet {
                     case ADMIN:
                         criteria.setUserId(user.getId());
                         criteria.setRole(user.getRole().getValue());
-                            cellinks = cellinkDao.getAll(criteria);
-                            for (Cellink cellink : cellinks) {
-                                Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
-                                cellink.setControllers(controllers);
-                            }
-                            request.setAttribute("cellinks", cellinks);
+                        cellinks = cellinkDao.getAll(criteria);
+                        for (Cellink cellink : cellinks) {
+                            Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
+                            cellink.setControllers(controllers);
+                        }
+                        request.setAttribute("cellinks", cellinks);
                         count = cellinkDao.count(criteria);
                         break;
                 }

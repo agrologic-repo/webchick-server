@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
@@ -14,26 +8,18 @@ import com.agrologic.app.graph.daily.Graph;
 import com.agrologic.app.graph.daily.Graph24FWI;
 import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.model.Data;
-import org.apache.log4j.Logger;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.servlet.ServletUtilities;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
-public class Graph24WaterConsumpTempServlet extends HttpServlet {
-
+public class Graph24WaterConsumpTempServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -45,14 +31,8 @@ public class Graph24WaterConsumpTempServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(Graph24WaterConsumpTempServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter pw = new PrintWriter(response.getOutputStream());
-        String filename = null;
         long controllerId = Long.parseLong(request.getParameter("controllerId"));
 
         try {
@@ -74,20 +54,17 @@ public class Graph24WaterConsumpTempServlet extends HttpServlet {
 
                 // Write the chart image to the temporary directory
                 ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-
-                filename = ServletUtilities.saveChartAsPNG(graph.createChart(), 800, 600, info, request.getSession());
+                String filename = ServletUtilities.saveChartAsPNG(graph.createChart(), 800, 600, info, request.getSession());
 
                 // Write the image map to the PrintWriter
                 ChartUtilities.writeImageMap(pw, filename, info, false);
-                request.getSession().setAttribute("filenamewct", filename);
+                request.setAttribute("filenamewct", filename);
                 pw.flush();
             }
         } catch (Exception e) {
-            System.out.println("Exception - " + e.toString());
             e.printStackTrace(System.out);
-            filename = "public_error_500x300.png";
-            ChartUtilities.writeImageMap(pw, filename, null, false);
-            request.getSession().setAttribute("filenamewct", filename);
+            ChartUtilities.writeImageMap(pw, "public_error_500x300.png", null, false);
+            request.setAttribute("filenamewct", "public_error_500x300.png");
             pw.flush();
         }
     }

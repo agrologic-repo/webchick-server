@@ -2,10 +2,8 @@ package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.*;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -14,7 +12,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-public class ProgramDetailsServet extends HttpServlet {
+public class ProgramDetailsServet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -26,12 +24,7 @@ public class ProgramDetailsServet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ProgramDetailsServet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         if (!CheckUserInSession.isUserInSession(request)) {
@@ -46,36 +39,36 @@ public class ProgramDetailsServet extends HttpServlet {
             Program program = programDao.getById(programId);
 
             logger.info("retrieve program details!");
-            request.getSession().setAttribute("program", program);
+            request.setAttribute("program", program);
 
             final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
             List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId());
 
-            request.getSession().setAttribute("programRelays", programRelays);
+            request.setAttribute("programRelays", programRelays);
 
             ProgramAlarmDao programAlarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramAlarmDao.class);
             List<ProgramAlarm> programAlarms = programAlarmDao.getAllProgramAlarms(program.getId());
 
-            request.getSession().setAttribute("programAlarms", programAlarms);
+            request.setAttribute("programAlarms", programAlarms);
 
             ProgramSystemStateDao programSystemStateDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramSystemStateDao.class);
             List<ProgramSystemState> programSystemStates =
                     programSystemStateDao.getAllProgramSystemStates(programId);
 
-            request.getSession().setAttribute("programSystemStates", programSystemStates);
+            request.setAttribute("programSystemStates", programSystemStates);
 
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             Collection<Data> relayDataTypes = dataDao.getProgramDataRelays(program.getId());
 
-            request.getSession().setAttribute("relayDataTypes", relayDataTypes);
+            request.setAttribute("relayDataTypes", relayDataTypes);
 
             Collection<Data> alarmDataTypes = dataDao.getProgramDataAlarms(program.getId());
 
-            request.getSession().setAttribute("alarmDataTypes", alarmDataTypes);
+            request.setAttribute("alarmDataTypes", alarmDataTypes);
 
             Collection<Data> sysStateDataTypes = dataDao.getProgramDataSystemStates(program.getId());
 
-            request.getSession().setAttribute("sysStateDataTypes", sysStateDataTypes);
+            request.setAttribute("sysStateDataTypes", sysStateDataTypes);
             request.getRequestDispatcher("./program-details.jsp").forward(request, response);
         } catch (SQLException ex) {
             logger.info("Error occurs while retrieve controller details!");

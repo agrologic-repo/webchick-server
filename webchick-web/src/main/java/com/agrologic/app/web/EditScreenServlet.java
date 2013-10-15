@@ -1,37 +1,26 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-//~--- JDK imports ------------------------------------------------------------
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.ScreenDao;
+import com.agrologic.app.model.Screen;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
-/**
- * Title: ChangeUserPassServlet.java <br>
- * Decription: <br>
- * Copyright:   Copyright  2010 <br>
- * Company:     Agro Logic Ltd. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 0.1.1.1 <br>
- */
-public class ChangeUserPassServlet extends HttpServlet {
+public class EditScreenServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws javax.servlet.ServletException if a servlet-specific error occurs
+     * @throws java.io.IOException            if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -40,18 +29,23 @@ public class ChangeUserPassServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
+            if (!CheckUserInSession.isUserInSession(request)) {
+                logger.error("Unauthorized access!");
+                response.sendRedirect("./login.jsp");
+            } else {
+                long programId = Long.parseLong(request.getParameter("programId"));
+                long screenId = Long.parseLong(request.getParameter("screenId"));
 
-            /*
-             *  TODO output your page here
-             * out.println("<html>");
-             * out.println("<head>");
-             * out.println("<title>Servlet ChangeUserPassServlet</title>");
-             * out.println("</head>");
-             * out.println("<body>");
-             * out.println("<h1>Servlet ChangeUserPassServlet at " + request.getContextPath () + "</h1>");
-             * out.println("</body>");
-             * out.println("</html>");
-             */
+                try {
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    Screen screen = screenDao.getById(programId, screenId);
+                    logger.info("retrieve {} to edit ", screen);
+                    request.setAttribute("screen", screen);
+                    request.getRequestDispatcher("./edit-screen.jsp?screenId=" + screenId).forward(request, response);
+                } catch (SQLException ex) {
+                    logger.debug("", ex);
+                }
+            }
         } finally {
             out.close();
         }
@@ -64,8 +58,8 @@ public class ChangeUserPassServlet extends HttpServlet {
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws javax.servlet.ServletException if a servlet-specific error occurs
+     * @throws java.io.IOException            if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -78,8 +72,8 @@ public class ChangeUserPassServlet extends HttpServlet {
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws javax.servlet.ServletException if a servlet-specific error occurs
+     * @throws java.io.IOException            if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

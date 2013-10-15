@@ -1,18 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.ActionSetDaoImpl;
 import com.agrologic.app.model.*;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,8 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ListTableData extends HttpServlet {
-
+public class ListTableData extends AbstractServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -34,10 +25,6 @@ public class ListTableData extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ListScreenTables.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -60,39 +47,35 @@ public class ListTableData extends HttpServlet {
 
                 try {
                     ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-
                     Screen screen = screenDao.getById(programId, screenId);
+                    request.setAttribute("screen", screen);
+
+                    LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+                    Collection<Language> langList = languageDao.geAll();
+                    request.setAttribute("languages", langList);
+
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(programId);
+                    request.setAttribute("program", program);
 
                     if (screen.getTitle().equals("Action Set Buttons")) {
                         ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDaoImpl.class);
                         Collection<ActionSet> actionset = actionsetDao.getAll();
-                        LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
-                        Collection<Language> langList = languageDao.geAll();
-
-                        request.getSession().setAttribute("languages", langList);
                         request.getRequestDispatcher("./all-actionset.jsp?screenId=" + screen.getId()
                                 + "&translateLang=" + translateLang).forward(request, response);
+
                     } else {
                         TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                         Table table = tableDao.getById(programId, screenId, tableId);
                         DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                        List<Data> dataList = dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
+                        List<Data> dataList = (List<Data>) dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
                                 table.getId(), translateLang, null);
-                        System.out.println("==============================================================");
-                        System.out.println(dataList);
-                        System.out.println("==============================================================");
                         table.setDataList(dataList);
 
                         List<Table> tables = new ArrayList<Table>();
-
                         tables.add(table);
                         screen.setTables(tables);
-                        request.getSession().setAttribute("screen", screen);
 
-                        LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
-                        Collection<Language> langList = languageDao.geAll();
-
-                        request.getSession().setAttribute("languages", langList);
                         request.getRequestDispatcher("./all-tabledata.jsp?tableId=" + tableId + "&translateLang="
                                 + translateLang).forward(request, response);
                     }

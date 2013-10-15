@@ -6,18 +6,14 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.VersionDao;
 import com.agrologic.app.utils.FileDownloadUtil;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
 
-public class DupDatabaseServlet extends HttpServlet {
-
-    private final Logger logger = Logger.getLogger(DupDatabaseServlet.class);
+public class DupDatabaseServlet extends AbstractServlet {
     private Process process;
 
     /**
@@ -31,6 +27,7 @@ public class DupDatabaseServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
 
         try {
             String outfile = makeBackupDB();

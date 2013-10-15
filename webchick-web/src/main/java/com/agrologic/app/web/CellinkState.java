@@ -1,11 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.HashMap;
 import java.util.Iterator;

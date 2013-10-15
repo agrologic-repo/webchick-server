@@ -1,19 +1,11 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.User;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,12 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author JanL
- */
-public class EditCellinkFormServlet extends HttpServlet {
+public class EditCellinkFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -40,9 +28,6 @@ public class EditCellinkFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(EditCellinkFormServlet.class);
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
@@ -70,8 +55,8 @@ public class EditCellinkFormServlet extends HttpServlet {
                     cellink.setType(type);
                     cellinkDao.update(cellink);
                     logger.info("Cellink " + cellink + "successfully updated !");
-                    request.getSession().setAttribute("message", "Cellink successfully updated !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("message", "Cellink successfully updated !");
+                    request.setAttribute("error", false);
 
                     // ////////////////////////////////////////////////
                     Collection<User> users = new ArrayList<User>();
@@ -98,14 +83,14 @@ public class EditCellinkFormServlet extends HttpServlet {
                     }
 
                     logger.info("retrieve all users ");
-                    request.getSession().setAttribute("users", users);
+                    request.setAttribute("users", users);
                     request.getRequestDispatcher("./userinfo.html?userId=" + userId).forward(request, response);
                 } catch (SQLException ex) {
 
                     // error page
                     logger.error("Error occurs while updating cellink !");
-                    request.getSession().setAttribute("message", "Error occurs while updating cellink !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while updating cellink !");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./userinfo.html?userId=" + userId).forward(request, response);
                 }
             }

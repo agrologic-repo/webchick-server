@@ -1,8 +1,3 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
 
@@ -12,21 +7,15 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Program;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-public class EditControllerServlet extends HttpServlet {
-
+public class EditControllerServlet extends AbstractServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -37,42 +26,36 @@ public class EditControllerServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(EditControllerFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
-        PrintWriter out = response.getWriter();
 
-        try {
-            if (!CheckUserInSession.isUserInSession(request)) {
-                logger.error("Unauthorized access!");
-                response.sendRedirect("./login.jsp");
-            } else {
-                Long userId = Long.parseLong(request.getParameter("userId"));
-                Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-                Long controllerId = Long.parseLong(request.getParameter("controllerId"));
+        if (!CheckUserInSession.isUserInSession(request)) {
+            logger.error("Unauthorized access!");
+            response.sendRedirect("./login.jsp");
+        } else {
+            Long userId = Long.parseLong(request.getParameter("userId"));
+            Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+            Long controllerId = Long.parseLong(request.getParameter("controllerId"));
 
-                try {
-                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                    Controller editController = controllerDao.getById(controllerId);
+            try {
+                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                Controller editController = controllerDao.getById(controllerId);
+                logger.info("retrieve controller {} to edit ", editController);
+                request.setAttribute("editcontroller", editController);
 
-                    logger.info("retrieve controller to edit");
+                ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                List<Program> programs = (List<Program>) programDao.getAll();
+                logger.info("retrieve programs");
+                request.setAttribute("programs", programs);
 
-                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
-                    List<Program> programs = (List<Program>) programDao.getAll();
+                List<String> controllernames = (List<String>) controllerDao.getControllerNames();
+                request.setAttribute("controllernames", controllernames);
 
-                    logger.info("retrieve programs");
-                    request.getSession().setAttribute("editcontroller", editController);
-                    request.getSession().setAttribute("programs", programs);
-                    request.getRequestDispatcher("./edit-controller.jsp?userId=" + userId + "&celinkId="
-                            + cellinkId).forward(request, response);
-                } catch (SQLException ex) {
-                }
+                request.getRequestDispatcher("./edit-controller.jsp?userId=" + userId + "&celinkId="
+                        + cellinkId).forward(request, response);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
-        } finally {
-            out.close();
         }
     }
 

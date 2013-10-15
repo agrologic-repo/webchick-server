@@ -1,34 +1,22 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-
-import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.graph.daily.Graph;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.Graph24IOH;
 import com.agrologic.app.graph.daily.GraphType;
-import com.agrologic.app.model.DataFormat;
-import org.apache.log4j.Logger;
+import com.agrologic.app.service.FlockHistoryService;
 import org.jfree.chart.ChartUtilities;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Locale;
 
-/**
- * @author JanL
- */
-public class Graph24HourIOHServlet extends HttpServlet {
+public class Graph24HourIOHServlet extends AbstractServlet {
+    private Locale locale = Locale.ENGLISH;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -40,51 +28,23 @@ public class Graph24HourIOHServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(Graph24HourIOHServlet.class);
         response.setContentType("text/html;charset=UTF-8");
-
         OutputStream out = response.getOutputStream();
+
         long flockId = Long.parseLong(request.getParameter("flockId"));
-        int growDay = 1;
-        StringBuilder range = new StringBuilder();
+        GrowDayParam growDayParam = new GrowDayParam(request.getParameter("growDay"));
 
         try {
-            growDay = Integer.parseInt(request.getParameter("growDay"));
-            range.append("( Grow day ").append(growDay);
-        } catch (Exception ex) {
-            growDay = 1;
-        }
+            FlockHistoryService flockHistoryService = new FlockHistoryService();
+            List<String> historyValueList = flockHistoryService.getFlockHistory24Hour(flockId, growDayParam.getGrowDay());
 
-
-        try {
-            FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-            Long resetTime = new Long(flockDao.getResetTime(flockId, growDay));
-
-            if (resetTime != null) {
-                resetTime = DataFormat.convertToTimeFormat(resetTime);
-            } else {
-                resetTime = Long.valueOf("0");
+            StringBuilder chainedHistoryValues = new StringBuilder();
+            for (String historyValues : historyValueList) {
+                chainedHistoryValues.append(historyValues);
             }
+            Long resetTime = flockHistoryService.getResetTime(flockId, growDayParam.getGrowDay());
 
-            String values1 = flockDao.getHistory24(flockId, growDay, "D18");
-            String values2 = flockDao.getHistory24(flockId, growDay, "D19");
-            String values3 = flockDao.getHistory24(flockId, growDay, "D20");
-            String values4 = flockDao.getHistory24(flockId, growDay, "D21");
-            String values5 = flockDao.getHistory24(flockId, growDay, "D72");
-
-            values1 = getDefaultValuesIfEmpty(values1);
-            values2 = getDefaultValuesIfEmpty(values2);
-            values3 = getDefaultValuesIfEmpty(values3);
-            values4 = getDefaultValuesIfEmpty(values4);
-            values5 = getDefaultValuesIfEmpty(values5);
-
-            StringBuilder sb = new StringBuilder();
-            sb.append(values1).append(values2).append(values3).append(values4).append(values5);
-
-            Locale locale = Locale.ENGLISH;
-            Graph graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, sb.toString(), resetTime, locale);
+            Graph graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, chainedHistoryValues.toString(), resetTime, locale);
 
             ChartUtilities.writeChartAsPNG(out, graph.createChart(), 800, 600);
             out.flush();
@@ -97,13 +57,6 @@ public class Graph24HourIOHServlet extends HttpServlet {
         }
     }
 
-    public String getDefaultValuesIfEmpty(String values) {
-        if (values.equals("-1 ") || values.equals("")) {
-            values = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
-        }
-
-        return values;
-    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 

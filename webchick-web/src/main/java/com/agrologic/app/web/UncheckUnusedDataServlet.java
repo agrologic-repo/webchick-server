@@ -10,20 +10,15 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.utils.DateLocal;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-/**
- * @author Administrator
- */
-public class UncheckUnusedDataServlet extends HttpServlet {
+public class UncheckUnusedDataServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP
@@ -37,13 +32,7 @@ public class UncheckUnusedDataServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        /**
-         * Logger for this class and subclasses
-         */
-        final Logger logger = Logger.getLogger(SaveScreensServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -62,13 +51,13 @@ public class UncheckUnusedDataServlet extends HttpServlet {
                     Program program = programDao.getById(programId);
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
-                    request.getSession().setAttribute("message", "Data successfully saved !");
-                    request.getSession().setAttribute("error", Boolean.FALSE);
+                    request.setAttribute("message", "Data successfully saved !");
+                    request.setAttribute("error", Boolean.FALSE);
                     request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request, response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating screen!");
-                    request.getSession().setAttribute("message", "Error occurs while updating screen !");
-                    request.getSession().setAttribute("error", Boolean.TRUE);
+                    request.setAttribute("message", "Error occurs while updating screen !");
+                    request.setAttribute("error", Boolean.TRUE);
                     request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request, response);
                 }
             }

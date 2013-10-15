@@ -6,18 +6,15 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.User;
-import com.agrologic.app.model.UserRole;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class EditControllerFormServlet extends HttpServlet {
+public class EditControllerFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -29,12 +26,9 @@ public class EditControllerFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(EditControllerFormServlet.class);
-
-        logger.error("Unauthorized access!");
         response.setContentType("text/html;charset=UTF-8");
+        logger.error("Unauthorized access!");
+
 
         PrintWriter out = response.getWriter();
 
@@ -44,13 +38,13 @@ public class EditControllerFormServlet extends HttpServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 User user = (User) request.getSession().getAttribute("user");
-                String forwardLink = "";
+                String forwardLink = "./cellink-setting.html";
 
-                if (user.getRole() == UserRole.ADMIN) {
-                    forwardLink = "./cellinkinfo.html";
-                } else {
-                    forwardLink = "./cellink-setting.html";
-                }
+//                if (user.getRole() == UserRole.ADMIN) {
+//                    forwardLink = "./cellinkinfo.html";
+//                } else {
+//                    forwardLink = "./cellink-setting.html";
+//                }
 
                 Long userId = Long.parseLong(request.getParameter("userId"));
                 Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
@@ -86,16 +80,16 @@ public class EditControllerFormServlet extends HttpServlet {
 
                     controllerDao.update(controller);
                     logger.info("Controller " + controller + " successfully updated !");
-                    request.getSession().setAttribute("message",
+                    request.setAttribute("message",
                             "Controller with ID " + controller.getId()
                                     + " successfully updated !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
                             + cellinkId).forward(request, response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating controller !");
-                    request.getSession().setAttribute("message", "Error occurs while updating controller  .");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while updating controller  .");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
                             + cellinkId).forward(request, response);
                 }

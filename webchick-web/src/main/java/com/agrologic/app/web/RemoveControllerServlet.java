@@ -5,18 +5,15 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.User;
-import com.agrologic.app.model.UserRole;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class RemoveControllerServlet extends HttpServlet {
+public class RemoveControllerServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -28,12 +25,7 @@ public class RemoveControllerServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(RemoveControllerServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         if (!CheckUserInSession.isUserInSession(request)) {
@@ -41,13 +33,13 @@ public class RemoveControllerServlet extends HttpServlet {
             response.sendRedirect("./login.jsp");
         } else {
             User user = (User) request.getSession().getAttribute("user");
-            String forwardLink = "";
+            String forwardLink = "./cellink-setting.html";
 
-            if (user.getRole() == UserRole.ADMIN) {
-                forwardLink = "./cellinkinfo.html";
-            } else {
-                forwardLink = "./cellink-setting.html";
-            }
+//            if (user.getRole() == UserRole.ADMIN) {
+//                forwardLink = "./cellinkinfo.html";
+//            } else {
+//                forwardLink = "./cellink-setting.html";
+//            }
 
             Long userId = Long.parseLong(request.getParameter("userId"));
             Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
@@ -59,19 +51,19 @@ public class RemoveControllerServlet extends HttpServlet {
 
                 controllerDao.remove(controller.getId());
                 logger.info("Controller " + controller + " successfully removed !");
-                request.getSession().setAttribute("message",
+                request.setAttribute("message",
                         "Controller with id " + controller.getId() + " and name " + controller.getName() +
                                 " successfully  removed !");
-                request.getSession().setAttribute("error", false);
+                request.setAttribute("error", false);
                 request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
                         + cellinkId).forward(request, response);
             } catch (SQLException ex) {
 
                 // error page
                 logger.error("Error occurs while removing controlller !");
-                request.getSession().setAttribute("message", "Error occurs while removing controller with id  " +
+                request.setAttribute("message", "Error occurs while removing controller with id  " +
                         controllerId);
-                request.getSession().setAttribute("error", true);
+                request.setAttribute("error", true);
                 request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
                         + cellinkId).forward(request, response);
             } finally {

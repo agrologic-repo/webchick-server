@@ -1,20 +1,12 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.FuelDaoImpl;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.Fuel;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,7 +15,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-public class AddFuelFormServlet extends HttpServlet {
+public class AddFuelFormServlet extends AbstractServlet {
 
 
     /**
@@ -36,10 +28,6 @@ public class AddFuelFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddFuelFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -89,7 +77,7 @@ public class AddFuelFormServlet extends HttpServlet {
                     controller.setFlocks(flocks);
                 }
 
-                request.getSession().setAttribute("controllers", controllers);
+                request.setAttribute("controllers", controllers);
                 request.getRequestDispatcher("./rmctrl-add-fuel.jsp?celinkId=" + cellinkId + "&flockId="
                         + flockId).forward(request, response);
             } catch (SQLException ex) {

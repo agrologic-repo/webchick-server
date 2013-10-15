@@ -6,13 +6,12 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Data;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class TranslateData extends HttpServlet {
+public class TranslateData extends AbstractServlet {
 
 
     /**
@@ -27,15 +26,12 @@ public class TranslateData extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
             Long langId = Long.parseLong(request.getParameter("langId"));
             Long dataId = Long.parseLong(request.getParameter("dataId"));
             long type = dataId;           // type of value (like 4096)
-
             if ((type & 0xC000) != 0xC000) {
                 dataId = (type & 0xFFF);    // remove type to get an index 4096&0xFFF -> 0
             } else {
@@ -44,24 +40,21 @@ public class TranslateData extends HttpServlet {
 
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             Data translate = dataDao.getById(dataId, langId);
-            System.out.println("test translation " + translate);
-            response.setContentType("text/xml");
-            response.setHeader("Cache-Control", "no-cache");
+
+            response.setHeader("Cache-control", "no-cache, no-store");
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Expires", "-1");
             out.print("<message>");
             if (translate.getId() != null) {
                 out.print(translate.getUnicodeLabel());
-                System.out.println(translate.getUnicodeLabel());
             } else {
-                out.print("no translation");
-                System.out.println("no translation");
+                out.print("Tranlstation  does not exist");
             }
             out.println("</message>");
         } catch (Exception ex) {
-            response.setContentType("text/xml");
-            response.setHeader("Cache-Control", "no-cache");
-            out = response.getWriter();
             out.print("<message>");
-            out.print("exception");
+            out.print("Error occur during execution the query. \n" +
+                    "Perhaps translation for this data type does not exist .");
             out.println("</message>");
         }
     }

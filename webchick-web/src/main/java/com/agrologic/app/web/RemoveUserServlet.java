@@ -4,17 +4,17 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.User;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class RemoveUserServlet extends HttpServlet {
+public class RemoveUserServlet extends AbstractServlet {
+
+    private User user;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -26,12 +26,7 @@ public class RemoveUserServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(RemoveUserServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         if (!CheckUserInSession.isUserInSession(request)) {
@@ -42,18 +37,17 @@ public class RemoveUserServlet extends HttpServlet {
             UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
 
             try {
-                User user = userDao.getById(userId);
-
+                user = userDao.getById(userId);
                 userDao.remove(user.getId());
-                logger.info("User " + user + "successfully removed !");
-                request.getSession().setAttribute("message",
-                        "User with ID " + user.getId() + " and login " + user.getLogin() + " successfully  removed !");
-                request.getSession().setAttribute("error", false);
+                String message = "User " + user + " successfully removed !";
+                logger.info(message);
+                request.setAttribute("message", message);
+                request.setAttribute("error", false);
                 request.getRequestDispatcher("./all-users.html").forward(request, response);
             } catch (SQLException ex) {
                 logger.error("Error occurs while removing cellink !");
-                request.getSession().setAttribute("message", "Error occurs while removing user with ID  " + userId);
-                request.getSession().setAttribute("error", true);
+                request.setAttribute("message", "Error occurs while removing user with ID  " + userId);
+                request.setAttribute("error", true);
                 request.getRequestDispatcher("./all-users.html").forward(request, response);
             } finally {
                 out.close();

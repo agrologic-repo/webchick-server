@@ -5,14 +5,13 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class DisconnectCelllink extends HttpServlet {
+public class DisconnectCelllink extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -25,7 +24,6 @@ public class DisconnectCelllink extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -37,12 +35,10 @@ public class DisconnectCelllink extends HttpServlet {
                 cellinkDao.changeState(cellinkId, CellinkState.STATE_START, CellinkState.STATE_STOP);
                 cellinkDao.changeState(cellinkId, CellinkState.STATE_RUNNING, CellinkState.STATE_STOP);
             } catch (SQLException ex) {
-
+                logger.error(ex.getMessage(), ex);
             }
-
-            request.getSession().setAttribute("message",
-                    "Cellink(s) with ID " + cellinkId + " successfully disconnected");
-            request.getSession().setAttribute("error", false);
+            request.setAttribute("message", "Cellink(s) with ID " + cellinkId + " successfully disconnected");
+            request.setAttribute("error", false);
             request.getRequestDispatcher("./my-farms.html?userId=" + userId).forward(request, response);
         } finally {
             out.close();

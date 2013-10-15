@@ -1,30 +1,19 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.RelayDao;
 import com.agrologic.app.model.Relay;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author Administrator
- */
-public class RemoveRelayServlet extends HttpServlet {
+public class RemoveRelayServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -36,12 +25,7 @@ public class RemoveRelayServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(RemoveRelayServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -58,18 +42,18 @@ public class RemoveRelayServlet extends HttpServlet {
 
                     relayDao.remove(relay.getId());
                     logger.info("Relay " + relay + " successfully removed!");
-                    request.getSession().setAttribute("message",
+                    request.setAttribute("message",
                             "Relay <b style=\"color:gray\"> " + relay.getText()
                                     + " </b> successfully  removed !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-relays.html?translateLang=" + translateLang).forward(request,
                             response);
                 } catch (SQLException ex) {
 
                     // error page
                     logger.error("Error occurs during removing relay" + ex.getMessage());
-                    request.getSession().setAttribute("message", "Error occurs during removing relay !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs during removing relay !");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-relays.html").forward(request, response);
                 }
             }

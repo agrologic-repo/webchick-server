@@ -1,20 +1,12 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.model.ProgramAlarm;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,14 +15,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
-public class ProgramAlarmsServlet extends HttpServlet {
+public class ProgramAlarmsServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -42,12 +28,7 @@ public class ProgramAlarmsServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ProgramDetailsServet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -69,25 +50,25 @@ public class ProgramAlarmsServlet extends HttpServlet {
 
                     program.setProgramAlarms(programAlarms);
                     logger.info("retrieve program alarms!");
-                    request.getSession().setAttribute("program", program);
+                    request.setAttribute("program", program);
 
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                    List<Data> dataAlarms = dataDao.getAlarms();
+                    List<Data> dataAlarms = (List<Data>) dataDao.getAlarms();
 
                     logger.info("retrieve program alarms datatypes!");
-                    request.getSession().setAttribute("dataAlarms", dataAlarms);
+                    request.setAttribute("dataAlarms", dataAlarms);
 
                     AlarmDao alarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(AlarmDao.class);
                     List<Alarm> alarmNames = new ArrayList<Alarm>(alarmDao.getAll());
 
                     logger.info("retrieve relay names!");
-                    request.getSession().setAttribute("alarmNames", alarmNames);
+                    request.setAttribute("alarmNames", alarmNames);
                     request.getRequestDispatcher("./assign-alarms.jsp").forward(request, response);
 
                     // request.getRequestDispatcher("./program-alarms.jsp").forward(request, response);
                 } catch (SQLException ex) {
                     logger.info("Error occurs while retrieve program alarms!");
-                    request.getSession().setAttribute("message", "Error occurs while retrieve program alarms!");
+                    request.setAttribute("message", "Error occurs while retrieve program alarms!");
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
                 }
             }

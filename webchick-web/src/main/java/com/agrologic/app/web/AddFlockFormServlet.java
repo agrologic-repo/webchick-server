@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
@@ -12,19 +6,16 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
 
-public class AddFlockFormServlet extends HttpServlet {
+public class AddFlockFormServlet extends AbstractServlet {
 
 
     /**
@@ -37,12 +28,7 @@ public class AddFlockFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddFlockFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         if (!CheckUserInSession.isUserInSession(request)) {
@@ -74,14 +60,14 @@ public class AddFlockFormServlet extends HttpServlet {
 
                 flockDao.insert(flock);
                 logger.info("Flock " + flock + " successfully added !");
-                request.getSession().setAttribute("message", "Flock successfully added !");
-                request.getSession().setAttribute("error", false);
+                request.setAttribute("message", "Flock successfully added !");
+                request.setAttribute("error", false);
                 request.getRequestDispatcher("./flocks.html?userId=" + userId + "&cellinkId="
                         + cellinkId).forward(request, response);
             } catch (SQLException ex) {
                 logger.error("Error occurs during adding flock !");
-                request.getSession().setAttribute("message", "Error occurs during adding flock !");
-                request.getSession().setAttribute("error", true);
+                request.setAttribute("message", "Error occurs during adding flock !");
+                request.setAttribute("error", true);
                 request.getRequestDispatcher("./flocks.html?userId=" + userId + "&cellinkId="
                         + cellinkId).forward(request, response);
             } finally {

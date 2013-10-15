@@ -3,16 +3,15 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.graph.CombinedXYGraph;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
+import com.agrologic.app.management.PerGrowDayHistoryDataType;
 import com.agrologic.app.model.Data;
-import org.apache.log4j.Logger;
+import com.agrologic.app.service.FlockHistoryService;
 import org.jfree.chart.ChartUtilities;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,7 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public class GraphMinMaxHumidityServlet extends HttpServlet {
+public class GraphMinMaxHumidityServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -34,10 +33,6 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(GraphMinMaxHumidityServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         OutputStream out = response.getOutputStream();
@@ -48,68 +43,50 @@ public class GraphMinMaxHumidityServlet extends HttpServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                int fromDay = -1;
-                int toDay = -1;
-                StringBuilder range = new StringBuilder();
-
+                GrowDayRangeParam growDayRangeParam
+                        = new GrowDayRangeParam(request.getParameter("fromDay"), request.getParameter("toDay"));
                 try {
-                    fromDay = Integer.parseInt(request.getParameter("fromDay"));
-                    toDay = Integer.parseInt(request.getParameter("toDay"));
 
-                    if ((fromDay != -1) && (toDay != -1)) {
-                        range.append("( From ").append(fromDay).append(" to ").append(toDay).append(" grow day .)");
-                    }
-                } catch (Exception ex) {
-                    fromDay = -1;
-                    toDay = -1;
-                }
+                    FlockHistoryService flockHistoryService = new FlockHistoryService();
+                    Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockHistoryWithinRange(flockId, growDayRangeParam);
 
-                try {
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                    Data data = dataDao.getById(Long.valueOf(3002));
-                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-                    Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    Map<Integer, Data> interestData = createDataSet(historyByGrowDay, data);
+                    Data data = dataDao.getById(PerGrowDayHistoryDataType.MAX_TEMP_IN.getId());
 
-                    data = dataDao.getById(Long.valueOf(3003));
+                    Map<Integer, Data> interestData = createDataSet(historyByGrowDay, data);
+                    data = dataDao.getById(PerGrowDayHistoryDataType.MIN_TEMP_IN.getId());
 
                     Map<Integer, Data> interestData2 = createDataSet(historyByGrowDay, data);
-
-                    data = dataDao.getById(Long.valueOf(3004));
+                    data = dataDao.getById(PerGrowDayHistoryDataType.MAX_TEMP_OUT.getId());
 
                     Map<Integer, Data> interestData3 = createDataSet(historyByGrowDay, data);
-
-                    data = dataDao.getById(Long.valueOf(3005));
+                    data = dataDao.getById(PerGrowDayHistoryDataType.MIN_TEMP_OUT.getId());
 
                     Map<Integer, Data> interestData4 = createDataSet(historyByGrowDay, data);
                     CombinedXYGraph combGraph = new CombinedXYGraph();
-
                     combGraph.createFirstNextPlot("Maximum and Minimum Inside Temperature", "Grow Day[Day]",
                             "Temperature[C�]", data, 0, interestData,
-                            interestData2 /* , interestData3,interestData4 */);
+                            interestData2);
+
                     combGraph.createNextPlot("Maximum and Minimum Outside Temperature", "Grow Day[Day]",
                             "Temperature[C�]", data, 0, interestData3, interestData4);
-                    data = dataDao.getById(Long.valueOf(3006));
+                    data = dataDao.getById(PerGrowDayHistoryDataType.MAX_HUMIDITY.getId());
 
                     Map<Integer, Data> interestData5 = createDataSet(historyByGrowDay, data);
-
-                    data = dataDao.getById(Long.valueOf(3007));
-
+                    data = dataDao.getById(PerGrowDayHistoryDataType.MIN_HUMIDITY.getId());
                     Map<Integer, Data> interestData6 = createDataSet(historyByGrowDay, data);
 
                     combGraph.createNextPlot("Humidity", "Grow Day[Day]", "Humidity[%]", data, 1, interestData5,
                             interestData6);
-                    combGraph.createChart("In\\Out Min\\Max Temperature And Humidity Graph", range.toString());
-                    request.getSession().setAttribute("fromDay", fromDay);
-                    request.getSession().setAttribute("toDay", toDay);
+                    combGraph.createChart("In\\Out Min\\Max Temperature And Humidity Graph", growDayRangeParam.toString());
+                    request.setAttribute("fromDay", growDayRangeParam.getFromDay());
+                    request.setAttribute("toDay", growDayRangeParam.getToDay());
                     ChartUtilities.writeChartAsPNG(out, combGraph.getChart(), 800, 800);
                     out.flush();
                     out.close();
                 } catch (Exception ex) {
                     logger.error("Unknown error. ", ex);
-
                     Graph24Empty graph = new Graph24Empty(GraphType.BLANK, "");
-
                     ChartUtilities.writeChartAsPNG(out, graph.getChart(), 600, 300);
                     out.flush();
                     out.close();

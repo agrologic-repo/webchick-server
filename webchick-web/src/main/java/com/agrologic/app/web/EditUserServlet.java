@@ -1,26 +1,19 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
-//~--- JDK imports ------------------------------------------------------------
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.UserDao;
+import com.agrologic.app.model.User;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.Collection;
 
-/**
- * @author JanL
- */
-public class DownloadServlet extends HttpServlet {
-
+public class EditUserServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -33,27 +26,32 @@ public class DownloadServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-    }
+        PrintWriter out = response.getWriter();
 
-    public void doDownload(HttpServletResponse response, String outfile) throws FileNotFoundException, IOException {
+        try {
+            if (!CheckUserInSession.isUserInSession(request)) {
+                logger.error("Unauthorized access!");
+                response.sendRedirect("./login.jsp");
+            } else {
+                Long userId = Long.parseLong(request.getParameter("userId"));
 
-        // export action
-        String filename = outfile;
-        File fileToDownload = new File(filename);
-        FileInputStream fileInputStream = new FileInputStream(fileToDownload);
+                try {
+                    UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
+                    User editUser = userDao.getById(userId);
+                    logger.info("retrieve user to edit");
+                    request.setAttribute("edituser", editUser);
 
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-disposition", "attachment; filename=" + filename);
+                    Collection<String> companies = userDao.getUserCompanies();
+                    request.setAttribute("companies", companies);
 
-        int i;
-
-        while ((i = fileInputStream.read()) != -1) {
-            response.getOutputStream().write(i);
+                    request.getRequestDispatcher("./edit-user.jsp?userId=" + userId).forward(request, response);
+                } catch (SQLException ex) {
+                    logger.debug("Can not retrieve cellink to edit ", ex);
+                }
+            }
+        } finally {
+            out.close();
         }
-
-        fileInputStream.close();
-        response.getOutputStream().flush();
-        fileInputStream.close();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -96,6 +94,3 @@ public class DownloadServlet extends HttpServlet {
         return "Short description";
     }    // </editor-fold>
 }
-
-
-

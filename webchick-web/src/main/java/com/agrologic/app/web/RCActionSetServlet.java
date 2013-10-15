@@ -3,10 +3,8 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.ActionSetDaoImpl;
 import com.agrologic.app.model.*;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,7 +13,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-public class RCActionSetServlet extends HttpServlet {
+public class RCActionSetServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -27,12 +25,7 @@ public class RCActionSetServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(RCGraphServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -40,7 +33,7 @@ public class RCActionSetServlet extends HttpServlet {
             long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             long controllerId = Long.parseLong(request.getParameter("controllerId"));
             long screenId = Long.parseLong(request.getParameter("screenId"));
-            String lang = (String) request.getSession().getAttribute("lang");
+            String lang = (String) request.getAttribute("lang");
 
             if ((lang == null) || lang.equals("")) {
                 lang = "en";
@@ -49,7 +42,6 @@ public class RCActionSetServlet extends HttpServlet {
             try {
                 CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                 Cellink cellink = cellinkDao.getById(cellinkId);
-
                 cellinkDao.update(cellink);
 
                 LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
@@ -68,8 +60,8 @@ public class RCActionSetServlet extends HttpServlet {
                 List<ActionSet> actionset = actionsetDao.getAllOnScreen(program.getId(), langId);
 
                 logger.info("retrieve program action set!");
-                request.getSession().setAttribute("controller", controller);
-                request.getSession().setAttribute("actionset", actionset);
+                request.setAttribute("controller", controller);
+                request.setAttribute("actionset", actionset);
                 request.getRequestDispatcher("./rmctrl-controller-actionset.jsp?userId" + userId + "&cellinkId="
                         + cellinkId + "&screenId=" + screenId).forward(request, response);
             } catch (SQLException ex) {

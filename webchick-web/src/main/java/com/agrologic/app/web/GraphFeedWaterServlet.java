@@ -1,25 +1,18 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.graph.history.HistoryGraph;
+import com.agrologic.app.management.PerGrowDayHistoryDataType;
 import com.agrologic.app.model.Data;
-import org.apache.log4j.Logger;
+import com.agrologic.app.service.FlockHistoryService;
 import org.jfree.chart.ChartUtilities;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,9 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GraphFeedWaterServlet extends HttpServlet {
-    public static final int FEED_CONSUPMTION_ID = 1301;
-    public static final int WATER_CONSUMPTION_ID = 1302;
+public class GraphFeedWaterServlet extends AbstractServlet {
     public static final String FEED_KG_AXIST_TITLE = "Feed[KG]";
     public static final String FEED_AND_WATER_CONSUMPTION_TITLE = "Feed And Water Consumption";
     public static final String GROW__DAY_AXIS_TITLE = "Grow Day[Day]";
@@ -46,10 +37,6 @@ public class GraphFeedWaterServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(GraphFeedWaterServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         OutputStream out = response.getOutputStream();
@@ -60,43 +47,29 @@ public class GraphFeedWaterServlet extends HttpServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                int fromDay = -1;
-                int toDay = -1;
-                StringBuilder range = new StringBuilder();
+                GrowDayRangeParam growDayRangeParam = new GrowDayRangeParam(request.getParameter("fromDay"), request.getParameter("toDay"));
 
                 try {
-                    fromDay = Integer.parseInt(request.getParameter("fromDay"));
-                    toDay = Integer.parseInt(request.getParameter("toDay"));
+                    FlockHistoryService flockHistoryService = new FlockHistoryService();
+                    Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockHistoryWithinRange(flockId, growDayRangeParam);
 
-                    if ((fromDay != -1) && (toDay != -1)) {
-                        range.append("( From ").append(fromDay).append(" to ").append(toDay).append(" grow day .)");
-                    }
-                } catch (Exception ex) {
-                    fromDay = -1;
-                    toDay = -1;
-                }
-
-                try {
-                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-                    Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    List<Map<Integer, Data>> dataHistroryList = new ArrayList<Map<Integer, Data>>();
-                    List<String> axisTitles = new ArrayList<String>();
+                    List<Map<Integer, Data>> dataHistoryList = new ArrayList<Map<Integer, Data>>();
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                    Data data1 = dataDao.getById(Long.valueOf(FEED_CONSUPMTION_ID));
+                    Data data1 = dataDao.getById(PerGrowDayHistoryDataType.FEED_CONSUMPTION_ID.getId());
 
+                    List<String> axisTitles = new ArrayList<String>();
                     axisTitles.add(data1.getLabel());
-                    dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
+                    dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
 
                     HistoryGraph waterFeedGraph = new HistoryGraph();
-                    waterFeedGraph.setDataHistoryList(dataHistroryList);
-                    waterFeedGraph.createChart(FEED_AND_WATER_CONSUMPTION_TITLE,
-                            GROW__DAY_AXIS_TITLE, FEED_KG_AXIST_TITLE);
+                    waterFeedGraph.setDataHistoryList(dataHistoryList);
+                    waterFeedGraph.createChart(FEED_AND_WATER_CONSUMPTION_TITLE, GROW__DAY_AXIS_TITLE, FEED_KG_AXIST_TITLE);
 
-                    Data data2 = dataDao.getById(Long.valueOf(WATER_CONSUMPTION_ID));
+                    Data data2 = dataDao.getById(PerGrowDayHistoryDataType.WATER_CONSUMPTION_ID.getId());
                     axisTitles.add(data2.getLabel());
-                    dataHistroryList.clear();
-                    dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
-                    waterFeedGraph.createAndAddSeriesCollection(dataHistroryList, WATER_LITER_AXIS_TITLE);
+                    dataHistoryList.clear();
+                    dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
+                    waterFeedGraph.createAndAddSeriesCollection(dataHistoryList, WATER_LITER_AXIS_TITLE);
                     ChartUtilities.writeChartAsPNG(out, waterFeedGraph.getChart(), 800, 600);
                     out.flush();
                     out.close();

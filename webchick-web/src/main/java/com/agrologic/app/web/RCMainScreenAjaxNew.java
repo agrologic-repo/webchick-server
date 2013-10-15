@@ -2,10 +2,9 @@ package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.*;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,18 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class RCMainScreenAjaxNew extends HttpServlet {
-
-
-    private static int count = 0;
-    private Logger logger;
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        logger = Logger.getLogger(RCMainScreenAjaxNew.class);
-    }
-
+public class RCMainScreenAjaxNew extends AbstractServlet {
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -40,7 +28,8 @@ public class RCMainScreenAjaxNew extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/xml;charset=UTF-8");
-
+        /** Logger for this class and subclasses */
+        final org.slf4j.Logger logger = LoggerFactory.getLogger(RCMainScreenAjaxNew.class);
         PrintWriter out = response.getWriter();
 
         try {
@@ -67,14 +56,12 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                         cellinkDao.update(cellink);
                     }
 
-                    // cellink.setTime(new Timestamp(System.currentTimeMillis()));
                     LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                     long langId = languageDao.getLanguageId(lang);    // get language id
 
                     // get all controllers connected to cellink
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                     Collection<Controller> controllers = controllerDao.getActiveCellinkControllers(cellinkId);
-
                     request.getSession().setAttribute("controllers", controllers);
 
                     // check if controllerdata table have any data
@@ -110,6 +97,7 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                         // get assigned to controller program
                         Program program = programDao.getById(controller.getProgramId());
                         controller.setProgram(program);
+
                         program.setProgramRelays(programRelayDao.getAllProgramRelays(program.getId(), langId));
                         program.setProgramAlarms(programAlarmDao.getAllProgramAlarms(program.getId(), langId));
                         program.setProgramSystemStates(programSystemStateDao.getAllProgramSystemStates(program.getId(),
@@ -119,8 +107,7 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                         Screen screen = screenDao.getById(program.getId(), screenId, langId);
                         program.addScreen(screen);
 
-                        Collection<Table> tables = tableDao.getScreenTables(program.getId(), screen.getId(), langId,
-                                false);
+                        Collection<Table> tables = tableDao.getScreenTables(program.getId(), screen.getId(), langId, false);
                         screen.setTables(tables);
 
                         for (Table table : tables) {
@@ -136,15 +123,12 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                             }
                             controller.setSetClock(setClock);
 
-                            // set date
-//                            Data setDate = dataDao.getSetDateByController(controller.getId());
-//                            controller.setSetDate(setDate);
-
                             // set controller data of main screen
-                            Collection<Data> controllerDataList = dataDao.getOnlineTableDataList(controller.getId(), program.getId(),
-                                    screen.getId(), table.getId(), langId);
+                            Collection<Data> controllerDataList = dataDao.getOnlineTableDataList(controller.getId(),
+                                    program.getId(), screen.getId(), table.getId(), langId);
 
                             table.setDataList(controllerDataList);
+
                             out.println("<td valign='top'  style='min-width:200px;'>");
                             out.println("<table class=\"table-screens\" border=\"1\" borderColor=\"#848C96\"");
                             out.println(
@@ -152,26 +136,25 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                             out.println(
                                     "onmouseout=\"this.style.borderColor='';this.style.borderWidth='';this.style.borderStyle='';\">");
                             out.println("<thead>");
-                            out.println("<th colspan='2' title=\""
-                                    + request.getSession().getAttribute("label.program.version") + " - "
+                            out.println("<th colspan='2' title=\"" + request.getSession().getAttribute("label.program.version") + " - "
                                     + controller.getProgram().getName() + "\">");
 
                             User user = (User) request.getSession().getAttribute("user");
                             if (user.getRole() == UserRole.ADMIN) {
-                                out.println("<img src=\"img/clear.gif\" border=0 "
+                                out.println("<img src=\"resources/images/clear.gif\" border=0 "
                                         + "onclick=\"window.document.location=\'./clear-controller-data.html?userId="
                                         + +userId + "&cellinkId="
                                         + cellinkId + "&controllerId="
                                         + controller.getId() + "\'\"/>");
                             }
 
-                            out.println("<img src=\"img/house.png\" border=0 hspace=5\">");
+                            out.println("<img src=\"resources/images/house.png\" border=0 hspace=5\">");
                             out.println("<a href='./rmctrl-controller-screens-ajax.jsp?userId=" + userId + "&cellinkId="
                                     + cellinkId + "&screenId=" + nextScreenID + "&controllerId=" + controller.getId()
                                     + "&doResetTimeout=true'>");
 
                             if (isAlarmOnController(controllerDataList) == true) {
-                                out.println("<img src=\"img/alarm.gif\" border=0 hspace=5 title=\"Alarm in "
+                                out.println("<img src=\"resources/images/alarm.gif\" border=0 hspace=5 title=\"Alarm in "
                                         + controller.getTitle() + " \">");
                             }
 
@@ -183,7 +166,7 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                             if (controllerDataList.size() > 0) {
                                 if (controller.getSetClock().getValue() == -1) {
                                     out.println(request.getSession().getAttribute("page.loading"));
-                                    out.println("<img src='img/loading2.gif'>");
+                                    out.println("<img src='resources/images/loading2.gif'>");
                                 } else {
                                     try {
                                         String setclock = controller.getSetClock().getFormattedValue();
@@ -196,7 +179,7 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                                 }
                             } else {
                                 out.println(request.getSession().getAttribute("page.loading"));
-                                out.println("<img src='img/loading2.gif'>");
+                                out.println("<img src='resources/images/loading2.gif'>");
                             }
 
                             out.println("</span>");
@@ -205,7 +188,7 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                             out.println("<tbody>");
 
                             for (Data data : controllerDataList) {
-                                createDataTable(controller, screen, data, request, out);
+                                createDataTable(controller, data, request, out);
                             }
 
                             out.println("</tbody>");
@@ -238,13 +221,11 @@ public class RCMainScreenAjaxNew extends HttpServlet {
 
     private List<ProgramRelay> getProgramRelaysByRelayType(List<ProgramRelay> dataRelays, Long relayType) {
         List<ProgramRelay> relayList = new ArrayList<ProgramRelay>();
-
         for (ProgramRelay pr : dataRelays) {
             if (pr.getDataId().equals(relayType)) {
                 relayList.add(pr);
             }
         }
-
         return relayList;
     }
 
@@ -254,9 +235,7 @@ public class RCMainScreenAjaxNew extends HttpServlet {
         for (Data d : onScreenData) {
             if (d.getId().compareTo(Long.valueOf(3154)) == 0) {
                 try {
-//                    int mask = 0x0001;
                     int val = (d.getValue().intValue());
-                    //int on   = val&mask;
                     if (val > 0) {
                         result = true;
                     }
@@ -265,12 +244,10 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                 }
             }
         }
-
         return result;
     }
 
-    private void createDataTable(Controller controller, Screen screen, Data data, HttpServletRequest request,
-                                 PrintWriter out) {
+    private void createDataTable(Controller controller, Data data, HttpServletRequest request, PrintWriter out) {
         if (!data.isStatus()) {
             out.println("<tr class='' onmouseover=\"this.className='selected'\" onmouseout=\"this.className=''\">");
             out.println("<td class='label' nowrap>");
@@ -372,7 +349,7 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                                     + "bold;font-size:1px;padding:0px 0px 0px 1px;margin:0px;cursor:help;\"");
                     out.println("valign='middle' align='left' onclick=\"ShowHelp(event, \'  " + toolTip.toString()
                             + " \' , HLP_SHOW_POS_MOUSE ,200,350,'" + controller.getId() + data.getId() + "')\">");
-                    out.println("<img src='img/help1.gif'>");
+                    out.println("<img src='resources/images/help.gif'>");
                     out.println("</span>");
                     out.println("</td>");
                     out.println("</tr>");
@@ -403,51 +380,51 @@ public class RCMainScreenAjaxNew extends HttpServlet {
 
                                 if (relay.getText().startsWith("Fan") || relay.getText().startsWith("Mixer")) {
                                     if (relay.isOn()) {
-                                        out.println("<img src='img/fan-on.gif'>");
+                                        out.println("<img src='resources/images/fan-on.gif'>");
                                     } else {
-                                        out.println("<img src='img/fan-off.gif'>");
+                                        out.println("<img src='resources/images/fan-off.gif'>");
                                     }
                                 } else if (relay.getText().startsWith("Light")) {
                                     if (relay.isOn()) {
-                                        out.println("<img src='img/light-on.gif'>");
+                                        out.println("<img src='resources/images/light-on.gif'>");
                                     } else {
-                                        out.println("<img src='img/light-off.png'>");
+                                        out.println("<img src='resources/images/light-off.png'>");
                                     }
                                 } else if (relay.getText().contains("Cool")) {
                                     if (relay.isOn()) {
-                                        out.println("<img src='img/coolon.gif'>");
+                                        out.println("<img src='resources/images/coolon.gif'>");
                                     } else {
-                                        out.println("<img src='img/cooloff.gif'>");
+                                        out.println("<img src='resources/images/cooloff.gif'>");
                                     }
                                 } else if (relay.getText().contains("Heater")) {
                                     if (relay.isOn()) {
-                                        out.println("<img src='img/heateron.gif'>");
+                                        out.println("<img src='resources/images/heateron.gif'>");
                                     } else {
-                                        out.println("<img src='img/heateroff.gif'>");
+                                        out.println("<img src='resources/images/heateroff.gif'>");
                                     }
                                 } else if (relay.getText().contains("Feed")) {
                                     if (relay.isOn()) {
-                                        out.println("<img src='img/aougeron.gif'>");
+                                        out.println("<img src='resources/images/aougeron.gif'>");
                                     } else {
-                                        out.println("<img src='img/aougeroff.gif'>");
+                                        out.println("<img src='resources/images/aougeroff.gif'>");
                                     }
                                 } else if (relay.getText().contains("Water")) {
                                     if (relay.isOn()) {
-                                        out.println("<img src='img/wateron.gif'>");
+                                        out.println("<img src='resources/images/wateron.gif'>");
                                     } else {
-                                        out.println("<img src='img/wateroff.gif'>");
+                                        out.println("<img src='resources/images/wateroff.gif'>");
                                     }
                                 } else if (relay.getText().contains("Ignition")) {
                                     if (relay.isOn()) {
-                                        out.println("<img src='img/sparkon.gif'>");
+                                        out.println("<img src='resources/images/sparkon.gif'>");
                                     } else {
-                                        out.println("<img src='img/sparkoff.gif'>");
+                                        out.println("<img src='resources/images/sparkoff.gif'>");
                                     }
                                 } else {
                                     if (relay.isOn()) {
-                                        out.println("<img src='img/relayon.gif'>");
+                                        out.println("<img src='resources/images/relayon.gif'>");
                                     } else {
-                                        out.println("<img src='img/relayoff.png'>");
+                                        out.println("<img src='resources/images/relayoff.png'>");
                                     }
                                 }
                                 out.println("</td>");
@@ -461,7 +438,6 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                 case Data.SYSTEM_STATE:
                     out.println("<tr class='' onmouseover=\"this.className='selected'\" onmouseout=\"this.className=''\">");
                     ProgramSystemState programSystemState = controller.getProgram().getSystemStateByNumber(data.getValue());
-
                     out.println("<td class='label' nowrap>");
                     out.println(data.getUnicodeLabel());
                     out.println("</td>");
@@ -470,7 +446,6 @@ public class RCMainScreenAjaxNew extends HttpServlet {
                     out.println(programSystemState.getText());
                     out.println("</td>");
                     out.println("</tr >");
-
                     break;
             }
         }

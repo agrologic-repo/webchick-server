@@ -5,17 +5,15 @@ import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.model.Program;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class RemoveProgramServlet extends HttpServlet {
+public class RemoveProgramServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -27,12 +25,7 @@ public class RemoveProgramServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(RemoveProgramServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -44,8 +37,8 @@ public class RemoveProgramServlet extends HttpServlet {
 
                 if (CheckDefaultProgram.isDefaultProgram(programId)) {
                     logger.error("Can't remove default program!");
-                    request.getSession().setAttribute("message", "Can't remove default program!");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Can't remove default program!");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
                 } else {
                     try {
@@ -55,17 +48,17 @@ public class RemoveProgramServlet extends HttpServlet {
                         programDao.remove(program.getId());
                         dataDao.removeDataFromTable(programId);
                         logger.info("Program " + program + "successfully removed !");
-                        request.getSession().setAttribute("message", "Program " + program.getName() +
+                        request.setAttribute("message", "Program " + program.getName() +
                                 " successfully removed !");
-                        request.getSession().setAttribute("error", false);
+                        request.setAttribute("error", false);
                         request.getRequestDispatcher("./all-programs.html").forward(request, response);
                     } catch (SQLException ex) {
 
                         // error page
                         logger.error("Error occurs while removing program !");
-                        request.getSession().setAttribute("message",
+                        request.setAttribute("message",
                                 "Error occurs while removing program with id " + programId);
-                        request.getSession().setAttribute("error", true);
+                        request.setAttribute("error", true);
                         request.getRequestDispatcher("./all-programs.html").forward(request, response);
                     }
                 }

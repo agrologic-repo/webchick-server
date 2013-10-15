@@ -4,20 +4,15 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.SystemStateDao;
 import com.agrologic.app.model.SystemState;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-/**
- * @author Administrator
- */
-public class RemoveSystemStateServlet extends HttpServlet {
+public class RemoveSystemStateServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -29,12 +24,7 @@ public class RemoveSystemStateServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(RemoveSystemStateServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -50,18 +40,18 @@ public class RemoveSystemStateServlet extends HttpServlet {
                     SystemState systemstate = systemStateDao.getById(systemstateId);
                     systemStateDao.remove(systemstate.getId());
                     logger.info("SystemState " + systemstate + " successfully removed!");
-                    request.getSession().setAttribute("message",
+                    request.setAttribute("message",
                             "SystemState <b style=\"color:gray\"> " + systemstate.getText()
                                     + " </b> successfully  removed !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-systemstates.html?translateLang="
                             + translateLang).forward(request, response);
                 } catch (SQLException ex) {
 
                     // error page
                     logger.error("Error occurs during removing systemstate" + ex.getMessage());
-                    request.getSession().setAttribute("message", "Error occurs during removing systemstate !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs during removing systemstate !");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-systemstates.html").forward(request, response);
                 }
             }

@@ -8,10 +8,8 @@ import com.agrologic.app.dao.mysql.impl.ActionSetDaoImpl;
 import com.agrologic.app.model.ActionSet;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.utils.DateLocal;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public class SaveProgramActionSetServlet extends HttpServlet {
+public class SaveProgramActionSetServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -34,12 +32,7 @@ public class SaveProgramActionSetServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(SaveDataOnTable.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -86,21 +79,21 @@ public class SaveProgramActionSetServlet extends HttpServlet {
                     actionsetDao.saveChanges(programId, screenId, showTableMap, posDataMap);
                     Collection<ActionSet> actionset = actionsetDao.getAll(programId);
 
-                    request.getSession().setAttribute("actionset", actionset);
+                    request.setAttribute("actionset", actionset);
 
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     Program program = programDao.getById(programId);
 
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
-                    request.getSession().setAttribute("message", "Changes successfully saved !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("message", "Changes successfully saved !");
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-actionset.jsp?screenId=" + screenId + "&translateLang="
                             + translateLang).forward(request, response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating program !");
-                    request.getSession().setAttribute("message", "Error occurs while saving changes !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while saving changes !");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-actionset.html").forward(request, response);
                 }
             }

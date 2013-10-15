@@ -1,11 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
-//~--- JDK imports ------------------------------------------------------------
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +8,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
 
-/**
- * @author Administrator
- */
 public class ReportFilter implements Filter {
     private static final boolean debug = true;
 

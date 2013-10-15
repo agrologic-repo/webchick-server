@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
@@ -13,22 +7,16 @@ import com.agrologic.app.dao.ScreenDao;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.model.Screen;
 import com.agrologic.app.utils.DateLocal;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author JanL
- */
-public class EditScreenFormServlet extends HttpServlet {
+public class EditScreenFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -40,12 +28,7 @@ public class EditScreenFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(EditScreenFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -76,14 +59,14 @@ public class EditScreenFormServlet extends HttpServlet {
 
                     program.setModifiedDate(modified);
                     programDao.update(program);
-                    request.getSession().setAttribute("message", "Screen successfully updated !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("message", "Screen successfully updated !");
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-screens.html?programId="
                             + screen.getProgramId()).forward(request, response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating screen !" + ex.getMessage());
-                    request.getSession().setAttribute("message", "Error occurs while updating screen !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while updating screen !");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
                             response);
                 }

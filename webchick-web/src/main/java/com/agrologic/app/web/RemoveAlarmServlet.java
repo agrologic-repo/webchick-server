@@ -1,26 +1,17 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.AlarmDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Alarm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class RemoveAlarmServlet extends HttpServlet {
+public class RemoveAlarmServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -32,13 +23,7 @@ public class RemoveAlarmServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = LoggerFactory.getLogger(RemoveAlarmServlet.class);
-
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -53,14 +38,14 @@ public class RemoveAlarmServlet extends HttpServlet {
                     Alarm alarm = alarmDao.getById(alarmId);
                     alarmDao.remove(alarm);
                     logger.info("Alarm [{}] successfully removed!", alarm);
-                    request.getSession().setAttribute("message", "Alarm <b style=\"color:gray\">" + alarm.getText() + "</b> successfully removed !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("message", "Alarm <b style=\"color:gray\">" + alarm.getText() + "</b> successfully removed !");
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-alarms.html?translateLang=" + translateLang).forward(request, response);
                 } catch (Exception ex) {
                     // error page
                     logger.error(ex.getMessage());
-                    request.getSession().setAttribute("message", "Error occurs during removing alarm ");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs during removing alarm ");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-alarms.html").forward(request, response);
                 }
             }

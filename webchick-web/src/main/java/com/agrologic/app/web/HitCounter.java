@@ -3,14 +3,13 @@ package com.agrologic.app.web;
 import com.agrologic.app.model.UserRole;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 
-public class HitCounter extends HttpServlet {
+public class HitCounter extends AbstractServlet {
 
     private UserRole role = UserRole.ADMIN;
 

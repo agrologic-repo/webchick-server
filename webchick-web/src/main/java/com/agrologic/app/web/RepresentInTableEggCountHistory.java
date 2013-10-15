@@ -7,14 +7,12 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.FlockDao;
+import com.agrologic.app.management.DataForTableCreator;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
-import com.agrologic.app.table.TableOfHistoryCreator;
-import org.apache.log4j.Logger;
+import com.agrologic.app.service.FlockHistoryService;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,14 +20,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.*;
 
-/**
- * @author Administrator
- */
-public class TableFlockEggCountHistory extends HttpServlet {
-
-
-    private static final List<Long> historyDataIdList = new ArrayList<Long>();
-    private static final Logger logger = Logger.getLogger(TableFlockEggCountHistory.class);
+public class RepresentInTableEggCountHistory extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP
@@ -43,11 +34,6 @@ public class TableFlockEggCountHistory extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        /**
-         * Logger for this class and subclasses
-         */
-        final Logger logger = Logger.getLogger(TableFlockHistory.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -58,32 +44,16 @@ public class TableFlockEggCountHistory extends HttpServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                int fromDay = -1;
-                int toDay = -1;
-                StringBuilder range = new StringBuilder();
-
+                GrowDayRangeParam growDayRangeParam
+                        = new GrowDayRangeParam(request.getParameter("fromDay"), request.getParameter("toDay"));
                 try {
-                    fromDay = Integer.parseInt(request.getParameter("fromDay"));
-                    toDay = Integer.parseInt(request.getParameter("toDay"));
+                    FlockHistoryService flockHistoryService = new FlockHistoryService();
+                    Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockHistoryWithinRange(flockId, growDayRangeParam);
 
-                    if ((fromDay != -1) && (toDay != -1)) {
-                        range.append("( From ").append(fromDay).append(" to ").append(toDay).append(" grow day .)");
-                    }
-                } catch (Exception ex) {
-                    fromDay = -1;
-                    toDay = -1;
-                }
-
-                try {
-                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-                    Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    List<Map<Integer, Data>> historyDataList = new ArrayList<Map<Integer, Data>>();
                     List<String> columnTitles = new ArrayList<String>();
-
-                    historyDataList = createHistoryByGrowDay(columnTitles, historyByGrowDay);
+                    List<Map<Integer, Data>> historyDataList = createHistoryByGrowDay(columnTitles, historyByGrowDay);
                     out.println("<p>");
-                    out.println("<table class=table-list cellpadding=1 cellspacing=1 border=1 "
-                            + "style=behavior:url(tablehl.htc) url(sort.htc);>");
+                    out.println("<table class=table-list cellpadding=1 cellspacing=1 border=1>");
                     out.println("<tr>");
                     for (String title : columnTitles) {
                         out.println("<th style=\"font-size: small\">" + title + "</th>");
@@ -106,7 +76,7 @@ public class TableFlockEggCountHistory extends HttpServlet {
                                 }
                             } catch (Exception e) {
                                 out.println("<td align=center>&nbsp;</td>");
-                                logger.error(e);
+                                logger.error(e.getMessage(), e);
                             }
                         }
                         out.println("</tr>");
@@ -122,11 +92,11 @@ public class TableFlockEggCountHistory extends HttpServlet {
     }
 
     /**
-     * Create list of history data by grow day .
+     * Create list of management data by grow day .
      *
      * @param columnTitles     the list with column titles
-     * @param historyByGrowDay all history by grow day map.
-     * @return historyDataForTable the list of history data by grow day.
+     * @param historyByGrowDay all management by grow day map.
+     * @return historyDataForTable the list of management data by grow day.
      * @throws UnsupportedOperationException
      */
     private static List<Map<Integer, Data>> createHistoryByGrowDay(List<String> columnTitles,
@@ -152,11 +122,11 @@ public class TableFlockEggCountHistory extends HttpServlet {
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             Data data = dataDao.getById(Long.valueOf(800), (long) 1);
             columnTitles.add(data.getLabel());
-            tempList = TableOfHistoryCreator.createGrowDayList(historyByGrowDay, data);
+            tempList = DataForTableCreator.createGrowDayList(historyByGrowDay, data);
             historyDataForTable.add(tempList);
             for (Long dataId : choosedList) {
                 data = dataDao.getById(dataId, (long) 1);
-                tempList = TableOfHistoryCreator.createEggCountHistDataByGrowDay(historyByGrowDay, data);
+                tempList = DataForTableCreator.createEggCountHistDataByGrowDay(historyByGrowDay, data);
                 if (!tempList.isEmpty()) {
                     columnTitles.add(data.getLabel());
                     historyDataForTable.add(tempList);

@@ -3,10 +3,8 @@ package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.*;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,7 +13,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-public class ScreenPreviewServlet extends HttpServlet {
+public class ScreenPreviewServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -27,12 +25,7 @@ public class ScreenPreviewServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ScreenPreviewServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -83,7 +76,7 @@ public class ScreenPreviewServlet extends HttpServlet {
                                     translateLang, false);
 
                             for (Table table : tables) {
-                                List<Data> dataList = dataDao.getTableDataList(s.getProgramId(), s.getId(),
+                                List<Data> dataList = (List<Data>) dataDao.getTableDataList(s.getProgramId(), s.getId(),
                                         table.getId(), translateLang, "yes");
                                 table.setDataList(dataList);
                             }
@@ -99,14 +92,14 @@ public class ScreenPreviewServlet extends HttpServlet {
 
                     program.setProgramRelays(programRelays);
 
-                    List<Data> dataRelays = dataDao.getRelays();
+                    List<Data> dataRelays = (List<Data>) dataDao.getRelays();
                     LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                     Collection<Language> langList = languageDao.geAll();
 
                     logger.info("retrieve program data relay!");
-                    request.getSession().setAttribute("dataRelays", dataRelays);
-                    request.getSession().setAttribute("program", program);
-                    request.getSession().setAttribute("languages", langList);
+                    request.setAttribute("dataRelays", dataRelays);
+                    request.setAttribute("program", program);
+                    request.setAttribute("languages", langList);
                     request.getRequestDispatcher("./screen-preview.jsp?programId=" + programId + "&screenId="
                             + screenId + "&screenLangId=" + translateLang).forward(request,
                             response);

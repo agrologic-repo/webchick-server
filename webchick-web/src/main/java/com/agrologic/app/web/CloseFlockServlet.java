@@ -1,31 +1,19 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.model.Flock;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author Administrator
- */
-public class CloseFlockServlet extends HttpServlet {
+public class CloseFlockServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -37,10 +25,6 @@ public class CloseFlockServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(RemoveFlockServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -55,16 +39,16 @@ public class CloseFlockServlet extends HttpServlet {
 
             flockDao.close(flockId, endDate);
             logger.info("Flock  " + flock + "successfully closed !");
-            request.getSession().setAttribute("message", "Flock successfully  closed !");
-            request.getSession().setAttribute("error", false);
+            request.setAttribute("message", "Flock successfully  closed !");
+            request.setAttribute("error", false);
             request.getRequestDispatcher("./flocks.html?userId=" + userId + "&cellinkId=" + cellinkId).forward(request,
                     response);
         } catch (SQLException ex) {
 
             // error page
             logger.error("Error occurs during closing flock !");
-            request.getSession().setAttribute("message", "Error occurs during closing flock !");
-            request.getSession().setAttribute("error", true);
+            request.setAttribute("message", "Error occurs during closing flock !");
+            request.setAttribute("error", true);
             request.getRequestDispatcher("./flocks.html?userId=" + userId + "&cellinkId=" + cellinkId).forward(request,
                     response);
         } finally {

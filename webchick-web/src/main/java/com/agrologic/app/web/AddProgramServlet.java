@@ -4,22 +4,15 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.model.Program;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public class AddProgramServlet extends HttpServlet {
-    /**
-     * Logger for this class and subclasses
-     */
-    final Logger logger = Logger.getLogger(AddProgramServlet.class);
-
+public class AddProgramServlet extends AbstractServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *

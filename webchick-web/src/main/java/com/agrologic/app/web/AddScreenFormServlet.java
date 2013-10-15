@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
@@ -13,17 +7,15 @@ import com.agrologic.app.dao.ScreenDao;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.model.Screen;
 import com.agrologic.app.utils.DateLocal;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class AddScreenFormServlet extends HttpServlet {
+public class AddScreenFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -35,10 +27,6 @@ public class AddScreenFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddScreenFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -49,15 +37,13 @@ public class AddScreenFormServlet extends HttpServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 Long programId = Long.parseLong(request.getParameter("programId"));
-                String screenTitle = (String) request.getParameter("NscreenTitle");
-                String screenDescript = (String) request.getParameter("NscreenDescript");
+                String screenTitle = request.getParameter("NscreenTitle");
+                String screenDescript = request.getParameter("NscreenDescript");
 
                 try {
                     ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                    ;
                     int size = screenDao.getNextScreenPosByProgramId(programId);
                     Screen screen = new Screen();
-
                     screen.setProgramId(programId);
                     screen.setTitle(screenTitle);
                     screen.setDisplay("yes");
@@ -68,21 +54,17 @@ public class AddScreenFormServlet extends HttpServlet {
 
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     Program program = programDao.getById(programId);
-
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
-                    request.getSession().setAttribute("message", "screen successfully added !");
-                    request.getSession().setAttribute("error", false);
-                    request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
-                            response);
+                    request.setAttribute("message", "screen successfully added !");
+                    request.setAttribute("error", false);
+                    request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request, response);
                 } catch (SQLException ex) {
-
                     // error page
                     logger.error("Error occurs while adding screen !", ex);
-                    request.getSession().setAttribute("message", "Error occurs while adding table!");
-                    request.getSession().setAttribute("error", true);
-                    request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
-                            response);
+                    request.setAttribute("message", "Error occurs while adding table!");
+                    request.setAttribute("error", true);
+                    request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request, response);
                 }
             }
         } finally {

@@ -1,32 +1,20 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.utils.DateLocal;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author JanL
- */
-public class EditProgramFormServlet extends HttpServlet {
+public class EditProgramFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,12 +26,7 @@ public class EditProgramFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(EditProgramFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -65,13 +48,13 @@ public class EditProgramFormServlet extends HttpServlet {
                     program.setModifiedDate(test);
                     programDao.update(program);
                     logger.info("Program " + program + "successfully updated !");
-                    request.getSession().setAttribute("message", "Program successfully updated !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("message", "Program successfully updated !");
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating program !" + ex.getMessage());
-                    request.getSession().setAttribute("message", "Error occurs while updating program !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while updating program !");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
                 }
             }

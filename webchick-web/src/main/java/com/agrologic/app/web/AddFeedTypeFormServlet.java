@@ -5,17 +5,15 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FeedTypeDao;
 import com.agrologic.app.dao.mysql.impl.FeedTypeDaoImpl;
 import com.agrologic.app.model.FeedType;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class AddFeedTypeFormServlet extends HttpServlet {
+public class AddFeedTypeFormServlet extends AbstractServlet {
 
 
     /**
@@ -28,10 +26,6 @@ public class AddFeedTypeFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddFeedTypeFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();

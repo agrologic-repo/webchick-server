@@ -1,33 +1,19 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Controller;
-import com.agrologic.app.model.User;
-import com.agrologic.app.model.UserRole;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author JanL
- */
-public class AddControllerFormServlet extends HttpServlet {
+public class AddControllerFormServlet extends AbstractServlet {
 
 
     /**
@@ -40,10 +26,6 @@ public class AddControllerFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddControllerFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -52,16 +34,7 @@ public class AddControllerFormServlet extends HttpServlet {
             logger.error("Unauthorized access!");
             response.sendRedirect("./login.jsp");
         }
-
-        User user = (User) request.getSession().getAttribute("user");
-        String forwardLink = "";
-
-        if (user.getRole() == UserRole.ADMIN) {
-            forwardLink = "./cellinkinfo.html";
-        } else {
-            forwardLink = "./cellink-setting.html";
-        }
-
+        String forwardLink = "./cellink-setting.html";
         Long userId = Long.parseLong(request.getParameter("userId"));
         Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
         String title = request.getParameter("Ntitle");
@@ -99,16 +72,16 @@ public class AddControllerFormServlet extends HttpServlet {
             ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
             controllerDao.insert(controller);
             logger.info("Cellink " + controller + " successfully added !");
-            request.getSession().setAttribute("message", "Controller successfully added !");
-            request.getSession().setAttribute("error", false);
+            request.setAttribute("message", "Controller successfully added !");
+            request.setAttribute("error", false);
             request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request,
                     response);
         } catch (SQLException ex) {
 
             // error page
             logger.error("Error occurs while adding cellink !");
-            request.getSession().setAttribute("message", "Error occurs while adding controller !");
-            request.getSession().setAttribute("error", true);
+            request.setAttribute("message", "Error occurs while adding controller !");
+            request.setAttribute("error", true);
             request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request,
                     response);
         } finally {

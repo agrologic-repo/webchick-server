@@ -12,9 +12,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
 
-/**
- * @author Administrator
- */
 public class MyServlet extends HttpServlet implements Runnable {
 
     long lastprime = 0;

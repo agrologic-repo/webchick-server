@@ -1,23 +1,26 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.LanguageDao;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.graph.history.HistoryGraph;
+import com.agrologic.app.management.PerGrowDayHistoryDataType;
 import com.agrologic.app.model.Data;
-import org.apache.log4j.Logger;
+import com.agrologic.app.service.FlockHistoryService;
 import org.jfree.chart.ChartUtilities;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 
-public class GraphMortalityServlet extends HttpServlet {
+public class GraphMortalityServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -29,10 +32,6 @@ public class GraphMortalityServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(GraphMortalityServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         OutputStream out = response.getOutputStream();
@@ -43,55 +42,31 @@ public class GraphMortalityServlet extends HttpServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                int fromDay = -1;
-                int toDay = -1;
-                StringBuilder range = new StringBuilder();
-
+                GrowDayRangeParam growDayRangeParam
+                        = new GrowDayRangeParam(request.getParameter("fromDay"), request.getParameter("toDay"));
                 try {
-                    fromDay = Integer.parseInt(request.getParameter("fromDay"));
-                    toDay = Integer.parseInt(request.getParameter("toDay"));
+                    FlockHistoryService flockHistoryService = new FlockHistoryService();
+                    Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockHistoryWithinRange(flockId, growDayRangeParam);
 
-                    if ((fromDay != -1) && (toDay != -1)) {
-                        range.append("( From ").append(fromDay).append(" to ").append(toDay).append(" grow day .)");
-                    }
-                } catch (Exception ex) {
-                    fromDay = -1;
-                    toDay = -1;
-                }
-
-                try {
-                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-                    Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
-                    List<Map<Integer, Data>> dataHistroryList = new ArrayList<Map<Integer, Data>>();
+                    List<Map<Integer, Data>> dataHistoryList = new ArrayList<Map<Integer, Data>>();
                     List<String> axisTitles = new ArrayList<String>();
                     Locale currLocale = (Locale) request.getSession().getAttribute("currLocale");
                     String lang = currLocale.toString().substring(0, 2);
                     LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                     long langId = languageDao.getLanguageId(lang);
+
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                    Data data1 = dataDao.getById(Long.valueOf(3017));
-
-//                  String realPath = getFilePath(currLocale);
-//                  String toJavaString = Unicode2ASCII.fromHTMLToJava(data1.getUnicodeLabel());
-//                  PropertyFileUtil.setProperty(realPath, "", "label", toJavaString);
-//                  ResourceBundle bundle = ResourceBundle.getBundle("GraphData",currLocale);
-//                  data1.setUnicodeLabel(bundle.getString("label"));
+                    Data data1 = dataDao.getById(PerGrowDayHistoryDataType.DAY_MORTALITY.getId());
                     axisTitles.add(data1.getLabel());
-                    dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
+                    dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
 
-                    Data data2 = dataDao.getById(Long.valueOf(3033));
-
-//                  toJavaString = Unicode2ASCII.fromHTMLToJava(data2.getUnicodeLabel());
-//                  PropertyFileUtil.setProperty(realPath, "", "label", toJavaString);
-//                  bundle = ResourceBundle.getBundle("GraphData", currLocale);
-//                  data2.setUnicodeLabel(bundle.getString("label"));
+                    Data data2 = dataDao.getById(PerGrowDayHistoryDataType.DAY_MORTALITY_MALE.getId());
                     axisTitles.add(data2.getLabel());
-                    dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
+                    dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
 
-                    Data data3 = dataDao.getById(Long.valueOf(3034));
-
+                    Data data3 = dataDao.getById(PerGrowDayHistoryDataType.DAY_MORTALITY_FEMALE.getId());
                     axisTitles.add(data3.getLabel());
-                    dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data3));
+                    dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data3));
 
                     HashMap<String, String> dictinary = createDictionary(currLocale);
                     String title = dictinary.get("graph.mrt.title");    // "Daily Mortality";
@@ -99,19 +74,17 @@ public class GraphMortalityServlet extends HttpServlet {
                     String yAxisTitle = dictinary.get("graph.mrt.axis.birds");    // "Birds";
                     HistoryGraph mortalityGraph = new HistoryGraph();
 
-                    mortalityGraph.setDataHistoryList(dataHistroryList);
+                    mortalityGraph.setDataHistoryList(dataHistoryList);
                     mortalityGraph.createChart(title, xAxisTitle, yAxisTitle);
-                    request.getSession().setAttribute("fromDay", fromDay);
-                    request.getSession().setAttribute("toDay", toDay);
+                    request.setAttribute("fromDay", growDayRangeParam.getFromDay());
+                    request.setAttribute("toDay", growDayRangeParam.getToDay());
                     ChartUtilities.writeChartAsPNG(out, mortalityGraph.getChart(), 800, 600);
                     out.flush();
                     out.close();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     logger.error("Unknown error.", ex);
-
                     Graph24Empty graph = new Graph24Empty(GraphType.BLANK, "");
-
                     ChartUtilities.writeChartAsPNG(out, graph.getChart(), 600, 300);
                     out.flush();
                     out.close();

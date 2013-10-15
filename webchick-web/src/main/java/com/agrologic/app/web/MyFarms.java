@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.ControllerDao;
@@ -14,19 +8,15 @@ import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkCriteria;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.User;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class MyFarms extends HttpServlet {
-
+public class MyFarms extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,11 +28,7 @@ public class MyFarms extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ListUserCellinksServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
 
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
@@ -88,7 +74,7 @@ public class MyFarms extends HttpServlet {
                 switch (user.getRole()) {
                     default:
                     case USER:
-                        logger.info("retrieve all cellinks that belongs to  " + user);
+                        logger.info("retrieve all cellinks which belongs to  " + user);
                         cellinks = cellinkDao.getAll(criteria);
                         for (Cellink cellink : cellinks) {
                             Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
@@ -115,14 +101,13 @@ public class MyFarms extends HttpServlet {
                         count = cellinkDao.count(criteria);
                         break;
                 }
-                request.getSession().setAttribute("cellinks", cellinks);
+
+                request.setAttribute("cellinks", cellinks);
                 setTableParameters(request, index, count);
-                response.sendRedirect("./my-farms.jsp");
+                request.getRequestDispatcher("./my-farms.jsp").forward(request, response);
             } catch (SQLException ex) {
                 // error page
                 logger.error("Error during sql query running ", ex);
-            } finally {
-                out.close();
             }
         }
     }
@@ -143,9 +128,9 @@ public class MyFarms extends HttpServlet {
                 from += 1;
             }
 
-            request.getSession().setAttribute("from", from);
-            request.getSession().setAttribute("to", to);
-            request.getSession().setAttribute("of", of);
+            request.setAttribute("from", from);
+            request.setAttribute("to", to);
+            request.setAttribute("of", of);
         } else {
             int from = index;
             int to = from + ((count - from) > 25
@@ -153,9 +138,9 @@ public class MyFarms extends HttpServlet {
                     : (count - from));
             int of = count;
 
-            request.getSession().setAttribute("from", from + 1);
-            request.getSession().setAttribute("to", to);
-            request.getSession().setAttribute("of", of);
+            request.setAttribute("from", from + 1);
+            request.setAttribute("to", to);
+            request.setAttribute("of", of);
         }
     }
 

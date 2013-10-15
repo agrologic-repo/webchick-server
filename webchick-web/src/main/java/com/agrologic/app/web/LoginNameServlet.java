@@ -3,16 +3,18 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class LoginNameServlet extends HttpServlet {
-//    Logger logger = LoggerFactory.getLogger(LoginNameServlet.class);
+
+public class LoginNameServlet extends AbstractServlet {
+    Logger logger = LoggerFactory.getLogger(LoginNameServlet.class);
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -26,11 +28,12 @@ public class LoginNameServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
+
         PrintWriter out = response.getWriter();
         final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LoginNameServlet.class);
         try {
             UserDao udi = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
-            ;
+
             String login = request.getParameter("loginName");
             boolean isOk = udi.loginEnabled(login);
 

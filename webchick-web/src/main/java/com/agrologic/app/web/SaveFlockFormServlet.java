@@ -1,20 +1,12 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
 
-//~--- JDK imports ------------------------------------------------------------
-
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class SaveFlockFormServlet extends HttpServlet {
+public class SaveFlockFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -26,11 +18,12 @@ public class SaveFlockFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
 
 //      /** Logger for this class and subclasses */
 //      final Logger logger = Logger.getLogger(SaveFlockFormServlet.class);
 //      logger.error("Unauthorized access!");
-//      response.setContentType("text/html;charset=UTF-8");
+//
 //      PrintWriter out = response.getWriter();
 //      try {
 //          if (!CheckUserInSession.isUserInSession(request)) {
@@ -83,13 +76,13 @@ public class SaveFlockFormServlet extends HttpServlet {
 //
 //                  flockDao.update(flock);
 //                  logger.info("Flock "+ flock +"successfully updated !");
-//                  request.getSession().setAttribute("message", "Flock successfully updated !");
-//                  request.getSession().setAttribute("error", false);
+//                  request.setAttribute("message", "Flock successfully updated !");
+//                  request.setAttribute("error", false);
 //                  request.getRequestDispatcher("./rmctrl-edit-flock.jsp?userId"+userId + "&cellinkId"+cellinkId).forward(request, response);
 //              } catch (SQLException ex) {
 //                  logger.error("Error occurs while updating flock !");
-//                  request.getSession().setAttribute("message", "Error during while updating flock !");
-//                  request.getSession().setAttribute("error", true);
+//                  request.setAttribute("message", "Error during while updating flock !");
+//                  request.setAttribute("error", true);
 //                  request.getRequestDispatcher("./rmctrl-edit-flock.jsp?userId"+userId + "&cellinkId"+cellinkId).forward(request, response);
 //              }
 //          }

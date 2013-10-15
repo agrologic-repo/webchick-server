@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoType;
@@ -12,16 +6,14 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.User;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class StartPage extends HttpServlet {
+public class StartPage extends AbstractServlet {
 
 
     /**
@@ -35,33 +27,30 @@ public class StartPage extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
-        final Logger logger = Logger.getLogger(StartPage.class);
 
         try {
             String access = request.getParameter("access");
 
             if (access.equals("regular")) {
-                request.getSession().setAttribute("access", access);
+                request.setAttribute("access", access);
 
                 CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                 Cellink cellink = cellinkDao.getActualCellink();
-
-                logger.info(cellink);
+                logger.info("Current cellink {} ", cellink);
 
                 UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
                 User user = userDao.getById(cellink.getUserId());
 
-                logger.info(user);
-                request.getSession().setAttribute("user", user);
+                logger.info("Current user  {} ", user);
+                request.setAttribute("user", user);
                 request.getRequestDispatcher("./rmctrl-main-screen-ajax.jsp?userId=" + cellink.getUserId()
                         + "&cellinkId=" + cellink.getId()).forward(request, response);
             } else {
                 response.sendRedirect("./login.jsp");
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             request.getRequestDispatcher("./errorPage.jsp").forward(request, response);
         } finally {
             out.close();

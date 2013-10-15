@@ -6,10 +6,8 @@ import com.agrologic.app.dao.LanguageDao;
 import com.agrologic.app.dao.SystemStateDao;
 import com.agrologic.app.model.Language;
 import com.agrologic.app.model.SystemState;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,7 +15,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class ListSystemStates extends HttpServlet {
+public class ListSystemStates extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -29,12 +27,7 @@ public class ListSystemStates extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ProgramDetailsServet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -55,17 +48,17 @@ public class ListSystemStates extends HttpServlet {
                     Collection<Language> languages = langDao.geAll();
 
                     logger.info("retrieve system state names!");
-                    request.getSession().setAttribute("languages", languages);
+                    request.setAttribute("languages", languages);
 
                     SystemStateDao systemStateDao = DbImplDecider.use(DaoType.MYSQL).getDao(SystemStateDao.class);
                     Collection<SystemState> systemStateNames = systemStateDao.getAll(translateLang);
 
                     logger.info("retrieve system state names!");
-                    request.getSession().setAttribute("systemstateNames", systemStateNames);
-                    response.sendRedirect("./all-systemstates.jsp?translateLang=" + translateLang);
+                    request.setAttribute("systemstateNames", systemStateNames);
+                    request.getRequestDispatcher("./all-systemstates.jsp?translateLang=" + translateLang).forward(request, response);
                 } catch (SQLException ex) {
                     logger.info("Error occurs while retrieve program systemStates!", ex);
-                    request.getSession().setAttribute("message", "Error occurs while retrieve program systemStates!");
+                    request.setAttribute("message", "Error occurs while retrieve program systemStates!");
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
                 }
             }

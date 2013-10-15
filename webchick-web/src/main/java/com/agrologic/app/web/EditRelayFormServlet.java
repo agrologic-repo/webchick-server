@@ -1,25 +1,18 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.RelayDao;
 import com.agrologic.app.model.Relay;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class EditRelayFormServlet extends HttpServlet {
+public class EditRelayFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -32,8 +25,6 @@ public class EditRelayFormServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        final Logger logger = Logger.getLogger(AddRelayFormServlet.class);
         PrintWriter out = response.getWriter();
 
         try {
@@ -48,14 +39,14 @@ public class EditRelayFormServlet extends HttpServlet {
                 relayDao.update(relay);
                 logger.info("Relay " + relay.getText() + "  successfully updated");
                 relayDao.insertTranslation(relay.getId(), translateLang, relay.getText());
-                request.getSession().setAttribute("message",
+                request.setAttribute("message",
                         "Relay <b style=\"color:gray\"> " + relay.getText()
                                 + " </b> successfully  updated");
-                request.getSession().setAttribute("error", false);
+                request.setAttribute("error", false);
             } catch (SQLException ex) {
                 logger.error("Error occurs during editiing relay ", ex);
-                request.getSession().setAttribute("message", "Error occurs during editing relay ");
-                request.getSession().setAttribute("error", true);
+                request.setAttribute("message", "Error occurs during editing relay ");
+                request.setAttribute("error", true);
             }
         } finally {
             out.close();

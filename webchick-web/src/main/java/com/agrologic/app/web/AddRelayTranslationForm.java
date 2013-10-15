@@ -3,17 +3,15 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.RelayDao;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class AddRelayTranslationForm extends HttpServlet {
+public class AddRelayTranslationForm extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -25,11 +23,8 @@ public class AddRelayTranslationForm extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddScreenTranslationForm.class);
-
         response.setContentType("text/html;charset=UTF-8");
+
 
         PrintWriter out = response.getWriter();
 
@@ -49,8 +44,8 @@ public class AddRelayTranslationForm extends HttpServlet {
 
                     // error page
                     logger.error("Error occurs while adding translation!" + ex.getMessage());
-                    request.getSession().setAttribute("message", "Error occurs while adding translation!");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while adding translation!");
+                    request.setAttribute("error", true);
                 }
             }
         } finally {

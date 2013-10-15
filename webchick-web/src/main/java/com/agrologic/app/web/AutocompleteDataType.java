@@ -7,7 +7,6 @@ import com.agrologic.app.model.Data;
 import org.json.JSONArray;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -16,7 +15,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class AutocompleteDataType extends HttpServlet {
+public class AutocompleteDataType extends AbstractServlet {
     private static final long serialVersionUID = 1L;
     private DataDao dataDao;
 

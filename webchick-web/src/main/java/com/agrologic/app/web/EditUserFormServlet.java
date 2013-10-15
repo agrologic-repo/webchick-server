@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
@@ -12,24 +6,15 @@ import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.User;
 import com.agrologic.app.model.UserRole;
 import com.agrologic.app.utils.Base64;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
-public class EditUserFormServlet extends HttpServlet {
-
-
+public class EditUserFormServlet extends AbstractServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -40,11 +25,8 @@ public class EditUserFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(EditUserFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
+
 
         PrintWriter out = response.getWriter();
 
@@ -112,15 +94,15 @@ public class EditUserFormServlet extends HttpServlet {
             try {
                 userDao.update(user);
                 logger.info("User " + user + " successfully updated !");
-                request.getSession().setAttribute("message", "User successfully updated !");
-                request.getSession().setAttribute("error", false);
+                request.setAttribute("message", "User successfully updated !");
+                request.setAttribute("error", false);
                 request.getRequestDispatcher(forwardLink).forward(request, response);
             } catch (SQLException ex) {
 
                 // error page
                 logger.error("Error occurs while updating user !");
-                request.getSession().setAttribute("message", "Error occurs while updating user !");
-                request.getSession().setAttribute("error", true);
+                request.setAttribute("message", "Error occurs while updating user !");
+                request.setAttribute("error", true);
                 request.getRequestDispatcher(forwardLink).forward(request, response);
             } finally {
                 out.close();

@@ -1,17 +1,9 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Table;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,12 +11,8 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author JanL
- */
-public class RemoveScreenServlet extends HttpServlet {
+public class RemoveScreenServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -36,12 +24,7 @@ public class RemoveScreenServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(RemoveScreenServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -59,8 +42,8 @@ public class RemoveScreenServlet extends HttpServlet {
 
                     if (CheckDefaultProgram.isDefaultProgram(programId)) {
                         logger.error("Can't remove default program screen!");
-                        request.getSession().setAttribute("message", "Can't remove default program screen!");
-                        request.getSession().setAttribute("error", true);
+                        request.setAttribute("message", "Can't remove default program screen!");
+                        request.setAttribute("error", true);
                         request.getRequestDispatcher("./all-screens.html").forward(request, response);
                     } else {
                         Collection<Table> tables = tableDao.getScreenTables(programId, screenId, false);
@@ -69,8 +52,8 @@ public class RemoveScreenServlet extends HttpServlet {
                         }
                         screenDao.remove(programId, screenId);
                         logger.info("Screen " + screenId + " successfully removed !");
-                        request.getSession().setAttribute("message", "Screen successfully  removed !");
-                        request.getSession().setAttribute("error", false);
+                        request.setAttribute("message", "Screen successfully  removed !");
+                        request.setAttribute("error", false);
                         request.getRequestDispatcher("./all-screens.html").forward(request, response);
                     }
                 } catch (SQLException ex) {
@@ -78,8 +61,8 @@ public class RemoveScreenServlet extends HttpServlet {
                     // error page
                     logger.error("Error occurs while removing screen !");
                     logger.error("Reasone : ", ex);
-                    request.getSession().setAttribute("message", "Error occurs while removing screen !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while removing screen !");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-screens.html").forward(request, response);
                 }
             }

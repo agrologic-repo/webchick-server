@@ -4,17 +4,15 @@ import com.agrologic.app.dao.AlarmDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Alarm;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class AddAlarmFormServlet extends HttpServlet {
+public class AddAlarmFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -27,8 +25,6 @@ public class AddAlarmFormServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        final Logger logger = Logger.getLogger(AddAlarmFormServlet.class);
         PrintWriter out = response.getWriter();
 
         try {
@@ -46,16 +42,14 @@ public class AddAlarmFormServlet extends HttpServlet {
                 alarmDao.insert(alarm);
                 logger.info("Alarm " + alarm.getText() + "  successfully added");
                 alarmDao.insertTranslation(alarm.getId(), translateLang, alarm.getText());
-                request.getSession().setAttribute("message",
-                        "Alarm <b style=\"color:gray\"> " + alarm.getText()
-                                + " </b> successfully  added");
-                request.getSession().setAttribute("error", false);
+                request.setAttribute("message", "Alarm <b style=\"color:gray\"> " + alarm.getText() +
+                        " </b> successfully  added");
+                request.setAttribute("error", false);
             } catch (SQLException ex) {
                 logger.error("Error occurs during adding alarm " + alarm.getText(), ex);
-                request.getSession().setAttribute("message",
-                        "Error occurs during adding alarm <b style=\"color:gray\">  "
-                                + alarm.getText() + " </b> ");
-                request.getSession().setAttribute("error", true);
+                request.setAttribute("message", "Error occurs during adding alarm <b style=\"color:gray\">  "
+                        + alarm.getText() + " </b> ");
+                request.setAttribute("error", true);
             }
         } finally {
             out.close();

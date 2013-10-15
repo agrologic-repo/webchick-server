@@ -1,29 +1,18 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author Administrator
- */
-public class DisconnectCellinks extends HttpServlet {
+public class DisconnectCellinks extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -36,15 +25,13 @@ public class DisconnectCellinks extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
             CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
             Long userId = Long.parseLong(request.getParameter("userId"));
             String cellinkIds = request.getParameter("cellinkIds");
-            String[] cellinkIdsStrings = null;
-            cellinkIdsStrings = cellinkIds.split("and");
+            String[] cellinkIdsStrings = cellinkIds.split("and");
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < cellinkIdsStrings.length; i++) {
                 try {
@@ -53,17 +40,15 @@ public class DisconnectCellinks extends HttpServlet {
                     cellinkDao.changeState(cellinkId, CellinkState.STATE_RUNNING, CellinkState.STATE_STOP);
                     sb.append(cellinkId).append(",");
                 } catch (SQLException ex) {
-
+                    logger.error(ex.getMessage(), ex);
                 } catch (NumberFormatException ex) {
-
+                    logger.error(ex.getMessage(), ex);
                 }
             }
 
-            String result = sb.toString();
-
-            result = result.substring(0, result.length() - 1);
-            request.getSession().setAttribute("message", "Cellink(s) with ID " + result + " successfully disconnected");
-            request.getSession().setAttribute("error", false);
+            String result = sb.substring(0, sb.toString().length() - 1);
+            request.setAttribute("message", "Cellink(s) with ID " + result + " successfully disconnected");
+            request.setAttribute("error", false);
             request.getRequestDispatcher("./overview.html?userId=" + userId).forward(request, response);
         } finally {
             out.close();

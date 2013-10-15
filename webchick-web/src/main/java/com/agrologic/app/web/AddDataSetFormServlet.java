@@ -1,8 +1,3 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.DaoType;
@@ -11,27 +6,21 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Data;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
-public class AddDataSetFormServlet extends HttpServlet {
-    DataDao dataDao;
-    long endDataId;
-    int pos;
-    long programid;
-    long screenid;
-    String show;
-    long startDataId;
-    long tableid;
+public class AddDataSetFormServlet extends AbstractServlet {
+    private DataDao dataDao;
+    private long endDataId;
+    private int pos;
+    private long programid;
+    private long screenid;
+    private String show;
+    private long startDataId;
+    private long tableid;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

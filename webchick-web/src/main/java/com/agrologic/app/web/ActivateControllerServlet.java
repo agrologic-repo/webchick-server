@@ -1,28 +1,18 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Controller;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class ActivateControllerServlet extends HttpServlet {
-    final Logger logger = Logger.getLogger(ActivateControllerServlet.class);
-
+public class ActivateControllerServlet extends AbstractServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -33,6 +23,7 @@ public class ActivateControllerServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
 
@@ -60,10 +51,11 @@ public class ActivateControllerServlet extends HttpServlet {
                         message = "Controller with ID " + controller.getId() + " deactivated .";
                         controller.setActive(false);
                     }
+
                     controllerDao.update(controller);
                     logger.info(message);
-                    request.getSession().setAttribute("message", message);
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("message", message);
+                    request.setAttribute("error", false);
 
                     if (url.equals("cellink-setting.html")) {
                         request.getRequestDispatcher("./cellink-setting.html?userId" + userId + "&cellinkId"
@@ -74,9 +66,9 @@ public class ActivateControllerServlet extends HttpServlet {
                     }
                 } catch (SQLException ex) {
                     logger.info("Error occurs while updating controller   with ID " + controllerId, ex);
-                    request.getSession().setAttribute("message",
+                    request.setAttribute("message",
                             "Error occurs while updating controller with ID " + controllerId);
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("error", true);
 
                     if (url.equals("cellink-setting.html")) {
                         request.getRequestDispatcher("./cellink-setting.html?userId" + userId + "&cellinkId"

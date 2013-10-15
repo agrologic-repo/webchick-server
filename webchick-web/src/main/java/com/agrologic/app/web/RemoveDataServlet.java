@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
@@ -12,22 +6,15 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.TableDao;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.Table;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
-public class RemoveDataServlet extends HttpServlet {
+public class RemoveDataServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,12 +26,7 @@ public class RemoveDataServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(RemoveDataServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -66,19 +48,19 @@ public class RemoveDataServlet extends HttpServlet {
 
                     dataDao.removeDataFromTable(programId, screenId, table.getId(), data.getId());
                     logger.info("Data " + data + "successfully removed !");
-                    request.getSession().setAttribute("message", "Data successfully  removed !");
+                    request.setAttribute("message", "Data successfully  removed !");
                     dataDao.removeSpecialDataFromTable(programId, data.getId());
                     logger.info("Special Data " + data + "successfully removed !");
-                    request.getSession().setAttribute("message", "Special Data successfully  removed !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("message", "Special Data successfully  removed !");
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-tabledata.html?screenId=" + table.getScreenId() + "&tableId="
                             + table.getId()).forward(request, response);
                 } catch (SQLException ex) {
 
                     // error page
                     logger.error("Error occurs while removing controlller !" + ex.getMessage());
-                    request.getSession().setAttribute("message", "Error occurs while removing user !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while removing user !");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-tabledata.html").forward(request, response);
                 }
             }

@@ -4,17 +4,15 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.TableDao;
 import com.agrologic.app.model.Table;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class RemoveTableServlet extends HttpServlet {
+public class RemoveTableServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -26,12 +24,7 @@ public class RemoveTableServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(RemoveTableServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -49,16 +42,16 @@ public class RemoveTableServlet extends HttpServlet {
 
                     tableDao.remove(table.getProgramId(), table.getScreenId(), table.getId());
                     logger.info("Table " + table + "successfully removed !");
-                    request.getSession().setAttribute("message", "Table successfully removed !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("message", "Table successfully removed !");
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-tables.html?programId=" + programId + "&screenId="
                             + screenId).forward(request, response);
                 } catch (SQLException ex) {
 
                     // error page
                     logger.error(ex.getMessage(), ex);
-                    request.getSession().setAttribute("message", ex.getMessage());
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", ex.getMessage());
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-tables.html?screenId=" + screenId).forward(request, response);
                 }
             }

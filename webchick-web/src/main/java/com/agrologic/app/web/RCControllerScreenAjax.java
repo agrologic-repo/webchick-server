@@ -2,10 +2,8 @@ package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.*;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,8 +13,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class RCControllerScreenAjax extends HttpServlet {
-
+public class RCControllerScreenAjax extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP
@@ -30,12 +27,7 @@ public class RCControllerScreenAjax extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /**
-         * Logger for this class and subclasses
-         */
-        final Logger logger = Logger.getLogger(RCScreensServlet.class);
-
+        response.setContentType("text/html;charset=UTF-8");
         response.setContentType("text/xml;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -45,8 +37,8 @@ public class RCControllerScreenAjax extends HttpServlet {
             long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             long controllerId = Long.parseLong(request.getParameter("controllerId"));
             long screenId = Long.parseLong(request.getParameter("screenId"));
-            String lang = (String) request.getSession().getAttribute("lang");
 
+            String lang = (String) request.getSession().getAttribute("lang");
             if ((lang == null) || lang.equals("")) {
                 lang = "en";
             }
@@ -64,12 +56,12 @@ public class RCControllerScreenAjax extends HttpServlet {
 
                 LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                 long langId = languageDao.getLanguageId(lang);
-                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
-                ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                final ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                final Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
+                final ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                 final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
-                ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                ;
+                final ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+
                 TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
 
@@ -279,7 +271,6 @@ public class RCControllerScreenAjax extends HttpServlet {
                         }
                     }
                 }
-
                 out.println("</table>");
             } catch (SQLException ex) {
 

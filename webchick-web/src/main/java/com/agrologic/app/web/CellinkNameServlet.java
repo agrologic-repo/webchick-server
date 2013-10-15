@@ -1,31 +1,18 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Cellink;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author Administrator
- */
-public class CellinkNameServlet extends HttpServlet {
+public class CellinkNameServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,29 +25,17 @@ public class CellinkNameServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        final Logger logger = Logger.getLogger(CellinkNameServlet.class);
         PrintWriter out = response.getWriter();
 
         try {
-            Long cellinkId = (Long) request.getSession().getAttribute("cellinkId");
+            Long cellinkId = (Long) request.getAttribute("cellinkId");
             CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
             Cellink cellink = cellinkDao.getById(cellinkId);
-
-            out.println("<table>");
-            out.println("<tr>");
-            out.println("<td>");
             out.println("<h1> " + cellink.getName() + " </h1>");
-            out.println("</td>");
-            out.println("</tr>");
-            out.println("</table>");
         } catch (SQLException ex) {
             logger.info("Database error", ex);
-        } catch (Exception ex) {
-            logger.info(ex);
-        } finally {
-
-            // out.close();
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
         }
     }
 

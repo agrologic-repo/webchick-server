@@ -9,17 +9,16 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.graph.history.HistoryGraph;
+import com.agrologic.app.management.PerGrowDayHistoryDataType;
 import com.agrologic.app.model.Data;
-import org.apache.log4j.Logger;
+import com.agrologic.app.service.FlockHistoryService;
 import org.jfree.chart.ChartUtilities;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,13 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GraphAvgWeightServlet extends HttpServlet {
-    public static final int AVERAGE_WEIGHT_1_ID = 2933;
-    public static final int AVERAGE_WEIGHT_2_ID = 2934;
-    public static final int AVERAGE_WEIGHT_3_ID = 2935;
-    public static final int AVERAGE_WEIGHT_4_ID = 2936;
-
-    private static final long serialVersionUID = 15234586465851L;
+public class GraphAvgWeightServlet extends AbstractServlet {
+    public static String title = "Average Weight";
+    public static String xAxisLabel = "Grow Day[Day]";
+    public static String yAxisLabel = "Weight[KG]";
 
     /**
      * Processes requests for both HTTP
@@ -48,71 +44,48 @@ public class GraphAvgWeightServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /**
-         * Logger for this class and subclasses
-         */
-        final Logger logger = Logger.getLogger(GraphAvgWeightServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         OutputStream out = response.getOutputStream();
 
         try {
             long flockId = Long.parseLong(request.getParameter("flockId"));
-            int fromDay = -1;
-            int toDay = -1;
-            StringBuilder range = new StringBuilder();
+            GrowDayRangeParam growDayRangeParam = new GrowDayRangeParam(request.getParameter("fromDay"), request.getParameter("toDay"));
 
             try {
-                fromDay = Integer.parseInt(request.getParameter("fromDay"));
-                toDay = Integer.parseInt(request.getParameter("toDay"));
 
-                if ((fromDay != -1) && (toDay != -1)) {
-                    range.append("( From ").append(fromDay).append(" to ").append(toDay).append(" grow day .)");
-                }
-            } catch (Exception ex) {
-                fromDay = -1;
-                toDay = -1;
-            }
+                FlockHistoryService flockHistoryService = new FlockHistoryService();
+                Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockHistoryWithinRange(flockId, growDayRangeParam);
 
-            try {
-                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-                Map<Integer, String> historyByGrowDay = flockDao.getAllHistoryByFlock(flockId, fromDay, toDay);
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                List<Map<Integer, Data>> dataHistroryList = new ArrayList<Map<Integer, Data>>();
-                Data data1 = dataDao.getById(Long.valueOf(AVERAGE_WEIGHT_1_ID));
+                List<Map<Integer, Data>> dataHistoryList = new ArrayList<Map<Integer, Data>>();
 
-                dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
+                Data data1 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_1_ID.getId());
+                dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
 
-                Data data2 = dataDao.getById(Long.valueOf(AVERAGE_WEIGHT_2_ID));
+                Data data2 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_2_ID.getId());
+                dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
 
-                dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
+                Data data3 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_3_ID.getId());
+                dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data3));
 
-                Data data3 = dataDao.getById(Long.valueOf(AVERAGE_WEIGHT_3_ID));
+                Data data4 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_4_ID.getId());
+                dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data4));
 
-                dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data3));
 
-                Data data4 = dataDao.getById(Long.valueOf(AVERAGE_WEIGHT_4_ID));
-
-                dataHistroryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data4));
-
-                String title = "Average Weight";
-                String xAxisLabel = "Grow Day[Day]";
-                String yAxisLabel = "Weight[KG]";
                 List<String> axisTitles = new ArrayList<String>();
-
                 axisTitles.add(data1.getLabel());
                 axisTitles.add(data2.getLabel());
                 axisTitles.add(data3.getLabel());
                 axisTitles.add(data4.getLabel());
 
-                HistoryGraph avgweightGraph = new HistoryGraph();
-                avgweightGraph.setDataHistoryList(dataHistroryList);
-                avgweightGraph.createChart(title, xAxisLabel, yAxisLabel);
-                request.getSession().setAttribute("fromDay", fromDay);
-                request.getSession().setAttribute("toDay", toDay);
-                ChartUtilities.writeChartAsPNG(out, avgweightGraph.getChart(), 800, 600);
+                HistoryGraph averageWeightGraph = new HistoryGraph();
+                averageWeightGraph.setDataHistoryList(dataHistoryList);
+                averageWeightGraph.createChart(title, xAxisLabel, yAxisLabel);
+
+                request.setAttribute("fromDay", growDayRangeParam.getFromDay());
+                request.setAttribute("toDay", growDayRangeParam.getToDay());
+                ChartUtilities.writeChartAsPNG(out, averageWeightGraph.getChart(), 800, 600);
                 out.flush();
                 out.close();
             } catch (Exception ex) {

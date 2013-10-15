@@ -2,10 +2,8 @@ package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.*;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -14,7 +12,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-public class RCGraphServlet extends HttpServlet {
+public class RCGraphServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP
@@ -28,14 +26,7 @@ public class RCGraphServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /**
-         * Logger for this class and subclasses
-         */
-        final Logger logger = Logger.getLogger(RCGraphServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -43,34 +34,31 @@ public class RCGraphServlet extends HttpServlet {
             long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             long controllerId = Long.parseLong(request.getParameter("controllerId"));
             long screenId = Long.parseLong(request.getParameter("screenId"));
-            String lang = (String) request.getSession().getAttribute("lang");
+            String lang = (String) request.getAttribute("lang");
 
             if ((lang == null) || lang.equals("")) {
                 lang = "en";
             }
 
-            checkRealTimeSessionTimeout(request, logger);
-
+            checkRealTimeSessionTimeout(request);
             try {
-
-//              IUserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);;
-//              User user = userDao.getById(userId);
-//              request.getSession().setAttribute("user", user);
                 CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                 Cellink cellink = cellinkDao.getById(cellinkId);
-
-                // cellink.setTime(new Timestamp(System.currentTimeMillis()));
                 cellinkDao.update(cellink);
 
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 Controller controller = controllerDao.getById(controllerId);
+                request.setAttribute("controller", controller);
+
+
                 ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                 Program program = programDao.getById(controller.getProgramId());
+                controller.setProgram(program);
 
                 LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                 long langId = languageDao.getLanguageId(lang);
+
                 ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                ;
                 List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(program.getId(), langId,
                         false);
                 program.setScreens(screens);
@@ -78,19 +66,16 @@ public class RCGraphServlet extends HttpServlet {
                 final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
                 List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId(), langId);
                 program.setProgramRelays(programRelays);
-                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                program.setScreens(screens);
-                controller.setProgram(program);
 
-                List<Data> dataRelays = dataDao.getRelays();
+                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                List<Data> dataRelays = (List<Data>) dataDao.getRelays();
                 logger.info("retrieve program data relay!");
-                request.getSession().setAttribute("dataRelays", dataRelays);
-                request.getSession().setAttribute("controller", controller);
+                request.setAttribute("dataRelays", dataRelays);
+
                 request.getRequestDispatcher("./rmctrl-controller-graphs.jsp?userId" + userId + "&cellinkId="
                         + cellinkId + "&screenId=" + screenId + "&filename=").forward(request,
                         response);
             } catch (SQLException ex) {
-
                 // error page
                 logger.error("SQLException", ex);
             }
@@ -105,7 +90,7 @@ public class RCGraphServlet extends HttpServlet {
      *
      * @param request the request object
      */
-    private void checkRealTimeSessionTimeout(HttpServletRequest request, Logger logger) {
+    private void checkRealTimeSessionTimeout(HttpServletRequest request) {
         String doResetTimeout = request.getParameter("doResetTimeout");
         Integer newConnTimeout = 0;
         Long startConnTime = null;
@@ -133,7 +118,7 @@ public class RCGraphServlet extends HttpServlet {
             session.setAttribute("startSessionTime", startConnTime);
             logger.info("newConnectionTimeout was null");
         } else {
-            startConnTime = (Long) request.getSession().getAttribute("startSessionTime");
+            startConnTime = (Long) session.getAttribute("startSessionTime");
 
             Long currentTime = Long.valueOf(System.currentTimeMillis());
 

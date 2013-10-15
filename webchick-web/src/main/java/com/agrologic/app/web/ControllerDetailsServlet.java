@@ -11,17 +11,15 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Program;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class ControllerDetailsServlet extends HttpServlet {
+public class ControllerDetailsServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP
@@ -35,14 +33,7 @@ public class ControllerDetailsServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /**
-         * Logger for this class and subclasses
-         */
-        final Logger logger = Logger.getLogger(ControllerDetailsServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         if (!CheckUserInSession.isUserInSession(request)) {
@@ -58,8 +49,8 @@ public class ControllerDetailsServlet extends HttpServlet {
             Controller controller = controllerDao.getById(controllerId);
             Program program = programDao.getById(controller.getProgramId());
             logger.info("Retreive controller details!");
-            request.getSession().setAttribute("controller", controller);
-            request.getSession().setAttribute("program", program);
+            request.setAttribute("controller", controller);
+            request.setAttribute("program", program);
             request.getRequestDispatcher("./controller-details.jsp").forward(request, response);
         } catch (SQLException ex) {
             logger.info("Error occurs while retreive controller details!");

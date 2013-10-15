@@ -4,11 +4,8 @@ import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Program;
-import com.agrologic.app.model.User;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,7 +14,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-public class CellinkInfoServlet extends HttpServlet {
+public class CellinkInfoServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -29,9 +26,6 @@ public class CellinkInfoServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(CellinkInfoServlet.class);
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
@@ -43,29 +37,31 @@ public class CellinkInfoServlet extends HttpServlet {
                 Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
 
                 try {
-                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
-                    List<Program> programs = (List<Program>) programDao.getAll();
-                    request.getSession().setAttribute("programs", programs);
-                    UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
-                    User editUser = userDao.getById(userId);
                     CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
-                    Cellink c = (Cellink) cellinkDao.getById(cellinkId);
+                    Cellink cellink = cellinkDao.getById(cellinkId);
+                    logger.info("retrieve cellink {} ", cellink);
+                    request.setAttribute("editCellink", cellink);
+
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                    Collection<Controller> controllers = controllerDao.getAllByCellink(c.getId());
-                    for (Controller ctrl : controllers) {
-                        Program program = programDao.getById(ctrl.getProgramId());
-                        ctrl.setProgram(program);
+                    Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
+                    logger.info("retrieve {} controllers which connected to cellink {} ", controllers.size());
+
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    for (Controller controller : controllers) {
+                        Program program = programDao.getById(controller.getProgramId());
+                        controller.setProgram(program);
                     }
-                    c.setControllers((List) controllers);
-                    editUser.addCellink(c);
-                    logger.info("retrieve user and user cellinks and all controllers of each cellink");
-                    request.getSession().setAttribute("edituser", editUser);
-                    List<String> controllernames = (List<String>) controllerDao.getControllerNames();
+                    cellink.setControllers((List) controllers);
+
+                    Collection<Program> programs = programDao.getAll();
+                    request.getSession().setAttribute("programs", programs);
+
+                    Collection<String> controllernames = controllerDao.getControllerNames();
                     request.getSession().setAttribute("controllernames", controllernames);
-                    request.getRequestDispatcher("./cellinkinfo.jsp?userId=" + userId + "&celinkId="
+
+                    request.getRequestDispatcher("./all-controllers.jsp?userId=" + userId + "&celinkId="
                             + cellinkId).forward(request, response);
                 } catch (SQLException ex) {
-                    // error page
                     logger.error("Database error.", ex);
                 }
             }

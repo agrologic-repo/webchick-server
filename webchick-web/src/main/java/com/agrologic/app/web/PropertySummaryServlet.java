@@ -1,20 +1,12 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.User;
 import com.agrologic.app.model.UserRole;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,7 +14,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class PropertySummaryServlet extends HttpServlet {
+public class PropertySummaryServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -34,10 +26,9 @@ public class PropertySummaryServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ListUserCellinksServlet.class);
         response.setContentType("text/html;charset=UTF-8");
+
+
         PrintWriter out = response.getWriter();
 
         try {
@@ -60,7 +51,7 @@ public class PropertySummaryServlet extends HttpServlet {
                             }
                             u.setCellinks(cellinks);
                         }
-                        request.getSession().setAttribute("users", users);
+                        request.setAttribute("users", users);
                         request.getRequestDispatcher("./propertysummary.jsp").forward(request, response);
                     } else if (user.getRole() == UserRole.USER) {
                         logger.info("access denied for user " + user);

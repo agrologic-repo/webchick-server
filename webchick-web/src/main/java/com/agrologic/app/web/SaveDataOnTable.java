@@ -4,10 +4,8 @@ import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.model.Table;
 import com.agrologic.app.utils.DateLocal;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public class SaveDataOnTable extends HttpServlet {
+public class SaveDataOnTable extends AbstractServlet {
 
 
     /**
@@ -30,12 +28,7 @@ public class SaveDataOnTable extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(SaveDataOnTable.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -81,14 +74,14 @@ public class SaveDataOnTable extends HttpServlet {
 
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
-                    request.getSession().setAttribute("message", "Changes successfully saved !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("message", "Changes successfully saved !");
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-tables.html?screenId=" + table.getScreenId() + "&tableId="
                             + tableId).forward(request, response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating program !");
-                    request.getSession().setAttribute("message", "Error occurs while saving changes !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while saving changes !");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-tables.html?tableId=" + tableId).forward(request, response);
                 }
             }

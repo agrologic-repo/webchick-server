@@ -1,15 +1,11 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.FlockDao;
+import com.agrologic.app.dao.*;
+import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,7 +13,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class ListFlocksServlet extends HttpServlet {
+public class ListFlocksServlet extends AbstractServlet {
 
 
     /**
@@ -30,12 +26,7 @@ public class ListFlocksServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ListFlocksServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -47,18 +38,21 @@ public class ListFlocksServlet extends HttpServlet {
                 Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
 
                 try {
+                    CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                    Cellink cellink = cellinkDao.getById(cellinkId);
+                    request.setAttribute("cellink", cellink);
+
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                     Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
-                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+                    request.setAttribute("controllers", controllers);
 
+                    FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
                     for (Controller controller : controllers) {
                         Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
                         controller.setFlocks(flocks);
-                        ;
                     }
-
                     logger.info("retrieve user and user cellinks and all controllers of each cellink");
-                    request.getSession().setAttribute("controllers", controllers);
+
                     request.getRequestDispatcher("./rmctrl-controller-flocks.jsp?userId=" + userId + "&celinkId="
                             + cellinkId).forward(request, response);
                 } catch (SQLException ex) {

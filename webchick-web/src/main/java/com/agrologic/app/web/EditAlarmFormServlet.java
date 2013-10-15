@@ -1,32 +1,19 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.AlarmDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Alarm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author Administrator
- */
-public class EditAlarmFormServlet extends HttpServlet {
+public class EditAlarmFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,8 +26,6 @@ public class EditAlarmFormServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        final Logger logger = LoggerFactory.getLogger(AddAlarmFormServlet.class);
         PrintWriter out = response.getWriter();
 
         try {
@@ -56,14 +41,14 @@ public class EditAlarmFormServlet extends HttpServlet {
                 alarmDao.update(alarm);
                 logger.info("Alarm [{}] successfully updated", alarm.getText());
                 alarmDao.insertTranslation(alarm.getId(), translateLang, alarm.getText());
-                request.getSession().setAttribute("message",
+                request.setAttribute("message",
                         "Alarm <b style=\"color:gray\"> " + alarm.getText()
                                 + " </b> successfully  updated");
-                request.getSession().setAttribute("error", false);
+                request.setAttribute("error", false);
             } catch (SQLException ex) {
                 logger.error("Error occurs during editing alarm ", ex);
-                request.getSession().setAttribute("message", "Error occurs during editing alarm ");
-                request.getSession().setAttribute("error", true);
+                request.setAttribute("message", "Error occurs during editing alarm ");
+                request.setAttribute("error", true);
             }
         } finally {
             out.close();

@@ -1,20 +1,11 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Program;
-import com.agrologic.app.model.User;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,13 +14,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author Administrator
- */
-public class CellinkSetting extends HttpServlet {
-
+public class CellinkSetting extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -41,12 +27,7 @@ public class CellinkSetting extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(CellinkInfoServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -58,38 +39,33 @@ public class CellinkSetting extends HttpServlet {
                 Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
 
                 try {
-                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
-                    List<Program> programs = (List<Program>) programDao.getAll();
-
-                    request.getSession().setAttribute("programs", programs);
-
-                    UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
-                    User editUser = userDao.getById(userId);
-
-//                    editUser.setCellinks(new Collection<Cellink>());
-
                     CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
-                    Cellink c = cellinkDao.getById(cellinkId);
+                    Cellink cellink = cellinkDao.getById(cellinkId);
+                    logger.info("retrieve cellink {} ", cellink);
+                    request.setAttribute("editCellink", cellink);
+
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                    Collection<Controller> controllers = controllerDao.getAllByCellink(c.getId());
+                    Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
+                    logger.info("retrieve {} controllers which connected to cellink {} ", controllers.size());
 
-                    for (Controller ctrl : controllers) {
-                        Program program = programDao.getById(ctrl.getProgramId());
-
-                        ctrl.setProgram(program);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    for (Controller controller : controllers) {
+                        Program program = programDao.getById(controller.getProgramId());
+                        controller.setProgram(program);
                     }
+                    cellink.setControllers((List) controllers);
 
-                    c.setControllers(controllers);
-                    editUser.addCellink(c);
-                    logger.info("retrieve user");
-                    logger.info("retrieve cellinks by user");
-                    logger.info("retrieve controllers by user cellinks");
-                    request.getSession().setAttribute("edituser", editUser);
+                    Collection<Program> programs = programDao.getAll();
+                    request.getSession().setAttribute("programs", programs);
+                    logger.info("retrieve {} programs ", programs.size());
 
-                    List<String> controllernames = (List<String>) controllerDao.getControllerNames();
-                    logger.info("retrieve controller names");
+                    Collection<String> controllernames = controllerDao.getControllerNames();
                     request.getSession().setAttribute("controllernames", controllernames);
-                    response.sendRedirect("./cellink-setting.jsp?userId=" + userId + "&cellinkId=" + cellinkId);
+
+                    logger.info("retrieve {} controller names", controllernames.size());
+
+                    request.getRequestDispatcher("./all-controllers.jsp?userId=" + userId + "&celinkId=" + cellinkId)
+                            .forward(request, response);
                 } catch (SQLException ex) {
 
                     // error page

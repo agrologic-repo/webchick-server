@@ -1,27 +1,16 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Controller;
-import com.agrologic.app.model.Data;
 import com.agrologic.app.model.Flock;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class FlockGraphServlet extends HttpServlet {
-
-
+public class FlockGraphServlet extends AbstractServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -32,10 +21,6 @@ public class FlockGraphServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(FlockGraphServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -43,7 +28,6 @@ public class FlockGraphServlet extends HttpServlet {
         try {
             Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             Long flockId = Long.parseLong(request.getParameter("flockId"));
-            String currGrowDay = request.getParameter("growDay");
 
             try {
                 FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
@@ -51,22 +35,14 @@ public class FlockGraphServlet extends HttpServlet {
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 Controller controller = controllerDao.getById(flock.getControllerId());
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                Data data = dataDao.getGrowDay(flock.getControllerId());
+                GrowDayParam growDayParam = new GrowDayParam(request.getParameter("growDay"));
 
-                if (currGrowDay == null) {
-                    if (data.getValue() == null || Long.valueOf(-1).equals(data.getValue())) {
-                        currGrowDay = "1";
-                    } else {
-                        currGrowDay = data.printDataValue();
-                    }
-                }
-
-                request.getSession().setAttribute("flockName", flock.getFlockName());
-                request.getSession().setAttribute("houseName", controller.getTitle());
+                request.setAttribute("flockName", flock.getFlockName());
+                request.setAttribute("houseName", controller.getTitle());
                 request.getRequestDispatcher("./rmctrl-flock-graphs.jsp?cellinkId=" + cellinkId + "&growDay="
-                        + currGrowDay).forward(request, response);
+                        + growDayParam.getGrowDay()).forward(request, response);
             } catch (Exception ex) {
-                logger.trace("Fail save history setting", ex);
+                logger.trace("Fail save management setting", ex);
             }
         } finally {
             out.close();

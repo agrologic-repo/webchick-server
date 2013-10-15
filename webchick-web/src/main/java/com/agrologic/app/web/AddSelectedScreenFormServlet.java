@@ -4,10 +4,8 @@ import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.ActionSetDaoImpl;
 import com.agrologic.app.model.*;
 import com.google.common.collect.Lists;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,7 +13,7 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.List;
 
-public class AddSelectedScreenFormServlet extends HttpServlet {
+public class AddSelectedScreenFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -27,11 +25,7 @@ public class AddSelectedScreenFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddSelectedScreenFormServlet.class);
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -69,7 +63,7 @@ public class AddSelectedScreenFormServlet extends HttpServlet {
                         for (Table t : screenTables) {
                             t.setProgramId(programId);
                             tableDao.insert(t);
-                            List<Data> tableData = dataDao.getTableDataList(selectedProgramId, selectedScreenId,
+                            List<Data> tableData = (List<Data>) dataDao.getTableDataList(selectedProgramId, selectedScreenId,
                                     t.getId(), null);
 
                             for (Data d : tableData) {
@@ -80,13 +74,13 @@ public class AddSelectedScreenFormServlet extends HttpServlet {
                     }
 
                     logger.info("New screen and screens data successfully added !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
                             response);
                 } catch (Exception e) {
                     logger.error("Error occurs while adding screen !", e);
-                    request.getSession().setAttribute("message", "Error occurs during adding screen!");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs during adding screen!");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
                             response);
                 }

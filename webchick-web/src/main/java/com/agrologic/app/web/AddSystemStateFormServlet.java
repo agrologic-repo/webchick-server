@@ -4,17 +4,15 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.SystemStateDao;
 import com.agrologic.app.model.SystemState;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class AddSystemStateFormServlet extends HttpServlet {
+public class AddSystemStateFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -28,7 +26,6 @@ public class AddSystemStateFormServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        final Logger logger = Logger.getLogger(AddSystemStateFormServlet.class);
         PrintWriter out = response.getWriter();
 
         try {
@@ -46,16 +43,16 @@ public class AddSystemStateFormServlet extends HttpServlet {
                 systemStateDao.insert(systemState);
                 logger.info("System State " + systemState.getText() + "  successfully added");
                 systemStateDao.insertTranslation(systemState.getId(), translateLang, systemState.getText());
-                request.getSession().setAttribute("message",
+                request.setAttribute("message",
                         "SystemState <b style=\"color:gray\"> " + systemState.getText()
                                 + " </b> successfully  added");
-                request.getSession().setAttribute("error", false);
+                request.setAttribute("error", false);
             } catch (SQLException ex) {
                 logger.error(ex.getMessage(), ex);
-                request.getSession().setAttribute("message",
+                request.setAttribute("message",
                         "Error occurs during adding systemState <b style=\"color:gray\">  "
                                 + systemState.getText() + " </b> ");
-                request.getSession().setAttribute("error", true);
+                request.setAttribute("error", true);
             } catch (Exception ex) {
                 logger.error("Error occurs during adding system state ", ex);
             }

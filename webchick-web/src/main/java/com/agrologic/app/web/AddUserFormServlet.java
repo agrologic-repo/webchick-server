@@ -5,17 +5,15 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.User;
 import com.agrologic.app.model.UserRole;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class AddUserFormServlet extends HttpServlet {
+public class AddUserFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -27,17 +25,12 @@ public class AddUserFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddUserFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
 
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
-            response.sendRedirect("./login.jsp");
             response.sendRedirect("./login.jsp");
         }
 
@@ -75,15 +68,15 @@ public class AddUserFormServlet extends HttpServlet {
 
             userDao.insert(user);
             logger.info("user " + user + " successfully added !");
-            request.getSession().setAttribute("message", "User successfully added !");
-            request.getSession().setAttribute("error", false);
+            request.setAttribute("message", "User successfully added !");
+            request.setAttribute("error", false);
             request.getRequestDispatcher("./all-users.html").forward(request, response);
         } catch (SQLException ex) {
 
             // error page
             logger.error("Error occurs while adding user.");
-            request.getSession().setAttribute("message", "Error occurs while adding user.");
-            request.getSession().setAttribute("error", true);
+            request.setAttribute("message", "Error occurs while adding user.");
+            request.setAttribute("error", true);
             request.getRequestDispatcher("./all-users.html").forward(request, response);
         } finally {
             out.close();

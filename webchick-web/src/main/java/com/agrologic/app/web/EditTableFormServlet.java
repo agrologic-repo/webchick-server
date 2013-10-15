@@ -1,27 +1,18 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.model.Table;
 import com.agrologic.app.utils.DateLocal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-public class EditTableFormServlet extends HttpServlet {
+public class EditTableFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP
@@ -35,14 +26,7 @@ public class EditTableFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /**
-         * Logger for this class and subclasses
-         */
-        final Logger logger = LoggerFactory.getLogger(EditTableFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -78,15 +62,15 @@ public class EditTableFormServlet extends HttpServlet {
 
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
-                    request.getSession().setAttribute("message", "Table successfully updated !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("message", "Table successfully updated !");
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-tables.html?programId=" + programId + "&screenId="
                             + oldScreenId).forward(request, response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating table !" + "\n" + ex.getMessage());
                     ex.printStackTrace();
-                    request.getSession().setAttribute("message", "Error occurs while updating table !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while updating table !");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-tables.html?programId=" + programId + "&screenId="
                             + oldScreenId).forward(request, response);
                 }

@@ -1,20 +1,12 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.mysql.impl.FuelDaoImpl;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.Fuel;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,12 +15,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author JanL
- */
-public class RemoveFuelServlet extends HttpServlet {
+public class RemoveFuelServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -40,12 +28,7 @@ public class RemoveFuelServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(SaveBeginEndForm.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -89,7 +72,7 @@ public class RemoveFuelServlet extends HttpServlet {
 
                     }
 
-                    request.getSession().setAttribute("controllers", controllers);
+                    request.setAttribute("controllers", controllers);
                     request.getRequestDispatcher("./rmctrl-add-fuel.jsp?celinkId=" + cellinkId + "&flockId="
                             + flockId).forward(request, response);
                 }

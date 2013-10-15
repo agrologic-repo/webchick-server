@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoType;
@@ -12,10 +6,8 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.User;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,13 +15,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
-public class EditCellinkServlet extends HttpServlet {
-
+public class EditCellinkServlet extends AbstractServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
@@ -40,12 +26,7 @@ public class EditCellinkServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(EditCellinkServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -62,11 +43,11 @@ public class EditCellinkServlet extends HttpServlet {
                     editUser.setCellinks(new ArrayList<Cellink>());
 
                     CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
-                    Cellink c = (Cellink) cellinkDao.getById(cellinkId);
-                    editUser.addCellink(c);
+                    Cellink cellink = cellinkDao.getById(cellinkId);
+                    editUser.addCellink(cellink);
 
                     logger.info("retrieve user and user cellinks to edit");
-                    request.getSession().setAttribute("edituser", editUser);
+                    request.setAttribute("edituser", editUser);
                     request.getRequestDispatcher("./edit-cellink.jsp?userId=" + userId + "&celinkId="
                             + cellinkId).forward(request, response);
                 } catch (SQLException ex) {

@@ -1,22 +1,21 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.*;
-import com.agrologic.app.model.Data;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.ScreenDao;
+import com.agrologic.app.dao.TableDao;
 import com.agrologic.app.model.Screen;
 import com.agrologic.app.model.Table;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
 
-public class EditTableServlet extends HttpServlet {
+public class EditTableServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -28,10 +27,6 @@ public class EditTableServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ListScreenTables.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -46,24 +41,19 @@ public class EditTableServlet extends HttpServlet {
                 long tableId = Long.parseLong(request.getParameter("tableId"));
 
                 try {
-                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                    Screen screen = screenDao.getById(programId, screenId);
                     TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
-                    Collection<Table> tables = tableDao.getScreenTables(screen.getProgramId(), screen.getId(), true);
-                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                    Table table = tableDao.getById(programId, screenId, tableId);
+                    logger.info("retrieve {}  ", table);
+                    request.setAttribute("editTable", table);
 
-                    for (Table table : tables) {
-                        List<Data> dataList = dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
-                                table.getId(), null);
-                        table.setDataList(dataList);
-                    }
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    Collection<Screen> screens = screenDao.getAllProgramScreens(programId);
+                    logger.info("retrieve {} screens ", screens.size());
+                    request.setAttribute("screens", screens);
 
-                    screen.setTables(tables);
-                    request.getSession().setAttribute("screen", screen);
                     request.getRequestDispatcher("./edit-table.jsp?tableId=" + tableId).forward(request, response);
                 } catch (SQLException ex) {
-
-
+                    logger.debug("", ex);
                 }
             }
         } finally {

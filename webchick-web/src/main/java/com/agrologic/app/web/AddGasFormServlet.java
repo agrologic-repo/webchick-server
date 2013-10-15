@@ -10,10 +10,8 @@ import com.agrologic.app.dao.mysql.impl.GasDaoImpl;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.Gas;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,12 +20,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author JanL
- */
-public class AddGasFormServlet extends HttpServlet {
+public class AddGasFormServlet extends AbstractServlet {
 
 
     /**
@@ -42,14 +36,7 @@ public class AddGasFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /**
-         * Logger for this class and subclasses
-         */
-        final Logger logger = Logger.getLogger(AddGasFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -98,7 +85,7 @@ public class AddGasFormServlet extends HttpServlet {
                     controller.setFlocks(flocks);
                 }
 
-                request.getSession().setAttribute("controllers", controllers);
+                request.setAttribute("controllers", controllers);
                 request.getRequestDispatcher("./rmctrl-add-gas.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
             } catch (SQLException ex) {

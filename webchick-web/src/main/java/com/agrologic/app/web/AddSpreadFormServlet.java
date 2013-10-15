@@ -1,7 +1,4 @@
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.web;
 
 
@@ -10,10 +7,8 @@ import com.agrologic.app.dao.mysql.impl.SpreadDaoImpl;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.Spread;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,10 +17,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * @author JanL
- */
-public class AddSpreadFormServlet extends HttpServlet {
+public class AddSpreadFormServlet extends AbstractServlet {
 
 
     /**
@@ -38,12 +30,7 @@ public class AddSpreadFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddSpreadFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -91,7 +78,7 @@ public class AddSpreadFormServlet extends HttpServlet {
                     controller.setFlocks(flocks);
                 }
 
-                request.getSession().setAttribute("controllers", controllers);
+                request.setAttribute("controllers", controllers);
                 logger.info("Spread added successfully to the datebase");
                 request.getRequestDispatcher("./rmctrl-add-spread.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);

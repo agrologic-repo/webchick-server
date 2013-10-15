@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
@@ -12,10 +6,8 @@ import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.dao.ScreenDao;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.utils.DateLocal;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -25,12 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author JanL
- */
-public class SaveScreensServlet extends HttpServlet {
+public class SaveScreensServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -42,12 +30,7 @@ public class SaveScreensServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(SaveScreensServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -81,8 +64,6 @@ public class SaveScreensServlet extends HttpServlet {
 
                 try {
                     ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                    ;
-
                     screenDao.saveChanges(showScreenMap, posScreenMap, programId);
 
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
@@ -90,14 +71,14 @@ public class SaveScreensServlet extends HttpServlet {
 
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
-                    request.getSession().setAttribute("message", "Screens successfully saved !");
-                    request.getSession().setAttribute("error", Boolean.FALSE);
+                    request.setAttribute("message", "Screens successfully saved !");
+                    request.setAttribute("error", Boolean.FALSE);
                     request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
                             response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating screen!");
-                    request.getSession().setAttribute("message", "Error occurs while updating screen !");
-                    request.getSession().setAttribute("error", Boolean.TRUE);
+                    request.setAttribute("message", "Error occurs while updating screen !");
+                    request.setAttribute("error", Boolean.TRUE);
                     request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
                             response);
                 }

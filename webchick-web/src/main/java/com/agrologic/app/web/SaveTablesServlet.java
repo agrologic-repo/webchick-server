@@ -1,18 +1,10 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.TableDao;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,12 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author JanL
- */
-public class SaveTablesServlet extends HttpServlet {
+public class SaveTablesServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,12 +27,7 @@ public class SaveTablesServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(SaveTablesServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -80,13 +63,13 @@ public class SaveTablesServlet extends HttpServlet {
                 try {
                     TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                     tableDao.saveChanges(showTableMap, posTableMap, screenId, programId);
-                    request.getSession().setAttribute("message", "Tables successfully saved !");
-                    request.getSession().setAttribute("error", false);
+                    request.setAttribute("message", "Tables successfully saved !");
+                    request.setAttribute("error", false);
                     request.getRequestDispatcher("./all-tables.html?screenId=" + screenId).forward(request, response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating program !");
-                    request.getSession().setAttribute("message", "Error occurs while saving tables !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while saving tables !");
+                    request.setAttribute("error", true);
                     request.getRequestDispatcher("./all-tables.html?screenId=" + screenId).forward(request, response);
                 }
             }

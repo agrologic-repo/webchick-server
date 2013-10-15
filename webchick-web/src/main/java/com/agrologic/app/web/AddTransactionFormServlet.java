@@ -5,10 +5,8 @@ import com.agrologic.app.dao.mysql.impl.TransactionDaoImpl;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.Transaction;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,7 +15,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-public class AddTransactionFormServlet extends HttpServlet {
+public class AddTransactionFormServlet extends AbstractServlet {
 
 
     /**
@@ -30,10 +28,6 @@ public class AddTransactionFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddTransactionFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -49,7 +43,6 @@ public class AddTransactionFormServlet extends HttpServlet {
             try {
                 TransactionDao transactDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDaoImpl.class);
                 Transaction transaction = new Transaction();
-
                 transaction.setFlockId(flockId);
                 transaction.setName(name);
                 transaction.setExpenses(Float.parseFloat(expenses));
@@ -80,7 +73,7 @@ public class AddTransactionFormServlet extends HttpServlet {
                     controller.setFlocks(flocks);
                 }
 
-                request.getSession().setAttribute("controllers", controllers);
+                request.setAttribute("controllers", controllers);
                 logger.info("Transaction added successfully to the datebase");
                 request.getRequestDispatcher("./rmctrl-add-transaction.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);

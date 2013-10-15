@@ -5,10 +5,8 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.GasDao;
 import com.agrologic.app.dao.mysql.impl.GasDaoImpl;
 import com.agrologic.app.model.Gas;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -16,7 +14,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-public class ListGasServlet extends HttpServlet {
+public class ListGasServlet extends AbstractServlet {
 
 
     /**
@@ -29,12 +27,7 @@ public class ListGasServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ListFlocksServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -48,7 +41,7 @@ public class ListGasServlet extends HttpServlet {
                 List<Gas> gazList = gazDao.getAllByFlockId(flockId);
 
                 logger.info("retrieve user and user cellinks and all controllers of each cellink");
-                request.getSession().setAttribute("gazList", gazList);
+                request.setAttribute("gazList", gazList);
                 request.getRequestDispatcher("./rmctrl-controller-flocks.jsp?celinkId=" + cellinkId).forward(request,
                         response);
             } catch (SQLException ex) {

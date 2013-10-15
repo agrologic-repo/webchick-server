@@ -7,10 +7,8 @@ import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.Fuel;
 import com.agrologic.app.model.Gas;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,7 +17,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-public class SaveEnergyForm extends HttpServlet {
+public class SaveEnergyForm extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -31,12 +29,7 @@ public class SaveEnergyForm extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(SaveEnergyForm.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -81,7 +74,7 @@ public class SaveEnergyForm extends HttpServlet {
                     controller.setFlocks(flocks);
                 }
                 logger.info("retrieve user and user cellinks and all controllers of each cellink");
-                request.getSession().setAttribute("controllers", controllers);
+                request.setAttribute("controllers", controllers);
                 request.getRequestDispatcher("./rmctrl-flock-management.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
             } catch (SQLException ex) {

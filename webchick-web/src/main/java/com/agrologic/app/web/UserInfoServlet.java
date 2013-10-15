@@ -1,13 +1,13 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.CellinkDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.Cellink;
-import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.User;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class UserInfoServlet extends HttpServlet {
+public class UserInfoServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -27,12 +27,7 @@ public class UserInfoServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(UserInfoServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -45,21 +40,16 @@ public class UserInfoServlet extends HttpServlet {
                 try {
                     UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
                     User editUser = userDao.getById(userId);
-                    CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);//DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+                    logger.info("retrieve user {} to edit  ", editUser);
+                    request.setAttribute("edituser", editUser);
+
+                    CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                     Collection<Cellink> cellinks = cellinkDao.getAllUserCellinks(editUser.getId());
-                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                    for (Cellink c : cellinks) {
-                        Collection<Controller> controllers = controllerDao.getAllByCellink(c.getId());
-                        c.setControllers(controllers);
-                    }
-                    logger.info("retrieve user and user cellinks and all controllers of each cellink");
+                    logger.info("retrieve {} cellinks assigned to user", cellinks.size());
                     editUser.setCellinks(cellinks);
-                    request.getSession().setAttribute("edituser", editUser);
                     request.getRequestDispatcher("./all-cellinks.jsp?userId=" + editUser.getId()).forward(request,
                             response);
                 } catch (SQLException ex) {
-
-                    // error page
                     logger.trace("Unnkown exception", ex);
                 }
             }

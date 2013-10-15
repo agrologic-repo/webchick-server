@@ -17,7 +17,6 @@ import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
@@ -26,7 +25,7 @@ import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public class TotalCellinkStatePieChart extends HttpServlet {
+public class TotalCellinkStatePieChart extends AbstractServlet {
 
     private static final long serialVersionUID = 1177210028733322431L;
     private DefaultPieDataset dataset = new DefaultPieDataset();
@@ -43,6 +42,7 @@ public class TotalCellinkStatePieChart extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         setValues(cellinkDao);
 

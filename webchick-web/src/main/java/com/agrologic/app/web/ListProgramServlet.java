@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
@@ -12,10 +6,8 @@ import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.model.User;
 import com.agrologic.app.model.UserRole;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,12 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
-public class ListProgramServlet extends HttpServlet {
+public class ListProgramServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -41,14 +28,8 @@ public class ListProgramServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ListProgramServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
-
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
@@ -56,49 +37,45 @@ public class ListProgramServlet extends HttpServlet {
             } else {
                 try {
                     String searchText = request.getParameter("searchText");
-
                     if (searchText == null) {
                         searchText = "";
                     }
 
                     String index = request.getParameter("index");
-
                     if (index == null) {
                         index = "0";
                     }
 
-                    User user = (User) request.getSession().getAttribute("user");
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
-                    int count = programDao.count();
-                    Collection<Program> programs = new ArrayList<Program>();
-                    Collection<Program> allPrograms = programDao.getAll();
+                    User user = (User) request.getSession().getAttribute("user");
                     UserRole userRole = user.getRole();
+
+                    int count;
+                    Collection<Program> programs = new ArrayList<Program>();
                     switch (userRole) {
                         case USER:
-                            programs = programDao.getAllByUserId(searchText, user.getId());
+                            count = programDao.count(searchText);
                             setTableParameters(request, index, count);
                             break;
 
                         case ADMIN:
                             programs = programDao.getAll(searchText, index);
+                            count = programDao.count(searchText);
                             setTableParameters(request, index, count);
                             break;
 
                         case DISTRIBUTOR:
                             programs = programDao.getAllByUserCompany(searchText, user.getCompany());
+                            count = programDao.count(searchText);
                             setTableParameters(request, index, count);
                             break;
 
                         default:
                             break;
                     }
-
-                    request.getSession().setAttribute("allprograms", allPrograms);
-                    request.getSession().setAttribute("programs", programs);
-                    request.getRequestDispatcher("./all-programs.jsp").forward(request, response);
+                    request.setAttribute("programs", programs);
+                    request.getRequestDispatcher("./all-programs.jsp?searchText=" + searchText).forward(request, response);
                 } catch (SQLException ex) {
-
-                    // error page
                     logger.error("database error ! " + ex.getMessage());
                     request.setAttribute("errormessage", ex.getMessage());
                     request.getRequestDispatcher(request.getRequestURI()).forward(request, response);
@@ -115,9 +92,9 @@ public class ListProgramServlet extends HttpServlet {
             int to = 25;
             int of = count;
 
-            request.getSession().setAttribute("from", from);
-            request.getSession().setAttribute("to", to);
-            request.getSession().setAttribute("of", of);
+            request.setAttribute("from", from);
+            request.setAttribute("to", to);
+            request.setAttribute("of", of);
         } else {
             int from = Integer.parseInt(index);
             int to = from + ((count - from) > 25
@@ -125,9 +102,9 @@ public class ListProgramServlet extends HttpServlet {
                     : (count - from));
             int of = count;
 
-            request.getSession().setAttribute("from", from);
-            request.getSession().setAttribute("to", to);
-            request.getSession().setAttribute("of", of);
+            request.setAttribute("from", from);
+            request.setAttribute("to", to);
+            request.setAttribute("of", of);
         }
     }
 

@@ -6,10 +6,8 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.LanguageDao;
 import com.agrologic.app.model.Alarm;
 import com.agrologic.app.model.Language;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ListAlarms extends HttpServlet {
+public class ListAlarms extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -31,12 +29,7 @@ public class ListAlarms extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(ProgramDetailsServet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -55,18 +48,18 @@ public class ListAlarms extends HttpServlet {
 
                     LanguageDao langDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                     Collection<Language> languages = langDao.geAll();
-                    request.getSession().setAttribute("languages", languages);
+                    request.setAttribute("languages", languages);
                     logger.debug("retrieved languages!");
 
                     AlarmDao alarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(AlarmDao.class);
                     List<Alarm> alarmNames = new ArrayList<Alarm>(alarmDao.getAll(translateLang));
-                    request.getSession().setAttribute("alarmNames", alarmNames);
+                    request.setAttribute("alarmNames", alarmNames);
                     logger.info("retrieved alarm names!");
 
-                    response.sendRedirect("./all-alarms.jsp?translateLang=" + translateLang);
+                    request.getRequestDispatcher("./all-alarms.jsp?translateLang=" + translateLang).forward(request, response);
                 } catch (SQLException ex) {
                     logger.info("Error occurs while retrieve program alarms!", ex);
-                    request.getSession().setAttribute("message", ex.getMessage());
+                    request.setAttribute("message", ex.getMessage());
                     request.getRequestDispatcher("./all-programs.html").forward(request, response);
                 }
             }

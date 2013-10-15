@@ -5,12 +5,9 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.User;
 import com.agrologic.app.utils.Base64;
-import org.apache.log4j.Logger;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,10 +15,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 
-public class UserLoginFormServlet extends HttpServlet {
-
-    private ServletContext ctx;
-
+public class UserLoginFormServlet extends AbstractServlet {
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -34,16 +28,11 @@ public class UserLoginFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
 
-        /**
-         * Logger for this class and subclasses
-         */
-        final Logger logger = Logger.getLogger(UserLoginFormServlet.class);
         String name = request.getParameter("name");
         String pass = request.getParameter("password");
         String reme = request.getParameter("remember");
-
-        ctx = getServletContext();
 
         PrintWriter out = response.getWriter();
         UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
@@ -57,6 +46,7 @@ public class UserLoginFormServlet extends HttpServlet {
 
             if (user.getValidate() == false) {
                 logger.error("username " + name + " and password: " + pass + " not found");
+                logger.warn("User tried to bypass login. remote IP = " + request.getRemoteHost());
                 request.setAttribute("errormessage", "incorrect user name and/or password");
                 response.sendRedirect("./login.jsp");
             } else {
@@ -67,8 +57,6 @@ public class UserLoginFormServlet extends HttpServlet {
                 }
 
                 logger.info(user + " , successfully logged in system .");
-//              ctx.setAttribute("user", user);
-//              ctx.setAttribute("access", "admin");
                 logger.warn("User tried to bypass login. remote IP = " + request.getRemoteHost());
                 request.getSession().setAttribute("user", user);
                 request.getSession().setAttribute("access", "admin");

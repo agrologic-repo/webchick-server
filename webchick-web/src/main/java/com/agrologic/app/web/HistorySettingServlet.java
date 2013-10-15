@@ -7,10 +7,8 @@ import com.agrologic.app.dao.HistorySettingDao;
 import com.agrologic.app.dao.mysql.impl.HistorySettingDaoImpl;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.HistorySetting;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,7 +16,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-public class HistorySettingServlet extends HttpServlet {
+public class HistorySettingServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -30,12 +28,7 @@ public class HistorySettingServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(HistorySettingServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -49,15 +42,15 @@ public class HistorySettingServlet extends HttpServlet {
                     HistorySettingDao historySettingDao = DbImplDecider.use(DaoType.MYSQL).getDao(HistorySettingDaoImpl.class);
                     List<HistorySetting> histSettingList = historySettingDao.getHistorySetting(programId);
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                    List<Data> historyData = dataDao.getHistoryDataList();
+                    List<Data> historyData = (List<Data>) dataDao.getHistoryDataList();
 
-                    request.getSession().setAttribute("historyData", historyData);
-                    request.getSession().setAttribute("historySettingData", histSettingList);
-                    logger.info("retrieve all history data");
-                    request.getRequestDispatcher("./history-setting.jsp?programId=" + programId).forward(request,
+                    request.setAttribute("historyData", historyData);
+                    request.setAttribute("historySettingData", histSettingList);
+                    logger.info("retrieve all management data");
+                    request.getRequestDispatcher("./management-setting.jsp?programId=" + programId).forward(request,
                             response);
                 } catch (SQLException ex) {
-                    logger.trace("Fail save history setting", ex);
+                    logger.trace("Fail save management setting", ex);
                 }
             }
         } finally {

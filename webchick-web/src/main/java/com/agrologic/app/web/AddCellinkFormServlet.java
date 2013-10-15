@@ -4,20 +4,17 @@ import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.User;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
 
-public class AddCellinkFormServlet extends HttpServlet {
+public class AddCellinkFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -29,10 +26,6 @@ public class AddCellinkFormServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddCellinkFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -66,15 +59,14 @@ public class AddCellinkFormServlet extends HttpServlet {
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 cellinkDao.insert(cellink);
                 logger.info("Cellink " + cellink + " successfully added !");
-                request.getSession().setAttribute("message", "Cellink successfully added !");
-                request.getSession().setAttribute("error", false);
+                request.setAttribute("message", "Cellink successfully added !");
+                request.setAttribute("error", false);
 
-                Collection<User> users = new ArrayList<User>();
+                Collection<User> users;
                 String paramRole = request.getParameter("role");
 
-                if ((paramRole == null) || "3".equals(paramRole)) {
+                if ((paramRole == null)) {
                     users = userDao.getAll();
-                    paramRole = "3";
                 } else {
                     int role = Integer.parseInt(paramRole);
                     users = userDao.getAllByRole(role);
@@ -90,14 +82,13 @@ public class AddCellinkFormServlet extends HttpServlet {
                 }
 
                 logger.info("retrieve all users ");
-                request.getSession().setAttribute("users", users);
+                request.setAttribute("users", users);
                 request.getRequestDispatcher("./userinfo.html?userId=" + userId).forward(request, response);
             } catch (SQLException ex) {
-
                 // error page
                 logger.error("Error occurs while adding cellink !", ex);
-                request.getSession().setAttribute("message", "Error occurs while adding cellink !");
-                request.getSession().setAttribute("error", true);
+                request.setAttribute("message", "Error occurs while adding cellink !");
+                request.setAttribute("error", true);
                 request.getRequestDispatcher("./userinfo.html?userId=" + userId).forward(request, response);
             } finally {
                 out.close();
