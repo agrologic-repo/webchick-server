@@ -1,21 +1,12 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.utils;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- *
- * @author Administrator
- */
 import java.awt.*;
 
 public class ShowString extends Frame {
     private FontMetrics fontM;
-    private String      outString;
+    private String outString;
 
     ShowString(String target, String title) {
         setTitle(title);
@@ -41,8 +32,8 @@ public class ShowString extends Frame {
     @Override
     public void paint(Graphics g) {
         Insets insets = getInsets();
-        int    x      = insets.left;
-        int    y      = insets.top;
+        int x = insets.left;
+        int y = insets.top;
 
         g.drawString(outString, x + 6, y + fontM.getAscent() + 14);
     }

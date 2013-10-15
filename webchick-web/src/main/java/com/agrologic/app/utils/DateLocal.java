@@ -1,11 +1,7 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.utils;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -65,7 +61,6 @@ public class DateLocal extends java.util.Date {
         Date now = new Date(time.getTime());
         String DATE_FORMAT = "hh:mm dd/M/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-
         return sdf.format(now);
     }
 }
