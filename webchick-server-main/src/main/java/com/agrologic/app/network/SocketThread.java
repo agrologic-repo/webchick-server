@@ -361,7 +361,7 @@ public class SocketThread implements Runnable {
                 stopThread = true;
             }
         }
-        CommonUtil.sleepMiliSeconds(100);
+        CommonUtil.sleepMiliSeconds(50);
     }
 
     private void acceptCellink() {

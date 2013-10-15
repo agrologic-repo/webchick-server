@@ -75,19 +75,30 @@ public final class CellinkTable extends JTable {
                     if (cellinkModel.size() == 0) {
                         cellinkModel.addAll(retrieveCellinks());
                     } else {
-                        List<Cellink> cellinkListTemp = (List<Cellink>) retrieveCellinks();
-                        int length = (cellinkModel.size() < cellinkListTemp.size())
-                                ? cellinkModel.size()
-                                : cellinkListTemp.size();
-                        cellinkModel.addAndRemoveAbsent(cellinkListTemp);
-                        cellinkModel.setReloadChanges(length, cellinkListTemp);
+                        int countCellinksInMemory = ((CellinkTableModel) getModel()).size();
+                        int countCellinksInDatabase = countCellinks();
+
+                        if(countCellinksInMemory != countCellinksInDatabase) {
+                            List<Cellink> cellinkListTemp = (List<Cellink>) retrieveCellinks();
+                            int length = (countCellinksInMemory < countCellinksInDatabase)
+                                    ? cellinkModel.size()
+                                    : cellinkListTemp.size();
+                            cellinkModel.addAndRemoveAbsent(cellinkListTemp);
+                            cellinkModel.setReloadChanges(length, cellinkListTemp);
+                        } else {
+                            List<Cellink> cellinkListTemp = (List<Cellink>) retrieveCellinks();
+                            int length = (countCellinksInMemory < countCellinksInDatabase)
+                                    ? cellinkModel.size()
+                                    : cellinkListTemp.size();
+                            cellinkModel.setReloadChanges(length, cellinkListTemp);
+                        }
                     }
                     repaint();
                     invalidate();
                 }
             };
-            executor = Executors.newSingleThreadScheduledExecutor();
-            executor.scheduleAtFixedRate(task, 1, 1, TimeUnit.SECONDS);
+            executor = Executors.newScheduledThreadPool(1);
+            executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
         }
     }
 
@@ -102,11 +113,24 @@ public final class CellinkTable extends JTable {
         }
 
         try {
+
             return cellinkDao.getAll();
         } catch (SQLException ex) {
             logger.error("Load data error: " + ex.getMessage());
-
             return new ArrayList<Cellink>();
+        }
+    }
+
+    private int countCellinks() {
+        if (cellinkDao == null) {
+            cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+        }
+        try {
+
+            return cellinkDao.count();
+        } catch (SQLException ex) {
+            logger.error("Load data error: " + ex.getMessage());
+            return 0;
         }
     }
 

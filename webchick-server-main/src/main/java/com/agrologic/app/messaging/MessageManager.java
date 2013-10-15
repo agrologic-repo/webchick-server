@@ -145,7 +145,7 @@ public class MessageManager implements Observer {
             requestToSend = new MessageFactory().createGraphRequest(controller.getNetName());
             setRequestCreated(true);
         } else if (historyShouldBeRequested()) {
-            //3.1. create history daily
+            //3.1. create management daily
             try {
                 requestToSend = createHistoryRequest();
                 setRequestCreated(true);
@@ -154,7 +154,7 @@ public class MessageManager implements Observer {
                 setRequestCreated(false);
             }
         } else if (history24HourShouldBeRequested()) {
-            //3.2. create history 24 hours
+            //3.2. create management 24 hours
             try {
                 requestToSend = create24HourHistoryRequest();
                 setRequestCreated(true);
@@ -251,9 +251,9 @@ public class MessageManager implements Observer {
     }
 
     /**
-     * Return true if new flock is created or\and history should be updated.
+     * Return true if new flock is created or\and management should be updated.
      *
-     * @return true if history should be requested.
+     * @return true if management should be requested.
      * @throws SQLException
      */
     private boolean historyShouldBeRequested() throws SQLException {
@@ -283,9 +283,9 @@ public class MessageManager implements Observer {
     }
 
     /**
-     * Return true if new flock is and history should be updated.
+     * Return true if new flock is and management should be updated.
      *
-     * @return true if history should be requested.
+     * @return true if management should be requested.
      * @throws SQLException
      */
     private boolean history24HourShouldBeRequested() throws SQLException {
@@ -336,9 +336,9 @@ public class MessageManager implements Observer {
     }
 
     /**
-     * Create history request for this controller.
+     * Create management request for this controller.
      *
-     * @return requestHistory the history request.
+     * @return requestHistory the management request.
      * @throws SQLException
      */
     private RequestMessage createHistoryRequest() throws SQLException, IllegalAccessException {
@@ -352,9 +352,9 @@ public class MessageManager implements Observer {
     }
 
     /**
-     * Create history request for this controller.
+     * Create management request for this controller.
      *
-     * @return requestHistory the history request.
+     * @return requestHistory the management request.
      * @throws SQLException
      */
     private RequestMessage create24HourHistoryRequest() throws SQLException, IllegalAccessException {

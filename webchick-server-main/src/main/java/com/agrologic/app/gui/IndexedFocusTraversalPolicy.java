@@ -1,18 +1,10 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
-package com.agrologic.app.ui;
 
-//~--- JDK imports ------------------------------------------------------------
+package com.agrologic.app.gui;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-/**
- * @author Administrator
- */
 public class IndexedFocusTraversalPolicy extends FocusTraversalPolicy {
     private ArrayList<Component> components = new ArrayList<Component>();
 

@@ -103,7 +103,7 @@ public class RequestMessageQueueHistory24 {
     }
 
     /**
-     * Creating history requests with new grow day parameter.
+     * Creating management requests with new grow day parameter.
      *
      * @param newGrowDay the grow day.
      */

@@ -42,7 +42,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
      */
     private Long value;
     /**
-     * value using in history request
+     * value using in management request
      */
     private Integer growDay;
     /**
@@ -50,7 +50,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
      */
     private String plate;
     /**
-     * using history
+     * using management
      */
     private String dnum;
     /**
@@ -226,7 +226,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
     }
 
     /**
-     * The grow day for history request
+     * The grow day for management request
      *
      * @return growDay the grow day
      */
@@ -311,9 +311,9 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
     }
 
     /**
-     * Return the number for request history 24 hour data
+     * Return the number for request management 24 hour data
      *
-     * @return dnum the number of history data
+     * @return dnum the number of management data
      */
     public String getDnum() {
         return dnum;

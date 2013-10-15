@@ -71,7 +71,8 @@ public class ReadBuffer {
                 try {
                     inputBuffer.put(data);
                 } catch (BufferOverflowException e) {
-                    CommControl.logger.debug(inputBuffer.position());
+
+                    CommControl.logger.debug("Buffer overflow exception . Received {} bytes ", inputBuffer.position());
                 }
                 startTime = System.currentTimeMillis();
                 readState = CommControl.ReadState.WAIT_EOT;

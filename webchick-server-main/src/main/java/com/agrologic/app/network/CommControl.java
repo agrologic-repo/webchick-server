@@ -6,7 +6,8 @@ import com.agrologic.app.exception.TimeoutException;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.messaging.ResponseMessage;
 import com.agrologic.app.model.CellinkVersion;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +23,7 @@ public class CommControl {
     private ResponseMessage response;
     private boolean stop = false;
     private Object lock;
-    public static Logger logger = Logger.getLogger(CommControl.class);
+    public static Logger logger = LoggerFactory.getLogger(CommControl.class);
 
     /**
      * Constructor create communication control object
@@ -35,7 +36,6 @@ public class CommControl {
         this.socket.setTcpNoDelay(true);
         this.in = socket.getInputStream();
         this.out = socket.getOutputStream();
-
         lock = new Object();
     }
 
@@ -152,12 +152,12 @@ public class CommControl {
         if (index != null && index.length() > 0) {
             //out.write(index.getBytes());
             byte[] sendBuffer = mergeIndexAndBuffer(index.getBytes(), msg.getBuffer());
-            logger.info("Sending : " + new String(sendBuffer, 0, sendBuffer.length));
+            logger.info("Sending :  [{}]" ,new String(sendBuffer, 0, sendBuffer.length));
             socket.setSendBufferSize(sendBuffer.length);
             out.write(sendBuffer, 0, sendBuffer.length);
         } else {
             out.write(msg.getBuffer());
-            logger.info(msg);
+            logger.info(msg.toString());
         }
         out.flush();
     }
@@ -430,7 +430,7 @@ public class CommControl {
             try {
                 newBuffer = clearGarbage(newBuffer, newBufCnt);
             } catch (IllegalArgumentException e) {
-                logger.error(e);
+                logger.error(e.getMessage(),e);
             }
 
             return newBuffer;
@@ -509,7 +509,7 @@ public class CommControl {
             try {
                 rxBuffer = clearGarbage(rxBuffer, rxPtr - 2);
             } catch (IllegalArgumentException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
 
             return rxBuffer;

@@ -37,7 +37,6 @@ public class ServerThread extends Observable implements Runnable {
         cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         this.currentState = ServerActivityStates.IDLE;
         this.clientSessions = new ClientSessions(serverFacade, cellinkDao);
-//        this.threads = clientSessions.getSessions();
         this.executor = Executors.newScheduledThreadPool(2);
     }
 
@@ -55,7 +54,7 @@ public class ServerThread extends Observable implements Runnable {
             server = new ServerSocket(port, MAX_NUM_SOCKET, ia);
             server.setSoTimeout(SERVER_SOCKET_TIMEOUT);
             executor.scheduleAtFixedRate(new SocketThreadStarter(this), 0L, 1L, TimeUnit.SECONDS);
-            executor.scheduleAtFixedRate(new ClientSessionsSizeMonitor(this), 0L, 1L, TimeUnit.SECONDS);
+//            executor.scheduleAtFixedRate(new ClientSessionsSizeMonitor(this), 0L, 1L, TimeUnit.SECONDS);
             logger.info("ServerSocket opened on " + server.getLocalSocketAddress());
             return true;
         } catch (BindException ex) {

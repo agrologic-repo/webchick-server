@@ -8,7 +8,7 @@
  *
  * Created on Dec 12, 2011, 11:47:43 AM
  */
-package com.agrologic.app.ui;
+package com.agrologic.app.gui;
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
@@ -16,9 +16,6 @@ import com.agrologic.app.dao.DbImplDecider;
 
 import java.sql.SQLException;
 
-/**
- * @author Administrator
- */
 public class DBUtility extends javax.swing.JFrame {
 
     long startDataId;

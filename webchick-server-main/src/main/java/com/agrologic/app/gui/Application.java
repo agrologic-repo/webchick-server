@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
 
-public class WCSWindow extends JFrame implements Observer, ServerUI {
+public class Application extends JFrame implements Observer, ServerUI {
 
     private static final long serialVersionUID = 1L;
     private ConfigurationDialog configDialog;
@@ -44,7 +44,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
     private JMenuItem startedState;
     private JMenuItem stoppedState;
     private CellinkTable cellinkTable;
-    private final Logger logger = Logger.getLogger(WCSWindow.class);
+    private final Logger logger = Logger.getLogger(Application.class);
     private static final String ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE = "Error opening socket \n" +
             "host or port already in use !";
     private static final String CANNOT_CREATE_LOCK_FILE = "Can't create Lock File.\nAccess is denied !";
@@ -54,7 +54,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
      *
      * @throws StartProgramException
      */
-    public WCSWindow() throws StartProgramException {
+    public Application() throws StartProgramException {
 
         try {
             ProgramInstanceLocker.lockFile();
@@ -92,9 +92,9 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
         });
         popupTableMenu.add(stoppedState);
 
-        Windows.setWindowsLAF(WCSWindow.this);
-        Windows.centerOnScreen(WCSWindow.this);
-        Windows.setIconImage(WCSWindow.this, "/images/server.png");
+        Windows.setWindowsLAF(Application.this);
+        Windows.centerOnScreen(Application.this);
+        Windows.setIconImage(Application.this, "/images/server.png");
 
         // start running network communication
         ActionListener start = new ActionListener() {
@@ -189,7 +189,8 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
             serverThread.start();
             clock.start();
             if (serverSocketThread.getServerState() == ServerActivityStates.ERROR) {
-                JOptionPane.showMessageDialog(WCSWindow.this, ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(Application.this, ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE,
+                        "Error", JOptionPane.ERROR_MESSAGE);
                 serverSocketThread.setServerActivityState(ServerActivityStates.STOPPED);
             } else {
                 btnStart.setEnabled(false);
@@ -231,7 +232,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
 
                 } finally {
                     if (serverSocketThread.getServerState() == ServerActivityStates.ERROR) {
-                        JOptionPane.showMessageDialog(WCSWindow.this, ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE, "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(Application.this, ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE, "Error", JOptionPane.ERROR_MESSAGE);
                         serverSocketThread.setServerActivityState(ServerActivityStates.STOPPED);
                     } else {
                         btnStart.setEnabled(false);
@@ -305,7 +306,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
     private void exitProgram() {
         String title = "Close Program Confirmation";
         String message = "Do you really want to close program ?";
-        int result = JOptionPane.showConfirmDialog(WCSWindow.this, message, title, JOptionPane.YES_NO_OPTION);
+        int result = JOptionPane.showConfirmDialog(Application.this, message, title, JOptionPane.YES_NO_OPTION);
         if (result == JOptionPane.YES_OPTION) {
             btnStop.doClick();
             if (serverThread.isAlive()) {
@@ -681,14 +682,14 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
             StringBuilder sb = new StringBuilder();
             if (deadThreads.size() == 0) {
                 sb.append("No unused open sockets in system ");
-                JOptionPane.showMessageDialog(WCSWindow.this, sb.toString());
+                JOptionPane.showMessageDialog(Application.this, sb.toString());
             } else {
                 for (SocketThread nt : deadThreads) {
                     threads.remove(nt.getCellink().getId());
                     nt.getCommControl().close();
                     sb.append("Session with cellink id ").append(nt.getCellink().getId()).append(" closed\n ");
                 }
-                JOptionPane.showMessageDialog(WCSWindow.this, sb.toString());
+                JOptionPane.showMessageDialog(Application.this, sb.toString());
             }
         }
     }//GEN-LAST:event_btnCloseUnusedActionPerformed
@@ -704,7 +705,7 @@ public class WCSWindow extends JFrame implements Observer, ServerUI {
                 Logger logger = Logger.getRootLogger();
                 try {
                     logger.info("start server");
-                    new WCSWindow().setVisible(true);
+                    new Application().setVisible(true);
                 } catch (StartProgramException e) {
                     logger.error(e);
                     JOptionPane.showMessageDialog(null, e.getMessage());

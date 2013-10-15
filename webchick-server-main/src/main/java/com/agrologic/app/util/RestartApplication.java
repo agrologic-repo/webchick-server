@@ -83,17 +83,17 @@ public class RestartApplication {
         }
         return new File(jar.getName());
     }
-
-    /**
-     * Not recommended. Test should not sleep, but should wait for some condition instead.
-     *
-     * @param milliseconds Time to sleep in milliseconds
-     */
-    public static void sleep(long milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//
+//    /**
+//     * Not recommended. Test should not sleepMiliSeconds, but should wait for some condition instead.
+//     *
+//     * @param milliseconds Time to sleepMiliSeconds in milliseconds
+//     */
+//    public static void sleep(long milliseconds) {
+//        try {
+//            Thread.sleep(milliseconds);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 }

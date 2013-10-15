@@ -25,15 +25,10 @@ public class CellinkTableModel extends AbstractTableModel {
             Long.class, String.class, String.class, String.class, Integer.class, String.class, CellinkState.class,
             Boolean.class
     };
-    private boolean debug = true;
     private List<Cellink> cellinks;
 
     public CellinkTableModel() {
         this.cellinks = new ArrayList<Cellink>();
-    }
-
-    public CellinkTableModel(List<Cellink> cellinks) {
-        this.cellinks = cellinks;
     }
 
     public void add(Cellink cellink) {
