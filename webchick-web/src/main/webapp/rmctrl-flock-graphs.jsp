@@ -1,10 +1,4 @@
-<%--
-    Document   : rmctrl-flock-graph
-    Created on : Mar 28, 2011, 2:40:08 PM
-    Author     : JanL
---%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ include file="language.jsp" %>
 
@@ -35,19 +29,19 @@
         growDay = 1;
     }
 
-    String flockName = (String) request.getSession().getAttribute("flockName");
-    String houseName = (String) request.getSession().getAttribute("houseName");
+    String flockName = (String) request.getAttribute("flockName");
+    String houseName = (String) request.getAttribute("houseName");
 %>
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html dir="<%=(String) request.getSession().getAttribute("dir")%>" xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=session.getAttribute("history.graph.page.title")%>
     </title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="shortcut icon" href="img/favicon5.ico" title="AgroLogic Tm."/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <style type="text/css">
         span.growday {
             font-weight: bold;
@@ -56,12 +50,9 @@
         }
     </style>
 
-    <script type="text/javascript" src="js/util.js"></script>
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
         //<!--
         menu_status = new Array();
         menu_img = new Array();
@@ -176,7 +167,7 @@
         }
 
         div.plus {
-            background-image: url('img/plus.gif');
+            background-image: url('resources/images/plus.gif');
             margin: 5px;
             height: 10px;
             width: 10px;
@@ -184,7 +175,7 @@
         }
 
         div.minus {
-            background-image: url('img/minus.gif');
+            background-image: url('resources/images/minus.gif');
             margin: 5px;
             height: 10px;
             width: 10px;
@@ -216,11 +207,11 @@
                     </td>
                     <td width="20%">
                         <a href="./rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1&doResetTimeout=true">
-                            <img src="img/display.png" style="cursor: pointer" hspace="5"
+                            <img src="resources/images/display.png" style="cursor: pointer" hspace="5"
                                  border="0"/><%=session.getAttribute("button.screens")%>
                         </a>
                         <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
-                            <img src="img/chicken-icon.png" style="cursor: pointer" hspace="5"
+                            <img src="resources/images/chicken-icon.png" style="cursor: pointer" hspace="5"
                                  border="0"/><%=session.getAttribute("main.screen.page.flocks")%>
                         </a>
                     </td>
@@ -232,175 +223,175 @@
 <tr>
 <td align="center">
 <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px; width: 85%">
-<table border="0" width="800px" cellpadding="0" cellspacing="0" style="padding:1px;">
-    <tr>
-        <td>
-            <h2><%=session.getAttribute("history.graph.page.growday.graph.title")%>
-            </h2>
-                                    <span class="growday">
-                                        <%=session.getAttribute("label.growday")%> <%=growDay%>
-                                    </span>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
-                <form action="./rmctrl-flock-graphs.html">
-                    <input type="hidden" name="flockId" value="<%=flockId%>"/>
-                    <input type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
-                    <input type="hidden" name="userId" value="<%=userId%>"/>
-                    <table class="table-list-small">
-                        <tr>
-                            <td>
-                                <%if (fromDay == -1 || toDay == -1) {%>
-                                <%=session.getAttribute("label.from")%> : <input type="text" size="5"
-                                                                                 name="fromDay"/>
-                                <%=session.getAttribute("label.to")%> : <input type="text" size="5"
-                                                                               name="toDay"/>
-                                <%} else {%>
-                                <%=session.getAttribute("label.from")%> : <input type="text" size="5" name="fromDay"
-                                                                                 value="<%=fromDay%>"/>
-                                <%=session.getAttribute("label.to")%> :
-                                <input type="text" size="5" name="toDay" value="<%=toDay%>"/>
-                                <%}%>
-                                <input type="submit" value="<%=session.getAttribute("button.submit")%>"/>
-                            </td>
-                            <td>
-                                <a href="./exptoexcelhistory.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>"
-                                   onclick="window.location.href.replace('./exptoexcelhistory.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>')">
-                                    <img src="img/excel.gif" style="cursor: pointer" hspace="5"
-                                         border="0"/><%=session.getAttribute("button.export")%>
-                                </a>
-                                <a title="Table" style="cursor: pointer"
-                                   onclick="window.open('./rmctrl-flockhistory-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
-                                    <img src="img/table.gif" style="cursor: pointer" hspace="5"
-                                         border="0"/><%=session.getAttribute("button.table")%>
-                                </a>
-                                <a title="Table" style="cursor: pointer"
-                                   onclick="window.open('./rmctrl-eggcnt-flockhistory-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
-                                    <img src="img/table.gif" style="cursor: pointer" hspace="5"
-                                         border="0"/><%=session.getAttribute("button.eggcount.table")%>
-                                </a>
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-            </fieldset>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <table class="table-list">
-                <tr style="background-color:#D5EFFF;" onmouseover="this.style.background='#ADD8E6'"
-                    onmouseout="this.style.background='#D5EFFF'">
-                    <td>
-                        <div id="imgmymenu1" class="plus"></div>
-                    </td>
-                    <td class="menu1" onclick="showHide('mymenu1')">
-                        <img src="img/graph2.gif"
-                             hspace="5"><%=session.getAttribute("history.graph.page.panel.fwt.label")%>
-                        </img>
-                    </td>
-                </tr>
-            </table>
+    <table border="0" width="800px" cellpadding="0" cellspacing="0" style="padding:1px;">
+        <tr>
+            <td>
+                <h2><%=session.getAttribute("history.graph.page.growday.graph.title")%>
+                </h2>
+                                        <span class="growday">
+                                            <%=session.getAttribute("label.growday")%> <%=growDay%>
+                                        </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
+                    <form action="./rmctrl-flock-graphs.html">
+                        <input type="hidden" name="flockId" value="<%=flockId%>"/>
+                        <input type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
+                        <input type="hidden" name="userId" value="<%=userId%>"/>
+                        <table class="table-list-small">
+                            <tr>
+                                <td>
+                                    <%if (fromDay == -1 || toDay == -1) {%>
+                                    <%=session.getAttribute("label.from")%> : <input type="text" size="5"
+                                                                                     name="fromDay"/>
+                                    <%=session.getAttribute("label.to")%> : <input type="text" size="5"
+                                                                                   name="toDay"/>
+                                    <%} else {%>
+                                    <%=session.getAttribute("label.from")%> : <input type="text" size="5" name="fromDay"
+                                                                                     value="<%=fromDay%>"/>
+                                    <%=session.getAttribute("label.to")%> :
+                                    <input type="text" size="5" name="toDay" value="<%=toDay%>"/>
+                                    <%}%>
+                                    <input type="submit" value="<%=session.getAttribute("button.submit")%>"/>
+                                </td>
+                                <td>
+                                    <a href="./exptoexcelhistory.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>"
+                                       onclick="window.location.href.replace('./exptoexcelhistory.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>')">
+                                        <img src="resources/images/excel.gif" style="cursor: pointer" hspace="5"
+                                             border="0"/><%=session.getAttribute("button.export")%>
+                                    </a>
+                                    <a title="Table" style="cursor: pointer"
+                                       onclick="window.open('./rmctrl-flockhistory-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
+                                        <img src="resources/images/table.gif" style="cursor: pointer" hspace="5"
+                                             border="0"/><%=session.getAttribute("button.table")%>
+                                    </a>
+                                    <a title="Table" style="cursor: pointer"
+                                       onclick="window.open('./rmctrl-eggcnt-flockhistory-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
+                                        <img src="resources/images/table.gif" style="cursor: pointer" hspace="5"
+                                             border="0"/><%=session.getAttribute("button.eggcount.table")%>
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table-list">
+                    <tr style="background-color:#D5EFFF;" onmouseover="this.style.background='#ADD8E6'"
+                        onmouseout="this.style.background='#D5EFFF'">
+                        <td>
+                            <div id="imgmymenu1" class="plus"></div>
+                        </td>
+                        <td class="menu1" onclick="showHide('mymenu1')">
+                            <img src="resources/images/graph2.gif"
+                                 hspace="5"><%=session.getAttribute("history.graph.page.panel.fwt.label")%>
+                            </img>
+                        </td>
+                    </tr>
+                </table>
 
-            <table style="border:solid 1px #D5EFFF;" id="mymenu1" class="hide">
-                <tr>
-                    <td>
-                        <img border="0"
-                             src="./feedwatergraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
-                    </td>
-                </tr>
-            </table>
+                <table style="border:solid 1px #D5EFFF;" id="mymenu1" class="hide">
+                    <tr>
+                        <td>
+                            <img border="0"
+                                 src="./feedwatergraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
+                        </td>
+                    </tr>
+                </table>
 
-            <table class="table-list">
-                <tr style="background-color:#D5EFFF;" onmouseover="this.style.background='#ADD8E6'"
-                    onmouseout="this.style.background='#D5EFFF'">
-                    <td>
-                        <div id="imgmymenu2" class="plus"></div>
-                    </td>
-                    <td class="menu1" onclick="showHide('mymenu2')">
-                        <img src="img/graph2.gif" hspace="5"/>
-                        <%=session.getAttribute("history.graph.page.panel.aw.label")%>
-                    </td>
-                </tr>
-            </table>
-            <table style="border:solid 1px #D5EFFF;" id="mymenu2" class="hide">
-                <tr>
-                    <td>
-                        <img border="0"
-                             src="./avgweightgraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
-                    </td>
-                </tr>
-            </table>
+                <table class="table-list">
+                    <tr style="background-color:#D5EFFF;" onmouseover="this.style.background='#ADD8E6'"
+                        onmouseout="this.style.background='#D5EFFF'">
+                        <td>
+                            <div id="imgmymenu2" class="plus"></div>
+                        </td>
+                        <td class="menu1" onclick="showHide('mymenu2')">
+                            <img src="resources/images/graph2.gif" hspace="5"/>
+                            <%=session.getAttribute("history.graph.page.panel.aw.label")%>
+                        </td>
+                    </tr>
+                </table>
+                <table style="border:solid 1px #D5EFFF;" id="mymenu2" class="hide">
+                    <tr>
+                        <td>
+                            <img border="0"
+                                 src="./avgweightgraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
+                        </td>
+                    </tr>
+                </table>
 
-            <table class="table-list">
-                <tr style="background-color:#D5EFFF;" onmouseover="this.style.background='#ADD8E6'"
-                    onmouseout="this.style.background='#D5EFFF'">
-                    <td>
-                        <div id="imgmymenu3" class="plus"></div>
-                    </td>
-                    <td class="menu1" onclick="showHide('mymenu3')">
-                        <img src="img/graph2.gif" hspace="5"/>
-                        <%=session.getAttribute("history.graph.page.panel.max.label")%>
-                    </td>
-                </tr>
+                <table class="table-list">
+                    <tr style="background-color:#D5EFFF;" onmouseover="this.style.background='#ADD8E6'"
+                        onmouseout="this.style.background='#D5EFFF'">
+                        <td>
+                            <div id="imgmymenu3" class="plus"></div>
+                        </td>
+                        <td class="menu1" onclick="showHide('mymenu3')">
+                            <img src="resources/images/graph2.gif" hspace="5"/>
+                            <%=session.getAttribute("history.graph.page.panel.max.label")%>
+                        </td>
+                    </tr>
 
-            </table>
-            <table style="border:solid 1px #D5EFFF;" id="mymenu3" class="hide">
-                <tr>
-                    <td>
-                        <img border="0"
-                             src="./minmaxhumgraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
-                    </td>
-                </tr>
-            </table>
+                </table>
+                <table style="border:solid 1px #D5EFFF;" id="mymenu3" class="hide">
+                    <tr>
+                        <td>
+                            <img border="0"
+                                 src="./minmaxhumgraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
+                        </td>
+                    </tr>
+                </table>
 
-            <table class="table-list">
-                <tr style="background-color:#D5EFFF;" onmouseover="this.style.background='#ADD8E6'"
-                    onmouseout="this.style.background='#D5EFFF'">
-                    <td>
-                        <div id="imgmymenu4" class="plus"></div>
-                    </td>
-                    <td class="menu1" onclick="showHide('mymenu4')">
-                        <img src="img/graph2.gif" hspace="5"/>
-                        <%=session.getAttribute("history.graph.page.panel.mor.label")%>
-                    </td>
-                </tr>
-            </table>
-            <table style="border:solid 1px #D5EFFF;" id="mymenu4" class="hide">
-                <tr>
-                    <td>
-                        <img border="0"
-                             src="./mortalitygraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
-                    </td>
-                </tr>
-            </table>
+                <table class="table-list">
+                    <tr style="background-color:#D5EFFF;" onmouseover="this.style.background='#ADD8E6'"
+                        onmouseout="this.style.background='#D5EFFF'">
+                        <td>
+                            <div id="imgmymenu4" class="plus"></div>
+                        </td>
+                        <td class="menu1" onclick="showHide('mymenu4')">
+                            <img src="resources/images/graph2.gif" hspace="5"/>
+                            <%=session.getAttribute("history.graph.page.panel.mor.label")%>
+                        </td>
+                    </tr>
+                </table>
+                <table style="border:solid 1px #D5EFFF;" id="mymenu4" class="hide">
+                    <tr>
+                        <td>
+                            <img border="0"
+                                 src="./mortalitygraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
+                        </td>
+                    </tr>
+                </table>
 
-            <table class="table-list">
-                <tr style="background-color:#D5EFFF;" onmouseover="this.style.background='#ADD8E6'"
-                    onmouseout="this.style.background='#D5EFFF'">
-                    <td>
-                        <div id="imgmymenu5" class="plus"></div>
-                    </td>
-                    <td class="menu1" onclick="showHide('mymenu5')">
-                        <img src="img/graph2.gif" hspace="5"/>
-                        <%=session.getAttribute("history.graph.page.panel.hon.label")%>
-                    </td>
-                </tr>
-            </table>
-            <table style="border:solid 1px #D5EFFF;" id="mymenu5" class="hide">
-                <tr>
-                    <td>
-                        <img border="0"
-                             src="./heatontimegraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
-<table border="0" width="800px" cellpadding="0" cellspacing="0" style="padding:1px;">
+                <table class="table-list">
+                    <tr style="background-color:#D5EFFF;" onmouseover="this.style.background='#ADD8E6'"
+                        onmouseout="this.style.background='#D5EFFF'">
+                        <td>
+                            <div id="imgmymenu5" class="plus"></div>
+                        </td>
+                        <td class="menu1" onclick="showHide('mymenu5')">
+                            <img src="resources/images/graph2.gif" hspace="5"/>
+                            <%=session.getAttribute("history.graph.page.panel.hon.label")%>
+                        </td>
+                    </tr>
+                </table>
+                <table style="border:solid 1px #D5EFFF;" id="mymenu5" class="hide">
+                    <tr>
+                        <td>
+                            <img border="0"
+                                 src="./heatontimegraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table border="0" width="800px" cellpadding="0" cellspacing="0" style="padding:1px;">
     <tr>
         <td>
             <h2><%=session.getAttribute("history.graph.page.24hour.graph.title")%>
@@ -427,11 +418,11 @@
                             <td>
                             </td>
                             <td>
-                                <img src="img/excel.gif" style="cursor: pointer" hspace="5" border="0"/>
+                                <img src="resources/images/excel.gif" style="cursor: pointer" hspace="5" border="0"/>
                                 <a href="./exptoexcelhistory24.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&growDay=<%=growDay%>">
                                     <%=session.getAttribute("button.export")%>
                                 </a>
-                                <img src="img/table.gif" style="cursor: pointer" hspace="5" border="0"/>
+                                <img src="resources/images/table.gif" style="cursor: pointer" hspace="5" border="0"/>
                                 <a onclick="window.open('./rmctrl-flockhistory24-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&growDay=<%=growDay%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
                                     <%=session.getAttribute("button.table")%>
                                 </a>
@@ -451,7 +442,7 @@
                         <div id="imgmymenus1" class="plus"></div>
                     </td>
                     <td class="menus1" onclick="showHide('mymenus1')">
-                        <img src="img/graph2.gif" hspace="5"/>
+                        <img src="resources/images/graph2.gif" hspace="5"/>
                         <%=session.getAttribute("history.graph.page.panel.ioh24.label")%>
                     </td>
                 </tr>
@@ -472,7 +463,7 @@
                         <div id="imgmymenus2" class="plus"></div>
                     </td>
                     <td class="menus1" onclick="showHide('mymenus2')">
-                        <img src="img/graph2.gif" hspace="5"/>
+                        <img src="resources/images/graph2.gif" hspace="5"/>
                         <%=session.getAttribute("history.graph.page.panel.fwt24.label")%>
                     </td>
                 </tr>

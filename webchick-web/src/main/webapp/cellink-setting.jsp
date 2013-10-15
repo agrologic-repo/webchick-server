@@ -1,80 +1,31 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
-<%@ include file="language.jsp" %>
 
-<jsp:directive.page import="com.agrologic.app.model.Cellink"/>
-<jsp:directive.page import="com.agrologic.app.model.Controller"/>
-<jsp:directive.page import="com.agrologic.app.model.Program"/>
-<jsp:directive.page import="com.agrologic.app.web.CellinkState"/>
+<%@ include file="language.jsp" %>
+<%@ page import="com.agrologic.app.model.Cellink" %>
+<%@ page import="com.agrologic.app.model.Controller" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    User editUser = (User) request.getSession().getAttribute("edituser");
-    Long userId = Long.parseLong(request.getParameter("userId"));
-    Collection<Cellink> cellinks = editUser.getCellinks();
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    Cellink cellink = findCellinkToEdit(cellinks, cellinkId);
-    Collection<Controller> controllers = cellink.getControllers();
+    Cellink editCellink = (Cellink) request.getAttribute("editCellink");
 %>
-<%! User findUserToEdit(Collection<User> users, Long userId) {
-    for (User u : users) {
-        if (u.getId().equals(userId)) {
-            return u;
-        }
-    }
-    return null;
-}
-%>
-
-<%! Cellink findCellinkToEdit(Collection<Cellink> cellinks, Long cellinkId) {
-    for (Cellink c : cellinks) {
-        if (c.getId().equals(cellinkId)) {
-            return c;
-        }
-    }
-    return null;
-}
-%>
-<%! public User getChoosedUser(Collection<User> users, Long userId) {
-    for (User u : users) {
-        if (u.getId().equals(userId)) {
-            return u;
-        }
-    }
-    return null;
-}
-%>
-
-<%! public Cellink getChoosedCellink(Collection<Cellink> cellinks, Long cellinkId) {
-    for (Cellink c : cellinks) {
-        if (c.getId().equals(cellinkId)) {
-            return c;
-        }
-    }
-    return null;
-}
-%>
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html dir="<%=(String)request.getSession().getAttribute("dir")%>" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=session.getAttribute("label.cellink.setting.title")%>
     </title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="shortcut icon" href="img/favicon5.ico" title="AgroLogic Tm."/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <script type="text/javascript" language="javascript" src="js/general.js"></script>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+   <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function addController(userId, cellinkId) {
-            window.document.location.replace("./add-controller.jsp?userId=" + userId + "&cellinkId=" + cellinkId);
+            redirect("./add-controller.jsp?userId=" + userId + "&cellinkId=" + cellinkId);
             return false;
         }
         function confirmRemove() {
@@ -82,7 +33,7 @@
         }
         function removeController(userId, cellinkId, controllerId) {
             if (confirm("This action will remove controller from database\nDo you want to continue ?") == true) {
-                window.document.location.replace("./removecontroller.html?userId=" + userId + "&cellinkId=" + cellinkId + "&controllerId=" + controllerId)
+                redirect("./removecontroller.html?userId=" + userId + "&cellinkId=" + cellinkId + "&controllerId=" + controllerId)
             }
         }
         function validate() {
@@ -98,12 +49,9 @@
                 document.editForm.submit();
             }
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
         function activate(userId, cellinkId, controllerId, active) {
-            window.document.location.replace("./activatecontroller.html?userId=" + userId
+            redirect("./activatecontroller.html?userId=" + userId
                     + "&cellinkId=" + cellinkId
                     + "&controllerId=" + controllerId
                     + "&active=" + active
@@ -135,7 +83,7 @@
                                     </tr>
                                     <tr>
                                         <td valign="top">
-                                            <img border="0" src="img/cellink1.jpg"/>
+                                            <img border="0" src="resources/images/cellink.jpg"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -145,39 +93,40 @@
                                                 <tbody>
                                                 <tr>
                                                     <td style="font-weight:bold">Name</td>
-                                                    <td bgcolor="#F3F3F3"><%=cellink.getName() %>
+                                                    <td bgcolor="#F3F3F3"><%=editCellink.getName() %>
                                                     </td>
                                                     <td style="font-weight:bold">Password</td>
-                                                    <td bgcolor="#F3F3F3"><%=cellink.getPassword() %>
+                                                    <td bgcolor="#F3F3F3"><%=editCellink.getPassword() %>
                                                     </td>
                                                     <td style="font-weight:bold">User ID</td>
-                                                    <td bgcolor="#F3F3F3"><%=cellink.getUserId() %>
+                                                    <td bgcolor="#F3F3F3"><%=editCellink.getUserId() %>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="font-weight:bold">Keep Alive Time</td>
-                                                    <td bgcolor="#F3F3F3"><%=cellink.getTime() %>
+                                                    <td bgcolor="#F3F3F3"><%=editCellink.getTime() %>
                                                     </td>
                                                     <td style="font-weight:bold">IP and Port</td>
-                                                    <td bgcolor="#F3F3F3"><%=cellink.getIp() %>
-                                                        : <%=cellink.getPort() %>
+                                                    <td bgcolor="#F3F3F3"><%=editCellink.getIp() %>
+                                                        : <%=editCellink.getPort() %>
                                                     </td>
                                                     <td style="font-weight:bold">SIM Number</td>
                                                     <td bgcolor="#F3F3F3"><input type="text" name="simnumber"
-                                                                                 value=" <%=cellink.getSimNumber() %>"/>
+                                                                                 value=" <%=editCellink.getSimNumber() %>"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="font-weight:bold">Version</td>
-                                                    <td bgcolor="#F3F3F3"><%=cellink.getVersion() %>
+                                                    <td bgcolor="#F3F3F3"><%=editCellink.getVersion() %>
                                                     </td>
                                                     <td style="font-weight:bold">Type</td>
-                                                    <td bgcolor="#F3F3F3"><%=cellink.getType() %>
+                                                    <td bgcolor="#F3F3F3"><%=editCellink.getType() %>
                                                     </td>
                                                     <td style="font-weight:bold">State</td>
                                                     <td align="center"
-                                                        bgcolor="<%=CellinkState.getCellinkStateBGColor(cellink.getState()) %>"
-                                                        style="font-weight: bold;color:<%=CellinkState.getCellinkStateColor(cellink.getState()) %>"><%=cellink.getCellinkState()%>
+                                                    <%--bgcolor="<%=CellinkState.getCellinkStateBGColor(editCellink.getState()) %>"--%>
+                                                    <%--style="font-weight: bold;color:<%=CellinkState.getCellinkStateColor(editCellink.getState()) %>"--%>
+                                                            ><%=editCellink.getCellinkState()%>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -186,7 +135,7 @@
                                     </tr>
                                     <tr>
                                         <td align="center" colspan="2">
-                                            <%@include file="messages.jsp" %>
+                                            <jsp:include page="messages.jsp"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -198,15 +147,15 @@
                                         <td width="100%">
                                             <input class="button" type="button"
                                                    value="<%=session.getAttribute("button.add.controller")%>"
-                                                   onclick="addController(<%=editUser.getId() %>,<%=cellink.getId()%>);"/>
+                                                   onclick="addController(<%=editCellink.getUserId() %> , <%=editCellink.getId()%>);"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td width="100%">
-                                            <b><%=controllers.size()%>
+                                            <b><%=editCellink.getControllers().size()%>
                                             </b>&nbsp;<%=session.getAttribute("label.records")%>
                                             <table class="table-list" border=1
-                                                   style="behavior:url(tablehl.htc) url(sort.htc);">
+                                                   >
                                                 <thead>
                                                 <tr>
                                                     <th align="center"
@@ -231,7 +180,7 @@
                                                 </thead>
                                                 <tbody>
                                                 <% int rowCount = 0;%>
-                                                <%for (Controller controller : controllers) {%>
+                                                <%for (Controller controller : editCellink.getControllers()) {%>
                                                 <% if ((rowCount % 2) == 0) {%>
                                                 <tr class="odd" onMouseOver="changeOdd(this);"
                                                     onmouseout="changeOdd(this)">
@@ -240,7 +189,7 @@
                                                     onmouseout="changeEven(this)">
                                                     <%}%>
                                                     <td align="center"><a
-                                                            href="./editcontrollerrequest.html?userId=<%=editUser.getId() %>&cellinkId=<%=controller.getCellinkId() %>&controllerId=<%=controller.getId()%>"><%=controller.getTitle()%>
+                                                            href="./editcontrollerrequest.html?userId=<%=editCellink.getUserId() %>&cellinkId=<%=controller.getCellinkId() %>&controllerId=<%=controller.getId()%>"><%=controller.getTitle()%>
                                                     </a></td>
                                                     <td align="center"><%=controller.getName()%>
                                                     </td>
@@ -249,33 +198,33 @@
                                                     <td align="center">
                                                         <%if (user.getRole() != UserRole.USER) {%>
                                                         <a href="./all-screens.html?programId=<%=controller.getProgramId() %>">
-                                                            <%=((Program) controller.getProgram()).getName() %>
+                                                            <%=controller.getProgram().getName() %>
                                                         </a>
                                                         <%} else {%>
-                                                        <%=((Program) controller.getProgram()).getName() %>
+                                                        <%=controller.getProgram().getName() %>
                                                         <%}%>
                                                     </td>
                                                     <td align="center">
                                                         <%if (controller.isActive()) {%>
                                                         <input type="checkbox" name="Nactive" id="Nactive" checked
-                                                               onclick="activate(<%=userId%>, <%=cellinkId%>, <%=controller.getId() %>, 'OFF')"/>
+                                                               onclick="activate(<%=editCellink.getUserId()%>, <%=cellinkId%>, <%=controller.getId() %>, 'OFF')"/>
                                                         <%} else {%>
                                                         <input type="checkbox" name="Nactive" id="Nactive"
-                                                               onclick="activate(<%=userId%>, <%=cellinkId%>, <%=controller.getId() %>, 'ON')"/>
+                                                               onclick="activate(<%=editCellink.getUserId()%>, <%=cellinkId%>, <%=controller.getId() %>, 'ON')"/>
                                                         <%}%>
                                                     </td>
                                                     <td align="center">
-                                                        <img src="img/edit-9.png" style="cursor: pointer" border="0"
+                                                        <img src="resources/images/edit.gif" style="cursor: pointer" border="0"
                                                              hspace="5"/>
-                                                        <a href="./editcontrollerrequest.html?userId=<%=editUser.getId() %>&cellinkId=<%=controller.getCellinkId() %>&controllerId=<%=controller.getId()%>">
+                                                        <a href="./editcontrollerrequest.html?userId=<%=editCellink.getUserId() %>&cellinkId=<%=controller.getCellinkId() %>&controllerId=<%=controller.getId()%>">
                                                             <%=session.getAttribute("button.edit")%>
                                                         </a>
                                                     </td>
                                                     <% if (user.getRole() != UserRole.USER) {%>
                                                     <td align="center">
-                                                        <img src="img/close.png" style="cursor: pointer" border="0"
+                                                        <img src="resources/images/close.png" style="cursor: pointer" border="0"
                                                              hspace="5"/>
-                                                        <a href="javascript:removeController('<%=editUser.getId()%>','<%=cellinkId%>','<%=controller.getId()%>');">
+                                                        <a href="javascript:removeController('<%=editCellink.getUserId()%>','<%=cellinkId%>','<%=controller.getId()%>');">
                                                             <%=session.getAttribute("button.delete")%>
                                                         </a>
                                                     </td>
@@ -291,13 +240,13 @@
                                         <td>
                                             <%if (user.getRole() == UserRole.USER) {%>
                                             <button name="btnCancel" type="button"
-                                                    onclick='return back("./my-farms.html?userId=<%=editUser.getId() %>");'>
+                                                    onclick='return back("./my-farms.html?editCellink.getUserId()=<%=editCellink.getUserId() %>");'>
                                                 <%=session.getAttribute("button.cancel") %>
                                             </button>
                                             <%} else {%>
                                             <button name="btnCancel" type="button"
-                                                    onclick='return back("./overview.html?userId=<%=editUser.getId() %>");'>
-                                                <%=session.getAttribute("button.cancel") %>
+                                                    onclick='return back("./overview.html?editCellink.getUserId()=<%=editCellink.getUserId() %>");'>
+                                                <%=session.getAttribute("button.back") %>
                                             </button>
                                             <%}%>
                                         </td>

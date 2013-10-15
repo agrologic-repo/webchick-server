@@ -1,10 +1,11 @@
-<%@ page import="com.agrologic.app.model.Language" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
+<%@ page import="com.agrologic.app.model.Language" %>
 <%@ page import="com.agrologic.app.model.SystemState" %>
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="java.util.Collection" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
@@ -13,10 +14,10 @@
         response.sendRedirect("./index.htm");
         return;
     }
-    Collection<Language> languages = (Collection<Language>) request.getSession().getAttribute("languages");
-    Collection<SystemState> systemStateNames = (Collection<SystemState>) request.getSession().getAttribute("systemstateNames");
+    Collection<Language> languages = (Collection<Language>) request.getAttribute("languages");
+    Collection<SystemState> systemStateNames = (Collection<SystemState>) request.getAttribute("systemstateNames");
 
-    String translateLangStr = (String) request.getParameter("translateLang");
+    String translateLangStr = request.getParameter("translateLang");
     if (translateLangStr == null) {
         translateLangStr = "1";
     }
@@ -24,15 +25,14 @@
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>System State Collection</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <script type="text/javascript" src="js/fglobal.js"></script>
-    <script type="text/javascript" src="js/ftabs.js"></script>
-    <script type="text/javascript" src="js/util.js"></script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/javascript/ftabs.js">;</script>
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function save() {
             var datas = document.addForm.dataid;
@@ -54,13 +54,9 @@
             }
             document.getElementById("datamap").value = dataMap;
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
         function filterLanguages() {
             var langId = document.formSystemStates.Lang_Filter.value;
-            window.document.location.replace("./all-systemstates.html?translateLang=" + langId);
+            redirect("./all-systemstates.html?translateLang=" + langId);
             return false;
         }
     </script>
@@ -80,7 +76,7 @@
         </tr>
         <tr>
             <td align="center" colspan="2">
-                <%@include file="messages.jsp" %>
+                <jsp:include page="messages.jsp"/>
             </td>
         </tr>
         <tr>
@@ -100,7 +96,7 @@
                 <form id="formSystemStates" name="formSystemStates">
                     <div style="height:420px; overflow: auto;">
                         <table class="table-list" border="1" cellpadding="1" cellspacing="0"
-                               style="behavior:url(tablehl.htc) url(sort.htc);">
+                               >
                             <input type="hidden" id="programId" name="translateLang" value="<%=translateLang %>">
                             <thead>
                             <tr>
@@ -134,12 +130,12 @@
                                                 </span>
                                 </td>
                                 <td>
-                                    <img src="img/edit.gif">
+                                    <img src="resources/images/edit.gif">
                                     <a href="#"
                                        onclick="window.open('edit-systemstate.jsp?translateLang=<%=translateLang%>&systemstateName=<%=systemStateName.getText()%>&systemstateId=<%=systemStateName.getId()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');">Edit</a>
                                 </td>
                                 <td>
-                                    <img src="img/del.gif">
+                                    <img src="resources/images/delete.gif">
                                     <a href="./remove-systemstate.html?translateLang=<%=translateLang %>&systemstateId=<%=systemStateName.getId() %>">Remove</a>
                                 </td>
                             </tr>

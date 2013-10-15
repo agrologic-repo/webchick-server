@@ -1,9 +1,7 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.Cellink" %>
-
-<jsp:directive.page import="com.agrologic.app.model.User"/>
+<%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
 
@@ -11,14 +9,14 @@
         response.sendRedirect("./index.htm");
         return;
     }
-    Cellink cellink = (Cellink) request.getSession().getAttribute("cellink");
+    Cellink cellink = (Cellink) request.getAttribute("cellink");
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <HTML>
 <HEAD>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <LINK REL="SHORTCUT ICON" HREF="img/favicon5.ico" TITLE="AgroLogic Tm.">
+
 
     <TITLE> Remote control menu </TITLE>
     <style type="text/css">
@@ -105,7 +103,7 @@
 <table width="165px" border="0" cellpadding="0" cellspacing="0">
     <tr class=leftlinkh>
         <td class=lefttd valign="middle" colspan="2">
-            <a href="./all-users.html" target="_top" class="leftlink"><img src="img/home.gif" alt="Exit"
+            <a href="./all-users.html" target="_top" class="leftlink"><img src="resources/images/home.gif" alt="Exit"
                                                                            style="border:0px;height:16px;width:16px;">&nbsp;&nbsp;&nbsp;&nbsp;Home</a>
         </td>
     </tr>
@@ -113,26 +111,26 @@
     <tr class=leftlinkh>
         <td class=lefttd valign="middle" colspan="2">
             <a href="./rmctrl-main-screen-ajax.jsp?userId=<%=user.getId()%>&cellinkId=<%=cellink.getId()%>&screenId=1"
-               target="body" class="leftlink" colspan="2"><img src="img/screen1.gif" alt="Screens" style="border:0px;">&nbsp;&nbsp;&nbsp;&nbsp;Screens
+               target="body" class="leftlink" colspan="2"><img src="resources/images/screen1.gif" alt="Screens" style="border:0px;">&nbsp;&nbsp;&nbsp;&nbsp;Screens
             </a>
         </td>
     </tr>
     <tr class=leftlinkh>
         <td class=lefttd valign="middle" colspan="2">
             <a href="rmctrl-underconstruction.jsp?userId=<%=user.getId()%>&cellinkId=<%=cellink.getId()%>" target="body"
-               class="leftlink" colspan="2"><img src="img/support.png" alt="Help"
+               class="leftlink" colspan="2"><img src="resources/images/support.png" alt="Help"
                                                  style="border:0px;height:16px;width:16px;">&nbsp;&nbsp;&nbsp;&nbsp;Help</a>
         </td>
     </tr>
     <tr>
-        <td><img src="img/arrowright.gif" style="cursor: pointer; display: none" onclick="return setFrameWidth();"
+        <td><img src="resources/images/arrowright.gif" style="cursor: pointer; display: none" onclick="return setFrameWidth();"
                  id="arrowmax" title="Standard Screen Format"></td>
-        <td align=right><img src="img/arrowleft.gif" style="cursor: pointer" onclick="return setFrameWidth();"
+        <td align=right><img src="resources/images/arrowleft.gif" style="cursor: pointer" onclick="return setFrameWidth();"
                              title="Wide Screen Format"></td>
     </tr>
     <tr>
         <td valign=bottom style="padding-left: 30px; padding-bottom: 50px">
-            <img width="85px" height="30px" src="img/logolmi.gif" border="0" alt="Agrologic Remote Control Free"
+            <img width="85px" height="30px" src="resources/images/logolmi.gif" border="0" alt="Agrologic Remote Control Free"
                  style="margin-bottom: 10px">
         </td>
     </tr>

@@ -1,5 +1,5 @@
 <jsp:useBean id="task" scope="session" class="com.agrologic.app.web.TaskBean"/>
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 
 <head>
     <title>JSP Progress Bar</title>

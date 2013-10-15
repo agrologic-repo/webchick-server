@@ -1,11 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.Cellink" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
-<jsp:directive.page import="java.util.Collection"/>
 
 <% User user = (User) request.getSession().getAttribute("user");
 
@@ -13,29 +13,12 @@
         response.sendRedirect("./index.htm");
         return;
     }
-    String message = (String) request.getSession().getAttribute("message");
-    request.getSession().setAttribute("message", null);
 
-    Boolean errorFlag = (Boolean) request.getSession().getAttribute("error");
-    request.getSession().setAttribute("error", null);
-
-    User editUser = (User) request.getSession().getAttribute("edituser");
-    Long userId = Long.parseLong(request.getParameter("userId"));
+    User editUser = (User) request.getAttribute("edituser");
     Collection<Cellink> cellinks = editUser.getCellinks();
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Cellink cellink = findCellinkToEdit(cellinks, cellinkId);
 %>
-
-<%! User findUserToEdit(Collection<User> users, Long userId) {
-    for (User u : users) {
-        if (u.getId().equals(userId)) {
-            return u;
-        }
-    }
-    return null;
-}
-%>
-
 <%! Cellink findCellinkToEdit(Collection<Cellink> cellinks, Long cellinkId) {
     for (Cellink c : cellinks) {
         if (c.getId().equals(cellinkId)) {
@@ -46,14 +29,15 @@
 }
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Edit Cellink</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="shortcut icon" href="img/favicon5.ico" title="AgroLogic Tm."/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
+
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function reset() {
             document.getElementById("msgCellinkName").innerHTML = "";
@@ -80,10 +64,7 @@
                 return false;
             }
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
     </script>
 </head>
 <body>

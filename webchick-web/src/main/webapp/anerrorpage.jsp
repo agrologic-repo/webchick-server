@@ -1,11 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
+
 
 <%@ page isErrorPage="true" %>
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Error</title>
-    <LINK REL="SHORTCUT ICON" HREF="img/favicon5.ico" TITLE="AgroLogic Tm.">
+
 </head>
 <body>
 

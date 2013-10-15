@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
@@ -11,16 +12,12 @@
     }
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html dir="<%=(String) request.getSession().getAttribute("dir")%>">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("database.page.title")%>
-    </title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script language="javascript" src="js/general.js"></script>
-    <link rel="shortcut icon" href="img/favicon5.ico"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
+    <title><%=session.getAttribute("database.page.title")%></title>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
 </head>
 <body>
 <div id="header">
@@ -43,7 +40,7 @@
         <tr>
             <td colspan="9">
                 <a href="./dumpdatabase" onclick="window.location.href.replace('./dumpdatabase')">
-                    <img src="img/database.png" style="cursor: pointer" hspace="5"
+                    <img src="resources/images/database.png" style="cursor: pointer" hspace="5"
                          border="0"/><%=session.getAttribute("button.database")%>
                 </a>
             </td>
@@ -54,13 +51,13 @@
         </tr>
 
 
-        <tr>
-            <td colspan="9">
-                <button id="btnBack" name="btnBack"
-                        onclick='return back("./main.jsp");'><%=session.getAttribute("button.back")%>
-                </button>
-            </td>
-        </tr>
+        <%--<tr>--%>
+            <%--<td colspan="9">--%>
+                <%--<button id="btnBack" name="btnBack"--%>
+                        <%--onclick='return back("./main.jsp");'><%=session.getAttribute("button.back")%>--%>
+                <%--</button>--%>
+            <%--</td>--%>
+        <%--</tr>--%>
     </table>
 </div>
 

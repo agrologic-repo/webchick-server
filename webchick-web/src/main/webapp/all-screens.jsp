@@ -1,13 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page errorPage="anerrorpage.jsp" %>
 <%@ include file="disableCaching.jsp" %>
+<%@ page errorPage="anerrorpage.jsp" %>
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.Language" %>
-
-<jsp:directive.page import="com.agrologic.app.model.Program"/>
-<jsp:directive.page import="com.agrologic.app.model.Screen"/>
-<jsp:directive.page import="java.util.Collection"/>
+<%@ page import="com.agrologic.app.model.Program" %>
+<%@ page import="com.agrologic.app.model.Screen" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
 
@@ -16,33 +15,32 @@
         return;
     }
 
-    Program program = (Program) request.getSession().getAttribute("program");
-
+    Program program = (Program) request.getAttribute("program");
     Collection<Screen> screens = program.getScreens();
-    Collection<Language> languages = (Collection<Language>) request.getSession().getAttribute("languages");
+    Collection<Language> languages = (Collection<Language>) request.getAttribute("languages");
 
-    String ptl = (String) request.getParameter("translateLang");
+    String ptl = request.getParameter("translateLang");
     if (ptl == null) {
         ptl = "1";
     }
     Long translateLang = Long.parseLong(ptl);
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Screen Manager - Screens</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css">
-    <script type="text/javascript" src="js/util.js"></script>
-    <script type="text/javascript" src="js/general.js"></script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+
     <script language="Javascript">
         /**
          * Add new screen .
          */
         function addScreen() {
-            window.document.location.replace("./addscreen.html");
+            redirect("./addscreen.html");
             return false;
         }
         /**
@@ -50,7 +48,7 @@
          */
         function removeScreen(programId, screenId) {
             if (confirm("This action will remove screen from database.\nDo you want to continue?") == true) {
-                window.document.location.replace("./removescreen.html?programId=" + programId + "&screenId=" + screenId);
+                redirect("./removescreen.html?programId=" + programId + "&screenId=" + screenId);
             }
         }
 
@@ -61,7 +59,7 @@
          */
         function filterProgramsScreens() {
             var programId = document.formFilterPrograms.Program_Filter.value;
-            window.document.location.replace("./all-screens.html?programId=" + programId);
+            redirect("./all-screens.html?programId=" + programId);
             return false;
         }
         /**
@@ -100,7 +98,7 @@
                     posScreenMap.put(screenId, pos);
                 }
             }
-            window.document.location.replace("./save-screens.html?programId=" + programId + "&showScreenMap=" + showScreenMap + "&posScreenMap=" + posScreenMap);
+            redirect("./save-screens.html?programId=" + programId + "&showScreenMap=" + showScreenMap + "&posScreenMap=" + posScreenMap);
         }
 
         function uncheckUnusedData(programId) {
@@ -108,7 +106,7 @@
                 return;
             }
             var cid = controllerId();
-            window.document.location.replace("./uncheck-unused-data.html?programId="
+            redirect("./uncheck-unused-data.html?programId="
                     + programId + "&controllerId=" + cid);
         }
 
@@ -154,16 +152,9 @@
         /**
          *
          */
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
-        /**
-         *
-         */
         function filterLanguages(programId) {
             var langId = document.formScreen.Lang_Filter.value;
-            window.document.location.replace("./all-screens.html?programId=" + programId + "&translateLang=" + langId);
+            redirect("./all-screens.html?programId=" + programId + "&translateLang=" + langId);
             return false;
         }
         /**
@@ -194,46 +185,45 @@
                 </font></h3>
             </td>
             <td align="center">
-                <%@include file="messages.jsp" %>
+                <jsp:include page="messages.jsp"/>
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                <button style="float:left" id="btnBack" name="btnBack"
-                        onclick='return back("./all-programs.html");'><%=session.getAttribute("button.back")%>
+                <button style="float:left"
+                        onclick='redirect("./all-programs.html");'><%=session.getAttribute("button.back")%>
                 </button>
-                <button id="btnSave" name="btnSave"
-                        onclick='return save(<%=program.getId()%>);'><%=session.getAttribute("button.save")%>
+                <button onclick='return save(<%=program.getId()%>);'><%=session.getAttribute("button.save")%>
                 </button>
             </td>
         </tr>
         <tr>
             <td colspan="2">
                 <button id="Preview" name="Preview" type="button"
-                        onclick="window.document.location.replace('./screen-preview.html?programId=<%=program.getId()%>');">
-                    <img src="img/preview.png" style="cursor: pointer" hspace="5"
+                        onclick="redirect('./screen-preview.html?programId=<%=program.getId()%>');">
+                    <img src="resources/images/preview.png" style="cursor: pointer" hspace="5"
                          border="0"/><%=session.getAttribute("button.preview")%>
                 </button>
                 <button id="Add" name="Add" type="button"
-                        onclick="window.document.location.replace('./add-screen.html?programId=<%=program.getId()%>');">
-                    <img src="img/screen.gif" style="cursor: pointer" hspace="5"
+                        onclick="redirect('./add-screen.html?programId=<%=program.getId()%>');">
+                    <img src="resources/images/screen.gif" style="cursor: pointer" hspace="5"
                          border="0"/><%=session.getAttribute("button.add.screen")%>
                 </button>
                 <button id="Relays" name="Relays" type="button"
-                        onclick="window.document.location.replace('./program-relays.html?programId=<%=program.getId()%>&translateLang=<%=translateLang%>');">
-                    <img src="img/relay.png" style="cursor: pointer" hspace="5" border="0"/>Relays
+                        onclick="redirect('./program-relays.html?programId=<%=program.getId()%>&translateLang=<%=translateLang%>');">
+                    <img src="resources/images/relay.png" style="cursor: pointer" hspace="5" border="0"/>Relays
                 </button>
                 <button id="Alarms" name="Alarms" type="button"
-                        onclick="window.document.location.replace('./program-alarms.html?programId=<%=program.getId()%>');">
-                    <img src="img/alarm1.gif" style="cursor: pointer" hspace="5" border="0"/>Alarms
+                        onclick="redirect('./program-alarms.html?programId=<%=program.getId()%>');">
+                    <img src="resources/images/alarm1.gif" style="cursor: pointer" hspace="5" border="0"/>Alarms
                 </button>
                 <button id="SystemStates" name="System States" type="button"
-                        onclick="window.document.location.replace('./program-systemstates.html?programId=<%=program.getId()%>');">
-                    <img src="img/system1.png" style="cursor: pointer" hspace="5" border="0"/>System States
+                        onclick="redirect('./program-systemstates.html?programId=<%=program.getId()%>');">
+                    <img src="resources/images/system.gif" style="cursor: pointer" hspace="5" border="0"/>System States
                 </button>
                 <button id="btnUnchickUnusedData" name="btnUnchickUnusedData"
                         onclick="return uncheckUnusedData(<%=program.getId()%>);">
-                    <img src="img/check.png" style="cursor: pointer" hspace="5" border="0"/>Clear Unused Data
+                    <img src="resources/images/check.png" style="cursor: pointer" hspace="5" border="0"/>Clear Unused Data
                 </button>
             </td>
         </tr>
@@ -241,7 +231,7 @@
             <td colspan="2">
                 <%=screens.size()%>&nbsp;</b><%=session.getAttribute("label.records")%>
                 <form id="formScreen" name="formScreen">
-                    <table class="table-list" border=1 style="behavior:url(tablehl.htc) url(sort.htc);">
+                    <table class="table-list" border=1 >
                         <thead>
                         <tr>
                             <th class="centerHeader" width="150px">Title</th>
@@ -282,16 +272,16 @@
                                 <input type="checkbox" name="list" <%=screen.isChecked()%> value="<%=screen.getId()%>"
                                        onclick="check(<%=screen.getId()%>);"/></td>
                             <td class="centerCell">
-                                <input type="text" name="position" value="<%=screen.getPosition()%>" size="5"></input>
+                                <input type="text" name="position" value="<%=screen.getPosition()%>" size="5"/>
                             </td>
                             <td class="centerCell">
-                                <img src="img/edit.gif" style="cursor: pointer" hspace="5" border="0" title='Edit'/>
-                                <a href="./edit-screen.jsp?programId=<%=program.getId()%>&screenId=<%=screen.getId()%>">
+                                <img src="resources/images/edit.gif" style="cursor: pointer" hspace="5" border="0" title='Edit'/>
+                                <a href="./editscreenrequest.html?programId=<%=program.getId()%>&screenId=<%=screen.getId()%>">
                                     <%=session.getAttribute("button.edit")%>
                                 </a>
                             </td>
                             <td class="centerCell">
-                                <img src="img/close.png" title="Remove" hspace="5" style="cursor: pointer" border="0"/>
+                                <img src="resources/images/close.png" title="Remove" hspace="5" style="cursor: pointer" border="0"/>
                                 <a href="javascript:removeScreen(<%=screen.getProgramId()%>,<%=screen.getId()%>);">
                                     <%=session.getAttribute("button.delete")%>
                                 </a>

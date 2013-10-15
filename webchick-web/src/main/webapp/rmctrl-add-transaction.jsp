@@ -1,3 +1,8 @@
+<%@ page import="com.agrologic.app.dao.DaoType" %>
+<%@ page import="com.agrologic.app.dao.DbImplDecider" %>
+<%@ page import="com.agrologic.app.dao.TransactionDao" %>
+<%@ page import="com.agrologic.app.dao.mysql.impl.TransactionDaoImpl" %>
+<%@ page import="com.agrologic.app.model.Transaction" %>
 <%--
     Document   : rmctrl-add-transaction
     Created on : Apr 20, 2011, 4:36:36 PM
@@ -5,12 +10,7 @@
 --%>
 
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
-
-<jsp:directive.page import="com.agrologic.app.dao.TransactionDao"/>
-<jsp:directive.page import="com.agrologic.app.dao.impl.TransactionDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.Transaction"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
@@ -19,15 +19,14 @@
     TransactionDao transactDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDaoImpl.class);
     Collection<Transaction> transactList = transactDao.getAll();
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="css/calendar.css"/>
-    <script type="text/javascript" src="js/calendar.js"></script>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function validate() {
             var name = document.getElementById('name').value;
@@ -111,7 +110,7 @@
                 <td><input type="text" id="expenses" name="expenses"></td>
                 <td><input type="text" id="revenues" name="revenues"></td>
                 <td align="center">
-                    <img src="img/plus1.gif" border="0" hspace="4"><a href="javascript:validate();">Add</a>
+                    <img src="resources/images/plus1.gif" border="0" hspace="4"><a href="javascript:validate();">Add</a>
                 </td>
             </tr>
             <% for (Transaction t : transactList) {%>
@@ -122,7 +121,7 @@
                 </td>
                 <td><%=t.getRevenues() %>
                 </td>
-                <td align="center"><img src="img/close.png" border="0" hspace="4">
+                <td align="center"><img src="resources/images/close.png" border="0" hspace="4">
                     <a href="javascript:window.location='./remove-transact.html?cellinkId=<%=cellinkId%>&controllerId=<%=controllerId%>&flockId=<%=flockId%>&transactId=<%=t.getId()%>';">Remove</a>
                 </td>
             </tr>

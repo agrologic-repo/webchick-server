@@ -1,31 +1,31 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.Cellink" %>
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="com.agrologic.app.web.CellinkState" %>
 <%@ page import="java.util.Collection" %>
 
-<% User user = (User) request.getSession().getAttribute("user");
+<%  User user = (User) request.getSession().getAttribute("user");
 
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
 
-    User editUser = (User) request.getSession().getAttribute("edituser");
+    User editUser = (User) request.getAttribute("edituser");
     Collection<Cellink> cellinks = editUser.getCellinks();
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html dir="<%=(String) request.getSession().getAttribute("dir")%>" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>User Info</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="shortcut icon" href="img/favicon5.ico" title="AgroLogic"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <style type="text/css">
         tr.unselected {
             background: white;
@@ -37,37 +37,36 @@
             color: white;
         }
     </style>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+
     <script type="text/javascript">
         function confrimRemove() {
             return confirm("This action will remove cellink from database\n Do you want to continue?");
         }
         function addCellink(userId) {
-            window.document.location.replace("./add-cellink.jsp?userId=" + userId);
+            redirect("./add-cellink.jsp?userId=" + userId);
             return false;
         }
         function removeCellink(userId, cellinkId) {
             if (confirm("This action will remove cellink from database\n Do you want to continue ?") == true) {
-                window.document.location.replace("./removecellink.html?userId=" + userId + "&cellinkId=" + cellinkId);
+                redirect("./removecellink.html?userId=" + userId + "&cellinkId=" + cellinkId);
             }
         }
         function filterCellinks() {
             var status = document.formFilterCellinks.Status_Filter.selectedIndex
-            window.document.location.replace("./all-cellinks.html?userId=<%=editUser.getId()%>&status=" + status);
+            redirect("./all-cellinks.html?userId=<%=editUser.getId()%>&status=" + status);
             return false;
         }
         function filterUsers() {
             var userId = document.formFilterUsers.User_Filter.value;
             if (userId == 0) {
-                window.document.location.replace("./all-cellinks.html");
+                redirect("./all-cellinks.html");
             } else {
-                window.document.location.replace("./all-cellinks.html?userId=" + userId);
+                redirect("./all-cellinks.html?userId=" + userId);
             }
             return false;
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
     </script>
 </head>
 <body>
@@ -88,12 +87,12 @@
             </tr>
             <tr>
                 <td valign="top">
-                    <img src="img/user1.png"/>
+                    <img src="resources/images/user1.png"/>
                 </td>
             </tr>
             <tr>
                 <td valign="top">
-                    <a href="./edit-user.jsp?userId=<%=editUser.getId()%>">Edit user</a>
+                    <a href="./edituserrequest.html?userId=<%=editUser.getId()%>">Edit user</a>
                 </td>
             </tr>
             <tr>
@@ -161,8 +160,7 @@
                     </p>
 
                     <form id="formFarms" name="formFarms">
-                        <table class="table-list" border=1 style="behavior:url(tablehl.htc) url(sort.htc);"
-                               width="100%">
+                        <table class="table-list" border=1 width="100%">
                             <%if (cellinks.size() != 0) {%>
                             <thead>
                             <tr>
@@ -191,11 +189,11 @@
                                 <td align="center"><%=cellink.getId()%>
                                 </td>
                                 <td align="center" style="padding-left:10px;"><a
-                                        href='./cellinkinfo.html?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>'><%=cellink.getName()%>
+                                        href='./cellink-setting.html?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>'><%=cellink.getName()%>
                                 </td>
                                 <%if (user.getRole() == UserRole.ADMIN) {%>
                                 <td align="center" style="padding-left:10px;"
-                                    onclick="window.document.location='./cellinkinfo.html?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>'"><%=cellink.getPassword()%>
+                                    onclick="redirect('./cellink-setting.html?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>')"><%=cellink.getPassword()%>
                                 </td>
                                 <%}%>
                                 <td align="center" style="padding-left:10px;"><%=cellink.getSimNumber()%>
@@ -208,7 +206,7 @@
                                 <td align="center"
                                     bgcolor="<%=CellinkState.getCellinkStateBGColor(cellink.getState())%>"
                                     style="cursor: pointer" title="<%=session.getAttribute("button.connect.cellink")%>"
-                                    onclick="window.document.location='./rmctrl-main-screen-ajax.jsp?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getName() %>&screenId=1&doResetTimeout=true'">
+                                    onclick="redirect('./rmctrl-main-screen-ajax.jsp?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getName() %>&screenId=1&doResetTimeout=true')">
                                     <%=session.getAttribute("cellink.state." + CellinkState.intToState(CellinkState.STATE_ONLINE))%>
                                 </td>
                                 <%} else {%>
@@ -219,26 +217,26 @@
                                 <%}%>
                                 <td align="center" valign="middle">
                                     <a href="./rmctrl-main-screen-ajax.jsp?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getName() %>&screenId=1&doResetTimeout=true"%>
-                                    <img src="img/display.png" style="cursor: pointer" border="0" hspace="5"/>
+                                    <img src="resources/images/display.png" style="cursor: pointer" border="0" hspace="5"/>
                                     <%=session.getAttribute("button.connect")%>
                                     </a>
 
                                 </td>
                                 <td align="center" valign="middle">
                                     <a href="./cellink-setting.html?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>">
-                                        <img alt="" src="img/info.gif" style="cursor: pointer" border="0" hspace="5"/>
+                                        <img src="resources/images/info.gif" style="cursor: pointer" border="0" hspace="5"/>
                                         <%=session.getAttribute("button.info")%>
                                     </a>
                                 </td>
                                 <td align="center" valign="middle">
                                     <a href="./editcellinkrequest.html?userId=<%= editUser.getId()%>&cellinkId=<%=cellink.getId()%>">
-                                        <img src="img/edit.gif" style="cursor: pointer" border="0" hspace="5"/>
+                                        <img src="resources/images/edit.gif" style="cursor: pointer" border="0" hspace="5"/>
                                         <%=session.getAttribute("button.edit")%>
                                     </a>
                                 </td>
                                 <td align="center" valign="middle">
                                     <a href="javascript:removeCellink(<%=editUser.getId()%>,<%=cellink.getId()%>);">
-                                        <img src="img/close.png" style="cursor: pointer" border="0" hspace="5"/>
+                                        <img src="resources/images/close.png" style="cursor: pointer" border="0" hspace="5"/>
                                         <%=session.getAttribute("button.delete")%>
                                     </a>
                                 </td>
@@ -252,13 +250,14 @@
             </tr>
             <tr>
                 <td>
-                    <%if (userRole == UserRole.ADMIN) {%>
-                    <button id="btnBack" name="btnBack"
-                            onclick='return back("./all-users.html");'><%=session.getAttribute("button.back")%>
+                    <%if (user.getRole() == UserRole.USER) {%>
+                    <button id="btnCancel" name="btnCancel"
+                            onclick='return back("./my-farms.html?userId=<%=user.getId() %>");'>
+                        <%=session.getAttribute("button.back") %>
                     </button>
                     <%} else {%>
-                    <button id="btnBack" name="btnBack"
-                            onclick='return back("./edit-user.jsp?userId=<%=user.getId()%>");'><%=session.getAttribute("button.back")%>
+                    <button id="btnCancel" name="btnCancel" onclick='return back("./overview.html?userId=<%=user.getId() %>");'>
+                        <%=session.getAttribute("button.back") %>
                     </button>
                     <%}%>
                 </td>

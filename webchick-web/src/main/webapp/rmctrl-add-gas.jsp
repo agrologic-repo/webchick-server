@@ -1,15 +1,16 @@
+<%@ page import="com.agrologic.app.dao.DaoType" %>
+<%@ page import="com.agrologic.app.dao.DbImplDecider" %>
+<%@ page import="com.agrologic.app.dao.GasDao" %>
+<%@ page import="com.agrologic.app.dao.mysql.impl.GasDaoImpl" %>
+<%@ page import="com.agrologic.app.model.Gas" %>
 <%--
     Document   : rmctrl-add-gas
     Created on : Apr 5, 2011, 6:20:31 PM
     Author     : JanL
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
-<%@ include file="language.jsp" %>
 
-<jsp:directive.page import="com.agrologic.app.dao.GasDao"/>
-<jsp:directive.page import="com.agrologic.app.dao.impl.GasDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.Gas"/>
+<%@ include file="language.jsp" %>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
@@ -18,14 +19,14 @@
     GasDao gazDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDaoImpl.class);
     Collection<Gas> gazList = gazDao.getAllByFlockId(flockId);
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="css/calendar.css"/>
-    <script type="text/javascript" src="js/calendar.js"></script>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function calcTotalCost(amount, price, total) {
             // calculate cost
@@ -139,7 +140,7 @@
                 <td><input type="text" id="amount" name="amount"
                            onblur="javascript:calcTotalCost('amount', 'price', 'total');"></td>
                 <td><input type="text" id="startDate" name="startDate" size="10" readonly>
-                    <img src="img/calendar.png" border="0" onclick="GetDate('start');"/></td>
+                    <img src="resources/images/calendar.png" border="0" onclick="GetDate('start');"/></td>
                 <td><input type="text" id="price" name="price" size="10"
                            onblur="javascript:calcTotalCost('amount', 'price', 'total');">
                     <select id="currency" name="currency">
@@ -149,7 +150,7 @@
                 </td>
                 <td><input type="text" id="numberAccount" name="numberAccount" value="" size="10"></td>
                 <td><input type="text" id="total" name="total" readonly value="" size="10"></td>
-                <td align="center"><img src="img/plus1.gif" border="0" hspace="4">
+                <td align="center"><img src="resources/images/plus1.gif" border="0" hspace="4">
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
@@ -164,7 +165,7 @@
                 <td><%=gaz.getNumberAccount()%>
                 <td><%=gaz.getTotal()%>
                 </td>
-                <td align="center"><img src="img/close.png" border="0" hspace="4">
+                <td align="center"><img src="resources/images/close.png" border="0" hspace="4">
                     <a href="javascript:window.location='./remove-gaz.html?cellinkId=<%=cellinkId%>&controllerId=<%=controllerId%>&flockId=<%=flockId%>&gazId=<%=gaz.getId()%>';">Remove</a>
                 </td>
             </tr>

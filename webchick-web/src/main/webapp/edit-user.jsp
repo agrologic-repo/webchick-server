@@ -1,47 +1,29 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="java.util.Collection" %>
 
 
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    String message = (String) request.getSession().getAttribute("message");
-    request.getSession().setAttribute("message", null);
 
-    Boolean errorFlag = (Boolean) request.getSession().getAttribute("error");
-    request.getSession().setAttribute("error", null);
-
-    Collection<User> users = (Collection<User>) request.getSession().getAttribute("users");
-    Long userId = Long.parseLong(request.getParameter("userId"));
-    User editUser = findUserToEdit(users, userId);
-    Collection<String> companies = (Collection<String>) request.getSession().getAttribute("companies");
+    User editUser = (User) request.getAttribute("edituser");
+    Collection<String> companies = (Collection<String>) request.getAttribute("companies");
 %>
 
-<%! User findUserToEdit(Collection<User> users, Long userId) {
-    for (User u : users) {
-        if (u.getId().equals(userId)) {
-            return u;
-        }
-    }
-    return null;
-}
-%>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Edit User</title>
-    <link rel="SHORTCUT ICON" HREF="img/favicon5.ico" TITLE="AgroLogic Tm."/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <script type="text/javascript">
         function validateEmail(email) {
             var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
@@ -111,10 +93,7 @@
                 msgOutout.style.color = (msg == "login valid") ? "green" : "red";
             }
         }
-        function back(link) {
-            window.history.back();
-            return false;
-        }
+
         function showNewCompany() {
             var checked = editForm.newCompany.checked;
             if (checked == true) {
@@ -138,17 +117,14 @@
                 <table border=0 cellPadding=1 cellSpacing=1 width="736">
                     <tr>
                         <td>
-                            <h1>Edit user</h1>
-
-                            <h2><%=editUser.getFirstName()%> <%=editUser.getFirstName()%>
-                            </h2>
-                            <img border="0" src="img/user1.png"/>
+                            <h1><%=session.getAttribute("edit.user")%></h1>
+                            <h2><%=editUser.getFirstName()%> <%=editUser.getFirstName()%></h2>
+                            <img border="0" src="resources/images/user1.png"/>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <p style="color:red">Boxes with an asterisk next to them are required</p>
-
                             <form id="editForm" name="editForm" action="./edituser.html" method="post">
                                 <table borderColor=#0000ff cellSpacing=1 cellPadding=1 align=left bgColor=#ffffff
                                        border=0>
@@ -190,22 +166,17 @@
                                             <input type="hidden" name="Nrole" value="<%=editUser.getRole()%>">
                                             <select id="Nrolel" name="Nrolel" class="dropDownList">
                                                 <option value="0"></option>
-                                                <option value="1"><%=session.getAttribute("user.role.admin")%>
-                                                </option>
-                                                <option value="2"><%=session.getAttribute("user.role.regular")%>
-                                                </option>
-                                                <option value="3"><%=session.getAttribute("user.role.advanced")%>
-                                                </option>
+                                                <option value="1"><%=session.getAttribute("user.role.admin")%></option>
+                                                <option value="2"><%=session.getAttribute("user.role.regular")%></option>
+                                                <option value="3"><%=session.getAttribute("user.role.advanced")%></option>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="">Company</td>
                                         <td>
-                                            <div id="existingCompanyDiv" name="existingCompanyDiv"
-                                                 style="display:block;">
-                                                <select id="Ncompanylist" name="Ncompanylist" class="dropDownList"
-                                                        style="width:130px">
+                                            <div id="existingCompanyDiv" name="existingCompanyDiv" style="display:block;">
+                                                <select id="Ncompanylist" name="Ncompanylist" class="dropDownList" style="width:130px">
                                                     <option value=""></option>
                                                     <% for (String c : companies) {%>
                                                     <option value="<%=c%>"><%=c%>
@@ -220,7 +191,7 @@
                                             </div>
                                         </td>
                                         <td><input type="checkbox" id="newCompany" name="newCompany"
-                                                   onclick="showNewCompany()">Add Company</input></td>
+                                                   onclick="showNewCompany()">Add Company </input></td>
                                     </tr>
                                 </table>
                             </form>

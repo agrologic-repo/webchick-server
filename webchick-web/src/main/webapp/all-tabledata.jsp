@@ -1,25 +1,25 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ page import="com.agrologic.app.model.*" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
-<jsp:directive.page import="com.google.common.collect.Lists"/>
+<%@ page import="com.agrologic.app.model.*" %>
+<%@ page import="com.google.common.collect.Lists" %>
 <%@ page import="java.util.Collection" %>
 
-<% User user = (User) request.getSession().getAttribute("user");
-
+<%  User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    Program program = (Program) request.getSession().getAttribute("program");
-    Screen screen = (Screen) request.getSession().getAttribute("screen");
+
+    Program program = (Program) request.getAttribute("program");
+    Screen screen = (Screen) request.getAttribute("screen");
     Collection<Table> tables = screen.getTables();
     long tableId = Long.parseLong(request.getParameter("tableId"));
     long screenId = screen.getId();
     long programId = screen.getProgramId();
-    Collection<Language> languages = (Collection<Language>) request.getSession().getAttribute("languages");
+    Collection<Language> languages = (Collection<Language>) request.getAttribute("languages");
     String ptl = request.getParameter("translateLang");
     if (ptl == null) {
         ptl = "1";
@@ -37,15 +37,15 @@
 }
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>All Table Data</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <script type="text/javascript" src="js/util.js"></script>
-    <script type="text/javascript" src="js/general.js"></script>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function validate() {
             if (document.editForm.Nprogramname.value == "") {
@@ -61,7 +61,7 @@
         }
         function removeData(programId, screenId, tableId, dataId) {
             if (confirm("This action will remove tabledata from database.\n Do you want to continue?") == true) {
-                window.document.location.replace("./removedata.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId + "&dataId=" + dataId);
+                redirect("./removedata.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId + "&dataId=" + dataId);
             }
         }
         function save(programId, screenId, tableId) {
@@ -94,7 +94,7 @@
                     posDataMap.put(dataId, pos);
                 }
             }
-            window.document.location.replace("./save-datalist.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId + "&showDataMap=" + showDataMap + "&posDataMap=" + posDataMap);
+            redirect("./save-datalist.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId + "&showDataMap=" + showDataMap + "&posDataMap=" + posDataMap);
         }
         function checkedAll() {
             var form = document.getElementById('formTable');
@@ -118,13 +118,9 @@
                 }
             }
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
         function filterLanguages(programId, screenId, tableId) {
             var langId = document.formTable.Lang_Filter.value;
-            window.document.location.replace("./all-tabledata.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId + "&translateLang=" + langId);
+            redirect("./all-tabledata.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId + "&translateLang=" + langId);
             return false;
         }
     </script>
@@ -146,7 +142,6 @@
                         if (size > 0) {
                             lastPos = Lists.newArrayList(dataList).get(size - 1).getPosition() + 1;
                         }
-
                     %>
                     <tr>
                         <td>
@@ -164,13 +159,14 @@
                                 </font>;</h3>
                         </td>
                         <td align="center" colspan="3">
-                            <%@include file="messages.jsp" %>
+                            <jsp:include page="messages.jsp"/>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <button id="btnAdd" name="btnAdd"
-                                    onclick="window.open('add-data.jsp?programId=<%=programId%>&screenId=<%=screenId%>&tableId=<%=table.getId()%>&position=<%=lastPos%>','mywindow','status=yes,width=550,height=450,left=350,top=400,screenX=100,screenY=100');">
+                                onclick="window.open('add-data.jsp?programId=<%=programId%>&screenId=<%=screenId%>&tableId=<%=table.getId()%>&position=<%=lastPos%>','mywindow','status=yes,width=550,height=450,left=350,top=400,screenX=100,screenY=100');">
+                                <%--onclick="window.open('autocomplete.html','mywindow','status=yes,width=550,height=450,left=350,top=400,screenX=100,screenY=100');">--%>
                                 <%=session.getAttribute("button.add.data") %>
                             </button>
                             <button id="btnCancel" style="float:left" name="btnCancel"
@@ -187,7 +183,7 @@
                             </p>
 
                             <form id="formTable" name="formTable">
-                                <table class="table-list" border="1" style="behavior:url(tablehl.htc) url(sort.htc);">
+                                <table class="table-list" border="1" >
                                     <thead>
                                     <th class="centerHeader" width="100px">ID</th>
                                     <th class="centerHeader" width="200px">Title</th>
@@ -237,7 +233,7 @@
                                                                                 value="<%=data.getPosition()%>"
                                                                                 size="5"></td>
                                         <td align="center" width="200px">
-                                            <img src="img/close.png" title="Delete This Data" border="0"/>
+                                            <img src="resources/images/close.png" title="Delete This Data" border="0"/>
                                             <a href="javascript:removeData(<%=programId %>,<%=screenId %>,<%=tableId%>,<%=data.getId()%>);"><%=session.getAttribute("button.delete")%>
                                             </a></td>
                                     </tr>

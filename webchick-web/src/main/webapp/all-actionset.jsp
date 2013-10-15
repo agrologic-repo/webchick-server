@@ -1,13 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.ActionSet" %>
-
-<jsp:directive.page import="com.agrologic.app.model.Language"/>
-<%@ page import="com.agrologic.app.model.Program" %>
-<%@ page import="com.agrologic.app.model.Screen" %>
+<%@ page import="com.agrologic.app.model.*" %>
 <%@ page import="java.util.Collection" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
@@ -16,28 +12,28 @@
         response.sendRedirect("./index.htm");
         return;
     }
-    Program program = (Program) request.getSession().getAttribute("program");
-    Screen screen = (Screen) request.getSession().getAttribute("screen");
+    Program program = (Program) request.getAttribute("program");
+    Screen screen = (Screen) request.getAttribute("screen");
     long programId = screen.getProgramId();
-    Collection<Language> languages = (Collection<Language>) request.getSession().getAttribute("languages");
-    String ptl = (String) request.getParameter("translateLang");
+    Collection<Language> languages = (Collection<Language>) request.getAttribute("languages");
+    String ptl = request.getParameter("translateLang");
     if (ptl == null) {
         ptl = "1";
     }
     Long translateLang = Long.parseLong(ptl);
-    Collection<ActionSet> actionsets = (Collection<ActionSet>) request.getSession().getAttribute("actionset");
+    Collection<ActionSet> actionsets = (Collection<ActionSet>) request.getAttribute("actionset");
 %>
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>All Action set</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <script type="text/javascript" src="js/util.js"></script>
-    <script type="text/javascript" src="js/general.js"></script>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function validate() {
             if (document.editForm.Nprogramname.value == "") {
@@ -50,7 +46,7 @@
         }
         function removeData(programId, screenId, tableId, dataId) {
             if (confirm("This action will remove tabledata from database.\n Do you want to continue?") == true) {
-                window.document.location.replace("./removedata.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId + "&dataId=" + dataId);
+                redirect("./removedata.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId + "&dataId=" + dataId);
             }
         }
         function save(programId, screenId) {
@@ -83,7 +79,7 @@
                     posActionsetMap.put(dataId, pos);
                 }
             }
-            window.document.location.replace("./save-progactionset.html?programId=" + programId + "&screenId=" + screenId + "&showActionsetMap=" + showActionsetMap + "&posActionsetMap=" + posActionsetMap);
+            redirect("./save-progactionset.html?programId=" + programId + "&screenId=" + screenId + "&showActionsetMap=" + showActionsetMap + "&posActionsetMap=" + posActionsetMap);
         }
         function checkedAll() {
             var form = document.getElementById('formTable');
@@ -107,13 +103,9 @@
                 }
             }
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
         function filterLanguages(programId, screenId) {
             var langId = document.formTable.Lang_Filter.value;
-            window.document.location.replace("./all-tables.html?programId=" + programId + "&screenId=" + screenId + "&translateLang=" + langId);
+            redirect("./all-tables.html?programId=" + programId + "&screenId=" + screenId + "&translateLang=" + langId);
             return false;
         }
     </script>
@@ -141,7 +133,7 @@
                                 </font>;</h3>
                         </td>
                         <td align="center" colspan="3">
-                            <%@include file="messages.jsp" %>
+                            <jsp:include page="messages.jsp"/>
                         </td>
                     </tr>
                     <tr>

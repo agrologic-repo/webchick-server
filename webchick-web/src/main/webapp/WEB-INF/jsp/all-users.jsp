@@ -1,175 +1,28 @@
+<%@ page import="com.agrologic.app.model.Cellink" %>
+<%@ page import="com.agrologic.app.model.CellinkState" %>
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="../../anerrorpage.jsp" %>
 <%@ include file="../../disableCaching.jsp" %>
 <%@ include file="../../language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.Cellink" %>
-
-<jsp:directive.page import="com.agrologic.app.web.CellinkState"/>
-<jsp:directive.page import="java.util.Collection"/>
-
 <% User user = (User) request.getSession().getAttribute("user");
 
-//User user = (User) getServletContext().getAttribute("user");
-    if (user == null) {
-        response.sendRedirect("./index.htm");
-        return;
-    }
-    Collection<User> users = (Collection<User>) request.getSession().getAttribute("users");
-    Collection<String> companies = (Collection<String>) request.getSession().getAttribute("companies");
-    int from = (Integer) request.getSession().getAttribute("from");
-    int to = (Integer) request.getSession().getAttribute("to");
-    int of = (Integer) request.getSession().getAttribute("of");
+    Collection<User> users = (Collection<User>) request.getAttribute("users");
+    Collection<String> companies = (Collection<String>) request.getAttribute("companies");
+    int from = (Integer) request.getAttribute("from");
+    int to = (Integer) request.getAttribute("to");
+    int of = (Integer) request.getAttribute("of");
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html dir="<%=request.getSession().getAttribute("dir") %>">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
 <title><%=session.getAttribute("users.page.title")%>
 </title>
-<script language="javascript" src="../../js/general.js"></script>
-<link rel="shortcut icon" href="img/favicon5.ico"/>
-<link rel="StyleSheet" type="text/css" href="../../css/admincontent.css"/>
-<link rel="StyleSheet" type="text/css" href="../../css/menubar.css"/>
-<script>
-    //
-    // global variables
-    //
-    var tbody = null;
-    var theadrow = null;
-    var colCount = null;
-    var reverse = false;
-    var lastclick = -1;					// stores the object of our last used object
-    var oTR = null;
-    var oStatus = null;
-    var none = 0;
-    function init() {
-
-        // get TBODY - take the first TBODY for the table to sort
-        tbody = element.tBodies(0);
-        if (!tbody) return;
-
-        //Get THEAD
-        var thead = element.tHead;
-        if (!thead)  return;
-
-        theadrow = thead.children[0]; //Assume just one Head row
-        if (theadrow.tagName != "TR") return;
-
-        theadrow.runtimeStyle.cursor = "hand";
-
-        colCount = theadrow.children.length;
-
-        var l, clickCell;
-        for (var i = 0; i < colCount; i++) {
-            // Create our blank gif
-            l = document.createElement("IMG");
-            l.src = "img/empty.gif";
-            l.id = "srtImg";
-            l.width = 9;
-            l.height = 5;
-
-            clickCell = theadrow.children[i];
-
-            clickCell.selectIndex = i;
-            clickCell.insertAdjacentText("beforeEnd", "   ");
-            clickCell.insertAdjacentElement("beforeEnd", l)
-            clickCell.attachEvent("onclick", doClick);
-        }
-
-    }
-    //
-    // doClick handler
-    //
-    function doClick(e) {
-        var clickObject = e.srcElement;
-
-        while (clickObject.tagName != "TH") {
-            clickObject = clickObject.parentElement;
-        }
-
-
-        // clear the sort images in the head
-        var imgcol = theadrow.all('srtImg');
-        for (var x = 0; x < imgcol.length; x++)
-            imgcol[x].src = "img/empty.gif";
-
-        if (lastclick == clickObject.selectIndex) {
-            if (reverse == false) {
-                clickObject.children[0].src = "img/downarrow.gif";
-                reverse = true;
-            }
-            else {
-                clickObject.children[0].src = "img/uparrow.gif";
-                reverse = false;
-            }
-        }
-        else {
-            reverse = false;
-            lastclick = clickObject.selectIndex;
-            clickObject.children[0].src = "img/uparrow.gif";
-        }
-
-        insertionSort(tbody, tbody.rows.length - 1, reverse, clickObject.selectIndex);
-        return false;
-    }
-    function insertionSort(t, iRowEnd, fReverse, iColumn) {
-
-
-        var iRowInsertRow, iRowWalkRow, current, insert;
-        for (iRowInsert = 0 + 1; iRowInsert <= iRowEnd; iRowInsert++) {
-            if (iColumn) {
-                if (typeof(t.children[iRowInsert].children[iColumn]) != "undefined")
-                    textRowInsert = t.children[iRowInsert].children[iColumn].innerText;
-                else
-                    textRowInsert = "";
-            } else {
-                textRowInsert = t.children[iRowInsert].innerText;
-            }
-
-            for (iRowWalk = 0; iRowWalk <= iRowInsert; iRowWalk++) {
-                if (iColumn) {
-                    if (typeof(t.children[iRowWalk].children[iColumn]) != "undefined")
-                        textRowCurrent = t.children[iRowWalk].children[iColumn].innerText;
-                    else
-                        textRowCurrent = "";
-                } else {
-                    textRowCurrent = t.children[iRowWalk].innerText;
-                }
-
-                //
-                // We save our values so we can manipulate the numbers for
-                // comparison
-                //
-                current = textRowCurrent;
-                insert = textRowInsert;
-
-
-                //  If the value is not a number, we sort normally, else we evaluate
-                //  the value to get a numeric representation
-                //
-                if (!isNaN(current) || !isNaN(insert)) {
-                    current = eval(current);
-                    insert = eval(insert);
-                }
-                else {
-                    current = current.toLowerCase();
-                    insert = insert.toLowerCase();
-                }
-
-
-                if ((   (!fReverse && insert < current)
-                        || ( fReverse && insert > current) )
-                        && (iRowInsert != iRowWalk)) {
-                    eRowInsert = t.children[iRowInsert];
-                    eRowWalk = t.children[iRowWalk];
-                    t.insertBefore(eRowInsert, eRowWalk);
-                    iRowWalk = iRowInsert; // done
-                }
-            }
-        }
-    }
-</script>
+<link rel="StyleSheet" type="text/css" href="../../resources/style/admincontent.css"/>
+<link rel="StyleSheet" type="text/css" href="../../resources/style/menubar.css"/>
+<script type="text/javascript" src="remove-systemstate.html./../resources/javascript/general.js">;</script>
 <script type="text/javascript">
     function confirmRemove() {
         return confirm("This action will remove user from database.\nDo you want to continue ?")
@@ -197,27 +50,24 @@
             var selIndex = document.formFilter.companyFilter.selectedIndex
             company = document.formFilter.companyFilter.options[selIndex].value;
         }
-        window.document.location.replace("./all-users.html?role=" + role + "&company=" + company);
+        redirect("./all-users.html?role=" + role + "&company=" + company);
 
         return false;
     }
     function removeUser(userId) {
         if (confirm("This action will remove user from database.\nDo you want to continue ?") == true) {
-            window.document.location.replace("./removeuser.html?userId=" + userId);
+            redirect("./removeuser.html?userId=" + userId);
         }
     }
     function addUser() {
-        window.document.location.replace("add-user.jsp");
+        redirect("add-user.jsp");
         return false;
     }
     function userPropertyPieChart() {
-        window.document.location.replace("./propertysummary.html");
+        redirect("./propertysummary.html");
         return false;
     }
-    function back(link) {
-        window.document.location.replace(link);
-        return false;
-    }
+
     function showInfo(id) {
         var showDiv = document.getElementById("showinfo" + id);
         showDiv.style.display = "block";
@@ -252,7 +102,7 @@
             company = document.formFilter.companyFilter.options[selIndex].value;
         }
         var searchText = document.getElementById('searchText');
-        window.document.location.replace("./all-users.html?searchText=" + searchText.value + "&role=" + role + "&company=" + company);
+        redirect("./all-users.html?searchText=" + searchText.value + "&role=" + role + "&company=" + company);
         return false;
     }
 </script>
@@ -275,7 +125,7 @@
                     </h2>
                 </td>
                 <td align="center" colspan="1">
-                    <%@include file="../../messages.jsp" %>
+                    <jsp:include page="../../messages.jsp"/>
                 </td>
                 <td colspan="2">
                     <fieldset style="padding: 5px">
@@ -284,18 +134,18 @@
                         <table border="0" cellpadding="2" cellspacing="2" style="border-collapse: collapse;">
                             <tr>
                                 <td style="padding: 1px 2px 1px 5px; vertical-align: middle">
-                                    <img src="../../img/online.gif" style="vertical-align: middle">
+                                    <img src="../../resources/images/online.gif" style="vertical-align: middle">
                                     - <%=session.getAttribute("cellink.state.online")%>&nbsp;
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding: 1px 2px 1px 5px; vertical-align: middle">
-                                    <img src="../../img/running.gif" style="vertical-align: middle">
+                                    <img src="../../resources/images/running.gif" style="vertical-align: middle">
                                     - <%=session.getAttribute("cellink.state.running")%>&nbsp;</td>
                             </tr>
                             <tr>
                                 <td style="padding: 1px 2px 1px 5px; vertical-align: middle"><img
-                                        src="../../img/offline.gif">
+                                        src="../../resources/images/offline.gif">
                                     - <%=session.getAttribute("cellink.state.offline")%>
                                 </td>
                             </tr>
@@ -349,7 +199,7 @@
                                 </td>
                                 <td>
                                     <button id="btnRefresh" name="btnRefresh"
-                                            onclick="window.document.location='./all-users.html?userId=<%=user.getId()%>'"><%=session.getAttribute("button.refresh")%>
+                                            onclick="redirect('./all-users.html?userId=<%=user.getId()%>')"><%=session.getAttribute("button.refresh")%>
                                     </button>
                                     <button id="btnAdd" name="btnAdd"
                                             onclick='return addUser();'><%=session.getAttribute("button.add.user")%>
@@ -365,15 +215,14 @@
 </tr>
 <tr>
     <td>
-        <b>&nbsp;<%=users.size()%>&nbsp;</b><%=session.getAttribute("table.caption.user.records")%>
+        <jsp:include page="../../paging.jsp"/>
     </td>
 </tr>
 <tr>
     <form id="formUsers" name="formUsers">
         <td colspan="9" width="100%">
             <%if (users.size() > 0) {%>
-            <table class="table-list" border="0" cellpadding="2" cellspacing="1" width="100%"
-                   style="behavior:url(../../tablehl.htc) url(../../sort.htc);">
+            <table class="table-list" border="0" cellpadding="2" cellspacing="1" width="100%">
                 <thead>
                 <th align="center" style="min-width: 40px; width: auto;">
                     <%=session.getAttribute("table.col.user.id")%>
@@ -407,51 +256,50 @@
                     <%}%>
                     <td align="center" onclick="showInfo(<%=u.getId()%>)"><%=u.getId()%>
                     </td>
-                    <td onclick="window.document.location='./userinfo.html?userId=<%=u.getId()%>'"><a
+                    <td onclick="redirect('./userinfo.html?userId=<%=u.getId()%>')"><a
                             href="./userinfo.html?userId=<%=u.getId()%>"><%=u.getLogin()%>
                     </a></td>
-                    <td onclick="window.document.location='./userinfo.html?userId=<%=u.getId()%>'"><%=u.getFirstName()%>
+                    <td onclick="redirect('./userinfo.html?userId=<%=u.getId()%>')"><%=u.getFirstName()%>
                         &nbsp;<%=u.getLastName()%>
                     </td>
                     <td align="center"
-                        onclick="window.document.location='./userinfo.html?userId=<%=u.getId()%>'"><%=u.getPhone()%>
+                        onclick="redirect('./userinfo.html?userId=<%=u.getId()%>')"><%=u.getPhone()%>
                     </td>
                     <td align="center"
-                        onclick="window.document.location='./userinfo.html?userId=<%=u.getId()%>'"><%=u.getCompany()%>
+                        onclick="redirect('./userinfo.html?userId=<%=u.getId()%>')"><%=u.getCompany()%>
                     </td>
                     <td align="center">
                         <% Collection<Cellink> cellinks = u.getCellinks();
                             for (Cellink cellink : cellinks) {
                                 if (cellink.getCellinkState().getValue() == CellinkState.STATE_ONLINE || cellink.getCellinkState().getValue() == CellinkState.STATE_START) {%>
-                        <img src="../../img/online.gif" onmouseover="this.src='img/honline.gif'"
-                             onmouseout="this.src='img/online.gif'"
+                        <img src="../../resources/images/online.gif" onmouseover="this.src='resources/images/honline.gif'"
+                             onmouseout="this.src='resources/images/online.gif'"
                              title="<%=cellink.getName()%> (<%=session.getAttribute("cellink.state.online")%>)"
-                             onclick="window.document.location='./rmctrl-main-screen-ajax.jsp?userId=<%=u.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getId() %>&screenId=1&doResetTimeout=true'">
+                             onclick="redirect('./rmctrl-main-screen-ajax.jsp?userId=<%=u.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getId() %>&screenId=1&doResetTimeout=true')">
                         <%} else if (cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {%>
-                        <img src="../../img/running.gif" onmouseover="this.src='img/hrunning.gif'"
-                             onmouseout="this.src='img/running.gif'"
+                        <img src="../../resources/images/running.gif" onmouseover="this.src='resources/images/hrunning.gif'"
+                             onmouseout="this.src='resources/images/running.gif'"
                              title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.running")%>)"
-                             onclick="window.document.location='./rmctrl-main-screen-ajax.jsp?userId=<%=u.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getId() %>&screenId=1&doResetTimeout=true'"></img>
+                             onclick="redirect('./rmctrl-main-screen-ajax.jsp?userId=<%=u.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getId() %>&screenId=1&doResetTimeout=true')"/>
                         <%} else {%>
-                        <img src="../../img/offline.gif"
-                             title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.offline")%>)"/>
+                        <img src="../../resources/images/offline.gif" title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.offline")%>)"/>
                         <%}%>
                         <%}%>
                     </td>
                     <td align="center">
-                        <img src="../../img/info.gif"/>
+                        <img src="../../resources/images/info.gif"/>
                         <a href="./userinfo.html?userId=<%=u.getId()%>">
                             <%=session.getAttribute("button.info")%>
                         </a>
                     </td>
                     <td align="center">
-                        <img src="../../img/edit.gif"/>
+                        <img src="../../resources/images/edit.gif"/>
                         <a href="../../edit-user.jsp?userId=<%=u.getId()%>">
                             <%=session.getAttribute("button.edit")%>
                         </a>
                     </td>
                     <td align="center">
-                        <img src="../../img/del.gif"/>
+                        <img src="../../resources/images/delete.gif"/>
                         <a href="javascript:removeUser(<%=u.getId()%>);">
                             <%=session.getAttribute("button.delete")%>
                         </a>

@@ -1,58 +1,40 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.Program" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
-<jsp:directive.page import="java.util.Collection"/>
-
-<% User user = (User) request.getSession().getAttribute("user");
-
+<%  User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
 
-    Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("programs");
-    Long programId = Long.parseLong(request.getParameter("programId"));
-    Program program = findProgramToEdit(programs, programId);
+    Program program = (Program) request.getAttribute("program");
 %>
 
-<%! Program findProgramToEdit(Collection<Program> cellinks, Long programId) {
-    for (Program p : cellinks) {
-        if (p.getId().equals(programId)) {
-            return p;
-        }
-    }
-    return null;
-}
-%>
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Edit Program</title>
-    <link rel="SHORTCUT ICON" href="img/favicon5.ico" title="AgroLogic Tm.">
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css">
+
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" language="javascript">
         function validate() {
             if (document.editForm.Nprogramname.value == "") {
-                alert('Enter user name');
+                alert('Enter name for the program ');
                 document.editForm.Nprogramname.focus();
                 return false;
             } else {
                 document.editForm.submit();
             }
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
     </script>
 </head>
 <body>

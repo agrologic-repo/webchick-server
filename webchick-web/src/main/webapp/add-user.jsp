@@ -1,25 +1,25 @@
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    Collection<String> companies = (Collection<String>) request.getSession().getAttribute("companies");
+    Collection<String> companies = (Collection<String>) session.getAttribute("companies");
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Add User</title>
-    <link rel="shortcut icon" href="img/favicon5.ico" title="AgroLogic Tm."/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function clearForm() {
             document.addForm.Nusername.value = "";
@@ -27,10 +27,6 @@
             document.addForm.Nfname.value = "";
             document.addForm.Nlname.value = "";
             document.addForm.Nrole.selectedIndex = 0;
-        }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
         }
     </script>
     <script type="text/javascript">

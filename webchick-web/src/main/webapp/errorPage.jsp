@@ -1,8 +1,7 @@
-<%@ include file="disableCaching.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page isErrorPage="true" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title></title>
     <style>
@@ -16,7 +15,7 @@
             font-size: 8pt;
         }
     </style>
-    <LINK REL="SHORTCUT ICON" HREF="img/favicon5.ico" TITLE="AgroLogic Tm.">
+
 </head>
 <body>
 <font><h1>Exception Event Occurred</h1>

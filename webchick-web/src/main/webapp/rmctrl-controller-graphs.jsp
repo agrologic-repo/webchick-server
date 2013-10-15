@@ -1,18 +1,16 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.graph.GenerateGraph" %>
 <%@ page import="com.agrologic.app.model.Controller" %>
+<%@ page import="com.agrologic.app.model.Program" %>
+<%@ page import="com.agrologic.app.model.Screen" %>
+<%@ page import="com.agrologic.app.model.User" %>
+<%@ page import="java.io.PrintWriter" %>
 
-<jsp:directive.page import="com.agrologic.app.model.Program"/>
-<jsp:directive.page import="com.agrologic.app.model.Screen"/>
-<jsp:directive.page import="com.agrologic.app.model.User"/>
-<jsp:directive.page import="java.io.PrintWriter"/>
-<jsp:directive.page import="java.util.Collection"/>
-
-<% User user = (User) request.getSession().getAttribute("user");
+<%  User user = (User) request.getSession().getAttribute("user");
 
     if (user == null) {
         response.sendRedirect("./index.htm");
@@ -22,22 +20,26 @@
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long screenId = Long.parseLong((String) request.getParameter("screenId"));
-    Controller controller = (Controller) request.getSession().getAttribute("controller");
+    Controller controller = (Controller) request.getAttribute("controller");
     Program program = controller.getProgram();
     Collection<Screen> screens = program.getScreens();
-    Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");
+    Integer newConnectionTimeout = (Integer) request.getAttribute("newConnectionTimeout");
 
-    Locale currLocale = (Locale) session.getAttribute("currLocale");
+    Locale oldLocal = (Locale) session.getAttribute("oldLocale");
+    Locale currLocal = (Locale) session.getAttribute("currLocale");
+    if (!oldLocal.equals(currLocal)) {
+        response.sendRedirect("./rmctrl-controller-graphs.jsp?lang=" + lang + "&userId=" + userId + "&cellinkId=" + cellinkId + "&controllerId=" + controllerId + "&screenId=" + screenId);
+    }
 
     String graphURLTH = "";
-    String filenameth = GenerateGraph.generateChartTempHum(controllerId, session, new PrintWriter(out), currLocale);
+    String filenameth = GenerateGraph.generateChartTempHum(controllerId, session, new PrintWriter(out), currLocal);
     if (filenameth.contains("public_error")) {
         graphURLTH = "img\\public_nodata_500x300.png";
     } else {
         graphURLTH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameth;
     }
 
-    String filenamewft = GenerateGraph.generateChartWaterFeedTemp(controllerId, session, new PrintWriter(out), currLocale);
+    String filenamewft = GenerateGraph.generateChartWaterFeedTemp(controllerId, session, new PrintWriter(out), currLocal);
     String graphURLWFT = "";
     if (filenameth.contains("public_error")) {
         graphURLWFT = "img\\public_nodata_500x300.png";
@@ -46,11 +48,10 @@
     }
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html dir="<%=(String)request.getSession().getAttribute("dir")%>">
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("all.screen.page.title")%>
-    </title>
-    <link rel="shortcut icon" HREF="img/favicon5.ico" TITLE="AgroLogic Ltd." type="image/x-icon"/>
+    <title><%=session.getAttribute("all.screen.page.title")%></title>
+
     <style type="text/css">
         div.tableHolder {
             OVERFLOW: auto;
@@ -76,9 +77,10 @@
             text-wrap: suppress;
         }
     </style>
-    <link rel="stylesheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="css/tabstyle.css"/>
-    <link rel="stylesheet" type="text/css" href="css/progressbar.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         /**logout*/
         function doLogout() {
@@ -86,7 +88,7 @@
         }
         /** refresh the page for loading updated data */
         function refresh() {
-            window.document.location.replace("./rmtctrl-graph.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>");
+            redirect("./rmtctrl-graph.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>");
         }
         var refreshIntervalId = setInterval("refresh()", 55000);
         /** get connection timeout and set disconnect timer */
@@ -178,7 +180,7 @@
     <td align="center">
         <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px; width: 95%">
             <a href="./rmtctrl-graph.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=cellinkId%>&programId=<%=controller.getProgramId() %>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>&doResetTimeout=true">
-                <img src="img/refresh.gif" style="cursor: pointer" border="0"/>
+                <img src="resources/images/refresh.gif" style="cursor: pointer" border="0"/>
                 &nbsp;<%=session.getAttribute("button.refresh")%>&nbsp;
             </a>
             <table style="font-size:90%;" width="100%" border="0">
@@ -324,7 +326,7 @@
                 <tr>
                     <td align="center" valign="top">
                         <a href="./rmtctrl-graph.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=cellinkId%>&programId=<%=controller.getProgramId() %>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>&doResetTimeout=true">
-                            <img src="img/refresh.gif" style="cursor: pointer" border="0"/>
+                            <img src="resources/images/refresh.gif" style="cursor: pointer" border="0"/>
                             &nbsp;<%=session.getAttribute("button.refresh")%>&nbsp;
                         </a>
                     </td>

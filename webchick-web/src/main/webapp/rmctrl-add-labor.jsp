@@ -1,19 +1,13 @@
-<%--
-    Document   : rmctrl-add-labor
-    Created on : Apr 20, 2011, 12:49:48 PM
-    Author     : JanL
---%>
+<%@ page import="com.agrologic.app.dao.DaoType" %>
+<%@ page import="com.agrologic.app.dao.DbImplDecider" %>
+<%@ page import="com.agrologic.app.dao.LaborDao" %>
+<%@ page import="com.agrologic.app.dao.WorkerDao" %>
+<%@ page import="com.agrologic.app.dao.mysql.impl.LaborDaoImpl" %>
+<%@ page import="com.agrologic.app.dao.mysql.impl.WorkerDaoImpl" %>
+<%@ page import="com.agrologic.app.model.Labor" %>
+<%@ page import="com.agrologic.app.model.Worker" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
-
-<jsp:directive.page import="com.agrologic.app.dao.LaborDao"/>
-<jsp:directive.page import="com.agrologic.app.dao.WorkerDao"/>
-<jsp:directive.page import="com.agrologic.app.dao.impl.LaborDaoImpl"/>
-
-<jsp:directive.page import="com.agrologic.app.dao.impl.WorkerDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.Labor"/>
-<jsp:directive.page import="com.agrologic.app.model.Worker"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
@@ -25,13 +19,13 @@
     WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDaoImpl.class);
     Collection<Worker> workerList = workerDao.getAllByCellinkId(cellinkId);
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="css/calendar.css"/>
-    <script type="text/javascript" src="js/calendar.js"></script>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function validate() {
             var strd = document.getElementById('startDate').value;
@@ -126,10 +120,10 @@
                     </select>
                 </td>
                 <td><input type="text" id="startDate" name="startDate" size="10" readonly>
-                    <img src="img/calendar.png" border="0" onclick="GetDate('start');"/></td>
+                    <img src="resources/images/calendar.png" border="0" onclick="GetDate('start');"/></td>
                 <td><input type="text" id="hours" name="hours" value="" size="10"></td>
                 <td><input type="text" id="salary" name="salary" readonly value="" size="10"></td>
-                <td align="center"><img src="img/plus1.gif" border="0" hspace="4">
+                <td align="center"><img src="resources/images/plus1.gif" border="0" hspace="4">
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
@@ -152,7 +146,7 @@
                 </td>
                 <td><%=l.getSalary() %>
                 </td>
-                <td align="center"><img src="img/close.png" border="0" hspace="4">
+                <td align="center"><img src="resources/images/close.png" border="0" hspace="4">
                     <a href="javascript:window.location='./remove-labor.html?cellinkId=<%=cellinkId%>&controllerId=<%=controllerId%>&flockId=<%=flockId%>&laborId=<%=l.getId()%>';">Remove</a>
                 </td>
             </tr>

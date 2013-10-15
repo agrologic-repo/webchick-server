@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 <%@ page errorPage="errorPage.jsp" %>
 <%@ page import="com.agrologic.app.utils.Base64" %>
@@ -97,26 +97,23 @@
     }
 </script>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html dir="<%=(String) request.getSession().getAttribute("dir")%>">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title><%=session.getAttribute("login.page.title")%></title>
     <meta name="Author" content="Valery Manakhimov">
-    <link rel="shortcut icon" href="img/favicon5.ico">
-    <script language="javascript" src="js/menu.js"></script>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title><%=session.getAttribute("login.page.title")%>
-    </title>
+    <link rel="shortcut icon" href="resources/images/favicon5.ico">
+    <script language="javascript" src="resources/javascript/menu.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
 </head>
 <body>
 <table align="center" valign="middle">
 
-    <tr>
-        <td>
+    <%--<tr>--%>
+        <%--<td>--%>
 
-        </td>
-    </tr>
+        <%--</td>--%>
+    <%--</tr>--%>
 
     <tr>
         <td align="center" valign="middle">
@@ -125,9 +122,7 @@
                        width="400px">
                     <th colspan="2"
                         style="border : 1px solid blue; ;border-collapse:collapse;background:#283d9a; color: #FFFFFF;">
-                        <h3>
-                            <img src="img/key24.png"><%=session.getAttribute("login.page.header")%>
-                        </h3>
+                        <h3><img src="resources/images/key.png"><%=session.getAttribute("login.page.header")%></h3>
                     </th>
                     <% String errormessage = (String) request.getAttribute("errormessage");
                         if (errormessage != null) {%>
@@ -138,41 +133,36 @@
                     </tr>
                     <%}%>
                     <tr>
-                        <td width="30%" colspan="2" color="white"><br><%=session.getAttribute("user.login.info")%>
-                        </td>
+                        <td width="30%" colspan="2" color="white"><br><%=session.getAttribute("user.login.info")%></td>
                     </tr>
                     <tr>
                         <td width="70%" colspan="2"><br></td>
                     </tr>
                     <tr>
-                        <td width="30%"><%=session.getAttribute("label.login")%>
-                        </td>
+                        <td width="30%"><%=session.getAttribute("label.login")%></td>
                         <td width="70%"><input type="text" size="20" name="name" maxlength="30" value="<%=user%>"></td>
                     </tr>
                     <tr>
-                        <td width="30%"><%=session.getAttribute("label.password")%>
-                        </td>
-                        <td width="70%"><input type="password" size="20" name="password" maxlength="30"
-                                               value="<%=pass%>"></td>
+                        <td width="30%"><%=session.getAttribute("label.password")%></td>
+                        <td width="70%">
+                            <input type="password" size="20" name="password" maxlength="30"value="<%=pass%>"></td>
                     </tr>
                     <tr>
-                        <td width="30%"><%=session.getAttribute("user.interface.language")%>
-                        </td>
+                        <td width="30%"><%=session.getAttribute("user.interface.language")%></td>
                         <td width="70%" valign="bottom">
                             <select name="selectLang" onchange="doSubmit();">
                                 <option value="en">English</option>
                                 <option value="ru">Russian</option>
-                                <%
-                                    if (domain.equalsIgnoreCase("agrologic")
+                                <%  if (domain.equalsIgnoreCase("agrologic")
                                             || domain.equalsIgnoreCase("localhost")
                                             || domain.equalsIgnoreCase("lab")
                                             || domain.equalsIgnoreCase("192.168.1.101")) {
                                 %>
-                                <option value="iw">Hebrew</option>
+                                    <option value="iw">Hebrew</option>
                                 <%}%>
-                                <option value="zh">Chinese</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
+                                    <option value="zh">Chinese</option>
+                                    <option value="fr">French</option>
+                                    <option value="de">German</option>
                             </select>
                         </td>
                     </tr>
@@ -195,11 +185,11 @@
             </form>
         </td>
     </tr>
-
 </table>
+
 <script language="Javascript">
     var length = document.loginForm.selectLang.options.length;
-    var lng = "<%=(String) request.getSession().getAttribute("lang")%>";
+    var lng = "<%=(String) request.getAttribute("lang")%>";
     for (var i = 0; i < length; i++) {
         if (document.loginForm.selectLang.options[i].value == lng) {
             document.loginForm.selectLang.selectedIndex = i;

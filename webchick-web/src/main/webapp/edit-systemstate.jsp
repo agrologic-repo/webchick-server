@@ -1,16 +1,8 @@
-<%--
-    Document   : edit-systemstate
-    Created on : Oct 24, 2011, 3:16:59 PM
-    Author     : Administrator
---%>
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -21,10 +13,10 @@
     Long translateLang = Long.parseLong(request.getParameter("translateLang"));
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css">
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
     <script language="Javascript">
         function reset() {
             document.getElementById("msgText").innerHTML = "";
@@ -76,10 +68,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <button id="btnUpdate" name="btnUpdate" type="submit"><img src="img/edit.gif"
+                            <button id="btnUpdate" name="btnUpdate" type="submit"><img src="resources/images/edit.gif"
                                                                                        hspace="5"><%=session.getAttribute("button.update") %>
                             </button>
-                            <button type="button" onclick='self.close();'><img src="img/close.png"
+                            <button type="button" onclick='self.close();'><img src="resources/images/close.png"
                                                                                hspace="5"><%=session.getAttribute("button.cancel") %>
                             </button>
                         </td>

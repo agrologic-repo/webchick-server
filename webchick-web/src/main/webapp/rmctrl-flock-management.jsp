@@ -1,55 +1,36 @@
-<%--
-    Document   : rmctrl-flock-management
-    Created on : Mar 31, 2011, 11:44:21 AM
-    Author     : JanL
---%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.Controller" %>
-<%@ include file="disableCaching.jsp" %>
+<%@ page import="com.agrologic.app.model.Flock" %>
+<%@ page import="java.util.Collection" %>
 
-<jsp:directive.page import="com.agrologic.app.model.Flock"/>
-<jsp:directive.page import="java.util.Collection"/>
+
 <%
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    Collection<Controller> controllers = (Collection<Controller>) request.getSession().getAttribute("controllers");
-    Controller editController = getController(controllers, controllerId);
-    Flock editFlock = getFlock(controllers, controllerId, flockId);
+    Controller editController = (Controller) request.getAttribute("controller");
+    Flock editFlock = getFlock(editController.getFlocks(), flockId);
 %>
-<%! Flock getFlock(Collection<Controller> controllers, Long controllerId, Long flockId) {
-    for (Controller c : controllers) {
-        if (c.getId() == controllerId) {
-            for (Flock f : c.getFlocks()) {
-                if (f.getFlockId() == flockId) {
-                    return f;
-                }
-            }
+<%! private Flock getFlock(Collection<Flock> flocks, Long flockId) {
+    for (Flock f : flocks) {
+        if (f.getFlockId() == flockId) {
+            return f;
         }
     }
     return null;
 }
-
-    Controller getController(Collection<Controller> controllers, Long controllerId) {
-        for (Controller c : controllers) {
-            if (c.getId().equals(controllerId)) {
-                return c;
-            }
-        }
-        return null;
-    }
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html dir="ltr">
 <head>
 <title>Flock Manager</title>
-<link rel="StyleSheet" type="text/css" href="css/tabView.css">
-<link rel="StyleSheet" type="text/css" href="css/admincontent.css">
-<link rel="stylesheet" type="text/css" href="css/calendar.css"/>
-<script type="text/javascript" src="js/calendar.js"></script>
-<script type="text/javascript" src="js/tabView.js"></script>
+<link rel="StyleSheet" type="text/css" href="resources/style/tabView.css">
+<link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+<link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+<script type="text/javascript" src="resources/javascript/calendar.js">;</script>
+<script type="text/javascript" src="resources/javascript/tabView.js">;</script>
 <script type="text/javascript">
 var isChanged = false;
 var DEC_0 = 0;
@@ -348,11 +329,11 @@ function calcTotalCost(begin, beginCost, end, endCost, totalCost) {
                     </td>
                     <td width="20%">
                         <a href="./rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1&doResetTimeout=true">
-                            <img src="img/display.png" style="cursor: pointer" border="0"/>
+                            <img src="resources/images/display.png" style="cursor: pointer" border="0"/>
                             &nbsp;<%=session.getAttribute("button.screens")%>&nbsp;
                         </a>
                         <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
-                            <img src="img/chicken-icon.png" style="cursor: pointer" border="0"/>
+                            <img src="resources/images/chicken-icon.png" style="cursor: pointer" border="0"/>
                             <%=session.getAttribute("main.screen.page.flocks")%>
                         </a>
                     </td>

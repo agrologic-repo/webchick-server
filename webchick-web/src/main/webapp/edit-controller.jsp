@@ -1,40 +1,36 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.Controller" %>
+<%@ page import="com.agrologic.app.model.Program" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
-<jsp:directive.page import="com.agrologic.app.model.Program"/>
-<jsp:directive.page import="java.util.Collection"/>
 
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    Controller editController = (Controller) request.getSession().getAttribute("editcontroller");
-    Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("programs");
-    Collection<String> controllernames = (Collection<String>) request.getSession().getAttribute("controllernames");
+    Controller editController = (Controller) request.getAttribute("editcontroller");
+    Collection<Program> programs = (Collection<Program>) request.getAttribute("programs");
+    Collection<String> controllernames = (Collection<String>) request.getAttribute("controllernames");
 %>
 
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Edit Controller</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="shortcut icon" href="img/favicon5.ico" title="AgroLogic Ltd."/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
+
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" language="javascript">
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
         function validate() {
 
             if (document.editForm.Ncontrollername.value == "None") {
@@ -141,7 +137,8 @@
                                 </div>
                             </td>
                             <td><input type="checkbox" id="newControllerName" name="newControllerName"
-                                       onclick="showNewName()">Add Name</input></td>
+                                       onclick="showNewName()">
+                                Add Name</input></td>
                         </tr>
                         <tr>
                             <td class="rightCell">Status</td>
@@ -164,7 +161,7 @@
                 <td colspan="2">
                     <%if (user.getRole() == UserRole.ADMIN) {%>
                     <button name="btnCancel"
-                            onclick='return back("./cellinkinfo.html?userId=<%=userId %>&cellinkId=<%=cellinkId%>");'>
+                            onclick='return back("./cellink-setting.html?userId=<%=userId %>&cellinkId=<%=cellinkId%>");'>
                         <%=session.getAttribute("button.cancel") %>
                     </button>
                     <%} else {%>

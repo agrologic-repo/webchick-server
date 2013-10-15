@@ -1,12 +1,10 @@
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
-<jsp:directive.page import="com.agrologic.app.model.User"/>
-
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -14,11 +12,11 @@
     Long translateLang = Long.parseLong(request.getParameter("translateLang"));
     Long relayId = Long.parseLong(request.getParameter("relayId"));
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <title>Add Relay</title>
     <script type="text/javascript">
         function reset() {
@@ -34,7 +32,6 @@
                 valid = false;
             }
             if (!valid) {
-                alert();
                 return false;
             }
         }

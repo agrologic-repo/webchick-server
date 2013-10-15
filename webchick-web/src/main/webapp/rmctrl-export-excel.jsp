@@ -1,18 +1,9 @@
-<%--
-    Document   : rmctrl-export-excel.jsp
-    Created on : Jan 27, 2011, 5:33:29 PM
-    Author     : Valery Manakhimov
-    Company    : Agrologic Ltd. ®
-    Version    : 0.1.1.1
---%>
 <% String filename = request.getParameter("filename"); %>
 
-
-<%@ include file="disableCaching.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Download Excel</title>
 </head>

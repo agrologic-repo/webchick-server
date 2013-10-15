@@ -1,6 +1,7 @@
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
@@ -11,15 +12,15 @@
     }
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html dir="<%=(String) request.getSession().getAttribute("dir")%>" xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title><%=session.getAttribute("user.profile") %>
-    </title>
-    <link rel="SHORTCUT ICON" HREF="img/favicon5.ico" TITLE="AgroLogic Tm."/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
+    <title><%=session.getAttribute("user.profile") %></title>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function validateEmail(email) {
             var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
@@ -86,10 +87,7 @@
                 msgOutout.style.color = (msg == "login valid") ? "green" : "red";
             }
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
         function showNewCompany() {
             var checked = editForm.newCompany.checked;
             if (checked == true) {
@@ -122,18 +120,18 @@
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <%@include file="messages.jsp" %>
+                            <jsp:include page="messages.jsp"/>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <img border="0" src="img/user1.png"/>
+                            <img border="0" src="resources/images/user1.png"/>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <button id="btnEdit" name="btnEdit"
-                                    onclick="window.document.location='./edit-profile.jsp?userId=<%=user.getId() %>'"><%=session.getAttribute("button.edit") %>
+                                    onclick="redirect('./edit-profile.jsp?userId=<%=user.getId() %>')"><%=session.getAttribute("button.edit") %>
                             </button>
                         </td>
                     </tr>

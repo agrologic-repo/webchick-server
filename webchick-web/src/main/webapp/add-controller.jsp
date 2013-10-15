@@ -1,11 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.Program" %>
-
-<jsp:directive.page import="java.util.Collection"/>
+<%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
 
@@ -16,24 +14,19 @@
 
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("programs");
-    Collection<String> controllernames = (Collection<String>) request.getSession().getAttribute("controllernames");
+    Collection<Program> programs = (Collection<Program>) session.getAttribute("programs");
+    Collection<String> controllernames = (Collection<String>) session.getAttribute("controllernames");
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("new.controller.page.title")%>
-    </title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="shortcut icon" href="img/favicon5.ico"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
+    <title><%=session.getAttribute("new.controller.page.title")%></title>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" language="javascript">
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
         function reset() {
             document.getElementById("msgNetName").innerHTML = "";
             document.getElementById("msgProgramId").innerHTML = "";
@@ -168,11 +161,13 @@
                         <tr>
                             <td colspan="2">
                                 <%if (user.getRole() == UserRole.ADMIN) {%>
-                                <button name="btnCancel" type="button" onclick='window.history.back()'>
+                                <button name="btnCancel" type="button"
+                                        onclick='return back("./cellink-setting.html?userId=<%=userId %>&cellinkId=<%=cellinkId%>");'>
                                     <%=session.getAttribute("button.cancel") %>
                                 </button>
                                 <%} else {%>
-                                <button name="btnCancel" type="button" onclick="window.history.back()">
+                                <button name="btnCancel" type="button"
+                                        onclick='return back("./cellink-setting.html?userId=<%=userId %>&cellinkId=<%=cellinkId%>");'>
                                     <%=session.getAttribute("button.cancel") %>
                                 </button>
                                 <%}%>

@@ -1,17 +1,10 @@
-<%@page import="com.agrologic.app.dao.DaoType" %>
-<%@page import="com.agrologic.app.dao.DbImplDecider" %>
+<%@ page import="com.agrologic.app.dao.DaoType" %>
+<%@ page import="com.agrologic.app.dao.DbImplDecider" %>
 <%@ page import="com.agrologic.app.dao.DomainDao" %>
-<%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="com.agrologic.app.model.UserRole" %>
 
 <%
-    User logedUser = (User) request.getSession().getAttribute("user");
-    if (logedUser == null) {
-        response.sendRedirect("./index.htm");
-        return;
-    }
-
-    UserRole userRole = logedUser.getRole();
+    UserRole userRole = user.getUserRole();
     DomainDao domainDao = null;
     try {
         domainDao = DbImplDecider.use(DaoType.MYSQL).getDao(DomainDao.class);
@@ -19,14 +12,17 @@
         e.getMessage();
         e.printStackTrace();
     }
+
     String logoString = domainDao.getLogoPath((String) session.getAttribute("domain"));
     if (logoString == null) {
-        logoString = " img/agrologiclogo.png";
+        logoString = "resources/images/agrologiclogo.png";
     }
+
     String company = domainDao.getCompany((String) session.getAttribute("domain"));
     if (company == null) {
         company = "agrologic";
     }
+
 %>
 <script language="JavaScript" type="text/javascript">
     function setActive() {
@@ -36,7 +32,6 @@
         var iLastPoint = link.lastIndexOf('.');
         if (iLastPoint == -1) {
             link = link.substring(iLastSlash + 1, iLastPoint);
-
         } else {
             //link = link.substring(iLastSlash, iFirstParm);
             link = link.substring(iLastSlash + 1, iLastPoint);
@@ -99,19 +94,15 @@
             <%@include file="toplang.jsp" %>
         </td>
         <td valign="top" nowrap>
-            <%if (logedUser.getLogin() != null) {%>
+            <%if (user.getLogin() != null) {%>
             <%=session.getAttribute("label.welcome")%>
-            <strong><%=logedUser.getLogin()%>
-            </strong>
+            <strong><%=user.getLogin()%></strong>
             <span>|</span>
-            <a href="./my-profile.jsp?userId=<%=logedUser.getId()%>"><%=session.getAttribute("button.profile")%>
-            </a>&nbsp;
+            <a href="./my-profile.jsp?userId=<%=user.getId()%>"><%=session.getAttribute("button.profile")%></a>&nbsp;
             <span>|</span>
-            <a href="./help.html"><%=session.getAttribute("label.help")%>
-            </a>
+            <a href="./help.html"><%=session.getAttribute("label.help")%></a>
             <span>|</span>
-            <a href="./logout.html"><%=session.getAttribute("label.logout")%>
-            </a>
+            <a href="./logout.html"><%=session.getAttribute("label.logout")%></a>
             <%}%>
         </td>
     </tr>
@@ -124,7 +115,7 @@
                             href="<%=request.getContextPath()%>/main.jsp"><%=session.getAttribute("menu.home")%>
                     </a></td>
                     <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a
-                            href="<%=request.getContextPath()%>/overview.html?userId=<%=logedUser.getId()%>"><%=session.getAttribute("menu.overview")%>
+                            href="<%=request.getContextPath()%>/overview.html?userId=<%=user.getId()%>"><%=session.getAttribute("menu.overview")%>
                     </a></td>
                     <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a
                             href="<%=request.getContextPath()%>/all-users.html"><%=session.getAttribute("menu.users")%>
@@ -137,7 +128,7 @@
                     </a></td>
                     <%} else if (userRole == UserRole.DISTRIBUTOR) {%>
                     <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a
-                            href="<%=request.getContextPath()%>/overview.html?userId=<%=logedUser.getId()%>"><%=session.getAttribute("menu.overview")%>
+                            href="<%=request.getContextPath()%>/overview.html?userId=<%=user.getId()%>"><%=session.getAttribute("menu.overview")%>
                     </a></td>
                     <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a
                             href="<%=request.getContextPath()%>/all-users.html"><%=session.getAttribute("menu.users")%>
@@ -150,7 +141,7 @@
                     </a></td>
                     <%} else {%>
                     <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a
-                            href="<%=request.getContextPath()%>/my-farms.html?userId=<%=logedUser.getId()%>"><%=session.getAttribute("menu.myfarms")%>
+                            href="<%=request.getContextPath()%>/my-farms.html?userId=<%=user.getId()%>"><%=session.getAttribute("menu.myfarms")%>
                     </a></td>
                     <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"></td>
                     <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"></td>

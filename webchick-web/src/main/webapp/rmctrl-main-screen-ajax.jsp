@@ -1,21 +1,27 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
-
 <%@ page errorPage="anerrorpage.jsp" %>
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="com.agrologic.app.model.UserRole" %>
-<%
+
+<%  User user = (User) request.getSession().getAttribute("user");
+
+    if (user == null) {
+        response.sendRedirect("./index.htm");
+        return;
+    }
+
     long userId = Long.parseLong(request.getParameter("userId"));
     long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
 
-    request.getSession().setAttribute("cellinkId", cellinkId);
+    request.setAttribute("cellinkId", cellinkId);
 
-    UserRole role = (UserRole) request.getSession().getAttribute("role");
+    UserRole role = (UserRole) request.getAttribute("role");
     if (role == null) {
         role = UserRole.USER;
     }
 
-    HashMap<Long, Long> nextScrIdsByCntrl = (HashMap<Long, Long>) request.getSession().getAttribute("nextScrIdsByCntrl");
+    HashMap<Long, Long> nextScrIdsByCntrl = (HashMap<Long, Long>) request.getAttribute("nextScrIdsByCntrl");
 
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
     Locale currLocal = (Locale) session.getAttribute("currLocale");
@@ -23,16 +29,16 @@
         response.sendRedirect("./rmctrl-main-screen-ajax.jsp?userId=" + userId + "&cellinkId=" + cellinkId + "&doResetTimeout=true");
     }
 
-    String direction = (String) request.getSession().getAttribute("dir");
+
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html dir="<%=direction%>">
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
 <title><%=session.getAttribute("main.screen.page.title")%>
 </title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="shortcut icon" type="image/x-icon" href="img/favicon5.ico" title="AgroLogic Ltd."/>
-<link rel="stylesheet" type="text/css" href="css/admincontent.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
 <link rel="stylesheet" type="text/css" href="css/progressbar.css"/>
 <script type="text/javascript">
     var timeoutID;
@@ -53,7 +59,6 @@
         return xmlHttp;  // Mandatory Statement returning the ajax object created
     }
     var xmlhttp = new getXMLObject();	//xmlhttp holds the ajax object
-
     function ajaxFunction() {
         var getdate = new Date();  //Used to prevent caching during ajax call
         if (xmlhttp) {
@@ -501,14 +506,13 @@ function closeWindow() {
 }
 function keyDown(val) {
     if (doClearOld) {
-        //alert();
         val.value = "";
         doClearOld = false;
     }
 }
 </script>
-<script type="text/javascript" src="js/fhelp.js"></script>
-<script type="text/javascript" src="js/fglobal.js"></script>
+<script type="text/javascript" src="resources/javascript/fhelp.js"></script>
+<script type="text/javascript" src="resources/javascript/fglobal.js"></script>
 </head>
 <body onload="setAutoLoad();">
 <table border="0" cellPadding=1 cellSpacing=1 width="100%" align="center">
@@ -534,9 +538,9 @@ function keyDown(val) {
                                 <tr>
                                     <td>
                                         <div id="divMessage" style="text-align:center;font-size:medium"></div>
-                                        <div id="divSliderBG"><img src="Images/Transparent.gif" height="1" width="1">
+                                        <div id="divSliderBG"><img src="resources/images/Transparent.gif" height="1" width="1">
                                         </div>
-                                        <div id="divSlider"><img src="Images/Transparent.gif" height="1" width="1">
+                                        <div id="divSlider"><img src="resources/images/Transparent.gif" height="1" width="1">
                                         </div>
                                         <input id="btnStop" align="center" type="button"
                                                value="<%=session.getValue("button.stay.online")%>"
@@ -548,24 +552,24 @@ function keyDown(val) {
                     </tr>
                     <tr>
                         <td valign="bottom">
-                            <img src="img/chicken-icon.png" border="0" hspace="5"/>
+                            <img src="resources/images/chicken-icon.png" border="0" hspace="5"/>
                             <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
                                 <%=session.getAttribute("button.flocks")%>
                             </a>
                             <% String access = (String) request.getSession().getAttribute("access");%>
                             <% if (!access.toLowerCase().equals("regular")) {%>
                             <%if (role == UserRole.USER) {%>
-                            <img src="img/cellinks.png" border="0" hspace="5"/>
+                            <img src="resources/images/cellinks.png" border="0" hspace="5"/>
                             <a href="<%=request.getContextPath()%>/my-farms.html?userId=<%=userId%>">
                                 <%=session.getAttribute("button.myfarms")%>
                             </a>
                             <%} else {%>
-                            <img src="img/cellinks.png" border="0" hspace="5" alt=""/>
+                            <img src="resources/images/cellinks.png" border="0" hspace="5" alt=""/>
                             <a href="<%=request.getContextPath()%>/overview.html?userId=<%=userId%>">
                                 <%=session.getAttribute("button.overview")%>
                             </a>
                             <%}%>
-                            <img src="img/logout.gif" border="0" hspace="5" alt=""/>
+                            <img src="resources/images/logout.gif" border="0" hspace="5" alt=""/>
                             <a href="logout.html">
                                 <%=session.getAttribute("label.logout")%>
                             </a>
@@ -581,7 +585,9 @@ function keyDown(val) {
             <form name="mainForm" action="">
                 <fieldset
                         style="-moz-border-radius:15px;  border-radius: 15px;  -webkit-border-radius: 15px; width: 100%">
-                    <div id="tableData"></div>
+                    <div id="tableData">
+
+                    </div>
                 </fieldset>
             </form>
         </td>

@@ -1,46 +1,25 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.Program" %>
+<%@ page import="com.agrologic.app.model.Screen" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
-<jsp:directive.page import="com.agrologic.app.model.Screen"/>
-<jsp:directive.page import="java.util.Collection"/>
-
-<% User user = (User) request.getSession().getAttribute("user");
-
+<%  User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-
-    Program program = (Program) request.getSession().getAttribute("program");
-    Collection<Screen> screens = program.getScreens();
-    Long screenId = Long.parseLong(request.getParameter("screenId"));
-    Screen screen = findScreenToEdit(screens, screenId);
+    Screen screen = (Screen) request.getAttribute("screen");
 %>
-
-
-<%! Screen findScreenToEdit(Collection<Screen> screens, Long screenId) {
-    for (Screen s : screens) {
-        if (s.getId().equals(screenId)) {
-            return s;
-        }
-    }
-    return null;
-}
-%>
-
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Edit Screen</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"></link>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"></link>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" language="javascript">
         function reset() {
             document.getElementById("msgScreenTitle").innerHTML = "";
@@ -61,10 +40,7 @@
                 return false;
             }
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
     </script>
 </head>
 <body>
@@ -113,7 +89,7 @@
                                     <tr>
                                         <td>
                                             <button id="btnBack" name="btnBack"
-                                                    onclick='return back("./all-screens.html?programId=<%=program.getId() %>");'>
+                                                    onclick='return back("./all-screens.html?programId=<%=screen.getProgramId() %>");'>
                                                 <%=session.getAttribute("button.cancel") %>
                                             </button>
                                             <button id="btnUpdate" name="btnUpdate" type="submit"

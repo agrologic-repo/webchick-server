@@ -1,39 +1,27 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.Controller" %>
 <%@ page import="com.agrologic.app.model.User" %>
 
-<jsp:directive.page import="java.util.Collection"/>
-
-<% User user = (User) request.getSession().getAttribute("user");
-
+<%  User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    String message = (String) request.getSession().getAttribute("message");
-    request.getSession().setAttribute("message", null);
-    Boolean errorFlag = (Boolean) request.getSession().getAttribute("error");
-    request.getSession().setAttribute("error", null);
-
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long screenId = Long.parseLong(request.getParameter("screenId"));
     Collection<Controller> controllers = (Collection<Controller>) request.getSession().getAttribute("controllers");
     Controller controller = getController(controllers, controllerId);
-//    Program program = controller.getProgram();
-//    Collection<Screen> screens = program.getScreens();
-//    Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");
-
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
     Locale currLocal = (Locale) session.getAttribute("currLocale");
     if (!oldLocal.equals(currLocal)) {
         response.sendRedirect("./rmctrl-controller-screens-ajax.jsp?lang=" + lang + "&userId=" + userId + "&cellinkId=" + cellinkId + "&controllerId=" + controllerId + "&screenId=" + screenId);
     }
-    String direction = (String) request.getSession().getAttribute("dir");
+
 %>
 <%! Controller getController(Collection<Controller> controllers, Long controllerId) {
     for (Controller c : controllers) {
@@ -45,11 +33,11 @@
 }
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html dir="<%=direction%>">
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
 <title><%=session.getAttribute("all.screen.page.title")%>
 </title>
-<link rel="shortcut icon" href="img/favicon5.ico" title="AgroLogic Ltd." type="image/x-icon"/>
+
 <style type="text/css">
     div.tableHolder {
         OVERFLOW: auto;
@@ -75,10 +63,10 @@
         text-wrap: suppress;
     }
 </style>
-<link rel="shortcut icon" href="img/favicon5.ico" title="AgroLogic Tld."/>
-<link rel="stylesheet" type="text/css" href="css/admincontent.css"/>
-<link rel="stylesheet" type="text/css" href="css/tabstyle.css"/>
-<link rel="stylesheet" type="text/css" href="css/progressbar.css"/>
+
+<link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
 <script type="text/javascript">
     var firstload = 1;
     var timeoutID;
@@ -548,7 +536,6 @@ function closeWindow() {
 }
 function keyDown(val) {
     if (doClearOld) {
-        //alert();
         val.value = "";
         doClearOld = false;
     }
@@ -560,7 +547,7 @@ function keyDown(val) {
     <table style="width: auto;height: 45px; border: 1px solid #6699FF; background: white;" align="center">
         <tr>
             <td>
-                <img src="img/loader.gif" border="0" alt="" hspace="10"><%=session.getAttribute("page.loading")%>
+                <img src="resources/images/loader.gif" border="0" alt="" hspace="10"><%=session.getAttribute("page.loading")%>
             </td>
         </tr>
     </table>

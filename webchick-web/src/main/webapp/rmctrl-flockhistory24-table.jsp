@@ -1,12 +1,3 @@
-<%--
-    Document   : rmctrl-flock-table.jsp
-    Created on : Jan 25, 2011, 5:18:46 PM
-    Author     : Valery Manakhimov
-    Company    : Agrologic Ltd. ®
-    Version    : 0.1.1.1
---%>
-
-<%@ include file="disableCaching.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.User" %>
@@ -17,12 +8,6 @@
         response.sendRedirect("./index.htm");
         return;
     }
-    String message = (String) request.getSession().getAttribute("message");
-    request.getSession().setAttribute("message", null);
-
-    Boolean errorFlag = (Boolean) request.getSession().getAttribute("error");
-    request.getSession().setAttribute("error", null);
-
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
@@ -42,14 +27,14 @@
 
     }
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="css/calendar.css"/>
-    <link rel="shortcut icon" href="img/favicon5.ico" title="AgroLogic Tm."/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/multiopt.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/multiopt.css"/>
 </head>
 <body>
 <form action="./rmctrl-flockhistory24-table.jsp">
@@ -68,7 +53,7 @@
             <td align="center">
                 <fieldset style="-moz-border-radius:8px;  border-radius: 8px;  -webkit-border-radius: 8px; width: 85%">
                     <br/>
-                    <jsp:include page="tableflockhistory24.html"/>
+                    <jsp:include page="represent-in-tablehistory24.html"/>
                 </fieldset>
             </td>
         </tr>

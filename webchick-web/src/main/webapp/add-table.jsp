@@ -1,26 +1,25 @@
+<%@ page import="com.agrologic.app.model.Screen" %>
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.Screen" %>
-
-
-<% User user = (User) request.getSession().getAttribute("user");
-
+<%  User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    Screen screen = (Screen) request.getSession().getAttribute("screen");
+    Screen screen = (Screen) session.getAttribute("screen");
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Add Table</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css">
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function reset() {
             document.getElementById("msgTableName").innerHTML = "";
@@ -37,10 +36,6 @@
             if (!valid) {
                 return false;
             }
-        }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
         }
     </script>
 </head>

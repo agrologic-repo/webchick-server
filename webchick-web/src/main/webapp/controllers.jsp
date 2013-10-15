@@ -1,12 +1,10 @@
-<%@ include file="disableCaching.jsp" %>
-<%@ include file="language.jsp" %>
-<%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.Cellink" %>
 <%@ page import="com.agrologic.app.model.Controller" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
-<jsp:directive.page import="java.util.ArrayList"/>
-<jsp:directive.page import="java.util.Collection"/>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ page errorPage="anerrorpage.jsp" %>
+<%@ include file="language.jsp" %>
 
 <%
     User user = (User) request.getSession().getAttribute("user");
@@ -15,7 +13,7 @@
         return;
     }
 
-    Collection<User> users = (Collection<User>) request.getSession().getAttribute("users");
+    Collection<User> users = (Collection<User>) request.getAttribute("users");
     Long userId = Long.parseLong(request.getParameter("userId"));
     User selectedUser = getChoosedUser(users, userId);
 
@@ -58,30 +56,31 @@
 }
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html dir="<%=(String)request.getSession().getAttribute("dir")%>">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Controllers</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="SHORTCUT ICON" HREF="img/favicon5.ico">
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css">
+
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function addController(userId, cellinkId) {
-            window.document.location.replace("./add-controller.jsp?userId=" + userId + "&cellinkId=" + cellinkId);
+            redirect("./add-controller.jsp?userId=" + userId + "&cellinkId=" + cellinkId);
             return false;
         }
         function removeController(userId, cellinkId, controllerId) {
             if (confirm("Are you sure ?") == true) {
-                window.document.location.replace("./removecontroller.html?controllerId=" + controllerId)
+                redirect("./removecontroller.html?controllerId=" + controllerId)
             }
         }
         function filterUsers() {
-            window.document.location.replace("./all-controllers.jsp?" + "userId=" + document.formFilterUsers.User_Filter.value);
+            redirect("./all-controllers.jsp?" + "userId=" + document.formFilterUsers.User_Filter.value);
             return false;
         }
         function filterFarms() {
-            window.document.location.replace("./all-controllers.html?userId=<%=selectedUser.getId()%>&cellinkId=" + document.formFilterFarms.Cellink_Filter.value);
+            redirect("./all-controllers.html?userId=<%=selectedUser.getId()%>&cellinkId=" + document.formFilterFarms.Cellink_Filter.value);
             return false;
         }
     </script>
@@ -97,13 +96,13 @@
             </td>
             <td width="390" align="right">
                 <button id="btnAdd" name="btnAdd" onclick="addController(<%=userId%>,<%=cellinkId%>);">
-                    <img src="img/plus1.gif"/><%=session.getAttribute("button.add.controller")%>
+                    <img src="resources/images/plus1.gif"/><%=session.getAttribute("button.add.controller")%>
                 </button>
             </td>
         </tr>
         <tr>
             <td align="center" colspan="3">
-                <%@include file="messages.jsp" %>
+                <jsp:include page="messages.jsp"/>
             </td>
         </tr>
         <tr>
@@ -115,7 +114,7 @@
 
                 <form id="formControllers" name="formControllers">
                     <table class="table-list" width="600px" bgColor=white border=1 borderColor=black
-                           style="behavior:url(tablehl.htc) url(sort.htc);">
+                           >
                         <thead>
                         <tr>
                             <th align="center" width="120px"
@@ -137,10 +136,10 @@
                         <tbody>
                         <% int rows = 0;
                             for (Controller controller : controllers) {%>
-                        <%if ((rows % 2) == 0) {%>
-                        <tr class="even">
-                                <%} else {%>
-                        <tr class="odd">
+                            <%if ((rows % 2) == 0) {%>
+                            <tr class="even">
+                            <%} else {%>
+                            <tr class="odd">
                             <%}%>
                             <td align="center"><%=controller.getTitle()%>
                             </td>
@@ -151,10 +150,10 @@
                             <td width="" align="center"><%=controller.getProgramId() %>
                             </td>
                             <td width="" align="center">
-                                <img src="img/edit.gif" style="cursor: pointer"
+                                <img src="resources/images/edit.gif" style="cursor: pointer"
                                      title="<%=session.getAttribute("button.edit.controller")%>" border="0"
-                                     onclick="window.document.location='edit-controller.jsp?userId=<%=selectedUser.getId() %>&cellinkId=<%=controller.getCellinkId() %>&controllerId=<%=controller.getId()%>'">
-                                <img src="img/delete123.gif" style="cursor: pointer"
+                                     onclick="redirect('edit-controller.jsp?userId=<%=selectedUser.getId() %>&cellinkId=<%=controller.getCellinkId() %>&controllerId=<%=controller.getId()%>')">
+                                <img src="resources/images/delete123.gif" style="cursor: pointer"
                                      title="<%=session.getAttribute("button.delete.controller")%>" border="0"
                                      onclick="javascript:removeController('<%=controller.getId()%>')">
                             </td>

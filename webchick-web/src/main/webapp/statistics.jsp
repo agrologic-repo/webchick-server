@@ -1,13 +1,8 @@
-<%--
-    Document   : statistic
-    Created on : Nov 10, 2011, 9:16:33 AM
-    Author     : Administrator
---%>
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
+
+<%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
@@ -16,18 +11,18 @@
     }
 %>
 <!DOCTYPE html>
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
     <title>Statistics</title>
 <head>
     <title><%=session.getAttribute("database.page.title")%>
     </title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script language="javascript" src="js/general.js"></script>
-    <link rel="shortcut icon" href="img/favicon5.ico"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+
 </head>
 </head>
 <body>

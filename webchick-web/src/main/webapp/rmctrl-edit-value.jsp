@@ -1,17 +1,19 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.Controller" %>
 <%@ page import="com.agrologic.app.model.Data" %>
 <%@ page import="java.util.regex.Matcher" %>
-<jsp:directive.page import="java.util.regex.Pattern"/>
+<%@ page import="java.util.regex.Pattern" %>
+
+
 <%
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long screenId = Long.parseLong(request.getParameter("screenId"));
     Long tableId = Long.parseLong(request.getParameter("tableId"));
     Long dataId = Long.parseLong(request.getParameter("dataId"));
-    Collection<Controller> controllers = (Collection<Controller>) request.getSession().getAttribute("controllers");
+    Collection<Controller> controllers = (Collection<Controller>) request.getAttribute("controllers");
     Controller controller = getController(controllers, controllerId);
     Data data = controller.getInterestData(screenId, tableId, dataId);
 
@@ -42,11 +44,11 @@
     return m.matches(); //TRUE
 }
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html dir="<%=(String)request.getSession().getAttribute("dir")%>">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<LINK REL="SHORTCUT ICON" HREF="img/favicon5.ico" TITLE="AgroLogic Ltd." type="image/x-icon"/>
+
 <title><%=session.getAttribute("change.value") %>
 </title>
 <%--
@@ -561,7 +563,6 @@ function doDecPoint(event, val, type) {
                 }
             }
         }
-        //alert(txt)
 
         val.value = getFixFormat(txt, type, isChanged)
         isChanged = true;
@@ -580,8 +581,6 @@ function doDecPoint(event, val, type) {
     }
 }
 function getFixFormat(txt, t, changed) {
-    //alert(txt)
-    //alert(t)
     var type = parseInt(t);
     switch (type) {
         case DEC_0:
@@ -603,7 +602,6 @@ function getFixFormat(txt, t, changed) {
             break;
         case DEC_1:
             if (!changed) {
-                //alert(txt)
                 var num = parseFloat(txt);
                 var result = num.toFixed(DEC_1);
                 return result;
@@ -620,7 +618,6 @@ function getFixFormat(txt, t, changed) {
             break;
         case DEC_2:
             if (!changed) {
-                //alert(txt)
                 var num = parseFloat(txt);
                 var result = num.toFixed(DEC_2);
                 return result;
@@ -748,7 +745,7 @@ function keyDown(val) {
     }
 }
 </script>
-<link rel="stylesheet" type="text/css" href="css/rmtstyle.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/rmtstyle.css"/>
 </head>
 <body onload="doSetCaretPosition (document.editForm.Nvalue,document.editForm.Nvalue.value.length-1)"
       onunload="closeWindow();">

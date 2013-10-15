@@ -1,31 +1,19 @@
-<%--
-    Document   : rmctrl-edit-flock.jsp
-    Created on : Oct 24, 2010, 3:08:55 PM
-    Author     : Valery Manakhimov
-    Company    : Agrologic Ltd. �
-    Version    : 0.1.1.1
---%>
 <jsp:directive.page import="com.agrologic.app.model.Controller"/>
 <jsp:directive.page import="com.agrologic.app.model.Flock"/>
-<jsp:directive.page import="java.util.Collection"/>
+<%@ page import="com.agrologic.app.model.User" %>
+<%@ page import="java.util.Collection" %>
 
-<% User user = (User) request.getSession().getAttribute("user");
 
+<%  User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    String message = (String) request.getSession().getAttribute("message");
-    request.getSession().setAttribute("message", null);
-
-    Boolean errorFlag = (Boolean) request.getSession().getAttribute("error");
-    request.getSession().setAttribute("error", null);
-
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    Collection<Controller> controllers = (Collection<Controller>) request.getSession().getAttribute("controllers");
+    Collection<Controller> controllers = (Collection<Controller>) request.getAttribute("controllers");
     Flock editFlock = getFlock(controllers, controllerId, flockId);
 %>
 <%!
@@ -43,21 +31,18 @@
     }
 %>
 
-<%@page contentType="text/html" pageEncoding="windows-1252" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
 
-<html>
+<!DOCTYPE html>
+
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-    <link rel="shortcut icon" href="img/favicon5.ico" title="AgroLogic Tm.">
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css">
+
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
     </script>
     <title>Edit Flock</title>
 </head>
@@ -95,7 +80,7 @@
                                 <tr>
                                     <td colspan="0">
                                         <table class="table-list" border=1 width="100%" cellpadding="3"
-                                               style="behavior:url(tablehl.htc) url(sort.htc);">
+                                               >
                                             <tr>
                                                 <th></th>
                                                 <th colspan="2">Quantity</th>
@@ -170,7 +155,7 @@
                                                 <td colspan="2"><input type="text" readonly
                                                                        value="<%=editFlock.getTotalElect() %>"></td>
                                                 <td><input type="text" size="5" readonly
-                                                           value="<%=editFlock.calcTotalelectCost()%>">&nbsp;$
+                                                           value="<%=editFlock.calcTotalElectCost()%>">&nbsp;$
                                                 </td>
                                             </tr>
                                         </table>
@@ -192,7 +177,6 @@
             </td>
         </form>
     </tr>
-
 </table>
 </body>
 </html>

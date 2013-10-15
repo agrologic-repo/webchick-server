@@ -1,12 +1,11 @@
-<%@page import="com.agrologic.app.model.Language" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
+<%@ page import="com.agrologic.app.model.Language" %>
 <%@ page import="com.agrologic.app.model.Relay" %>
-
-<jsp:directive.page import="java.util.Collection"/>
+<%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
 
@@ -14,26 +13,24 @@
         response.sendRedirect("./index.htm");
         return;
     }
-    Collection<Language> languages = (Collection<Language>) request.getSession().getAttribute("languages");
-    Collection<Relay> relayNames = (Collection<Relay>) request.getSession().getAttribute("relayNames");
+    Collection<Language> languages = (Collection<Language>) request.getAttribute("languages");
+    Collection<Relay> relayNames = (Collection<Relay>) request.getAttribute("relayNames");
 
-    String translateLangStr = (String) request.getParameter("translateLang");
+    String translateLangStr = request.getParameter("translateLang");
     if (translateLangStr == null) {
         translateLangStr = "1";
     }
     Long translateLang = Long.parseLong(translateLangStr);
 %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Relay Collection</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <script type="text/javascript" src="js/fglobal.js"></script>
-    <script type="text/javascript" src="js/ftabs.js"></script>
-    <script type="text/javascript" src="js/util.js"></script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
     <script type="text/javascript">
         function save() {
             var datas = document.addForm.dataid;
@@ -55,13 +52,9 @@
             }
             document.getElementById("datamap").value = dataMap;
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
         function filterLanguages() {
             var langId = document.formRelays.Lang_Filter.value;
-            window.document.location.replace("./all-relays.html?translateLang=" + langId);
+            redirect("./all-relays.html?translateLang=" + langId);
             return false;
         }
     </script>
@@ -75,19 +68,17 @@
         <tr>
             <td>
                 <h1>All Relays</h1>
-
                 <h2>relay list</h2>
             </td>
         </tr>
         <tr>
             <td align="center" colspan="2">
-                <%@include file="messages.jsp" %>
+                <jsp:include page="messages.jsp"/>
             </td>
         </tr>
         <tr>
             <td>
-                <button style="float:left" id="btnCancelTop" name="btnCancelTop"
-                        onclick='return back("./all-programs.html");'>
+                <button style="float:left" id="btnCancelTop" name="btnCancelTop" onclick="redirect('./all-programs.html');">
                     <%=session.getAttribute("button.back") %>
                 </button>
                 <button id="btnAdd" name="btnAdd"
@@ -101,7 +92,7 @@
                 <form id="formRelays" name="formRelays">
                     <div style="height:420px; overflow: auto;">
                         <table class="table-list" border="1" cellpadding="1" cellspacing="0"
-                               style="behavior:url(tablehl.htc) url(sort.htc);">
+                               >
                             <input type="hidden" id="programId" name="translateLang" value="<%=translateLang %>">
                             <thead>
                             <tr>
@@ -135,12 +126,12 @@
                                                 </span>
                                 </td>
                                 <td>
-                                    <img src="img/edit.gif">
+                                    <img src="resources/images/edit.gif">
                                     <a href="#"
                                        onclick="window.open('edit-relay.jsp?translateLang=<%=translateLang%>&relayName=<%=relayName.getText()%>&relayId=<%=relayName.getId()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');">Edit</a>
                                 </td>
                                 <td>
-                                    <img src="img/del.gif">
+                                    <img src="resources/images/delete.gif">
                                     <a href="./remove-relay.html?translateLang=<%=translateLang %>&relayId=<%=relayName.getId() %>">Remove</a>
                                 </td>
                             </tr>

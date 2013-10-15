@@ -1,16 +1,10 @@
-<%--
-    Document   : rmctrl-add-distrib-details
-    Created on : May 24, 2011, 12:10:30 PM
-    Author     : JanL
---%>
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
+<%@ page import="com.agrologic.app.dao.DaoType" %>
+<%@ page import="com.agrologic.app.dao.DbImplDecider" %>
+<%@ page import="com.agrologic.app.dao.DistribDao" %>
+<%@ page import="com.agrologic.app.dao.mysql.impl.DistribDaoImpl" %>
+<%@ page import="com.agrologic.app.model.Distrib" %>
 <%@ include file="language.jsp" %>
-
-<jsp:directive.page import="com.agrologic.app.dao.DistribDao"/>
-<jsp:directive.page import="com.agrologic.app.dao.impl.DistribDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.Distrib"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
@@ -19,11 +13,11 @@
     DistribDao distribDao = DbImplDecider.use(DaoType.MYSQL).getDao(DistribDaoImpl.class);
     Collection<Distrib> distribList = distribDao.getAllByFlockId(flockId);
 %>
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="css/calendar.css"/>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
     <style type="text/css">
         div.tableHolder {
             OVERFLOW: auto;
@@ -50,7 +44,7 @@
             text-wrap: suppress
         }
     </style>
-    <script type="text/javascript" src="js/calendar.js"></script>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function calcTotalCost(amount, price, total) {
             // calculate cost
@@ -119,7 +113,7 @@
         <tr>
             <th>Date</th>
             <td><input type="text" id="startDate" name="startDate" size="10" readonly>
-                <img src="img/calendar.png" border="0" onclick="GetDate('start');"/></td>
+                <img src="resources/images/calendar.png" border="0" onclick="GetDate('start');"/></td>
             <th>Number Account</th>
             <td><input type="text" id="account" name="account" size="10"></td>
             <th>Sex</th>

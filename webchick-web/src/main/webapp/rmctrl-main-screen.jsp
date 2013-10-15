@@ -1,33 +1,26 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
-
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.*" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Collection" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    String message = (String) request.getSession().getAttribute("message");
-    request.getSession().setAttribute("message", null);
-    Boolean errorFlag = (Boolean) request.getSession().getAttribute("error");
-    request.getSession().setAttribute("error", null);
 
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long screenId = Long.parseLong(request.getParameter("screenId"));
-    Collection<Controller> controllers = (Collection<Controller>) request.getSession().getAttribute("controllers");
-    Collection<Data> dataRelays = (Collection<Data>) request.getSession().getAttribute("dataRelays");
-    Integer newConnectionTimeout = (Integer) request.getSession().getAttribute("newConnectionTimeout");
+    Collection<Controller> controllers = (Collection<Controller>) request.getAttribute("controllers");
+    Collection<Data> dataRelays = (Collection<Data>) request.getAttribute("dataRelays");
+    Integer newConnectionTimeout = (Integer) request.getAttribute("newConnectionTimeout");
 
-    HashMap<Long, Long> nextScrIdsByCntrl = (HashMap<Long, Long>) request.getSession().getAttribute("nextScrIdsByCntrl");
+    HashMap<Long, Long> nextScrIdsByCntrl = (HashMap<Long, Long>) request.getAttribute("nextScrIdsByCntrl");
 
-    String newlang = (String) request.getSession().getAttribute("lang");
+    String newlang = (String) request.getAttribute("lang");
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
     Locale currLocal = (Locale) session.getAttribute("currLocale");
     if (!oldLocal.equals(currLocal)) {
@@ -69,15 +62,14 @@
     return null;
 }
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html dir="<%=(String) request.getSession().getAttribute("dir")%>">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("main.screen.page.title")%>
-    </title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="shortcut icon" HREF="img/favicon5.ico" TITLE="AgroLogic Ltd." type="image/x-icon"/>
-    <link rel="stylesheet" type="text/css" href="css/rmtstyle.css"/>
-    <link rel="stylesheet" type="text/css" href="css/progressbar.css"/>
+    <title><%=session.getAttribute("main.screen.page.title")%></title>
+
+    <link rel="stylesheet" type="text/css" href="resources/style/rmtstyle.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function getCookie(name) {
             var start = document.cookie.indexOf(name + "=");
@@ -148,7 +140,7 @@
         }
         /** refresh the page for loading updated data */
         function refresh() {
-            window.document.location.replace("./rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=<%=1%>");
+            redirect("./rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=<%=1%>");
         }
         var refreshIntervalId = setInterval("refresh()", 55000);
         /** get connection timeout and set disconnect timer */
@@ -188,8 +180,8 @@
             }
         }
     </script>
-    <script type="text/javascript" src="js/fhelp.js"></script>
-    <script type="text/javascript" src="js/fglobal.js"></script>
+    <script type="text/javascript" src="resources/javascript/fhelp.js">;</script>
+
 </head>
 <body onload="resetTimer();">
 <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px; width: 95%">
@@ -220,20 +212,20 @@
             <td valign="bottom">
                 <%if (user.getRole() == UserRole.ADMIN) {%>
                 <a href="<%=request.getContextPath()%>/userinfo.html?userId=<%=userId%>">
-                    <img src="img/cellinks.png" style="cursor: pointer" border="0"/>
+                    <img src="resources/images/cellinks.png" style="cursor: pointer" border="0"/>
                     &nbsp;<%=session.getAttribute("button.cellinks")%>&nbsp;
                 </a>
                 <%} else {%>
                 <a href="<%=request.getContextPath()%>/overview.html?userId=<%=userId%>">
-                    <img src="img/cellinks.png" style="cursor: pointer" border="0"/>
+                    <img src="resources/images/cellinks.png" style="cursor: pointer" border="0"/>
                     &nbsp;<%=session.getAttribute("button.cellinks")%>&nbsp;
                 </a>
                 <%}%>
                 <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
-                    <img src="img/chicken-icon.png" style="cursor: pointer"
+                    <img src="resources/images/chicken-icon.png" style="cursor: pointer"
                          title="<%=session.getAttribute("button.connect.cellink")%>" border="0"/>
                     &nbsp;<%=session.getAttribute("main.screen.page.flocks")%>&nbsp;</a>
-                <a href="logout.html"><img src="img/logout.gif" style="cursor: pointer" border="0"/>
+                <a href="logout.html"><img src="resources/images/logout.gif" style="cursor: pointer" border="0"/>
                     &nbsp;<%=session.getAttribute("label.logout")%>&nbsp;</a>
             </td>
         </tr>
@@ -241,7 +233,7 @@
 </fieldset>
 <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px; width: 95%">
 <a href="./rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=<%=1%>&doResetTimeout=true">
-    <img src="img/refresh.gif" style="cursor: pointer" border="0"/>&nbsp;<%=session.getAttribute("button.refresh")%>
+    <img src="resources/images/refresh.gif" style="cursor: pointer" border="0"/>&nbsp;<%=session.getAttribute("button.refresh")%>
     &nbsp;</a>
 <table border="0">
 <tr>
@@ -268,7 +260,7 @@
 <%if (isAlarmOnController(onScreenData) == true) {%>
 <th class="housesHeader" colspan="3"
     title="<%=session.getAttribute("label.program.version")%> - <%=controller.getProgram().getName()%>">
-    <img src="img/alarm.gif" title="Alarm in <%=controller.getTitle()%>">
+    <img src="resources/images/alarm.gif" title="Alarm in <%=controller.getTitle()%>">
         <%} else {%>
 <th class="housesHeader" colspan="3"
     title="<%=session.getAttribute("label.program.version")%> - <%=controller.getProgram().getName()%>">
@@ -317,45 +309,45 @@
         <% relay.init(data.getValue());%>
         <% if (relay.getText().startsWith("Fan") || relay.getText().startsWith("Mixer")) {%>
         <% if (relay.isOn()) {%>
-        <img src="img/fan-on.gif">
+        <img src="resources/images/fan-on.gif">
         <%} else {%>
-        <img src="img/fan-off.gif">
+        <img src="resources/images/fan-off.gif">
         <%}%>
         <%} else if (relay.getText().startsWith("Light")) {%>
         <% if (relay.isOn()) {%>
-        <img src="img/light-on.gif">
+        <img src="resources/images/light-on.gif">
         <%} else {%>
-        <img src="img/light-off.png">
+        <img src="resources/images/light-off.png">
         <%}%>
         <%} else if (relay.getText().contains("Cool")) {%>
         <% if (relay.isOn()) {%>
-        <img src="img/coolon.gif">
+        <img src="resources/images/coolon.gif">
         <%} else {%>
-        <img src="img/cooloff.gif">
+        <img src="resources/images/cooloff.gif">
         <%}%>
         <%} else if (relay.getText().contains("Heater")) {%>
         <% if (relay.isOn()) {%>
-        <img src="img/heateron.gif">
+        <img src="resources/images/heateron.gif">
         <%} else {%>
-        <img src="img/heateroff.gif">
+        <img src="resources/images/heateroff.gif">
         <%}%>
         <%} else if (relay.getText().contains("Feed")) {%>
         <% if (relay.isOn()) {%>
-        <img src="img/aougeron.gif">
+        <img src="resources/images/aougeron.gif">
         <%} else {%>
-        <img src="img/aougeroff.gif">
+        <img src="resources/images/aougeroff.gif">
         <%}%>
         <%} else if (relay.getText().contains("Water")) {%>
         <% if (relay.isOn()) {%>
-        <img src="img/wateron.gif">
+        <img src="resources/images/wateron.gif">
         <%} else {%>
-        <img src="img/wateroff.gif">
+        <img src="resources/images/wateroff.gif">
         <%}%>
         <%} else if (relay.getText().contains("Ignition")) {%>
         <% if (relay.isOn()) {%>
-        <img src="img/sparkon.gif">
+        <img src="resources/images/sparkon.gif">
         <%} else {%>
-        <img src="img/sparkoff.gif">
+        <img src="resources/images/sparkoff.gif">
         <%}%>
         <%} else {%>
         <% if (relay.isOn()) {%>
@@ -430,7 +422,7 @@
                                                                                                                                                   align="left"
                                                                                                                                                   onclick="ShowHelp(event, '<%=toolTip.toString()%>', HLP_SHOW_POS_MOUSE ,200,350,'<%=controller.getId()%>
                                                                                                                                                       <%=data.getId()%>');">
-                                                                                                                                                <img src="img/help1.gif"
+                                                                                                                                                <img src="resources/images/help.gif"
                                                                                                                                                      width="16"
                                                                                                                                                      height="16"
                                                                                                                                                      alt="info"/>
@@ -485,7 +477,7 @@
 <tr>
     <td align="center">
         <a href="./rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=<%=1%>&doResetTimeout=true">
-            <img src="img/refresh.gif" style="cursor: pointer" border="0"/>
+            <img src="resources/images/refresh.gif" style="cursor: pointer" border="0"/>
             &nbsp;<%=session.getAttribute("button.refresh")%>&nbsp;
         </a>
     </td>

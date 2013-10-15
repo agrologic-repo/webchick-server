@@ -1,12 +1,3 @@
-<%--
-    Document   : rmctrl-test-graphs.jsp.jsp
-    Created on : Mar 2, 2011, 3:50:40 PM
-    Author     : Valery Manakhimov
-    Company    : Agrologic Ltd. ®
-    Version    : 0.1.1.1
---%>
-
-<%@ include file="disableCaching.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 
@@ -24,18 +15,13 @@
     }
 %>
 
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
     <title>In\Out Temperature and Humidity Graph 24 Hour</title>
-    <script type="text/javascript">
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
-    </script>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/multiopt.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/multiopt.css"/>
 </head>
 <body>
 <form action="./rmctrl-flock24graph-ioh.jsp">

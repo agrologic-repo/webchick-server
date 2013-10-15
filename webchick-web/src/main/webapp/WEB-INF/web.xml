@@ -22,16 +22,8 @@
         <servlet-class>com.agrologic.app.web.UserLogoutServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ListCellinkServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.ListUserCellinksServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ListUserServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.ListUserServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ListControllerServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.ListCellinkControllersServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AddUserFormServlet</servlet-name>
@@ -82,6 +74,10 @@
         <servlet-class>com.agrologic.app.web.ProgramDetailsServet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>AddProgramServlet</servlet-name>
+        <servlet-class>com.agrologic.app.web.AddProgramServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>AddProgramFormServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.AddProgramFormServlet</servlet-class>
     </servlet>
@@ -92,18 +88,6 @@
     <servlet>
         <servlet-name>RemoveProgramServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.RemoveProgramServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>RCMainServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.RCMainServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>RCScreensServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.RCScreensServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>RCMainScreenServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.RCMainScreenServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>RCDataValueChangeServlet</servlet-name>
@@ -120,10 +104,6 @@
     <servlet>
         <servlet-name>Graph24WaterConsumpTempServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.Graph24WaterConsumpTempServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>RCChangeValuePopupServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.RCChangeValuePopupServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>OverviewServlet</servlet-name>
@@ -156,10 +136,6 @@
     <servlet>
         <servlet-name>EditControllerServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.EditControllerServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ChangeUserPassServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.ChangeUserPassServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ProgIdCheckServlet</servlet-name>
@@ -240,50 +216,6 @@
     <servlet>
         <servlet-name>GraphHeatOnTimeServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.GraphHeatOnTimeServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AvgWeight</servlet-name>
-        <servlet-class>com.agrologic.app.web.TableOfAvgWeight</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>FeedWater</servlet-name>
-        <servlet-class>com.agrologic.app.web.TableOfFeedWater</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MinMaxTempHum</servlet-name>
-        <servlet-class>com.agrologic.app.web.TableMinMaxTempHum</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Mortality</servlet-name>
-        <servlet-class>com.agrologic.app.web.TableOfMortality</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>HeaterOnTime</servlet-name>
-        <servlet-class>com.agrologic.app.web.TableOfHeaterOnTime</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>DownloadExcelServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.DownloadExcelServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ExpToExcelAvgWeight</servlet-name>
-        <servlet-class>com.agrologic.app.web.ExpToExcelAvgWeight</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ExpToExcelFeedWater</servlet-name>
-        <servlet-class>com.agrologic.app.web.ExpToExcelFeedWater</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ExpToExcelMinMaxHum</servlet-name>
-        <servlet-class>com.agrologic.app.web.ExpToExcelMinMaxHum</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ExpToExcelMortality</servlet-name>
-        <servlet-class>com.agrologic.app.web.ExpToExcelMortality</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ExpToExcelHeatOnTime</servlet-name>
-        <servlet-class>com.agrologic.app.web.ExpToExcelHeatOnTime</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Graph24HourFWServlet</servlet-name>
@@ -378,10 +310,6 @@
         <servlet-class>com.agrologic.app.web.AddDistrebutFormServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>DownloadServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.DownloadServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>RCActionSetServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.RCActionSetServlet</servlet-class>
     </servlet>
@@ -392,10 +320,6 @@
     <servlet>
         <servlet-name>DupDatabaseServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.DupDatabaseServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>RCMainScreenAjax</servlet-name>
-        <servlet-class>com.agrologic.app.web.RCMainScreenAjax</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>DisconnectCellinks</servlet-name>
@@ -495,15 +419,11 @@
     </servlet>
     <servlet>
         <servlet-name>ExpHistoryToExcel</servlet-name>
-        <servlet-class>com.agrologic.app.web.ExpHistoryToExcel</servlet-class>
+        <servlet-class>com.agrologic.app.web.ExportToExcelHistory</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>TableFlockHistory</servlet-name>
-        <servlet-class>com.agrologic.app.web.TableFlockHistory</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>TableOfIOH24Hour</servlet-name>
-        <servlet-class>com.agrologic.app.web.TableOfIOH24Hour</servlet-class>
+        <servlet-name>RepresentInTableTheHistoryData</servlet-name>
+        <servlet-class>com.agrologic.app.web.RepresentInTableTheHistoryData</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>CellinkNameServlet</servlet-name>
@@ -511,11 +431,11 @@
     </servlet>
     <servlet>
         <servlet-name>ExpHistory24ToExcel</servlet-name>
-        <servlet-class>com.agrologic.app.web.ExpHistory24ToExcel</servlet-class>
+        <servlet-class>com.agrologic.app.web.ExportToExcelHistory24</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>TableFlockHistory24</servlet-name>
-        <servlet-class>com.agrologic.app.web.TableFlockHistory24</servlet-class>
+        <servlet-name>RepresentInTableTheHistory24Data</servlet-name>
+        <servlet-class>com.agrologic.app.web.RepresentInTableTheHistory24Data</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>EditProfileFormServlet</servlet-name>
@@ -550,8 +470,8 @@
         <servlet-class>com.agrologic.app.web.TranslateData</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>TableFlockEggCountHistory</servlet-name>
-        <servlet-class>com.agrologic.app.web.TableFlockEggCountHistory</servlet-class>
+        <servlet-name>RepresentInTableEggCountHistory</servlet-name>
+        <servlet-class>com.agrologic.app.web.RepresentInTableEggCountHistory</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UncheckUnusedDataServlet</servlet-name>
@@ -578,16 +498,8 @@
         <url-pattern>/logout.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ListCellinkServlet</servlet-name>
-        <url-pattern>/all-cellinks.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>ListUserServlet</servlet-name>
         <url-pattern>/all-users.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ListControllerServlet</servlet-name>
-        <url-pattern>/all-controllers.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AddUserFormServlet</servlet-name>
@@ -638,6 +550,10 @@
         <url-pattern>/programdetails.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>AddProgramServlet</servlet-name>
+        <url-pattern>/add-program.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>AddProgramFormServlet</servlet-name>
         <url-pattern>/addprogram.html</url-pattern>
     </servlet-mapping>
@@ -648,18 +564,6 @@
     <servlet-mapping>
         <servlet-name>RemoveProgramServlet</servlet-name>
         <url-pattern>/removeprogram.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>RCMainServlet</servlet-name>
-        <url-pattern>/rmtctrl-main.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>RCScreensServlet</servlet-name>
-        <url-pattern>/rmtctrl-screens.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>RCMainScreenServlet</servlet-name>
-        <url-pattern>/rmtctrl-mainscreen.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>RCDataValueChangeServlet</servlet-name>
@@ -676,10 +580,6 @@
     <servlet-mapping>
         <servlet-name>Graph24WaterConsumpTempServlet</servlet-name>
         <url-pattern>/graph24waterconsumptemp.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>RCChangeValuePopupServlet</servlet-name>
-        <url-pattern>/change-value-popup.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>OverviewServlet</servlet-name>
@@ -718,7 +618,20 @@
         <servlet-class>com.agrologic.app.web.ProgramSystemStatesServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>EditProgramServlet</servlet-name>
+        <servlet-class>com.agrologic.app.web.EditProgramServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditScreenServlet</servlet-name>
+        <servlet-class>com.agrologic.app.web.EditScreenServlet</servlet-class>
+    </servlet>
+
+    <servlet>
         <servlet-name>EditTableServlet</servlet-name>
+        <servlet-class>com.agrologic.app.web.EditTableServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditTableFormServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.EditTableFormServlet</servlet-class>
     </servlet>
     <servlet>
@@ -806,7 +719,19 @@
         <url-pattern>/program-systemstates.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>EditProgramServlet</servlet-name>
+        <url-pattern>/editprogramrequest.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditScreenServlet</servlet-name>
+        <url-pattern>/editscreenrequest.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>EditTableServlet</servlet-name>
+        <url-pattern>/edittablerequest.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditTableFormServlet</servlet-name>
         <url-pattern>/edittable.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
@@ -884,10 +809,6 @@
     <servlet-mapping>
         <servlet-name>EditControllerServlet</servlet-name>
         <url-pattern>/editcontrollerrequest.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ChangeUserPassServlet</servlet-name>
-        <url-pattern>/change-password.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ProgIdCheckServlet</servlet-name>
@@ -968,50 +889,6 @@
     <servlet-mapping>
         <servlet-name>GraphHeatOnTimeServlet</servlet-name>
         <url-pattern>/heatontimegraph.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AvgWeight</servlet-name>
-        <url-pattern>/AvgWeight</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FeedWater</servlet-name>
-        <url-pattern>/FeedWater</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MinMaxTempHum</servlet-name>
-        <url-pattern>/MinMaxTempHum</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Mortality</servlet-name>
-        <url-pattern>/Mortality</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>HeaterOnTime</servlet-name>
-        <url-pattern>/HeaterOnTime</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>DownloadExcelServlet</servlet-name>
-        <url-pattern>/DownloadExcel</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ExpToExcelAvgWeight</servlet-name>
-        <url-pattern>/ExpToExcelAvgWeight</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ExpToExcelFeedWater</servlet-name>
-        <url-pattern>/ExpToExcelFeedWater</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ExpToExcelMinMaxHum</servlet-name>
-        <url-pattern>/ExpToExcelMinMaxHum</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ExpToExcelMortality</servlet-name>
-        <url-pattern>/ExpToExcelMortality</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ExpToExcelHeatOnTime</servlet-name>
-        <url-pattern>/ExpToExcelHeatOnTime</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Graph24HourFWServlet</servlet-name>
@@ -1109,14 +986,27 @@
         <servlet-name>AddDistrebutFormServlet</servlet-name>
         <url-pattern>/add-distribute.html</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>DownloadServlet</servlet-name>
-        <url-pattern>/DownloadServlet</url-pattern>
-    </servlet-mapping>
     <servlet>
         <servlet-name>DisplayChart</servlet-name>
         <servlet-class>org.jfree.chart.servlet.DisplayChart</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EditUserServlet</servlet-name>
+        <servlet-class>com.agrologic.app.web.EditUserServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AutocompleteDataType</servlet-name>
+        <servlet-class>com.agrologic.app.web.AutocompleteDataType</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AutocompleteDataType</servlet-name>
+        <url-pattern>/autocomplete-data</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>EditUserServlet</servlet-name>
+        <url-pattern>/edituserrequest.html</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DisplayChart</servlet-name>
         <url-pattern>/servlet/DisplayChart</url-pattern>
@@ -1133,10 +1023,7 @@
         <servlet-name>DupDatabaseServlet</servlet-name>
         <url-pattern>/dumpdatabase</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>RCMainScreenAjax</servlet-name>
-        <url-pattern>/RCMainScreenAjax</url-pattern>
-    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>DisconnectCellinks</servlet-name>
         <url-pattern>/disconnect-cellinks.html</url-pattern>
@@ -1238,12 +1125,8 @@
         <url-pattern>/exptoexcelhistory.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>TableFlockHistory</servlet-name>
-        <url-pattern>/tableflockhistory.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>TableOfIOH24Hour</servlet-name>
-        <url-pattern>/tableofioh24hour</url-pattern>
+        <servlet-name>RepresentInTableTheHistoryData</servlet-name>
+        <url-pattern>/represent-in-tablehistory.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CellinkNameServlet</servlet-name>
@@ -1254,8 +1137,8 @@
         <url-pattern>/exptoexcelhistory24.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>TableFlockHistory24</servlet-name>
-        <url-pattern>/tableflockhistory24.html</url-pattern>
+        <servlet-name>RepresentInTableTheHistory24Data</servlet-name>
+        <url-pattern>/represent-in-tablehistory24.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>EditProfileFormServlet</servlet-name>
@@ -1290,8 +1173,8 @@
         <url-pattern>/translate-data</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>TableFlockEggCountHistory</servlet-name>
-        <url-pattern>/tableflockeggcnthistory.html</url-pattern>
+        <servlet-name>RepresentInTableEggCountHistory</servlet-name>
+        <url-pattern>/represent-in-table-eggcounthistory.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UncheckUnusedDataServlet</servlet-name>

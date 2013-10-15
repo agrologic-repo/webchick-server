@@ -1,9 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
 
-<jsp:directive.page import="com.agrologic.app.model.User"/>
+<%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
 
@@ -14,11 +13,11 @@
     Long translateLang = Long.parseLong(request.getParameter("translateLang"));
     Long alarmId = Long.parseLong(request.getParameter("alarmId"));
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
     <title>Add Alarm</title>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <script type="text/javascript">
         function reset() {
             document.getElementById("msgAlarmText").innerHTML = "";
@@ -33,7 +32,6 @@
                 valid = false;
             }
             if (!valid) {
-                alert();
                 return false;
             }
         }
@@ -48,9 +46,7 @@
     <tr>
         <td>
             <h1>Add Alarm</h1>
-
             <h2>add alarm</h2>
-
             <form id="addForm" name="addForm" action="./addalarm.html" method="post" onsubmit="return validate();">
                 <table border="0">
                     <input type="hidden" id="translateLang" name="translateLang" value="<%=translateLang%>">

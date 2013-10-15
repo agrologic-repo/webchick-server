@@ -1,12 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.Alarm" %>
-<%@ page import="com.agrologic.app.model.Data" %>
-<%@ page import="com.agrologic.app.model.Program" %>
-<%@ page import="com.agrologic.app.model.ProgramAlarm" %>
+<%@ page import="com.agrologic.app.model.*" %>
 <%@ page import="java.util.Collection" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
@@ -15,10 +12,9 @@
         response.sendRedirect("./index.htm");
         return;
     }
-    Program program = (Program) request.getSession().getAttribute("program");
-    Collection<Data> dataAlarms = (Collection<Data>) request.getSession().getAttribute("dataAlarms");
-    Collection<Alarm> alarmNames = (Collection<Alarm>) request.getSession().getAttribute("alarmNames");
-    String datamap;
+    Program program = (Program) request.getAttribute("program");
+    Collection<Data> dataAlarms = (Collection<Data>) request.getAttribute("dataAlarms");
+    Collection<Alarm> alarmNames = (Collection<Alarm>) request.getAttribute("alarmNames");
 %>
 <%! ProgramAlarm findAlarm(Collection<ProgramAlarm> dataAlarms, Long alarmType, int digitNumber) {
     for (ProgramAlarm pa : dataAlarms) {
@@ -30,16 +26,18 @@
 }
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Add alarms</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <script type="text/javascript" src="js/fglobal.js"></script>
-    <script type="text/javascript" src="js/ftabs.js"></script>
-    <script type="text/javascript" src="js/util.js"></script>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+
+    <script type="text/javascript" src="resources/javascript/ftabs.js">;</script>
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+
     <script type="text/javascript">
         function save() {
             var datas = document.addForm.dataid;
@@ -61,10 +59,7 @@
             }
             document.getElementById("datamap").value = dataMap;
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
     </script>
 </head>
 <body>

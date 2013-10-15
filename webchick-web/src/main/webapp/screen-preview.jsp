@@ -1,12 +1,10 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.*" %>
 <%@ page import="java.util.ArrayList" %>
-
-<jsp:directive.page import="java.util.Collection"/>
 
 <% User user = (User) request.getSession().getAttribute("user");
 
@@ -17,10 +15,8 @@
 
     Long screenId = Long.parseLong(request.getParameter("screenId"));
     Long screenLangId = Long.parseLong(request.getParameter("screenLangId"));
-    Program program = (Program) request.getSession().getAttribute("program");
-    Collection<Data> dataRelays = (Collection<Data>) request.getSession().getAttribute("dataRelays");
-    //Collection<Program> programs = (Collection<Program>)request.getSession().getAttribute("programs");
-    Collection<Language> languages = (Collection<Language>) request.getSession().getAttribute("languages");
+    Program program = (Program) request.getAttribute("program");
+    Collection<Language> languages = (Collection<Language>) request.getAttribute("languages");
 %>
 <%! Screen getCurrentScreen(Long screenId, Collection<Screen> screens) {
 
@@ -43,34 +39,33 @@
         return relayList;
     }
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 
-<html dir="<%=request.getSession().getAttribute("dir")%>">
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Screens Preview </title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="css/tabstyle.css"/>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+
     <script type="text/javascript">
         function addProgram() {
-            window.document.location.replace("./add-program.jsp");
+            redirect("./add-program.jsp");
             return false;
         }
         function removeProgram(programId) {
             if (confirm("Are you sure ?") == true) {
-                window.document.location.replace("./removeprogram.html?programId=" + programId);
+                redirect("./removeprogram.html?programId=" + programId);
             }
         }
         function filterLanguages() {
             var langId = document.formFilterLanguages.Lang_Filter.value;
-            window.document.location.replace("./screen-preview.html?programId=<%=program.getId()%>&screenLangId=" + langId);
+            redirect("./screen-preview.html?programId=<%=program.getId()%>&screenLangId=" + langId);
             return false;
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
     </script>
 </head>
 <body>

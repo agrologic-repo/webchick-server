@@ -1,9 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
-<jsp:directive.page import="com.agrologic.app.model.Cellink"/>
+<%@ page import="com.agrologic.app.model.Cellink" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
 
@@ -11,29 +12,17 @@
         response.sendRedirect("./index.htm");
         return;
     }
-
-    Collection<User> users = (Collection<User>) request.getSession().getAttribute("users");
     Long userId = Long.parseLong(request.getParameter("userId"));
-    User editUser = findUserToEdit(users, userId);
-    Collection<Cellink> cellinks = editUser.getCellinks();
 %>
-<%! User findUserToEdit(Collection<User> users, Long userId) {
-    for (User u : users) {
-        if (u.getId().equals(userId)) {
-            return u;
-        }
-    }
-    return null;
-}
-%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Add Cellink</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="SHORTCUT ICON" HREF="img/favicon5.ico">
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css">
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function reset() {
             document.getElementById("msgCellinkName").innerHTML = "";
@@ -60,10 +49,6 @@
                 return false;
             }
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
     </script>
 </head>
 <body>
@@ -74,7 +59,7 @@
     <table border="0" cellPadding=1 cellSpacing=1 width="100%">
         <tr>
             <td valign="top" height="648px">
-                <form id="addForm" name="addForm" action="./addcellink.html?userId=<%=editUser.getId()%>" method="post">
+                <form id="addForm" name="addForm" action="./addcellink.html?userId=<%=userId%>" method="post">
                     <table border=0 cellPadding=1 cellSpacing=1>
                         <tr>
                             <td>
@@ -89,7 +74,7 @@
                                     <p style="color:red;">Boxes with an asterisk next to them are required</p>
                                 </div>
                                 <input id="Nuserid" readonly type="hidden" name="Nuserid" class=rightTitles
-                                       value="<%=editUser.getId()%>">
+                                       value="<%=userId%>">
                                 <table>
                                     <tr>
                                         <td class="">Cellink name *</td>
@@ -128,7 +113,7 @@
                         <tr>
                             <td>
                                 <button id="btnBack" name="btnBack"
-                                        onclick='return back("./userinfo.html?userId=<%=editUser.getId() %>");'>
+                                        onclick='return back("./userinfo.html?userId=<%=userId %>");'>
                                     <%=session.getAttribute("button.cancel") %>
                                 </button>
                                 <button id="btnAdd" type="submit" name="btnAdd" onclick="return validate();">

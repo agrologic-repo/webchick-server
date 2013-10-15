@@ -1,5 +1,5 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.Cellink" %>
 
@@ -11,17 +11,16 @@
         response.sendRedirect("./index.htm");
         return;
     }
-
-    Cellink cellink = (Cellink) request.getSession().getAttribute("cellink");
+    Cellink cellink = (Cellink) request.getAttribute("cellink");
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=cellink.getName()%>
     </title>
-    <LINK REL="SHORTCUT ICON" HREF="img/favicon5.ico" TITLE="AgroLogic Tm.">
-    <link rel="stylesheet" type="text/css" href="css/rmtstyle.css"/>
+
+    <link rel="stylesheet" type="text/css" href="resources/style/rmtstyle.css"/>
 </head>
 <body>
 <br>
@@ -32,18 +31,18 @@
 <br>
 
 <h3><a href="rmctrl-main-screen-ajax.jsp?cellinkId=<%=cellink.getId()%>&screenId=1" target="body" class="leftlink"><img
-        src="img/ComputerScreen.gif" style="border:0px;height:32px;width:32px;"> Screens </a></h3>
+        src="resources/images/ComputerScreen.gif" style="border:0px;height:32px;width:32px;"> Screens </a></h3>
 Control your farm as if you were sitting in front of it.
 <br>
 
-<h3><a href="rmctrl-underconstruction.jsp" target="body" class="leftlink"><img src="img/configure.png"
+<h3><a href="rmctrl-underconstruction.jsp" target="body" class="leftlink"><img src="resources/images/configure.png"
                                                                                style="border:0px;height:32px;width:32px;">
     Preferences</a></h3>
-<!--a href="rmctrl-preferences.jsp" target="rightPage" class="leftlink"><img src="img/configure.png" style="border:0px;height:32px;width:32px;"> Preferences</a-->
+<!--a href="rmctrl-preferences.jsp" target="rightPage" class="leftlink"><img src="resources/images/configure.png" style="border:0px;height:32px;width:32px;"> Preferences</a-->
 Set preferences to specifically meet your needs.
 <br>
 
-<h3><a href="rmctrl-underconstruction.jsp" target="body" class="leftlink"><img src="img/support.png"
+<h3><a href="rmctrl-underconstruction.jsp" target="body" class="leftlink"><img src="resources/images/support.png"
                                                                                style="border:0px;height:32px;width:32px;">
     Help</a></h3>
 All the resources you need to take full advantage of Remote Cellink.

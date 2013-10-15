@@ -1,27 +1,26 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.Program" %>
+<%@ page import="com.agrologic.app.model.User" %>
 
-<jsp:directive.page import="java.util.Collection"/>
 
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    Collection<Program> programs = (Collection<Program>) request.getSession().getAttribute("allprograms");
+    Collection<Program> programs = (Collection<Program>) request.getAttribute("programs");
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Add program</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function reset() {
             document.getElementById("msgProgramId").innerHTML = "";
@@ -69,10 +68,6 @@
             }
             return IsNumber;
 
-        }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
         }
         var req;
         function validateProgId() {
@@ -149,7 +144,8 @@
                                     <tr>
                                         <td>
                                             <button id="btnCancel" name="btnCancel"
-                                                    onclick='return back("./all-programs.jsp");'><%=session.getAttribute("button.cancel") %>
+                                                    onclick='return back("./all-programs.html");'>
+                                                <%=session.getAttribute("button.cancel") %>
                                             </button>
                                             <button id="btnAdd" type="submit" name="btnAdd"
                                                     onclick="return validate();"><%=session.getAttribute("button.ok") %>

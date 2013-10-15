@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.User" %>
 
@@ -16,11 +16,11 @@
 %>
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css">
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
     <script language="Javascript">
         function reset() {
             document.getElementById("msgText").innerHTML = "";
@@ -70,10 +70,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <button id="btnUpdate" name="btnUpdate" type="submit"><img src="img/edit.gif"
+                            <button id="btnUpdate" name="btnUpdate" type="submit"><img src="resources/images/edit.gif"
                                                                                        hspace="5"><%=session.getAttribute("button.update") %>
                             </button>
-                            <button type="button" onclick='self.close();'><img src="img/close.png"
+                            <button type="button" onclick='self.close();'><img src="resources/images/close.png"
                                                                                hspace="5"><%=session.getAttribute("button.cancel") %>
                             </button>
                         </td>

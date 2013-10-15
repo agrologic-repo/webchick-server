@@ -1,15 +1,10 @@
-<%--
-    Document   : rmctrl-add-feedType
-    Created on : Apr 5, 2011, 6:20:31 PM
-    Author     : JanL
---%>
+<%@ page import="com.agrologic.app.dao.DaoType" %>
+<%@ page import="com.agrologic.app.dao.DbImplDecider" %>
+<%@ page import="com.agrologic.app.dao.FeedTypeDao" %>
+<%@ page import="com.agrologic.app.dao.mysql.impl.FeedTypeDaoImpl" %>
+<%@ page import="com.agrologic.app.model.FeedType" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
 <%@ include file="language.jsp" %>
-
-<jsp:directive.page import="com.agrologic.app.dao.FeedTypeDao"/>
-<jsp:directive.page import="com.agrologic.app.dao.impl.FeedTypeDaoImpl"/>
-<jsp:directive.page import="com.agrologic.app.model.FeedType"/>
 
 <%
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
@@ -18,25 +13,22 @@
     FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDaoImpl.class);
     Collection<FeedType> feedTypeList = feedTypeDao.getAllByCellinkId(cellinkId);
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="css/calendar.css"/>
-    <script type="text/javascript" src="js/calendar.js"></script>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function calcTotalCost(amount, price, total) {
             // calculate cost
-
             var amountG = document.getElementById(amount);
             if (amountG.value == "") {
                 amountG.value = "0";
             }
             var amountFeedType = parseInt(amountG.value);
-
             var priceG = document.getElementById(price);
             if (priceG.value == "") {
                 priceG.value = "0.0";
@@ -124,7 +116,7 @@
             <tr>
                 <td><input type="text" id="feedtype" name="feedtype"></td>
                 <td><input type="text" id="price" name="price" value=""></td>
-                <td align="center"><img src="img/plus1.gif" border="0" hspace="4">
+                <td align="center"><img src="resources/images/plus1.gif" border="0" hspace="4">
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
@@ -134,7 +126,7 @@
                 </td>
                 <td><%=feedType.getPrice()%>
                 </td>
-                <td align="center"><img src="img/close.png" border="0" hspace="4">
+                <td align="center"><img src="resources/images/close.png" border="0" hspace="4">
                     <a href="javascript:window.location='./remove-feedtype.html?cellinkId=<%=cellinkId%>&controllerId=<%=controllerId%>&flockId=<%=flockId%>&feedTypeId=<%=feedType.getId()%>';">Remove</a>
                 </td>
             </tr>

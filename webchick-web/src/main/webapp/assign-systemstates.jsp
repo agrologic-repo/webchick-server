@@ -1,12 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.Data" %>
-<%@ page import="com.agrologic.app.model.Program" %>
-<%@ page import="com.agrologic.app.model.ProgramSystemState" %>
-<%@ page import="com.agrologic.app.model.SystemState" %>
+<%@ page import="com.agrologic.app.model.*" %>
 <%@ page import="java.util.Collection" %>
 
 
@@ -17,14 +14,9 @@
         return;
     }
 
-    String message = (String) request.getSession().getAttribute("message");
-    request.getSession().setAttribute("message", null);
-    boolean errorFlag = false;
-
-    Program program = (Program) request.getSession().getAttribute("program");
-    Collection<Data> dataSystemStates = (Collection<Data>) request.getSession().getAttribute("dataSystemStates");
-    Collection<SystemState> systemStateNames = (Collection<SystemState>) request.getSession().getAttribute("systemStateNames");
-    String datamap;
+    Program program = (Program) request.getAttribute("program");
+    Collection<Data> dataSystemStates = (Collection<Data>) request.getAttribute("dataSystemStates");
+    Collection<SystemState> systemStateNames = (Collection<SystemState>) request.getAttribute("systemStateNames");
 %>
 <%! ProgramSystemState findSystemState(Collection<ProgramSystemState> dataSystemStates, Long systemStateType, int number) {
     for (ProgramSystemState s : dataSystemStates) {
@@ -36,16 +28,18 @@
 }
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Assign System States</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <script type="text/javascript" src="js/fglobal.js"></script>
-    <script type="text/javascript" src="js/ftabs.js"></script>
-    <script type="text/javascript" src="js/util.js"></script>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+
+    <script type="text/javascript" src="resources/javascript/ftabs.js">;</script>
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+
     <script type="text/javascript">
         function save() {
             var datas = document.addForm.dataid;
@@ -67,10 +61,7 @@
             }
             document.getElementById("datamap").value = dataMap;
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
     </script>
 <head>
 <body>
@@ -88,29 +79,7 @@
         </tr>
         <tr>
             <td align="center" colspan="2">
-                <%
-                    if (message != null) {
-                        if (!errorFlag) {
-                %>
-                <table class="message" align="center">
-                    <tr>
-                        <td><img src="img/success.png">&nbsp;&nbsp;&nbsp;
-                            <b><%=message%>
-                            </b>
-                        </td>
-                    </tr>
-                </table>
-                <%} else {%>
-                <table class="errormessage" align="center">
-                    <tr>
-                        <td><img src="img/unsuccess.gif">&nbsp;&nbsp;&nbsp;
-                            <b><%=message%>
-                            </b>
-                        </td>
-                    </tr>
-                </table>
-                <%}%>
-                <%}%>
+                <jsp:include page="messages.jsp"/>
             </td>
         </tr>
         <tr>

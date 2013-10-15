@@ -1,31 +1,21 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.Data" %>
-<%@ page import="com.agrologic.app.model.Program" %>
-<%@ page import="com.agrologic.app.model.ProgramRelay" %>
-<%@ page import="com.agrologic.app.model.Relay" %>
+<%@ page import="com.agrologic.app.model.*" %>
 <%@ page import="java.util.Collection" %>
 
-<% User user = (User) request.getSession().getAttribute("user");
+<%  User user = (User) request.getSession().getAttribute("user");
 
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
 
-    Program program = (Program) request.getSession().getAttribute("program");
-    Collection<Data> dataRelays = (Collection<Data>) request.getSession().getAttribute("dataRelays");
-    Collection<Relay> relayNames = (Collection<Relay>) request.getSession().getAttribute("relayNames");
-    long translateLang;
-    try {
-        translateLang = Long.parseLong(request.getParameter("translateLang"));
-    } catch (NumberFormatException ex) {
-        translateLang = 1; // default program
-    }
-
+    Program program = (Program) request.getAttribute("program");
+    Collection<Data> dataRelays = (Collection<Data>) request.getAttribute("dataRelays");
+    Collection<Relay> relayNames = (Collection<Relay>) request.getAttribute("relayNames");
 %>
 
 <%! ProgramRelay findRelay(Collection<ProgramRelay> dataRelays, Long relayType, int bitNumber) {
@@ -37,16 +27,17 @@
     return null;
 }
 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Controller Details</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <link rel="StyleSheet" type="text/css" href="css/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <script type="text/javascript" src="js/fglobal.js"></script>
-    <script type="text/javascript" src="js/ftabs.js"></script>
-    <script type="text/javascript" src="js/util.js"></script>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/javascript/ftabs.js">;</script>
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+
     <script type="text/javascript">
         function save() {
             var datas = document.addForm.dataid;
@@ -68,10 +59,7 @@
             }
             document.getElementById("datamap").value = dataMap;
         }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
-        }
+
     </script>
 </head>
 <body>

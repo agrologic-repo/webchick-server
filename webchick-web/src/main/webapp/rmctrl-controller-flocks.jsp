@@ -1,33 +1,27 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="disableCaching.jsp" %>
+
 <%@ include file="language.jsp" %>
+<%@ page import="com.agrologic.app.model.Cellink" %>
 <%@ page import="com.agrologic.app.model.Controller" %>
 <%@ page import="com.agrologic.app.model.Flock" %>
-
-<jsp:directive.page import="java.util.Collection"/>
 
 <%
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    Collection<Controller> controllers = (Collection<Controller>) request.getSession().getAttribute("controllers");
-    String direction = (String) request.getSession().getAttribute("dir");
-    String align;
-    if (direction.equals("ltr")) {
-        align = "left";
-    } else {
-        align = "right";
-    }
+    Cellink cellink = (Cellink) request.getAttribute("cellink");
+    Collection<Controller> controllers = (Collection<Controller>) request.getAttribute("controllers");
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html dir="<%=(String)request.getSession().getAttribute("dir")%>">
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=session.getAttribute("flock.page.title")%>
     </title>
-    <link rel="shortcut icon" href="img/favicon5.ico" title="AgroLogic Tm."/>
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="css/calendar.css"/>
-    <script type="text/javascript" src="js/calendar.js"></script>
+
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function validate() {
             var flockName = document.getElementById('flockName').value;
@@ -45,10 +39,8 @@
         }
         function removeFlock(flockId) {
             if (confirm("Are you sure ?") == true) {
-                window.document.location.replace("./removeflock.html?userId=<%=userId%>&cellinkId="+<%=cellinkId%>+
-                "&flockId=" + flockId
-            )
-                ;
+                redirect("./removeflock.html?userId=<%=userId%>&cellinkId=" + <%=cellinkId%> +
+                        "&flockId=" + flockId);
             }
         }
         function closeFlock(flockid) {
@@ -59,14 +51,8 @@
                 return;
             }
 
-            window.document.location.replace("./closeflock.html?userId=<%=userId%>&cellinkId="+<%=cellinkId%>+
-            "&flockId=" + flockid + "&endDate=" + endDate
-        )
-            ;
-        }
-        function back(link) {
-            window.document.location.replace(link);
-            return false;
+            redirect("./closeflock.html?userId=<%=userId%>&cellinkId=" + <%=cellinkId%> +
+                    "&flockId=" + flockid + "&endDate=" + endDate);
         }
     </script>
 </head>
@@ -75,19 +61,22 @@
 <tr>
     <td align="center">
         <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px; width: 85%">
-            <table width="100%">
+            <table>
                 <tr>
-                    <td width="20%">
-                        <%@include file="toplang.jsp" %>
-                    </td>
                     <td align="center">
                         <h1 style="text-align: center;"><%=session.getAttribute("flock.page.title")%>
                         </h1>
-                        <jsp:include page="/cellinkname.html?cellinkId=<%=cellinkId%>"/>
 
+                        <h2><%=cellink.getName() %>
+                        </h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <jsp:include page="toplang.jsp"/>
                     </td>
                     <td>
-                        <img src="img/display.png" style="cursor: pointer" border="0" hspace="5"/>
+                        <img src="resources/images/display.png" style="cursor: pointer" border="0" hspace="5"/>
                         <a href="./rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1&doResetTimeout=true">
                             <%=session.getAttribute("button.screens")%>
                         </a>
@@ -102,10 +91,10 @@
         <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px; width: 85%">
             <table width="100%">
                 <tr>
-                    <td align="<%=align%>">
+                    <td>
                         <form name="addform" id="addform" action="./addflock.html" method="post">
-                            <input id="userId" type="hidden" name="userId" value="<%=userId%>"></input>
-                            <input id="cellinkId" type="hidden" name="cellinkId" value="<%=cellinkId%>"></input>
+                            <input id="userId" type="hidden" name="userId" value="<%=userId%>"/>
+                            <input id="cellinkId" type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
                             <table width="100%">
                                 <tr>
                                     <td>
@@ -126,7 +115,7 @@
                                 <tr>
                                     <td>
                                         <table class="table-list" border=1 width="100%"
-                                               style="behavior:url(tablehl.htc) url(sort.htc);">
+                                               >
                                             <thead>
                                             <th align="center" width="100px"
                                                 onmouseover="this.style.background='#ADD8E6'"
@@ -180,14 +169,15 @@
                                                 </td>
                                                 <td align="center"><input type="text" value="" size="10" readonly
                                                                           name="startDate" id="startDate">
-                                                    <img src="img/calendar.png" border="0"
+                                                    <img src="resources/images/calendar.png" border="0"
                                                          onclick="GetDate('start');"/></td>
                                                 <td align="center"><input type="text" value="" size="10" readonly>
-                                                    <img src="img/calendar.png" border="0"
+                                                    <img src="resources/images/calendar.png" border="0"
                                                          style="filter: alpha(opacity=30);opacity: .30;background-color:#111"/>
                                                 </td>
                                                 <td align="center"><a href="javascript:validate();">
-                                                    <img src="img/plus1.gif" hspace="5" style="cursor: pointer"
+                                                    <img src="resources/images/plus1.gif" hspace="5"
+                                                         style="cursor: pointer"
                                                          border="0" space="5"><br/></img>
                                                     <%=session.getAttribute("button.add")%>
                                                 </a>
@@ -202,9 +192,9 @@
                                             <% for (Flock flock : flocks) {%>
                                             <% long fid = flock.getFlockId(); %>
                                             <input id="controllerId" type="hidden"
-                                                   value="<%=flock.getControllerId() %>"></input>
+                                                   value="<%=flock.getControllerId() %>"/>
                                             <input id="programId" type="hidden"
-                                                   value="<%=controller.getProgramId() %>"></input>
+                                                   value="<%=controller.getProgramId() %>"/>
 
                                             <tr>
                                                 <td align="center"><%=flock.getFlockName()%>
@@ -216,26 +206,27 @@
                                                 <td align="center"><input type="text"
                                                                           value="<%=flock.getStartTime()%>"
                                                                           size="10" readonly>
-                                                    <img src="img/calendar.png" border="0"
+                                                    <img src="resources/images/calendar.png" border="0"
                                                          style="filter: alpha(opacity=30);opacity: .30;background-color:#111"/>
                                                 </td>
                                                 <td align="center">
                                                     <% if (!flock.getStatus().equals("Close")) {%>
                                                     <input type="text" value="" readonly size="10"
                                                            name="end<%=fid%>Date" id="end<%=fid%>Date">
-                                                    <img src="img/calendar.png" border="0"
+                                                    <img src="resources/images/calendar.png" border="0"
                                                          onclick="GetDate('end<%=fid%>');"/>
                                                     <%} else {%>
                                                     <input type="text" value="<%=flock.getEndTime()%>" size="10"
                                                            readonly>
-                                                    <img src="img/calendar.png" border="0"
+                                                    <img src="resources/images/calendar.png" border="0"
                                                          style="filter: alpha(opacity=30);opacity: .30;background-color:#111"/>
                                                     <%}%>
                                                 </td>
                                                 <td align="center">
                                                     <% if (!flock.getStatus().equals("Close")) {%>
                                                     <a href="javascript:closeFlock(<%=flock.getFlockId()%>);">
-                                                        <img src="img/lock.gif" hspace="5" style="cursor: pointer"
+                                                        <img src="resources/images/lock.gif" hspace="5"
+                                                             style="cursor: pointer"
                                                              border="0" space="5"><br/></img>
                                                         <%=session.getAttribute("button.close")%>
                                                     </a>
@@ -243,21 +234,23 @@
                                                 </td>
                                                 <td align="center">
                                                     <a href="./rmctrl-flock-graphs.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&controllerId=<%=controller.getId()%>&flockId=<%=flock.getFlockId() %>&programId=<%=controller.getProgramId()%>">
-                                                        <img src="img/graph2.gif" hspace="5" style="cursor: pointer"
+                                                        <img src="resources/images/graph2.gif" hspace="5"
+                                                             style="cursor: pointer"
                                                              border="0"><br/></img>
                                                         <%=session.getAttribute("button.graphs")%>
                                                     </a>
                                                 </td>
                                                 <td align="center">
-                                                    <a href="./rmctrl-flock-management.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&controllerId=<%=controller.getId()%>&flockId=<%=flock.getFlockId() %>">
-                                                        <img src="img/summary.gif" hspace="5"
+                                                    <a href="./flock-manager.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&controllerId=<%=controller.getId()%>&flockId=<%=flock.getFlockId() %>">
+                                                        <img src="resources/images/summary.gif" hspace="5"
                                                              style="cursor: pointer" border="0"><br/></img>
                                                         <%=session.getAttribute("button.manage")%>
                                                     </a>
                                                 </td>
                                                 <td align="center">
                                                     <a href="javascript:removeFlock(<%=flock.getFlockId()%>);">
-                                                        <img src="img/close.png" hspace="5" style="cursor: pointer"
+                                                        <img src="resources/images/close.png" hspace="5"
+                                                             style="cursor: pointer"
                                                              border="0" space="5"><br/></img>
                                                         <%=session.getAttribute("button.delete")%>
                                                     </a>
@@ -271,7 +264,8 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td align="<%=align%>">
+                                    <%--<td align="<%=align%>">--%>
+                                    <td>
                                         <button id="btnBack" name="btnBack"
                                                 onclick='return back("./rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1&doResetTimeout=true")'>
                                             <%=session.getAttribute("button.back") %>
@@ -283,7 +277,6 @@
                     </td>
                 </tr>
             </table>
-        </fieldset>
     </td>
 </tr>
 </table>

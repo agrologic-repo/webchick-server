@@ -1,4 +1,3 @@
-<%@ include file="disableCaching.jsp" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.dao.DaoType" %>
 <%@ page import="com.agrologic.app.dao.DbImplDecider" %>
@@ -20,12 +19,12 @@
     Language lang = languageDao.getById(translateLang);
 %>
 
-<%@page contentType="text/html" pageEncoding="windows-1252" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+
+<!DOCTYPE html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-    <link rel="StyleSheet" type="text/css" href="css/admincontent.css">
+    <title>Add Translation</title>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
     <script language="Javascript">
         function reset() {
             document.getElementById("msgTranslation").innerHTML = "";
@@ -38,7 +37,6 @@
                 document.getElementById("msgTranslation").style.color = "RED";
                 document.addForm.Ntranslate.focus();
                 valid = false;
-                alert(valid)
             }
             document.addForm.Ntranslate.value = encode();
 
@@ -71,7 +69,7 @@
             return result;
         }
     </script>
-    <title>Add Translation</title>
+
 </head>
 <body onunload="closeWindow();">
 <table class="main" align="center" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:10px">
@@ -99,8 +97,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <button id="btnAdd" name="btnAdd" type="submit"><img src="img/plus1.gif">&nbsp;Add</button>
-                            <button type="button" onclick='self.close();'><img src="img/close.png">&nbsp;Close</button>
+                            <button id="btnAdd" name="btnAdd" type="submit"><img src="resources/images/plus1.gif">&nbsp;Add</button>
+                            <button type="button" onclick='self.close();'><img src="resources/images/close.png">&nbsp;Close</button>
                         </td>
                     </tr>
                 </table>
