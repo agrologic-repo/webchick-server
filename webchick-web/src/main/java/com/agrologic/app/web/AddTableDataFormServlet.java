@@ -1,10 +1,4 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.web;
-
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Data;
@@ -12,26 +6,17 @@ import com.agrologic.app.model.Program;
 import com.agrologic.app.model.Screen;
 import com.agrologic.app.model.Table;
 import com.agrologic.app.utils.DateLocal;
-import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * @author JanL
- */
-public class AddTableDataFormServlet extends HttpServlet implements Serializable {
-
+public class AddTableDataFormServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -43,10 +28,6 @@ public class AddTableDataFormServlet extends HttpServlet implements Serializable
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        /** Logger for this class and subclasses */
-        final Logger logger = Logger.getLogger(AddTableDataFormServlet.class);
-
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -59,17 +40,17 @@ public class AddTableDataFormServlet extends HttpServlet implements Serializable
                 Long programId = Long.parseLong(request.getParameter("programId"));
                 Long screenId = Long.parseLong(request.getParameter("screenId"));
                 Long tableId = Long.parseLong(request.getParameter("tableId"));
-                Long dataType = Long.parseLong(request.getParameter("Ndatatype"));
+                Long dataType = Long.parseLong(request.getParameter("dataType"));
                 boolean isSpecial = false;
                 String specialDataLabel = request.getParameter("Nlabel");
-                Long langId = null;
+                Long langId = 1L;
 
                 if ((specialDataLabel != null) && !specialDataLabel.equals("")) {
                     langId = Long.parseLong(request.getParameter("langListBox"));
                     isSpecial = true;
                 }
 
-                Long dataId = dataType;
+                Long dataId;
                 if ((dataType & 0xC000) != 0xC000) {
                     dataId = (dataType & 0xFFF); // remove type to get an index 4096&0xFFF -> 0
                 } else {
@@ -90,12 +71,12 @@ public class AddTableDataFormServlet extends HttpServlet implements Serializable
                     if (isSpecial) {
                         dataDao.insertSpecialData(programId, dataId, langId, specialDataLabel);
                         logger.info("New special table data successfully added !");
-                        request.getSession().setAttribute("message", "special table data successfully added !");
-                        request.getSession().setAttribute("error", false);
+                        request.setAttribute("message", "special table data successfully added !");
+                        request.setAttribute("error", false);
                     } else {
                         logger.info("New table data successfully added !");
-                        request.getSession().setAttribute("message", "table data successfully added !");
-                        request.getSession().setAttribute("error", false);
+                        request.setAttribute("message", "table data successfully added !");
+                        request.setAttribute("error", false);
                     }
 
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
@@ -106,23 +87,22 @@ public class AddTableDataFormServlet extends HttpServlet implements Serializable
 
                     ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
 
-                    Screen screen = screenDao.getById(programId, screenId, langId);
+                    Screen screen = screenDao.getById(programId, screenId);
                     List<Table> tables = new ArrayList<Table>();
-
                     tables.add(table);
                     screen.setTables(tables);
 
-                    List<Data> dataList = dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
+                    List<Data> dataList = (List<Data>) dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
                             table.getId(), null);
 
                     table.setDataList(dataList);
-                    request.getSession().setAttribute("screen", screen);
+                    request.setAttribute("screen", screen);
                 } catch (SQLException e) {
 
                     // error page
                     logger.error("Error occurs while adding table data !", e);
-                    request.getSession().setAttribute("message", "Error occurs while adding table data !");
-                    request.getSession().setAttribute("error", true);
+                    request.setAttribute("message", "Error occurs while adding table data !");
+                    request.setAttribute("error", true);
                 }
             }
         } finally {
