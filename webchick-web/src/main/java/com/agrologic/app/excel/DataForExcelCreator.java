@@ -32,10 +32,10 @@ public class DataForExcelCreator {
     }
 
     /**
-     * Creates list with data object that holds the value from history string by
+     * Creates list with data object that holds the value from management string by
      * grow day.
      *
-     * @param historyByGrowDayMap the history by grow day map
+     * @param historyByGrowDayMap the management by grow day map
      * @param data                the object that encapsulate data.
      * @return dataByGrowDay the data by grow day map
      */
@@ -44,7 +44,7 @@ public class DataForExcelCreator {
         List<String> dataByGrowDay = new ArrayList<String>();
         Collection<String> stringValues = historyByGrowDayMap.values();
         for (String stringValue : stringValues) {
-            // if history table was empty 
+            // if management table was empty
             if (stringValue.equals("-1")) {
                 data.setValue(Long.parseLong("-1"));
                 String value = valueToString(data);
@@ -68,7 +68,7 @@ public class DataForExcelCreator {
 
                     }
                 }
-                // if data does not exist in history table
+                // if data does not exist in management table
                 if (!exist) {
                     data.setValue(Long.parseLong("-1"));
                     String value = valueToString(data);
@@ -78,7 +78,6 @@ public class DataForExcelCreator {
         }
         return dataByGrowDay;
     }
-
 
     /**
      * @param data
@@ -102,17 +101,12 @@ public class DataForExcelCreator {
         return data.getFormattedValue();
     }
 
-    /**
-     * @param growDays
-     * @return
-     */
     public static List<String> createDataList(final Set<Integer> growDays) {
         List<String> dataByGrowDay = new ArrayList<String>();
         Iterator<Integer> iter = growDays.iterator();
 
         while (iter.hasNext()) {
             Integer value = iter.next();
-
             dataByGrowDay.add(value.toString());
         }
 

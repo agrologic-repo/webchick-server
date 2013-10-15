@@ -1,8 +1,5 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.excel;
 
 
@@ -14,14 +11,12 @@ import jxl.format.Colour;
 import jxl.format.UnderlineStyle;
 import jxl.write.*;
 import jxl.write.biff.RowsExceededException;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Title: WriteToExcel.java <br>
@@ -33,13 +28,9 @@ import java.util.Locale;
  * @version 0.1.1 <br>
  */
 public class WriteToExcel {
-    private Logger logger = Logger.getLogger(WriteToExcel.class);
-    private List<List<String>> cellDataList;
-
-    //  private WritableCellFormat timesBoldUnderline;
-//  private WritableCellFormat times;
     private String inputFile;
     private List<String> titles;
+    private List<List<String>> cellDataList;
 
     public void setOutputFile(String inputFile) {
         this.inputFile = inputFile;
