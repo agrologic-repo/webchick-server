@@ -6351,13 +6351,13 @@ CREATE TABLE `domains` (
 
 /*!40000 ALTER TABLE `domains` DISABLE KEYS */;
 INSERT INTO `domains` (`Domain`,`LogoPath`,`Company`) VALUES 
- ('192.168.1.101','img/logo.png','Logo'),
- ('agrologic',' img/agrologiclogo.png','Agrologic'),
- ('choretime','img/choretimelogo.gif','ChoreTime'),
- ('fancom','img/fancomlogo.gif','Fancom'),
- ('kutlusan','img/kutlusanlogo.jpg','Kutlusan'),
- ('roxel','img/roxelllogo.gif','Roxell'),
- ('tegel','img/tegellogo.png','Tegel');
+ ('192.168.1.101','resources/images/logo.png','Logo'),
+ ('agrologic',' resources/images/agrologiclogo.png','Agrologic'),
+ ('choretime','resources/images/choretimelogo.gif','ChoreTime'),
+ ('fancom','resources/images/fancomlogo.gif','Fancom'),
+ ('kutlusan','resources/images/kutlusanlogo.jpg','Kutlusan'),
+ ('roxel','resources/images/roxelllogo.gif','Roxell'),
+ ('tegel','resources/images/tegellogo.png','Tegel');
 /*!40000 ALTER TABLE `domains` ENABLE KEYS */;
 
 

@@ -10,7 +10,6 @@ import com.agrologic.app.model.Data;
 import java.util.*;
 import java.util.Map.Entry;
 
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Title: DataForGraphCreator.java <br> Description: <br> Copyright: Copyright
@@ -22,11 +21,11 @@ import java.util.Map.Entry;
 public class DataGraphCreator {
 
     /**
-     * Create history data by grow day.
+     * Create management data by grow day.
      *
-     * @param history the history map per grow day.
+     * @param history the management map per grow day.
      * @param data    the searching data .
-     * @return histDataByGrowDay the map with searched history data per grow day
+     * @return histDataByGrowDay the map with searched management data per grow day
      */
     public static Map<Integer, Data> createHistoryDataByGrowDay(final Map<Integer, String> history,
                                                                 final Data data) {
@@ -48,11 +47,11 @@ public class DataGraphCreator {
     }
 
     /**
-     * Return data object with value from history string.
+     * Return data object with value from management string.
      *
-     * @param searchData the data that encapsulate all field except value.
-     * @param histString the string which all history pairs data and value .
-     * @return foundData the data object with value from history string, or
+     * @param searchData the data that encapsulate all field exception value.
+     * @param histString the string which all management pairs data and value .
+     * @return foundData the data object with value from management string, or
      *         null.
      */
     private static Data getDataFromHistory(Data searchData, String histString) {

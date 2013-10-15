@@ -118,6 +118,92 @@ public class CellinkState {
         return (CellinkState) CELLINK_STATES_MAP.get(str);
     }
 
+    public static String getCellinkStateColor(int state) {
+        String color = "white";
+
+        switch (state) {
+            case CellinkState.STATE_ONLINE:
+                color = "#000000";
+
+                break;
+
+            case CellinkState.STATE_RUNNING:
+                color = "#FFFFFF";
+
+                break;
+
+            case CellinkState.STATE_START:
+                color = "#000000";
+
+                break;
+
+            case CellinkState.STATE_STOP:
+                color = "#000000";
+
+                break;
+
+            case CellinkState.STATE_OFFLINE:
+                color = "#000000";
+
+                break;
+
+            case CellinkState.STATE_UNKNOWN:
+                color = "#FFFFFF";
+
+                break;
+
+            default:
+                color = "white";
+
+                break;
+        }
+
+        return color;
+    }
+
+    public static String getCellinkStateBGColor(int state) {
+        String color = "white";
+
+        switch (state) {
+            case CellinkState.STATE_ONLINE:
+                color = "#00FF00";
+
+                break;
+
+            case CellinkState.STATE_RUNNING:
+                color = "#0000FF";
+
+                break;
+
+            case CellinkState.STATE_START:
+                color = "#FF9933";
+
+                break;
+
+            case CellinkState.STATE_STOP:
+                color = "#9999FF";
+
+                break;
+
+            case CellinkState.STATE_OFFLINE:
+                color = "#FF0000";
+
+                break;
+
+            case CellinkState.STATE_UNKNOWN:
+                color = "#808080";
+
+                break;
+
+            default:
+                color = "#000000";
+
+                break;
+        }
+
+        return color;
+    }
+
     /**
      * Convert a int to a CellinkState object.
      *

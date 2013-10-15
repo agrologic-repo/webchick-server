@@ -1,8 +1,5 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.graph;
 
 
@@ -30,8 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-//~--- JDK imports ------------------------------------------------------------
 
 
 public class CombinedXYGraph {
@@ -193,7 +188,6 @@ public class CombinedXYGraph {
 
     public void createChart(String title, String subtitle) {
         NumberAxis growDayAxis = new NumberAxis("Grow Day");
-
         growDayAxis.setAutoRangeIncludesZero(false);
         growDayAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         growDayAxis.setLabelFont(new Font("Dialog", Font.PLAIN, 16));

@@ -457,7 +457,7 @@ public class RowMappers {
         }
     }
 
-    public static class FlockMapper implements RowMapper<Flock> {
+    private static class FlockMapper implements RowMapper<Flock> {
 
         @Override
         public Flock mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -668,7 +668,7 @@ public class RowMappers {
         }
     }
 
-    public static class WorkerMapper implements RowMapper<Worker> {
+    private static class WorkerMapper implements RowMapper<Worker> {
 
         @Override
         public Worker mapRow(ResultSet rs, int rowNum) throws SQLException {

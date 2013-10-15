@@ -22,10 +22,19 @@ public class DataDaoImpl implements DataDao {
     private final Logger logger = LoggerFactory.getLogger(DataDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
+    private final SimpleJdbcInsert jdbcInsertDataTable;
+    private final SimpleJdbcInsert jdbcInsertSpecialTable;
+
 
     public DataDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("datatable");
+        this.jdbcInsertDataTable = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsertDataTable.setTableName("tabledata");
+        this.jdbcInsertSpecialTable = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsertSpecialTable.setTableName("specialdatalabels");
+
         this.dao = dao;
     }
 
@@ -41,7 +50,6 @@ public class DataDaoImpl implements DataDao {
         valuesToInsert.put("Label", data.getLabel());
         valuesToInsert.put("IsSpecial", data.getSpecial());
         valuesToInsert.put("IsRelay", data.getIsRelay());
-        jdbcInsert.setTableName("datatable");
         jdbcInsert.execute(valuesToInsert);
     }
 
@@ -167,8 +175,9 @@ public class DataDaoImpl implements DataDao {
         valuesToInsert.put("ProgramId", programId);
         valuesToInsert.put("displayontable", display);
         valuesToInsert.put("Position", position);
-        jdbcInsert.setTableName("tabledata");
-        jdbcInsert.execute(valuesToInsert);
+//        SimpleJdbcInsert jdbcInsertDataTable = new SimpleJdbcInsert(jdbcTemplate);
+//        jdbcInsertDataTable.setTableName("tabledata");
+        jdbcInsertDataTable.execute(valuesToInsert);
     }
 
     /**
@@ -194,8 +203,9 @@ public class DataDaoImpl implements DataDao {
         valuesToInsert.put("ProgramId", programId);
         valuesToInsert.put("LangId", langId);
         valuesToInsert.put("SpecialLabel", label);
-        jdbcInsert.setTableName("specialdatalabels");
-        jdbcInsert.execute(valuesToInsert);
+//        SimpleJdbcInsert jdbcInsertSpecialTable = new SimpleJdbcInsert(jdbcTemplate);
+//        jdbcInsertSpecialTable.setTableName("specialdatalabels");
+        jdbcInsertSpecialTable.execute(valuesToInsert);
     }
 
     @Override
@@ -203,6 +213,18 @@ public class DataDaoImpl implements DataDao {
         String sql = "insert into databylanguage values (?,?,?) on duplicate key update " +
                 "UnicodeLabel=values(UnicodeLabel)";
         jdbcTemplate.update(sql, dataId, langId, translate);
+    }
+
+    @Override
+    public void clearControllerData(Long controllerId) throws SQLException {
+        String sql = "delete from controllerdata where controllerid=? ";
+        jdbcTemplate.update(sql, controllerId);
+    }
+
+    @Override
+    public void moveData(Long screenId, Long programId, Long tableId) throws SQLException {
+        String sql = "update tabledata set screenid=? where programid=? and tableid=? ";
+        jdbcTemplate.update(sql, screenId, programId, tableId);
     }
 
     @Override
@@ -231,8 +253,12 @@ public class DataDaoImpl implements DataDao {
     public Data getSetClockByController(Long controllerId) throws SQLException {
         String sql = "select * from datatable "
                 + " inner join controllerdata on datatable.DataID=controllerdata.DataID"
-                + " and datatable.DataID=1309 and controllerdata.ControllerID=?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{controllerId}, RowMappers.data());
+                + " and datatable.DataID= 1309 and controllerdata.ControllerID=?";
+        List<Data> result = jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result.get(0);
     }
 
     @Override
@@ -260,6 +286,12 @@ public class DataDaoImpl implements DataDao {
     }
 
     @Override
+    public Collection<Data> find(Long type) throws SQLException {
+        String sql = "select * from datatable where type  like ?";
+        return jdbcTemplate.query(sql, new Object[]{"%" + type + "%"}, RowMappers.data());
+    }
+
+    @Override
     public Collection<Data> getAll() throws SQLException {
         String sql = "select * from datatable";
         return jdbcTemplate.query(sql, RowMappers.data());
@@ -272,7 +304,7 @@ public class DataDaoImpl implements DataDao {
      * @throws java.sql.SQLException if failed to retrieve data from the database
      */
     @Override
-    public List<Data> getRelays() throws SQLException {
+    public Collection<Data> getRelays() throws SQLException {
         return getSpecial("Relays");
     }
 
@@ -283,7 +315,7 @@ public class DataDaoImpl implements DataDao {
      * @throws java.sql.SQLException if failed to retrieve data from the database
      */
     @Override
-    public List<Data> getAlarms() throws SQLException {
+    public Collection<Data> getAlarms() throws SQLException {
         return getSpecial("Alarms");
     }
 
@@ -294,18 +326,18 @@ public class DataDaoImpl implements DataDao {
      * @throws java.sql.SQLException if failed to retrieve data from the database
      */
     @Override
-    public List<Data> getSystemStates() throws SQLException {
+    public Collection<Data> getSystemStates() throws SQLException {
         return getSpecial("System States");
     }
 
-    private List<Data> getSpecial(String string) throws SQLException {
+    private Collection<Data> getSpecial(String string) throws SQLException {
         String sql = "select * from datatable where IsSpecial in "
                 + "(select ID from Special where Text=?)";
         return jdbcTemplate.query(sql, new Object[]{string}, RowMappers.data());
     }
 
     @Override
-    public List<Data> getTableDataList(Long programId, Long screenId, Long tableId, String display) throws SQLException {
+    public Collection<Data> getTableDataList(Long programId, Long screenId, Long tableId, String display) throws SQLException {
         String sql = "select datatable.DataID , datatable.Type ,datatable.Status , datatable.ReadOnly, " +
                 "datatable.Title,datatable.Format ,datatable.Label ,datatable.IsSpecial ,datatable.IsRelay , " +
                 "tabledata.TableID,tabledata.ProgramID ,tabledata.ScreenID ,tabledata.DisplayOnTable, " +
@@ -319,7 +351,7 @@ public class DataDaoImpl implements DataDao {
     }
 
     @Override
-    public List<Data> getTableDataList(Long programId, Long screenId, Long tableId, Long langId, String display)
+    public Collection<Data> getTableDataList(Long programId, Long screenId, Long tableId, Long langId, String display)
             throws SQLException {
         String sql = "select * from tabledata "
                 + "left join specialdatalabels "
@@ -340,23 +372,11 @@ public class DataDaoImpl implements DataDao {
     }
 
     @Override
-    public List<Data> getHistoryDataList() throws SQLException {
+    public Collection<Data> getHistoryDataList() throws SQLException {
         String sql = "select * from datatable "
                 + "inner join databylanguage on datatable.DataID=databylanguage.DataID"
                 + " and databylanguage.LangID=1 and datatable.isspecial=5 order by datatable.DataID";
         return jdbcTemplate.query(sql, RowMappers.data());
-    }
-
-    @Override
-    public void clearControllerData(Long controllerId) throws SQLException {
-        String sql = "delete from controllerdata where controllerid=? ";
-        jdbcTemplate.update(sql, controllerId);
-    }
-
-    @Override
-    public void moveData(Long screenId, Long programId, Long tableId) throws SQLException {
-        String sql = "update tabledata set screenid=? where programid=? and tableid=? ";
-        jdbcTemplate.update(sql, screenId, programId, tableId);
     }
 
     @Override

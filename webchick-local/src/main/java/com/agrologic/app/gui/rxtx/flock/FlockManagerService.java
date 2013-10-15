@@ -88,22 +88,6 @@ public class FlockManagerService {
 
     public void removeFlock(Flock flock) {
         try {
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-            System.out.println("remove flock ");
-
             flockDao.removeAllHistoryInFlock(flock.getFlockId());
             flockDao.removeAllHistoryOf24hourInFlock(flock.getFlockId());
             flockDao.remove(flock.getFlockId());

@@ -12,9 +12,9 @@ public class LocalUtil {
 
 
     /**
-     * Not recommended. Test should not sleep, but should wait for some condition instead.
+     * Not recommended. Test should not sleepMiliSeconds, but should wait for some condition instead.
      *
-     * @param milliseconds Time to sleep in milliseconds
+     * @param milliseconds Time to sleepMiliSeconds in milliseconds
      */
     public static void sleep(long milliseconds) {
         try {

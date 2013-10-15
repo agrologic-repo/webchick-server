@@ -12,6 +12,7 @@ import static org.mockito.Mockito.*;
 
 public class ClientSessionsTest {
     private CellinkDao cellinkDao = mock(CellinkDao.class);
+    private SocketThread socketThread = mock(SocketThread.class);
 
     @Test
     public void closeDuplicateSessionShouldDoNothingIfNoDuplicate() {
@@ -62,7 +63,7 @@ public class ClientSessionsTest {
     }
 
     private ClientSessions createSut(SocketThread... sessions) {
-        ClientSessions clientSessions = new ClientSessions(null, null, cellinkDao);
+        ClientSessions clientSessions = new ClientSessions(null, cellinkDao);
         for (SocketThread session : sessions) {
             clientSessions.getSessions().put(session.getCellink().getId(), session);
         }

@@ -5,6 +5,7 @@
 package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.model.DataFormat;
+
 import java.util.Map;
 
 public class HistoryEntry {

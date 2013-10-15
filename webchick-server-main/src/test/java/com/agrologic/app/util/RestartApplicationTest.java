@@ -1,6 +1,6 @@
 package com.agrologic.app.util;
 
-import com.agrologic.app.except.JarFileWasNotFound;
+import com.agrologic.app.exception.JarFileWasNotFound;
 import junit.framework.Assert;
 import org.junit.Ignore;
 import org.junit.Test;

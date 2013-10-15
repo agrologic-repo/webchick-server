@@ -272,7 +272,7 @@ public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, Dro
             prepstmt.executeUpdate();
         } catch (SQLException e) {
             dao.printSQLException(e);
-            throw new SQLException("Update flock history error ", e);
+            throw new SQLException("Update flock management error ", e);
         } finally {
             prepstmt.close();
             dao.closeConnection(con);
@@ -296,7 +296,7 @@ public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, Dro
         } catch (SQLException e) {
             if (!e.getSQLState().equals("23505")) {//Found duplicate from database view
                 dao.printSQLException(e);
-                throw new SQLException("Update flock history 24 hours error.", e);
+                throw new SQLException("Update flock management 24 hours error.", e);
             }
         } finally {
             prepstmt.close();

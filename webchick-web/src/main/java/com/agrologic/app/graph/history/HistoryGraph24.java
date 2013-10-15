@@ -1,8 +1,5 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.graph.history;
 
 
@@ -33,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-//~--- JDK imports ------------------------------------------------------------
 
 
 public class HistoryGraph24 {
@@ -117,10 +112,10 @@ public class HistoryGraph24 {
     }
 
     /**
-     * Creates series collection of data history by grow day
+     * Creates series collection of data management by grow day
      * and add to plot.
      *
-     * @param dataHsitoryList the List of data history by grow day map.
+     * @param dataHsitoryList the List of data management by grow day map.
      * @param axisLabel       the label of series collection.
      */
     public void createAndAddSeriesCollection(List<Map<Integer, Data>> dhl, String axisLabel) {
@@ -149,9 +144,9 @@ public class HistoryGraph24 {
     }
 
     /**
-     * Creates series collection of data history by grow day.
+     * Creates series collection of data management by grow day.
      *
-     * @param dataHsitoryList the List of data history by grow day map.
+     * @param dataHsitoryList the List of data management by grow day map.
      * @return seriesCollect the series collection object.
      */
     protected XYSeriesCollection createSeriesCollection(List<Map<Integer, Data>> dhl) {
@@ -452,9 +447,9 @@ public class HistoryGraph24 {
     }
 
     /**
-     * Set data history list.
+     * Set data management list.
      *
-     * @param dataHistoryList the data history list
+     * @param dataHistoryList the data management list
      */
     public void setDataHistoryList(List<Map<Integer, Data>> dataHistoryList) {
         this.dataHistoryList = dataHistoryList;

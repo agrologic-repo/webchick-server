@@ -1,11 +1,7 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.graph.daily;
 
-//~--- JDK imports ------------------------------------------------------------
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,24 +12,33 @@ import java.util.Map;
  * Description: <br>
  * Copyright:   Copyright (c) 2009 <br>
  * Company:     Agro Logic LTD. <br>
- * @author      Valery Manakhimov <br>
- * @version     1.1 <br>
+ *
+ * @author Valery Manakhimov <br>
+ * @version 1.1 <br>
  */
 public class GraphType {
-    public static final int BLANK_GRAPH             = 0;
-    public static final int IN_FEED_WATER_GRAPH     = 2;
+    public static final int BLANK_GRAPH = 0;
+    public static final int IN_FEED_WATER_GRAPH = 2;
     public static final int IN_OUT_TEMP_HUMID_GRAPH = 1;
 
-    /** Map of Strings to GraphType objects. */
+    /**
+     * Map of Strings to GraphType objects.
+     */
     private static final Map graphTypeMap = new HashMap();
 
-    /** The in/out temperature and humidity graph. */
+    /**
+     * The in/out temperature and humidity graph.
+     */
     public static final GraphType IN_OUT_TEMP_HUMID = new GraphType(IN_OUT_TEMP_HUMID_GRAPH);
 
-    /** The in temperature water and consumption graph */
+    /**
+     * The in temperature water and consumption graph
+     */
     public static final GraphType IN_FEED_WATER = new GraphType(IN_FEED_WATER_GRAPH);
 
-    /** The in temperature water and consumption graph */
+    /**
+     * The in temperature water and consumption graph
+     */
     public static final GraphType BLANK = new GraphType(BLANK_GRAPH);
 
     // initialize a String -> GraphType map
@@ -59,6 +64,7 @@ public class GraphType {
 
     /**
      * Convert a GraphType to a String object.
+     *
      * @param type The GraphType
      * @return The String or null
      */
@@ -68,6 +74,7 @@ public class GraphType {
 
     /**
      * Convert a GraphType to a String object.
+     *
      * @param type The GraphType
      * @return The String or null
      */
@@ -87,6 +94,7 @@ public class GraphType {
 
     /**
      * Convert a String to a GraphType object.
+     *
      * @param str The String
      * @return The GraphType or null
      */
@@ -96,6 +104,7 @@ public class GraphType {
 
     /**
      * Convert a int to a GraphType object.
+     *
      * @param str The String
      * @return The GraphType or null
      */

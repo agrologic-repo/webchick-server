@@ -87,6 +87,10 @@ public interface DataDao {
     void saveChanges(Long programId, Long screenId, Long tableId, Map<Long, String> showOnTableMap,
                      Map<Long, Integer> posOnTableMap) throws SQLException;
 
+    void clearControllerData(Long controllerId) throws SQLException;
+
+    void moveData(Long screenId, Long programId, Long tableId) throws SQLException;
+
     Data getById(Long dataId) throws SQLException;
 
     Data getById(Long dataId, Long langId) throws SQLException;
@@ -99,25 +103,22 @@ public interface DataDao {
 
     Data getChangedDataValue(Long controllerId) throws SQLException;
 
+    Collection<Data> find(Long type) throws SQLException;
+
     Collection<Data> getAll() throws SQLException;
 
-    List<Data> getRelays() throws SQLException;
+    Collection<Data> getRelays() throws SQLException;
 
-    List<Data> getAlarms() throws SQLException;
+    Collection<Data> getAlarms() throws SQLException;
 
-    List<Data> getSystemStates() throws SQLException;
+    Collection<Data> getSystemStates() throws SQLException;
 
-    List<Data> getTableDataList(Long programId, Long screenId, Long tableId, String display)
+    Collection<Data> getTableDataList(Long programId, Long screenId, Long tableId, String display) throws SQLException;
+
+    Collection<Data> getTableDataList(Long programId, Long screenId, Long tableId, Long langId, String display)
             throws SQLException;
 
-    List<Data> getTableDataList(Long programId, Long screenId, Long tableId, Long langId, String display)
-            throws SQLException;
-
-    List<Data> getHistoryDataList() throws SQLException;
-
-    void clearControllerData(Long controllerId) throws SQLException;
-
-    void moveData(Long screenId, Long programId, Long tableId) throws SQLException;
+    Collection<Data> getHistoryDataList() throws SQLException;
 
     Collection<Data> getAllBySpecial(Integer special) throws SQLException;
 

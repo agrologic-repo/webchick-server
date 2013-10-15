@@ -1,10 +1,6 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
-package com.agrologic.app.graph.daily;
 
+package com.agrologic.app.graph.daily;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
@@ -13,17 +9,6 @@ import org.jfree.data.xy.XYDataset;
 
 import java.awt.*;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * Title: Graph24Blank <br>
- * Description: <br>
- * Copyright:   Copyright (c) 2009 <br>
- * Company:     Agro Logic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public final class Graph24Empty {
     JFreeChart chart;
 

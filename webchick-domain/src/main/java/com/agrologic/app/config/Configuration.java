@@ -56,7 +56,7 @@ public class Configuration extends Observable {
     public static final String DEFAULT_CELLINK_ID = "1";
     public static final String DEFAULT_WEBCHICK_URI = "http://localhost:8080/webchick/startpage.html";
     public static final Boolean DEFAULT_RUN_AT_STARTUP = Boolean.FALSE;
-    public static final String DEFAULT_VERSION = "6.5.13";
+    public static final String DEFAULT_VERSION = "6.6.1";
     private String language;
 
     /**

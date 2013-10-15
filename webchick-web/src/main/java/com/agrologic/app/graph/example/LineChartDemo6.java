@@ -1,8 +1,5 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.graph.example;
 
 
@@ -23,7 +20,6 @@ import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
 
-//~--- JDK imports ------------------------------------------------------------
 
 public class LineChartDemo6 extends ApplicationFrame {
     private JFreeChart chart;

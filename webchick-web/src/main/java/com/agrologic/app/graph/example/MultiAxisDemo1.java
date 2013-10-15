@@ -1,8 +1,5 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.graph.example;
 
 
@@ -23,7 +20,6 @@ import org.jfree.ui.RefineryUtilities;
 import javax.swing.*;
 import java.awt.*;
 
-//~--- JDK imports ------------------------------------------------------------
 
 public class MultiAxisDemo1 extends ApplicationFrame {
     public MultiAxisDemo1(String paramString) {

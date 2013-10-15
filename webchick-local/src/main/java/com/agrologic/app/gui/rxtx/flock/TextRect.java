@@ -4,14 +4,12 @@
  */
 package com.agrologic.app.gui.rxtx.flock;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.swing.JPanel;
 
 /**
  * {Insert class description here}

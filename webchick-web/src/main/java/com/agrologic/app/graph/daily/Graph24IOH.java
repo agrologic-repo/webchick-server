@@ -37,7 +37,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-//~--- JDK imports ------------------------------------------------------------
 
 /**
  * Title: Graph24HumidTemp <br> Description: <br> Copyright: Copyright (c) 2009

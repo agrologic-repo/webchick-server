@@ -36,7 +36,7 @@ public class DomainDaoImpl implements DomainDao {
             if (rs.next()) {
                 return rs.getString("logopath");
             } else {
-                return "img/agrologiclogo.png";
+                return "resources/images/agrologiclogo.png";
             }
         } catch (SQLException e) {
             throw new SQLException("Cannot Retrieve Controllers From DataBase", e);

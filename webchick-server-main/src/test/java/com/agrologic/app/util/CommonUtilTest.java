@@ -2,11 +2,11 @@ package com.agrologic.app.util;
 
 import org.junit.Test;
 
-public class CommonTest {
+public class CommonUtilTest {
 
     @Test
     public void showEnvironmentVariables() {
-        Common.env();
+        CommonUtil.env();
     }
 
 }

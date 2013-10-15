@@ -1,8 +1,5 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.graph.daily;
 
 
@@ -10,17 +7,6 @@ import org.jfree.chart.JFreeChart;
 
 import java.util.*;
 
-//~--- JDK imports ------------------------------------------------------------
-
-/**
- * Title: AbstractGraph <br>
- * Description: <br>
- * Copyright:   Copyright (c) 2009 <br>
- * Company:     Agro Logic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public abstract class AbstractGraph implements Graph {
     public static final int DAY_HOURS = 24;
     public static final int FEED_INDEX = 72;

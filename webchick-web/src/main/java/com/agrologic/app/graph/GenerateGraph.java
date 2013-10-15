@@ -1,8 +1,5 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.graph;
 
 
@@ -24,11 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
 
-//~--- JDK imports ------------------------------------------------------------
 
-/**
- * @author Administrator
- */
 public class GenerateGraph {
     public static String generateChartTempHum(Long controllerId, HttpSession session, PrintWriter pw, Locale locale) {
         String filenameth = null;

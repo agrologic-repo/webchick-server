@@ -11,7 +11,6 @@
  */
 
 
-
 package com.agrologic.app.graph;
 
 public class NoDataException extends Exception {

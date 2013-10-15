@@ -5,11 +5,6 @@
 package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.model.DataFormat;
-import java.awt.Color;
-import java.awt.Font;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -26,6 +21,11 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.util.UnitType;
+
+import java.awt.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class GraphFactory {
 

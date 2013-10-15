@@ -105,6 +105,11 @@
     </aop:config>
 
     <aop:config>
+        <aop:pointcut id="flockTxPointcut" expression="within(com.agrologic.app.dao.FlockDao+)"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="flockTxPointcut"/>
+    </aop:config>
+
+    <aop:config>
         <aop:pointcut id="feedTxPointcut" expression="within(com.agrologic.app.dao.FeedDao+)"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="feedTxPointcut"/>
     </aop:config>
@@ -179,6 +184,13 @@
                 <!--This option is useful if threads are waiting for the connection from pool. Without this threads would wait
                 forever and you're risking to get your app down if all the threads stuck.-->
                 <property name="checkoutTimeout" value="10000"/>
+                <property name="acquireIncrement" value="3"/>
+                <property name="initialPoolSize" value="2"/>
+                <property name="maxIdleTime" value="18000"/>
+                <property name="maxPoolSize" value="50"/>
+                <property name="minPoolSize" value="2"/>
+                <property name="maxStatements" value="50"/>
+                <property name="testConnectionOnCheckin" value="true"/>
             </bean>
         </property>
     </bean>

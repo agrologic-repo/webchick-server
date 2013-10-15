@@ -6,15 +6,13 @@ package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.model.Medicine;
-import java.awt.Frame;
-import java.awt.Point;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-
-import javax.swing.JDialog;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *

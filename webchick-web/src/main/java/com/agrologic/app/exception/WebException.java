@@ -1,8 +1,5 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
+
 package com.agrologic.app.exception;
 
 /**
@@ -10,8 +7,9 @@ package com.agrologic.app.exception;
  * Decription: A Web Exception to notify any error that might occur on the web tier.<br>
  * Copyright:   Copyright (c) 2009 <br>
  * Company:     Agro Logic LTD. <br>
- * @author      Valery Manakhimov <br>
- * @version     1.0 <br>
+ *
+ * @author Valery Manakhimov <br>
+ * @version 1.0 <br>
  */
 public class WebException extends Exception {
 
@@ -22,7 +20,8 @@ public class WebException extends Exception {
 
     /**
      * The constructor calles the Excpetion constructor to populate the message
-     * @param message  A message of the error that occured
+     *
+     * @param message A message of the error that occured
      */
     public WebException(String message) {
         super(message);

@@ -1,6 +1,6 @@
 package com.agrologic.app.model;
 
-import com.agrologic.app.except.ObjectDoesNotExist;
+import com.agrologic.app.exception.ObjectDoesNotExist;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 

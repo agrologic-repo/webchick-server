@@ -165,7 +165,7 @@ public class FlockDaoImpl implements FlockDao {
     public Integer getUpdatedGrowDay(Long flockId) throws SQLException {
         String sql = "select growday from flockhistory where growday = "
                 + "(select max(GrowDay) from flockhistory where FlockID=?)";
-        logger.debug("Get last updated history grow day in flock with id [{}]", flockId);
+        logger.debug("Get last updated hisotry grow day in flock with id [{}]", flockId);
         return jdbcTemplate.queryForInt(sql, new Object[]{flockId}, Integer.class);
     }
 
@@ -173,7 +173,7 @@ public class FlockDaoImpl implements FlockDao {
     public Integer getUpdatedGrowDayHistory(Long flockId) throws SQLException {
         String sql = "select growday from flockhistory where flockid=? and growday = "
                 + "(select max(GrowDay) from flockhistory where flockid=?)";
-        logger.debug("Get last updated history grow day in flock with id [{}]", flockId);
+        logger.debug("Get last updated management grow day in flock with id [{}]", flockId);
         List<Integer> result = jdbcTemplate.queryForList(sql, new Object[]{flockId, flockId}, Integer.class);
         if (result.isEmpty()) {
             return null;
@@ -185,7 +185,7 @@ public class FlockDaoImpl implements FlockDao {
     public Integer getUpdatedGrowDayHistory24(Long flockId) throws SQLException {
         String sql = "select max(growday) as growday from flockhistory24  where flockid=? and DNum ="
                 + " (select max(DNum) from flockhistory24 where FlockID=?)";
-        logger.debug("Get last updated history of 24 hours grow day in flock with id [{}]", flockId);
+        logger.debug("Get last updated management of 24 hours grow day in flock with id [{}]", flockId);
         List<Integer> result = jdbcTemplate.queryForList(sql, new Object[]{flockId, flockId}, Integer.class);
         if (result.isEmpty()) {
             return null;
@@ -197,7 +197,11 @@ public class FlockDaoImpl implements FlockDao {
     public Integer getResetTime(Long flockId, Integer growDay) throws SQLException {
         String sql = "select historydata from flockhistory24 where FlockID=? and GrowDay=? and DNum='D70'";
         logger.debug("Get reset time for history data in flock with id [{}]", flockId);
-        return jdbcTemplate.queryForInt(sql, new Object[]{flockId, growDay}, Integer.class);
+        List<Integer> result = jdbcTemplate.queryForList(sql, new Object[]{flockId, growDay}, Integer.class);
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result.get(0);
     }
 
     @Override
@@ -265,9 +269,12 @@ public class FlockDaoImpl implements FlockDao {
 
     @Override
     public String getHistory24(Long flockId, Integer growDay, String dn) throws SQLException {
-        String sql = "select * from flockhistory24 where flockid=? and growday=? and dnum=?";
-        String result = jdbcTemplate.queryForObject(sql, new Object[]{flockId, growDay, dn}, String.class);
-        return result;
+        String sql = "select historydata from flockhistory24 where flockid=? and growday=? and dnum=?";
+        List<String> result = jdbcTemplate.queryForList(sql, new Object[]{flockId, growDay, dn}, String.class);
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result.get(0);
     }
 
     @Override
@@ -284,8 +291,8 @@ public class FlockDaoImpl implements FlockDao {
     @Override
     public Flock getOpenFlockByController(Long controllerId) throws SQLException {
         logger.debug("Get open flock that belongs to controller with id [{}]", controllerId);
-        String sql = "select * from flocks where ControllerID=? and Status='Open'";
-        List<Flock> flocks = jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.flock());
+        List<Flock> flocks = jdbcTemplate.query("select * from flocks where ControllerID=? and Status='Open'",
+                new Object[]{controllerId}, RowMappers.flock());
         if (flocks.isEmpty()) {
             return null;
         }

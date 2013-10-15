@@ -7,8 +7,12 @@ package com.agrologic.app.gui.rxtx.flock;
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.model.Feed;
 import com.agrologic.app.model.FeedType;
-import java.awt.Frame;
-import java.awt.Point;
+import net.sf.nachocalendar.CalendarFactory;
+import net.sf.nachocalendar.components.DateField;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DateFormat;
@@ -17,12 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
-import net.sf.nachocalendar.CalendarFactory;
-import net.sf.nachocalendar.components.DateField;
 
 /**
  *

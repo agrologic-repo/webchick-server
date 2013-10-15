@@ -13,7 +13,7 @@ package com.agrologic.app.network.rxtx;
 
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.config.Protocol;
-import com.agrologic.app.except.SerialPortControlFailure;
+import com.agrologic.app.exception.SerialPortControlFailure;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.messaging.ResponseMessage;
 import com.agrologic.app.network.CommControl;
