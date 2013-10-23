@@ -44,9 +44,9 @@ public class AddFeedFormServlet extends AbstractServlet {
             String numberAccount = request.getParameter("numberAccount");
 
             try {
-                FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDaoImpl.class);
+                FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDao.class);
                 FeedType feedType = feedTypeDao.getById(feedTypeId);
-                FeedDao feedDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedDaoImpl.class);
+                FeedDao feedDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedDao.class);
                 Feed feed = new Feed();
 
                 feed.setFlockId(flockId);
@@ -70,24 +70,15 @@ public class AddFeedFormServlet extends AbstractServlet {
 
                 flock.setFeedAdd(feedAmount);
                 flock.setTotalFeed(feedTotalCost);
-                flockDao.update(flock);
+                flockDao.updateFlockDetail(flock);
                 logger.info("Feed added successfully to the database");
 
-                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
-
-                for (Controller controller : controllers) {
-                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
-                    controller.setFlocks(flocks);
-                }
-
-                request.setAttribute("controllers", controllers);
                 request.getRequestDispatcher("./rmctrl-add-feed.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.info("Error adding feed", ex);
+                request.getRequestDispatcher("./rmctrl-add-feed.jsp?celinkId=" + cellinkId + "&controllerId="
+                        + controllerId + "&flockId=" + flockId).forward(request, response);
             }
         } finally {
             out.close();

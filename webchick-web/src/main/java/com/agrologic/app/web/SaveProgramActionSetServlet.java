@@ -75,7 +75,7 @@ public class SaveProgramActionSetServlet extends AbstractServlet {
                 }
 
                 try {
-                    ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDaoImpl.class);
+                    ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDao.class);
                     actionsetDao.saveChanges(programId, screenId, showTableMap, posDataMap);
                     Collection<ActionSet> actionset = actionsetDao.getAll(programId);
 

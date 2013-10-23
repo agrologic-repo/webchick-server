@@ -32,17 +32,13 @@ public abstract class AbstractGraph implements Graph {
         setEmpty();
     }
 
-    protected void initLaguage() {
+    protected void initLanguage() {
         dictinary = new HashMap<String, String>();
-
-        ResourceBundle bundle = ResourceBundle.getBundle("MessagesBundle", locale);
-
+        ResourceBundle bundle = ResourceBundle.getBundle("labels", locale);
         for (Enumeration<String> e = bundle.getKeys(); e.hasMoreElements(); ) {
             String key = e.nextElement();
-
             if (key.startsWith("graph")) {
                 String value = bundle.getString(key);
-
                 dictinary.put(key, value);
             }
         }

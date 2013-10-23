@@ -1,7 +1,10 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.model.*;
+import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Program;
+import com.agrologic.app.model.ProgramRelay;
+import com.agrologic.app.model.Screen;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 public class RCGraphServlet extends AbstractServlet {
@@ -34,22 +38,14 @@ public class RCGraphServlet extends AbstractServlet {
             long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             long controllerId = Long.parseLong(request.getParameter("controllerId"));
             long screenId = Long.parseLong(request.getParameter("screenId"));
-            String lang = (String) request.getAttribute("lang");
-
+            String lang = (String) request.getSession().getAttribute("lang");
             if ((lang == null) || lang.equals("")) {
                 lang = "en";
             }
-
-            checkRealTimeSessionTimeout(request);
             try {
-                CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
-                Cellink cellink = cellinkDao.getById(cellinkId);
-                cellinkDao.update(cellink);
-
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 Controller controller = controllerDao.getById(controllerId);
                 request.setAttribute("controller", controller);
-
 
                 ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                 Program program = programDao.getById(controller.getProgramId());
@@ -59,21 +55,15 @@ public class RCGraphServlet extends AbstractServlet {
                 long langId = languageDao.getLanguageId(lang);
 
                 ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(program.getId(), langId,
-                        false);
-                program.setScreens(screens);
+                Collection<Screen> screens = screenDao.getAllScreensByProgramAndLang(program.getId(), langId, false);
+                program.setScreens((List) screens);
 
                 final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
                 List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId(), langId);
                 program.setProgramRelays(programRelays);
 
-                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                List<Data> dataRelays = (List<Data>) dataDao.getRelays();
-                logger.info("retrieve program data relay!");
-                request.setAttribute("dataRelays", dataRelays);
-
                 request.getRequestDispatcher("./rmctrl-controller-graphs.jsp?userId" + userId + "&cellinkId="
-                        + cellinkId + "&screenId=" + screenId + "&filename=").forward(request,
+                        + cellinkId + "&screenId=" + screenId).forward(request,
                         response);
             } catch (SQLException ex) {
                 // error page

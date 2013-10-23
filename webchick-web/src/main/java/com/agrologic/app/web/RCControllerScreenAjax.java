@@ -81,10 +81,8 @@ public class RCControllerScreenAjax extends AbstractServlet {
                                 for (Table table : tables) {
                                     Collection<Data> dataList = dataDao.getOnlineTableDataList(controller.getId(), program.getId(),
                                             screen.getId(), table.getId(), langId);
-
                                     table.setDataList(dataList);
                                 }
-
                                 screen.setTables(tables);
                             }
                         }
@@ -128,7 +126,7 @@ public class RCControllerScreenAjax extends AbstractServlet {
                         out.println("<td nowrap align=center>");
                         out.println("<a class='" + cssClass + "' href='./rmctrl-main-screen-ajax.jsp?lang=" + lang
                                 + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId() + "&screenId="
-                                + MAIN_SCREEN + "&doResetTimeout=true' id=" + screen.getId() + " >");
+                                + MAIN_SCREEN + "' id=" + screen.getId() + " >");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
                         out.println("</td>");
@@ -137,7 +135,7 @@ public class RCControllerScreenAjax extends AbstractServlet {
                         out.println("<a class='" + cssClass + "' href='./rmtctrl-graph.html?lang=" + lang + "&userId="
                                 + userId + "&cellinkId=" + controller.getCellinkId() + "&controllerId="
                                 + controller.getId() + "&programId=" + controller.getProgram().getId()
-                                + "&screenId=" + screen.getId() + "&doResetTimeout=true' id=" + screen.getId()
+                                + "&screenId=" + screen.getId() + "' id=" + screen.getId()
                                 + " onclick='document.body.style.cursor=wait'>");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
@@ -148,7 +146,7 @@ public class RCControllerScreenAjax extends AbstractServlet {
                                 + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId()
                                 + "&controllerId=" + controller.getId() + "&programId="
                                 + controller.getProgram().getId() + "&screenId=" + screen.getId()
-                                + "&doResetTimeout=true' id=" + screen.getId()
+                                + "' id=" + screen.getId()
                                 + " onclick='document.body.style.cursor=wait'>");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
@@ -159,7 +157,7 @@ public class RCControllerScreenAjax extends AbstractServlet {
                                 + lang + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId()
                                 + "&controllerId=" + controller.getId() + "&programId="
                                 + controller.getProgram().getId() + "&screenId=" + screen.getId()
-                                + "&doResetTimeout=true' onclick='document.body.style.cursor=wait'>");
+                                + "' onclick='document.body.style.cursor=wait'>");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
                         out.println("</td>");
@@ -276,13 +274,13 @@ public class RCControllerScreenAjax extends AbstractServlet {
 
                 // error page
                 logger.info("retrieve program data relay!", ex);
-                request.getRequestDispatcher("./rmctrl-controller-screens.jsp?userId" + userId + "&cellinkId="
+                request.getRequestDispatcher("./rmctrl-controller-screens-ajax.jsp.jsp?userId" + userId + "&cellinkId="
                         + cellinkId + "&screenId=" + screenId).forward(request, response);
             } catch (Exception ex) {
 
                 // error page
                 logger.info("retrieve program data relay!", ex);
-                request.getRequestDispatcher("./rmctrl-controller-screens.jsp?userId" + userId + "&cellinkId="
+                request.getRequestDispatcher("./rmctrl-controller-screens-ajax.jsp.jsp?userId" + userId + "&cellinkId="
                         + cellinkId + "&screenId=" + screenId).forward(request, response);
             }
         } finally {

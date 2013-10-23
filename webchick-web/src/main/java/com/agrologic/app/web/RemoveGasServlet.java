@@ -37,7 +37,7 @@ public class RemoveGasServlet extends AbstractServlet {
             Long gazId = Long.parseLong(request.getParameter("gazId"));
 
             try {
-                GasDao gazDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDaoImpl.class);
+                GasDao gazDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDao.class);
                 Gas gaz = gazDao.getById(gazId);
 
                 if (gaz == null) {

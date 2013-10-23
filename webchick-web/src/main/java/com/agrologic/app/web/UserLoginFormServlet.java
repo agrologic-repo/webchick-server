@@ -16,6 +16,14 @@ import java.sql.SQLException;
 
 
 public class UserLoginFormServlet extends AbstractServlet {
+    public static final String MY_FARMS_URL = "/my-farms.html";
+    public static final String OVERVIEW_URL = "/overview.html";
+
+    public static String getURLWithContextPath(HttpServletRequest request) {
+        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+                + request.getContextPath();
+    }
+
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -48,7 +56,7 @@ public class UserLoginFormServlet extends AbstractServlet {
                 logger.error("username " + name + " and password: " + pass + " not found");
                 logger.warn("User tried to bypass login. remote IP = " + request.getRemoteHost());
                 request.setAttribute("errormessage", "incorrect user name and/or password");
-                response.sendRedirect("./login.jsp");
+                request.getRequestDispatcher("./login.jsp").forward(request, response);
             } else {
                 if ((reme != null) && "ON".equals(reme.toUpperCase())) {
                     setCookies(true, name, pass, response);
@@ -64,34 +72,28 @@ public class UserLoginFormServlet extends AbstractServlet {
 
                 switch (user.getRole()) {
                     case USER:
-                        response.sendRedirect(getURLWithContextPath(request) + "/my-farms.html?userId=" + user.getId());
+                        response.sendRedirect(getURLWithContextPath(request) + MY_FARMS_URL + "?userId=" + user.getId());
                         break;
 
                     case DISTRIBUTOR:
-                        response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
+                        response.sendRedirect(getURLWithContextPath(request) + OVERVIEW_URL);
                         break;
 
                     case ADMIN:
-                        response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
+                        response.sendRedirect(getURLWithContextPath(request) + OVERVIEW_URL);
                         break;
 
                     default:
-                        response.sendRedirect(getURLWithContextPath(request) + "/overview.html");
+                        response.sendRedirect(getURLWithContextPath(request) + OVERVIEW_URL);
                         break;
                 }
             }
         } catch (SQLException ex) {
             logger.error("Database error while loggin user!", ex);
-            request.setAttribute("errormessage", "incorrect user name and/or password");
-            request.getRequestDispatcher(getURLWithContextPath(request) + "/login.jsp").forward(request, response);
+            request.getRequestDispatcher("./login.jsp").forward(request, response);
         } finally {
             out.close();
         }
-    }
-
-    public static String getURLWithContextPath(HttpServletRequest request) {
-        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                + request.getContextPath();
     }
 
     public void setCookies(boolean remember, String user, String pass, HttpServletResponse response) {

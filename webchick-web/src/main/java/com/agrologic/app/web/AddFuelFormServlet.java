@@ -43,7 +43,7 @@ public class AddFuelFormServlet extends AbstractServlet {
             String total = request.getParameter("total");
 
             try {
-                FuelDao fuelDao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDaoImpl.class);
+                FuelDao fuelDao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDao.class);
                 Fuel fuel = new Fuel();
                 fuel.setFlockId(flockId);
                 fuel.setAmount(Integer.parseInt(amount));
@@ -80,10 +80,10 @@ public class AddFuelFormServlet extends AbstractServlet {
                 request.setAttribute("controllers", controllers);
                 request.getRequestDispatcher("./rmctrl-add-fuel.jsp?celinkId=" + cellinkId + "&flockId="
                         + flockId).forward(request, response);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.info("Error adding fuel", ex);
+                request.getRequestDispatcher("./rmctrl-add-fuel.jsp?celinkId=" + cellinkId + "&flockId="
+                        + flockId).forward(request, response);
             }
         } finally {
             out.close();

@@ -59,7 +59,7 @@ public class ListTableData extends AbstractServlet {
                     request.setAttribute("program", program);
 
                     if (screen.getTitle().equals("Action Set Buttons")) {
-                        ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDaoImpl.class);
+                        ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDao.class);
                         Collection<ActionSet> actionset = actionsetDao.getAll();
                         request.getRequestDispatcher("./all-actionset.jsp?screenId=" + screen.getId()
                                 + "&translateLang=" + translateLang).forward(request, response);

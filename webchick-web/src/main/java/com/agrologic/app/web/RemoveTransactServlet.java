@@ -36,7 +36,7 @@ public class RemoveTransactServlet extends AbstractServlet {
             Long transactId = Long.parseLong(request.getParameter("transactId"));
 
             try {
-                TransactionDao transactDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDaoImpl.class);
+                TransactionDao transactDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDao.class);
                 Transaction transact = transactDao.getById(transactId);
 
                 if (transact == null) {

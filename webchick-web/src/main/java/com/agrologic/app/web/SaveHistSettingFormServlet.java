@@ -57,7 +57,7 @@ public class SaveHistSettingFormServlet extends AbstractServlet {
                 }
 
                 try {
-                    HistorySettingDao historySettingDao = DbImplDecider.use(DaoType.MYSQL).getDao(HistorySettingDaoImpl.class);
+                    HistorySettingDao historySettingDao = DbImplDecider.use(DaoType.MYSQL).getDao(HistorySettingDao.class);
 
                     historySettingDao.saveHistorySetting(historySettingList);
                     historySettingList = historySettingDao.getHistorySetting(programId);

@@ -65,7 +65,7 @@ public class SaveEnergyForm extends AbstractServlet {
                 flock.setCostFuelEnd(Float.parseFloat(endCostFuel));
                 sumAddFuel(flock);
                 flock.setTotalFuel(flock.calcTotalFuelCost());
-                flockDao.update(flock);
+                flockDao.updateFlockDetail(flock);
 
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
@@ -75,9 +75,12 @@ public class SaveEnergyForm extends AbstractServlet {
                 }
                 logger.info("retrieve user and user cellinks and all controllers of each cellink");
                 request.setAttribute("controllers", controllers);
-                request.getRequestDispatcher("./rmctrl-flock-management.jsp?celinkId=" + cellinkId + "&controllerId="
+                request.getRequestDispatcher("./flock-manager.html?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
             } catch (SQLException ex) {
+                request.getRequestDispatcher("./flock-manager.html?celinkId=" + cellinkId + "&controllerId="
+                        + controllerId + "&flockId=" + flockId).forward(request, response);
+
             }
         } finally {
             out.close();
@@ -85,7 +88,7 @@ public class SaveEnergyForm extends AbstractServlet {
     }
 
     public void sumAddGas(Flock flock) throws SQLException {
-        GasDao gazDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDaoImpl.class);
+        GasDao gazDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDao.class);
         List<Gas> gazList = gazDao.getAllByFlockId(flock.getFlockId());
         int gazAmount = 0;
         float gazTotalCost = 0;
@@ -100,7 +103,7 @@ public class SaveEnergyForm extends AbstractServlet {
     }
 
     public void sumAddFuel(Flock flock) throws SQLException {
-        FuelDao fuelDao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDaoImpl.class);
+        FuelDao fuelDao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDao.class);
         List<Fuel> fuelList = fuelDao.getAllByFlockId(flock.getFlockId());
         int fuelAmount = 0;
         float fuelTotalCost = 0;

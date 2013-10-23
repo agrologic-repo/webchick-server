@@ -39,7 +39,7 @@ public class HistorySettingServlet extends AbstractServlet {
                 Long programId = Long.parseLong(request.getParameter("programId"));
 
                 try {
-                    HistorySettingDao historySettingDao = DbImplDecider.use(DaoType.MYSQL).getDao(HistorySettingDaoImpl.class);
+                    HistorySettingDao historySettingDao = DbImplDecider.use(DaoType.MYSQL).getDao(HistorySettingDao.class);
                     List<HistorySetting> histSettingList = historySettingDao.getHistorySetting(programId);
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     List<Data> historyData = (List<Data>) dataDao.getHistoryDataList();

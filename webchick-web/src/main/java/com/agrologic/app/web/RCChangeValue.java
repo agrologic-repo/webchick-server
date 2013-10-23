@@ -68,8 +68,7 @@ public class RCChangeValue extends AbstractServlet {
                     response.sendRedirect("./rmctrl-main-screen-ajax.jsp?userId=" + userId + "&cellinkId=" + cellinkId);
                 } else {
                     response.sendRedirect("./rmctrl-controller-screens-ajax.jsp?userId=" + userId + "&cellinkId="
-                            + cellinkId + "&controllerId=" + controllerId + "&screenId=" + screenId
-                            + "&doResetTimeout=true");
+                            + cellinkId + "&controllerId=" + controllerId + "&screenId=" + screenId);
                 }
             }
         } catch (SQLException ex) {

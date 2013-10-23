@@ -1,7 +1,4 @@
-
-
 package com.agrologic.app.graph;
-
 
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
@@ -15,14 +12,17 @@ import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.servlet.ServletUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Locale;
 
-
 public class GenerateGraph {
+     private static final Logger logger = LoggerFactory.getLogger(GenerateGraph.class);
+
     public static String generateChartTempHum(Long controllerId, HttpSession session, PrintWriter pw, Locale locale) {
         String filenameth = null;
 
@@ -33,10 +33,10 @@ public class GenerateGraph {
             Data setClock = dataDao.getSetClockByController(controllerId);
 
             if (values == null) {
-                throw new Exception("No data available in database.");
+                logger.error("No data available in database to create Temperature\\Humidity graph .");
+                throw new Exception("No data available in database to create Temperature\\Humidity graph .");
             } else {
                 Graph24IOH graph = null;
-
                 if (setClock.getValue() == null) {
                     graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
                 } else {
@@ -45,7 +45,6 @@ public class GenerateGraph {
 
                 // Write the chart image to the temporary directory
                 ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-
                 filenameth = ServletUtilities.saveChartAsPNG(graph.createChart(), 800, 600, info, session);
 
                 // Write the image map to the PrintWriter
@@ -54,17 +53,14 @@ public class GenerateGraph {
                 pw.flush();
             }
         } catch (Exception e) {
-            System.out.println("Exception - " + e.toString());
-            e.printStackTrace(System.out);
+            logger.error("No data available in database to create Temperature\\Humidity graph .", e);
             filenameth = "public_error_500x300.png";
         }
-
         return filenameth;
     }
 
     public static String generateChartWaterFeedTemp(Long controllerId, HttpSession session, PrintWriter pw,
-                                                    Locale locale)
-            throws IOException {
+                                                    Locale locale) {
         String filenamewft = null;
 
         try {
@@ -74,10 +70,10 @@ public class GenerateGraph {
             Data setClock = dataDao.getSetClockByController(controllerId);
 
             if (values == null) {
-                throw new Exception("No data available in database.");
+                logger.error("No data available in database to create Water\\Feed\\Humidity graph .");
+                throw new Exception("No data available in database to create Water\\Feed\\Humidity graph .");
             } else {
                 Graph24FWI graph = null;
-
                 if (setClock.getValue() == null) {
                     graph = new Graph24FWI(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
                 } else {
@@ -95,11 +91,9 @@ public class GenerateGraph {
                 pw.flush();
             }
         } catch (Exception e) {
-            System.out.println("Exception - " + e.toString());
-            e.printStackTrace(System.out);
+            logger.error("No data available in database to create Water\\Feed\\Humidity graph .");
             filenamewft = "public_error_500x300.png";
         }
-
         return filenamewft;
     }
 }

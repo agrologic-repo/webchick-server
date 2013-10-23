@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 
 public class ActivateControllerServlet extends AbstractServlet {
     /**
@@ -24,10 +25,7 @@ public class ActivateControllerServlet extends AbstractServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
-
-        request.getRequestURL();
 
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
@@ -39,23 +37,27 @@ public class ActivateControllerServlet extends AbstractServlet {
                 Long controllerId = Long.parseLong(request.getParameter("controllerId"));
                 String active = request.getParameter("active");
                 String url = request.getParameter("url");
-                String message = "";
 
                 try {
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                     Controller controller = controllerDao.getById(controllerId);
                     if ((active != null) && "ON".equals(active.toUpperCase())) {
-                        message = "Controller with ID " + controller.getId() + " activated .";
+                        setInfoMessage(request,
+                                MessageFormat.format(getDefaultMessages(request).getString("message.info.controller.activated"),
+                                        new Object[]{controller.getId()}),
+                                MessageFormat.format(getMessages(request).getString("message.info.controller.activated"),
+                                        new Object[]{controller.getId()}));
                         controller.setActive(true);
                     } else {
-                        message = "Controller with ID " + controller.getId() + " deactivated .";
+                        setInfoMessage(request,
+                                MessageFormat.format(getDefaultMessages(request).getString("message.info.controller.deactivated"),
+                                        new Object[]{controller.getId()}),
+                                MessageFormat.format(getMessages(request).getString("message.info.controller.deactivated"),
+                                        new Object[]{controller.getId()}));
                         controller.setActive(false);
                     }
-
                     controllerDao.update(controller);
-                    logger.info(message);
-                    request.setAttribute("message", message);
-                    request.setAttribute("error", false);
+
 
                     if (url.equals("cellink-setting.html")) {
                         request.getRequestDispatcher("./cellink-setting.html?userId" + userId + "&cellinkId"
@@ -65,10 +67,11 @@ public class ActivateControllerServlet extends AbstractServlet {
                                 + cellinkId).forward(request, response);
                     }
                 } catch (SQLException ex) {
-                    logger.info("Error occurs while updating controller   with ID " + controllerId, ex);
-                    request.setAttribute("message",
-                            "Error occurs while updating controller with ID " + controllerId);
-                    request.setAttribute("error", true);
+                    setErrorMessage(request,
+                            MessageFormat.format(getMessages(request).getString("message.error.remove"),
+                                    new Object[]{controllerId}),
+                            MessageFormat.format(getMessages(request).getString("message.error.remove"),
+                                    new Object[]{controllerId}), ex);
 
                     if (url.equals("cellink-setting.html")) {
                         request.getRequestDispatcher("./cellink-setting.html?userId" + userId + "&cellinkId"

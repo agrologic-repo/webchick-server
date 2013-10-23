@@ -42,13 +42,11 @@ public class AddAlarmFormServlet extends AbstractServlet {
                 alarmDao.insert(alarm);
                 logger.info("Alarm " + alarm.getText() + "  successfully added");
                 alarmDao.insertTranslation(alarm.getId(), translateLang, alarm.getText());
-                request.setAttribute("message", "Alarm <b style=\"color:gray\"> " + alarm.getText() +
-                        " </b> successfully  added");
+                request.setAttribute("message", "Alarm " + alarm.getText() + " successfully  added");
                 request.setAttribute("error", false);
             } catch (SQLException ex) {
                 logger.error("Error occurs during adding alarm " + alarm.getText(), ex);
-                request.setAttribute("message", "Error occurs during adding alarm <b style=\"color:gray\">  "
-                        + alarm.getText() + " </b> ");
+                request.setAttribute("message", "Error occurs during adding alarm " + alarm.getText());
                 request.setAttribute("error", true);
             }
         } finally {

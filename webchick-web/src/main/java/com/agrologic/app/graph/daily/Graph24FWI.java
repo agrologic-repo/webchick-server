@@ -43,7 +43,7 @@ public class Graph24FWI extends AbstractGraph {
         super(type, values);
         this.currentTime = currentTime;
         this.locale = locale;
-        initLaguage();
+        initLanguage();
     }
 
     @Override

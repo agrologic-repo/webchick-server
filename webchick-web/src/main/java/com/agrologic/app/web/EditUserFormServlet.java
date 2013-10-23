@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
+import java.text.MessageFormat;
 
 public class EditUserFormServlet extends AbstractServlet {
     /**
@@ -26,8 +26,6 @@ public class EditUserFormServlet extends AbstractServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-
         PrintWriter out = response.getWriter();
 
         if (!CheckUserInSession.isUserInSession(request)) {
@@ -55,7 +53,6 @@ public class EditUserFormServlet extends AbstractServlet {
                 user.setLogin(login);
 
                 String encpsswd = Base64.encode(password);
-
                 user.setPassword(encpsswd);
                 user.setFirstName(firstName);
                 user.setLastName(lastName);
@@ -78,9 +75,7 @@ public class EditUserFormServlet extends AbstractServlet {
                 String email = request.getParameter("Nemail");
 
                 user = currUser;
-
                 String encpsswd = Base64.encode(password);
-
                 user.setPassword(encpsswd);
                 user.setFirstName(firstName);
                 user.setLastName(lastName);
@@ -93,16 +88,18 @@ public class EditUserFormServlet extends AbstractServlet {
 
             try {
                 userDao.update(user);
-                logger.info("User " + user + " successfully updated !");
-                request.setAttribute("message", "User successfully updated !");
-                request.setAttribute("error", false);
+                setInfoMessage(request,
+                        MessageFormat.format(getDefaultMessages(request).getString("message.success.update"),
+                                new Object[]{user}),
+                        MessageFormat.format(getMessages(request).getString("message.success.update"),
+                                new Object[]{user.getLogin()}));
                 request.getRequestDispatcher(forwardLink).forward(request, response);
-            } catch (SQLException ex) {
-
-                // error page
-                logger.error("Error occurs while updating user !");
-                request.setAttribute("message", "Error occurs while updating user !");
-                request.setAttribute("error", true);
+            } catch (Exception ex) {
+                setErrorMessage(request,
+                        MessageFormat.format(getDefaultMessages(request).getString("message.error.remove"),
+                                new Object[]{user.getId()}),
+                        MessageFormat.format(getMessages(request).getString("message.error.remove"),
+                                new Object[]{user.getId()}), ex);
                 request.getRequestDispatcher(forwardLink).forward(request, response);
             } finally {
                 out.close();

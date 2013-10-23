@@ -38,7 +38,7 @@ public class RemoveSpreadServlet extends AbstractServlet {
             Long spreadId = Long.parseLong(request.getParameter("spreadId"));
 
             try {
-                SpreadDao spreadDao = DbImplDecider.use(DaoType.MYSQL).getDao(SpreadDaoImpl.class);
+                SpreadDao spreadDao = DbImplDecider.use(DaoType.MYSQL).getDao(SpreadDao.class);
                 Spread spread = spreadDao.getById(spreadId);
 
                 if (spread == null) {
@@ -63,17 +63,6 @@ public class RemoveSpreadServlet extends AbstractServlet {
                     flock.setSpreadAdd(addSpreadAmount);
                     flock.setTotalSpread(addSpreadSum);
                     flockDao.update(flock);
-
-                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                    Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
-
-                    for (Controller controller : controllers) {
-                        Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
-                        controller.setFlocks(flocks);
-
-                    }
-
-                    request.setAttribute("controllers", controllers);
                     request.getRequestDispatcher("./rmctrl-add-spread.jsp?celinkId=" + cellinkId + "&controllerId="
                             + controllerId + "&flockId=" + flockId).forward(request, response);
                 }

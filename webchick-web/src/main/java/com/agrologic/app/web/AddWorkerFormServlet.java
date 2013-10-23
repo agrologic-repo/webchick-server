@@ -41,9 +41,8 @@ public class AddWorkerFormServlet extends AbstractServlet {
             String phone = request.getParameter("phone");
 
             try {
-                WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDaoImpl.class);
+                WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDao.class);
                 Worker worker = new Worker();
-
                 worker.setName(name);
                 worker.setDefine(define);
                 worker.setPhone(phone);
@@ -53,10 +52,10 @@ public class AddWorkerFormServlet extends AbstractServlet {
                 logger.info("Worker added successfully to the database");
                 request.getRequestDispatcher("./rmctrl-add-worker.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.info("Error adding worker", ex);
+                request.getRequestDispatcher("./rmctrl-add-worker.jsp?celinkId=" + cellinkId + "&controllerId="
+                        + controllerId + "&flockId=" + flockId).forward(request, response);
             }
         } finally {
             out.close();

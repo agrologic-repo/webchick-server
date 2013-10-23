@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 
 
 public class AddFlockFormServlet extends AbstractServlet {
@@ -43,7 +44,6 @@ public class AddFlockFormServlet extends AbstractServlet {
             String startDate = request.getParameter("startDate");
             String endDate = request.getParameter("endDate");
             Flock flock = new Flock();
-
             flock.setFlockName(flockName);
             flock.setControllerId(controllerId);
             flock.setStatus(status);
@@ -59,15 +59,18 @@ public class AddFlockFormServlet extends AbstractServlet {
                 FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
 
                 flockDao.insert(flock);
-                logger.info("Flock " + flock + " successfully added !");
-                request.setAttribute("message", "Flock successfully added !");
-                request.setAttribute("error", false);
-                request.getRequestDispatcher("./flocks.html?userId=" + userId + "&cellinkId="
-                        + cellinkId).forward(request, response);
-            } catch (SQLException ex) {
-                logger.error("Error occurs during adding flock !");
-                request.setAttribute("message", "Error occurs during adding flock !");
-                request.setAttribute("error", true);
+                setInfoMessage(request,
+                        MessageFormat.format(getDefaultMessages(request).getString("message.success.add"),
+                                new Object[]{controller.getId()}),
+                        MessageFormat.format(getMessages(request).getString("message.success.add"),
+                                new Object[]{controller.getId()}));
+                response.sendRedirect("./flocks.html?userId=" + userId + "&cellinkId=" + cellinkId);
+            } catch (Exception ex) {
+                setInfoMessage(request,
+                        MessageFormat.format(getDefaultMessages(request).getString("message.error.add"),
+                                new Object[]{flock.getFlockName()}),
+                        MessageFormat.format(getMessages(request).getString("message.error.add"),
+                                new Object[]{flock.getFlockName()}));
                 request.getRequestDispatcher("./flocks.html?userId=" + userId + "&cellinkId="
                         + cellinkId).forward(request, response);
             } finally {

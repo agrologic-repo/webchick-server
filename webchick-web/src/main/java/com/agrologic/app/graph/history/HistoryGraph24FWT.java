@@ -53,7 +53,7 @@ public class HistoryGraph24FWT extends AbstractGraph {
         super(type, values);
         this.locale = locale;
         this.currentTime = currentTime;
-        initLaguage();
+        initLanguage();
 
         // chart = createChart();
     }

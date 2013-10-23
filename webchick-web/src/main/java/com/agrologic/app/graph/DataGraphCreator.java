@@ -72,7 +72,7 @@ public class DataGraphCreator {
                     return foundData;
                 }
             } catch (NoSuchElementException e) {
-                //System.err.println(e.getMessage());
+                //System.err.println(e.getMessages());
             }
         }
         return null;

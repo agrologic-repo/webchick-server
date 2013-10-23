@@ -41,7 +41,6 @@ public class AddDataTranslationForm extends AbstractServlet {
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     dataDao.insertDataTranslation(dataId, langId, translate);
                 } catch (SQLException ex) {
-
                     // error page
                     logger.error("Error occurs while adding translation!" + ex.getMessage());
                     request.setAttribute("message", "Error occurs while adding translation!");

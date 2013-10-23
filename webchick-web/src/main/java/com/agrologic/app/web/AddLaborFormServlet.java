@@ -44,9 +44,9 @@ public class AddLaborFormServlet extends AbstractServlet {
 
             try {
                 Long workerId = Long.parseLong(name);
-                WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDaoImpl.class);
+                WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDao.class);
                 Worker worker = workerDao.getById(workerId);
-                LaborDao laborDao = DbImplDecider.use(DaoType.MYSQL).getDao(LaborDaoImpl.class);
+                LaborDao laborDao = DbImplDecider.use(DaoType.MYSQL).getDao(LaborDao.class);
                 Labor labor = new Labor();
                 labor.setFlockId(flockId);
                 labor.setWorkerId(worker.getId());
@@ -71,7 +71,7 @@ public class AddLaborFormServlet extends AbstractServlet {
                 Flock flock = flockDao.getById(flockId);
 
                 flock.setTotalLabor(totalLaborsSalary);
-                flockDao.update(flock);
+                flockDao.updateFlockDetail(flock);
 
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
@@ -84,10 +84,10 @@ public class AddLaborFormServlet extends AbstractServlet {
                 request.setAttribute("controllers", controllers);
                 request.getRequestDispatcher("./rmctrl-add-labor.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.info("Error adding labor", ex);
+                request.getRequestDispatcher("./rmctrl-add-labor.jsp?celinkId=" + cellinkId + "&controllerId="
+                        + controllerId + "&flockId=" + flockId).forward(request, response);
             }
         } finally {
             out.close();

@@ -36,7 +36,7 @@ public class OverviewServlet extends AbstractServlet {
 
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
-            response.sendRedirect("http://localhost:8080/webchick-web/login.jsp");
+            response.sendRedirect("./login.jsp");
         } else {
             User user = (User) request.getSession().getAttribute("user");
             String nameParam = request.getParameter("searchText");

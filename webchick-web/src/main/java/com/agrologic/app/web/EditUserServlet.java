@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.Collection;
 
 public class EditUserServlet extends AbstractServlet {
@@ -40,13 +41,16 @@ public class EditUserServlet extends AbstractServlet {
                     User editUser = userDao.getById(userId);
                     logger.info("retrieve user to edit");
                     request.setAttribute("edituser", editUser);
-
                     Collection<String> companies = userDao.getUserCompanies();
                     request.setAttribute("companies", companies);
-
                     request.getRequestDispatcher("./edit-user.jsp?userId=" + userId).forward(request, response);
                 } catch (SQLException ex) {
-                    logger.debug("Can not retrieve cellink to edit ", ex);
+                    setErrorMessage(request,
+                            MessageFormat.format(getDefaultMessages(request).getString("message.error.retrieve.users"),
+                                    new Object[]{userId}),
+                            MessageFormat.format(getMessages(request).getString("message.error.retrieve.users"),
+                                    new Object[]{userId}), ex);
+                    request.getRequestDispatcher("./all-users.html").forward(request, response);
                 }
             }
         } finally {

@@ -38,7 +38,7 @@ public class AddFeedTypeFormServlet extends AbstractServlet {
             String price = request.getParameter("price");
 
             try {
-                FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDaoImpl.class);
+                FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDao.class);
                 FeedType feedType = new FeedType();
 
                 feedType.setFeedType(name);
@@ -48,10 +48,10 @@ public class AddFeedTypeFormServlet extends AbstractServlet {
                 logger.info("FeedType added successfully to the database");
                 request.getRequestDispatcher("./rmctrl-add-feedtype.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.info("Error adding feed type", ex);
+                request.getRequestDispatcher("./rmctrl-add-feedtype.jsp?celinkId=" + cellinkId + "&controllerId="
+                        + controllerId + "&flockId=" + flockId).forward(request, response);
             }
         } finally {
             out.close();

@@ -61,7 +61,7 @@ public class SaveHouseForm extends AbstractServlet {
 
                 logger.info("retrieve user and user cellinks and all controllers of each cellink");
                 request.setAttribute("controllers", controllers);
-                request.getRequestDispatcher("./rmctrl-flock-management.jsp?userId=" + userId + "&celinkId="
+                request.getRequestDispatcher("./flock-manager.html?userId=" + userId + "&celinkId="
                         + cellinkId + "&controllerId=" + controllerId + "&flockId="
                         + flockId).forward(request, response);
             } catch (SQLException ex) {

@@ -10,11 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
+import java.text.MessageFormat;
 
 public class RemoveUserServlet extends AbstractServlet {
-
-    private User user;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -37,17 +35,21 @@ public class RemoveUserServlet extends AbstractServlet {
             UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
 
             try {
-                user = userDao.getById(userId);
+
+                User user = userDao.getById(userId);
                 userDao.remove(user.getId());
-                String message = "User " + user + " successfully removed !";
-                logger.info(message);
-                request.setAttribute("message", message);
-                request.setAttribute("error", false);
+                setInfoMessage(request,
+                        MessageFormat.format(getDefaultMessages(request).getString("message.success.remove"),
+                                new Object[]{user}),
+                        MessageFormat.format(getMessages(request).getString("message.success.remove"),
+                                new Object[]{user.getLogin()}));
                 request.getRequestDispatcher("./all-users.html").forward(request, response);
-            } catch (SQLException ex) {
-                logger.error("Error occurs while removing cellink !");
-                request.setAttribute("message", "Error occurs while removing user with ID  " + userId);
-                request.setAttribute("error", true);
+            } catch (Exception ex) {
+                setErrorMessage(request,
+                        MessageFormat.format(getDefaultMessages(request).getString("message.error.remove"),
+                                new Object[]{userId}),
+                        MessageFormat.format(getMessages(request).getString("message.error.remove"),
+                                new Object[]{userId}), ex);
                 request.getRequestDispatcher("./all-users.html").forward(request, response);
             } finally {
                 out.close();

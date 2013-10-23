@@ -37,7 +37,7 @@ public class ListGasServlet extends AbstractServlet {
 
             try {
 
-                GasDao gazDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDaoImpl.class);
+                GasDao gazDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDao.class);
                 List<Gas> gazList = gazDao.getAllByFlockId(flockId);
 
                 logger.info("retrieve user and user cellinks and all controllers of each cellink");

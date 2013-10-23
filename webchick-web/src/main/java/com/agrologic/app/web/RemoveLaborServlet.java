@@ -37,7 +37,7 @@ public class RemoveLaborServlet extends AbstractServlet {
             Long laborId = Long.parseLong(request.getParameter("laborId"));
 
             try {
-                LaborDao laborDao = DbImplDecider.use(DaoType.MYSQL).getDao(LaborDaoImpl.class);
+                LaborDao laborDao = DbImplDecider.use(DaoType.MYSQL).getDao(LaborDao.class);
                 Labor labor = laborDao.getById(laborId);
 
                 if (labor == null) {

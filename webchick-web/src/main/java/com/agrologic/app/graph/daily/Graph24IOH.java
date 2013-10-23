@@ -59,7 +59,7 @@ public class Graph24IOH extends AbstractGraph {
         super(type, values);
         this.currentTime = currnetTime;
         this.locale = locale;
-        initLaguage();
+        initLanguage();
     }
 
     @Override

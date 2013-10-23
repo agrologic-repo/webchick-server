@@ -41,7 +41,7 @@ public class AddTransactionFormServlet extends AbstractServlet {
             String revenues = request.getParameter("revenues");
 
             try {
-                TransactionDao transactDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDaoImpl.class);
+                TransactionDao transactDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDao.class);
                 Transaction transaction = new Transaction();
                 transaction.setFlockId(flockId);
                 transaction.setName(name);
@@ -62,7 +62,7 @@ public class AddTransactionFormServlet extends AbstractServlet {
 
                 flock.setExpenses(exp);
                 flock.setRevenues(rev);
-                flockDao.update(flock);
+                flockDao.updateFlockDetail(flock);
                 logger.info("Feed added successfully to the database");
 
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
@@ -77,10 +77,10 @@ public class AddTransactionFormServlet extends AbstractServlet {
                 logger.info("Transaction added successfully to the datebase");
                 request.getRequestDispatcher("./rmctrl-add-transaction.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.info("Error adding transaction", ex);
+                request.getRequestDispatcher("./rmctrl-add-transaction.jsp?celinkId=" + cellinkId + "&controllerId="
+                        + controllerId + "&flockId=" + flockId).forward(request, response);
             }
         } finally {
             out.close();

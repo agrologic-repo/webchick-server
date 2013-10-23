@@ -88,10 +88,10 @@ public class ListUserServlet extends AbstractServlet {
                     }
                 } catch (SQLException ex) {
                     // error page
-                    logger.error("Error occurs during retrieve users !", ex);
-                    request.setAttribute("message", "Error occurs during retrieve users !");
+                    logger.error(getDefaultMessages(request).getString("message.error.retrieve.users"), ex);
+                    request.setAttribute("message",  getMessages(request).getString("message.error.retrieve.users"));
                     request.setAttribute("error", true);
-                    request.getRequestDispatcher("./jsp/all-users.jsp?role=0").forward(request, response);
+                    request.getRequestDispatcher("./all-users.jsp?role=0").forward(request, response);
                 }
             }
         } finally {

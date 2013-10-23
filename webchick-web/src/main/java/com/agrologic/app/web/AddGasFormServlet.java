@@ -50,7 +50,7 @@ public class AddGasFormServlet extends AbstractServlet {
             String total = request.getParameter("total");
 
             try {
-                GasDao gasDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDaoImpl.class);
+                GasDao gasDao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDao.class);
                 Gas gas = new Gas();
 
                 gas.setFlockId(flockId);
@@ -88,10 +88,10 @@ public class AddGasFormServlet extends AbstractServlet {
                 request.setAttribute("controllers", controllers);
                 request.getRequestDispatcher("./rmctrl-add-gas.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.info("Error adding gas", ex);
+                request.getRequestDispatcher("./rmctrl-add-gas.jsp?celinkId=" + cellinkId + "&controllerId="
+                        + controllerId + "&flockId=" + flockId).forward(request, response);
             }
         } finally {
             out.close();

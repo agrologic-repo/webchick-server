@@ -40,12 +40,8 @@ public class EditProgramFormServlet extends AbstractServlet {
 
                 try {
                     Program program = programDao.getById(programId);
-
                     program.setName(programName);
-
-                    String test = DateLocal.currentDate();
-
-                    program.setModifiedDate(test);
+                    program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
                     logger.info("Program " + program + "successfully updated !");
                     request.setAttribute("message", "Program successfully updated !");

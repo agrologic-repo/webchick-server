@@ -37,7 +37,7 @@ public class RemoveFuelServlet extends AbstractServlet {
             Long fuelId = Long.parseLong(request.getParameter("fuelId"));
 
             try {
-                FuelDao fuelDao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDaoImpl.class);
+                FuelDao fuelDao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDao.class);
                 Fuel fuel = fuelDao.getById(fuelId);
 
                 if (fuel == null) {

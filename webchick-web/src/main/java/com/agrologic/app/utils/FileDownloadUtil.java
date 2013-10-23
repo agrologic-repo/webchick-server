@@ -40,7 +40,7 @@ public class FileDownloadUtil {
 
         response.setContentType("application/octet-stream");
         response.setHeader("Content-disposition",
-                "attachment; filename=" + outfile + dateTimestamp + "." + fileExtension);
+                "attachment; filename=" + outfile + "." + fileExtension);
 
         int i;
 

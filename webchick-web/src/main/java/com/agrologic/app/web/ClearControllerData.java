@@ -41,11 +41,11 @@ public class ClearControllerData extends AbstractServlet {
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 dataDao.clearControllerData(controllerId);
                 request.getRequestDispatcher("./rmctrl-main-screen-ajax.jsp?userId=" + user.getId()
-                        + "&cellinkId=" + cellinkId + "&screenId=1&doResetTimeout=true").forward(request, response);
+                        + "&cellinkId=" + cellinkId + "&screenId=1").forward(request, response);
             } catch (SQLException ex) {
                 // error page
                 request.getRequestDispatcher("./rmctrl-main-screen-ajax.jsp?userId=" + user.getId()
-                        + "&cellinkId=" + cellinkId + "&screenId=1&doResetTimeout=true").forward(request, response);
+                        + "&cellinkId=" + cellinkId + "&screenId=1").forward(request, response);
 
             } finally {
                 out.close();

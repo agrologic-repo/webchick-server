@@ -55,12 +55,13 @@ public class ExportToExcelHistory extends AbstractServlet {
                  * management data for excel
                  */
                 List<List<String>> historyData = createHistoryDataForExcel(columnTitles, historyByGrowDay);
+                String outputFile = "C:/" + flock.getFlockName();
                 WriteToExcel excel = new WriteToExcel();
                 excel.setTitleList(columnTitles);
                 excel.setCellDataList(historyData);
-                excel.setOutputFile("C:/flock-" + flock.getFlockName());
+                excel.setOutputFile(outputFile);
                 excel.write();
-                FileDownloadUtil.doDownload(response, "C:/flock-" + flock.getFlockName(), "xls");
+                FileDownloadUtil.doDownload(response, outputFile, "xls");
             }
         } catch (Exception e) {
             logger.error("Unknown error. ", e);

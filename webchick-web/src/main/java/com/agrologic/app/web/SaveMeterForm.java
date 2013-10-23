@@ -54,7 +54,7 @@ public class SaveMeterForm extends AbstractServlet {
                 flock.setCostWater(Float.parseFloat(priceWaterMeter));
                 flock.setQuantityWater(Integer.parseInt(endWaterMeter) - Integer.parseInt(startWaterMeter));
                 flock.setTotalWater(flock.calcTotalWaterCost());
-                flockDao.update(flock);
+                flockDao.updateFlockDetail(flock);
 
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
@@ -64,10 +64,11 @@ public class SaveMeterForm extends AbstractServlet {
                 }
                 logger.info("retrieve user and user cellinks and all controllers of each cellink");
                 request.setAttribute("controllers", controllers);
-                request.getRequestDispatcher("./rmctrl-flock-management.jsp?celinkId=" + cellinkId + "&controllerId="
+                response.sendRedirect("./flock-manager.html?celinkId=" + cellinkId + "&controllerId="
+                        + controllerId + "&flockId=" + flockId);
+            } catch (Exception ex) {
+                request.getRequestDispatcher("./flock-manager.html?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
-            } catch (SQLException ex) {
-
             }
         } finally {
             out.close();

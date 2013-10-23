@@ -82,7 +82,7 @@ public class FlockHistoryService {
         List<String> flockHistoryList = new ArrayList<String>();
         for (PerHourHistoryDataType perHourHistoryDataType : PerHourHistoryDataType.values()) {
             String historyValues = flockDao.getHistory24(flockId, growDay, perHourHistoryDataType.getName());
-            if (historyValues == null || historyValues.equals("-1 ") || historyValues.equals("")) {
+            if (historyValues == null || historyValues.equals("-1") || historyValues.equals("")) {
                 historyValues = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
             }
             flockHistoryList.add(historyValues);

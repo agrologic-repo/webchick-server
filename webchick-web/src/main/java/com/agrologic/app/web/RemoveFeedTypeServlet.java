@@ -36,7 +36,7 @@ public class RemoveFeedTypeServlet extends AbstractServlet {
             Long feedTypeId = Long.parseLong(request.getParameter("feedTypeId"));
 
             try {
-                FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDaoImpl.class);
+                FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDao.class);
                 FeedType feedType = feedTypeDao.getById(feedTypeId);
 
                 if (feedType == null) {

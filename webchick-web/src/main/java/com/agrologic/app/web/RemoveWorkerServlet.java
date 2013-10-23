@@ -36,7 +36,7 @@ public class RemoveWorkerServlet extends AbstractServlet {
             Long workerId = Long.parseLong(request.getParameter("workerId"));
 
             try {
-                WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDaoImpl.class);
+                WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDao.class);
                 Worker worker = workerDao.getById(workerId);
 
                 if (worker == null) {

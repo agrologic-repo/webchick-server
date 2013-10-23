@@ -5,6 +5,7 @@ import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,12 +53,11 @@ public class ListFlocksServlet extends AbstractServlet {
                         controller.setFlocks(flocks);
                     }
                     logger.info("retrieve user and user cellinks and all controllers of each cellink");
-
                     request.getRequestDispatcher("./rmctrl-controller-flocks.jsp?userId=" + userId + "&celinkId="
                             + cellinkId).forward(request, response);
                 } catch (SQLException ex) {
-
-                    // error page
+                    request.getRequestDispatcher("./rmctrl-controller-flocks.jsp?userId=" + userId + "&celinkId="
+                            + cellinkId).forward(request, response);
                 }
             }
         } finally {

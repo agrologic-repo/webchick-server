@@ -44,7 +44,7 @@ public class AddSpreadFormServlet extends AbstractServlet {
             String total = request.getParameter("total");
 
             try {
-                SpreadDao spreadDao = DbImplDecider.use(DaoType.MYSQL).getDao(SpreadDaoImpl.class);
+                SpreadDao spreadDao = DbImplDecider.use(DaoType.MYSQL).getDao(SpreadDao.class);
                 Spread spread = new Spread();
 
                 spread.setFlockId(flockId);
@@ -68,17 +68,7 @@ public class AddSpreadFormServlet extends AbstractServlet {
 
                 flock.setSpreadAdd(addSpreadAmount);
                 flock.setTotalSpread(addSpreadSum);
-                flockDao.update(flock);
-
-                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
-
-                for (Controller controller : controllers) {
-                    Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
-                    controller.setFlocks(flocks);
-                }
-
-                request.setAttribute("controllers", controllers);
+                flockDao.updateFlockDetail(flock);
                 logger.info("Spread added successfully to the datebase");
                 request.getRequestDispatcher("./rmctrl-add-spread.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);

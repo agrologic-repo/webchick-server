@@ -36,7 +36,7 @@ public class RemoveMedicineServlet extends AbstractServlet {
             Long medicineId = Long.parseLong(request.getParameter("medicineId"));
 
             try {
-                MedicineDao medicineDao = DbImplDecider.use(DaoType.MYSQL).getDao(MedicineDaoImpl.class);
+                MedicineDao medicineDao = DbImplDecider.use(DaoType.MYSQL).getDao(MedicineDao.class);
                 Medicine medicine = medicineDao.getById(medicineId);
 
                 if (medicine == null) {

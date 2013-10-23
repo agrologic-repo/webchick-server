@@ -28,8 +28,6 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/xml;charset=UTF-8");
-        /** Logger for this class and subclasses */
-        final org.slf4j.Logger logger = LoggerFactory.getLogger(RCMainScreenAjaxNew.class);
         PrintWriter out = response.getWriter();
 
         try {
@@ -83,8 +81,6 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
 
                     // get program screens
                     final ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-
-
                     // get program screen tables
                     final TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                     final DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
@@ -151,7 +147,7 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                             out.println("<img src=\"resources/images/house.png\" border=0 hspace=5\">");
                             out.println("<a href='./rmctrl-controller-screens-ajax.jsp?userId=" + userId + "&cellinkId="
                                     + cellinkId + "&screenId=" + nextScreenID + "&controllerId=" + controller.getId()
-                                    + "&doResetTimeout=true'>");
+                                    + "'>");
 
                             if (isAlarmOnController(controllerDataList) == true) {
                                 out.println("<img src=\"resources/images/alarm.gif\" border=0 hspace=5 title=\"Alarm in "

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 
 public class AddActionsetTranslationForm extends AbstractServlet {
 
@@ -25,7 +26,6 @@ public class AddActionsetTranslationForm extends AbstractServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -38,13 +38,14 @@ public class AddActionsetTranslationForm extends AbstractServlet {
                 String translate = request.getParameter("Ntranslate");
 
                 try {
-                    ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDaoImpl.class);
+                    ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDao.class);
                     actionsetDao.insertActionSetTranslation(valueId, langId, translate);
                 } catch (SQLException ex) {
-                    // error page
-                    logger.error("Error occurs while adding translation! ", ex);
-                    request.setAttribute("message", "Error occurs while adding translation!");
-                    request.setAttribute("error", true);
+                    setErrorMessage(request,
+                            MessageFormat.format(getDefaultMessages(request).getString("message.error.add.string"),
+                                    new Object[]{translate}),
+                            MessageFormat.format(getMessages(request).getString("message.error.add.string"),
+                                    new Object[]{translate}), ex);
                 }
             }
         } finally {

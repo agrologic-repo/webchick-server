@@ -97,7 +97,7 @@ public class GraphMortalityServlet extends AbstractServlet {
 
     protected HashMap<String, String> createDictionary(Locale locale) {
         HashMap<String, String> dictinary = new HashMap<String, String>();
-        ResourceBundle bundle = ResourceBundle.getBundle("MessagesBundle", locale);
+        ResourceBundle bundle = ResourceBundle.getBundle("labels", locale);
 
         for (Enumeration<String> e = bundle.getKeys(); e.hasMoreElements(); ) {
             String key = e.nextElement();

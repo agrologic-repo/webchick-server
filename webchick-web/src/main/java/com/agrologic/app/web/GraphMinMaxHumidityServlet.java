@@ -25,7 +25,7 @@ public class GraphMinMaxHumidityServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     *
+     *                                                               labels
      * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
