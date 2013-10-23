@@ -16,7 +16,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
     <title>Add Relay</title>
     <script type="text/javascript">
         function reset() {

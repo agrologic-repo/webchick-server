@@ -35,10 +35,10 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("users.page.title")%>
+    <title><%=session.getAttribute("user.page.title")%>
     </title>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
     <style type='text/css'>
         #search {
             cursor: pointer;
@@ -52,11 +52,11 @@
             cursor: pointer;
         }
     </style>
-    <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'>;</script>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
-    <script type="text/javascript" src="resources/javascript/jquery-latest.js">;</script>
-    <script type="text/javascript" src="resources/javascript/jquery.tablesorter.js">;</script>
-    <script type="text/javascript" src="resources/javascript/jquery.tablesorter.min.js">;</script>
+    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/custom/javascript/jquery.min.js">;</script>
+    <script type="text/javascript" src="resources/custom/javascript/jquery-latest.js">;</script>
+    <script type="text/javascript" src="resources/custom/javascript/jquery.tablesorter.js">;</script>
+    <script type="text/javascript" src="resources/custom/javascript/jquery.tablesorter.min.js">;</script>
     <script type='text/javascript'>
         //<![CDATA[
         /**
@@ -94,7 +94,7 @@
             return confirm("This action will remove user from database.\nDo you want to continue ?")
         }
         function addUser() {
-            redirect("add-user.jsp");
+            redirect("./add-user.jsp");
             return false;
         }
         function removeUser(userId) {
@@ -124,10 +124,10 @@
     <table border="0" cellPadding=1 cellSpacing=1 width="100%">
         <tr>
             <td style="vertical-align: top" width="20%">
-                <h1><%=session.getAttribute("users.page.header")%>
+                <h1><%=session.getAttribute("user.page.header")%>
                 </h1>
 
-                <h2><%=session.getAttribute("users.page.sub.header")%>
+                <h2><%=session.getAttribute("user.page.sub.header")%>
                 </h2>
             </td>
             <td align="center" colspan="1" width="60%">
@@ -140,18 +140,18 @@
                     <table width="150px">
                         <tr>
                             <td style="padding: 1px 2px 1px 5px; vertical-align: middle">
-                                <img src="resources/images/online.gif" style="vertical-align: middle">
+                                <img src="resources/custom/images/online.gif" style="vertical-align: middle">
                                 - <%=session.getAttribute("cellink.state.online")%>&nbsp;
                             </td>
                         </tr>
                         <tr>
                             <td style="padding: 1px 2px 1px 5px; vertical-align: middle">
-                                <img src="resources/images/running.gif" style="vertical-align: middle;">
+                                <img src="resources/custom/images/running.gif" style="vertical-align: middle;">
                                 - <%=session.getAttribute("cellink.state.running")%>&nbsp;</td>
                         </tr>
                         <tr>
                             <td style="padding: 1px 2px 1px 5px; vertical-align: middle;">
-                                <img src="resources/images/offline.gif">
+                                <img src="resources/custom/images/offline.gif">
                                 - <%=session.getAttribute("cellink.state.offline")%>
                             </td>
                         </tr>
@@ -163,9 +163,9 @@
                     <tr bgcolor="#D5EFFF">
                         <td align="justify">
                             <input type="text" name="searchText" id="searchText" value="<%=searchText%>">
-                            <img id="search" src="resources/images/search.png" border="0"
+                            <img id="search" src="resources/custom/images/search.png" border="0"
                                  redirectUrl="./all-users.html"/>
-                            <img id="refresh" src="resources/images/refresh.png" border="0"
+                            <img id="refresh" src="resources/custom/images/refresh.png" border="0"
                                  onclick="redirect('./all-users.html?userId=<%=user.getId()%>')"/>
                             <%=session.getAttribute("user.role")%> :
                             <select id="roleFilter" name="roleFilter">
@@ -187,7 +187,7 @@
                                 </option>
                                 <%}%>
                             </select>
-                            <img id="filter" src="resources/images/filter.png" border="0"/>
+                            <img id="filter" src="resources/custom/images/filter.png" border="0"/>
                         </td>
                         <td>
                             <button id="btnAdd" name="btnAdd"
@@ -262,37 +262,37 @@
                                     for (Cellink cellink : cellinks) {
                                         if (cellink.getCellinkState().getValue() == CellinkState.STATE_ONLINE
                                                 || cellink.getCellinkState().getValue() == CellinkState.STATE_START) {%>
-                                <img src="resources/images/online.gif"
-                                     onmouseover="this.src='resources/images/honline.gif'"
-                                     onmouseout="this.src='resources/images/online.gif'"
+                                <img src="resources/custom/images/online.gif"
+                                     onmouseover="this.src='resources/custom/images/honline.gif'"
+                                     onmouseout="this.src='resources/custom/images/online.gif'"
                                      title="<%=cellink.getName()%> (<%=session.getAttribute("cellink.state.online")%>)"
-                                     onclick="redirect('./rmctrl-main-screen-ajax.jsp?userId=<%=u.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getId() %>&screenId=1&doResetTimeout=true')">
+                                     onclick="redirect('./rmctrl-main-screen-ajax.jsp?userId=<%=u.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getId() %>&screenId=1')">
                                 <%} else if (cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {%>
-                                <img src="resources/images/running.gif"
-                                     onmouseover="this.src='resources/images/hrunning.gif'"
-                                     onmouseout="this.src='resources/images/running.gif'"
+                                <img src="resources/custom/images/running.gif"
+                                     onmouseover="this.src='resources/custom/images/hrunning.gif'"
+                                     onmouseout="this.src='resources/custom/images/running.gif'"
                                      title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.running")%>)"
-                                     onclick="redirect('./rmctrl-main-screen-ajax.jsp?userId=<%=u.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getId() %>&screenId=1&doResetTimeout=true')"/>
+                                     onclick="redirect('./rmctrl-main-screen-ajax.jsp?userId=<%=u.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getId() %>&screenId=1')"/>
                                 <%} else {%>
-                                <img src="resources/images/offline.gif"
+                                <img src="resources/custom/images/offline.gif"
                                      title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.offline")%>)"/>
                                 <%}%>
                                 <%}%>
                             </td>
                             <td align="center">
-                                <img src="resources/images/info.gif"/>
+                                <img src="resources/custom/images/info.gif"/>
                                 <a href="./userinfo.html?userId=<%=u.getId()%>">
                                     <%=session.getAttribute("button.info")%>
                                 </a>
                             </td>
                             <td align="center">
-                                <img src="resources/images/edit.gif"/>
+                                <img src="resources/custom/images/edit.gif"/>
                                 <a href="./edituserrequest.html?userId=<%=u.getId()%>">
                                     <%=session.getAttribute("button.edit")%>
                                 </a>
                             </td>
                             <td align="center">
-                                <img src="resources/images/delete.gif"/>
+                                <img src="resources/custom/images/delete.gif"/>
                                 <a href="javascript:removeUser(<%=u.getId()%>);">
                                     <%=session.getAttribute("button.delete")%>
                                 </a>

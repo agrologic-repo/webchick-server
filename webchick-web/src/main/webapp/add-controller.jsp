@@ -21,11 +21,11 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("new.controller.page.title")%></title>
+    <title><%=session.getAttribute("controller.page.add.title")%></title>
 
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
+    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
     <script type="text/javascript" language="javascript">
         function reset() {
             document.getElementById("msgNetName").innerHTML = "";
@@ -89,13 +89,13 @@
                     <table border=0 cellPadding=1 cellSpacing=1>
                         <tr>
                             <td>
-                                <h1><%=session.getAttribute("new.controller.page.header")%>
+                                <h1><%=session.getAttribute("controller.page.add.header")%>
                                 </h1>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <h2><%=session.getAttribute("new.controller.page.sub.header")%>
+                                <h2><%=session.getAttribute("controller.page.sub.header")%>
                                 </h2>
 
                                 <div><p style="color:red;">Boxes with an asterisk next to them are required</div>

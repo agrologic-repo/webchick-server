@@ -1,14 +1,8 @@
-<%--
-    Document   : loading.jsp
-    Created on : Mar 29, 2011, 4:04:34 PM
-    Author     : JanL
---%>
-
 <div id="loading" style="position:relative;visibility: visible; width:100%; text-align:center; top:300px;">
     <table style="width: auto;height: 45px; border: 1px solid #6699FF; background: white;" align="center">
         <tr>
             <td>
-                <img src="resources/images/loader.gif" border="0" alt="" hspace="10"><%=session.getAttribute("page.loading")%>
+                <img src="resources/custom/images/loader.gif" border="0" alt="" hspace="10"><%=session.getAttribute("page.loading")%>
             </td>
         </tr>
     </table>

@@ -32,7 +32,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css">
     <script language="javascript" type="text/javascript">
         function reset() {
             document.getElementById("msgTranslation").innerHTML = "";
@@ -115,8 +115,8 @@
                     </tr>
                     <tr>
                         <td>
-                            <button id="btnAdd" name="btnAdd" type="submit"><img src="resources/images/plus1.gif">&nbsp;Add</button>
-                            <button type="button" onclick='self.close();'><img src="resources/images/close.png">&nbsp;Close</button>
+                            <button id="btnAdd" name="btnAdd" type="submit"><img src="resources/custom/images/plus1.gif">&nbsp;Add</button>
+                            <button type="button" onclick='self.close();'><img src="resources/custom/images/close.png">&nbsp;Close</button>
                         </td>
                     </tr>
                 </table>

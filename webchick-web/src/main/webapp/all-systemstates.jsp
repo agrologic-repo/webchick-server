@@ -28,11 +28,11 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>System State Collection</title>
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <script type="text/javascript" src="resources/javascript/ftabs.js">;</script>
-    <script type="text/javascript" src="resources/javascript/util.js">;</script>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/custom/javascript/ftabs.js">;</script>
+    <script type="text/javascript" src="resources/custom/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
     <script type="text/javascript">
         function save() {
             var datas = document.addForm.dataid;
@@ -126,16 +126,16 @@
                                 </td>
                                 <td ondblclick="window.open('add-systemstatetranslate.jsp?translateLang=<%=translateLang%>&systemstateName=<%=systemStateName.getText()%>&systemstateId=<%=systemStateName.getId()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');"><%=systemStateName.getUnicodeText()%>
                                                 <span class="comment">
-                                                    <%=session.getAttribute("button.dbl.click.toedit") %>
+                                                    <%=session.getAttribute("button.double.click.edit") %>
                                                 </span>
                                 </td>
                                 <td>
-                                    <img src="resources/images/edit.gif">
+                                    <img src="resources/custom/images/edit.gif">
                                     <a href="#"
                                        onclick="window.open('edit-systemstate.jsp?translateLang=<%=translateLang%>&systemstateName=<%=systemStateName.getText()%>&systemstateId=<%=systemStateName.getId()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');">Edit</a>
                                 </td>
                                 <td>
-                                    <img src="resources/images/delete.gif">
+                                    <img src="resources/custom/images/delete.gif">
                                     <a href="./remove-systemstate.html?translateLang=<%=translateLang %>&systemstateId=<%=systemStateName.getId() %>">Remove</a>
                                 </td>
                             </tr>

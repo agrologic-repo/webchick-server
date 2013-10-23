@@ -1,3 +1,6 @@
+<link rel="stylesheet" type="text/css" href="resources/custom/style/jquery-ui.css"/>
+<script type="text/javascript" src="resources/custom/javascript/jquery.js">;</script>
+<script type="text/javascript" src="resources/custom/javascript/jquery-ui.js">;</script>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:choose>
     <c:when test="${empty message}">
@@ -9,23 +12,21 @@
     </c:when>
     <c:otherwise>
         <c:choose>
-            <c:when test="${errorFlag}">
-                <table class="errMsg" align="center">
-                    <tr>
-                        <td><img src="resources/images/unsuccess.gif"/>&nbsp;&nbsp;&nbsp;
-                            <b> <c:out value="${message}"/></b>
-                        </td>
-                    </tr>
-                </table>
+            <c:when test="${error}">
+                <div class="ui-widget">
+                    <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+                        <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                            <strong> Alert : </strong><c:out value="${message}"/></p>
+                    </div>
+                </div>
             </c:when>
             <c:otherwise>
-                <table class="infoMsg" align="center">
-                    <tr>
-                        <td><img src="resources/images/success.png"/>&nbsp;&nbsp;&nbsp;
-                            <b> <c:out value="${message}"/></b>
-                        </td>
-                    </tr>
-                </table>
+                <div class="ui-widget">
+                    <div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;">
+                        <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+                            <strong> Info : </strong><c:out value="${message}"/></p>
+                    </div>
+                </div>
             </c:otherwise>
         </c:choose>
     </c:otherwise>

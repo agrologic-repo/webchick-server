@@ -15,9 +15,9 @@
 <head>
     <title>Edit Profile</title>
 
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
+    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
     <script type="text/javascript">
         function validateEmail(email) {
             var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
@@ -112,7 +112,7 @@
 
                             <h2><%=user.getFirstName()%> <%=user.getFirstName()%>
                             </h2>
-                            <img border="0" src="resources/images/user1.png"/>
+                            <img border="0" src="resources/custom/images/user1.png"/>
                         </td>
                     </tr>
                     <tr>

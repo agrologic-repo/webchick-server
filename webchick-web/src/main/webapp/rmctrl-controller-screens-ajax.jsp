@@ -37,7 +37,9 @@
 <head>
 <title><%=session.getAttribute("all.screen.page.title")%>
 </title>
-
+<link rel="stylesheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+<link rel="stylesheet" type="text/css" href="resources/custom/style/tabstyle.css"/>
+<link rel="stylesheet" type="text/css" href="resources/custom/style/progressbar.css"/>
 <style type="text/css">
     div.tableHolder {
         OVERFLOW: auto;
@@ -45,7 +47,6 @@
         HEIGHT: 600px;
         POSITION: relative;
     }
-
     thead td {
         Z-INDEX: 20;
         POSITION: relative;
@@ -53,20 +54,15 @@
         HEIGHT: 20px;
         TEXT-ALIGN: center
     }
-
     tfoot td {
         Z-INDEX: 20;
         POSITION: relative;
         TOP: expression(this.offsetParent.clientHeight - this.offsetParent.scrollHeight + this.offsetParent.scrollTop);
         HEIGHT: 20px;
         TEXT-ALIGN: left;
-        text-wrap: suppress;
     }
 </style>
 
-<link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
-<link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
-<link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
 <script type="text/javascript">
     var firstload = 1;
     var timeoutID;
@@ -547,51 +543,25 @@ function keyDown(val) {
     <table style="width: auto;height: 45px; border: 1px solid #6699FF; background: white;" align="center">
         <tr>
             <td>
-                <img src="resources/images/loader.gif" border="0" alt="" hspace="10"><%=session.getAttribute("page.loading")%>
+                <img src="resources/custom/images/loader.gif" border="0" alt="" hspace="10"><%=session.getAttribute("page.loading")%>
             </td>
         </tr>
     </table>
 </div>
-
-
 <table width="100%">
     <tr>
         <td align="center">
-            <fieldset style="-moz-border-radius:8px;  border-radius: 8px;  -webkit-border-radius: 8px; width: 95%">
+            <fieldset style="-moz-border-radius:8px;  border-radius: 8px;  -webkit-border-radius: 8px;">
                 <table border="0" cellPadding=1 cellSpacing=1 width="100%">
                     <tr>
-                        <td>
-                            <table align="center">
-                                <tr>
-                                    <td align="center" valign="top">
-                                        <h2><%=controller.getTitle()%>
-                                        </h2>
-                                    </td>
-                                </tr>
-                            </table>
+                        <td align="center">
+                            <h2><%=controller.getTitle()%>
+                            </h2>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <%@include file="toplang.jsp" %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table id="tblProgress" align="center" style="display:none;">
-                                <tr>
-                                    <td align="left">
-                                        <div id="divMessage" style="text-align:center;font-size:medium"></div>
-                                        <div id="divSliderBG"><img src="Images/Transparent.gif" height="1" width="1"/>
-                                        </div>
-                                        <div id="divSlider"><img src="Images/Transparent.gif" height="1" width="1"/>
-                                        </div>
-                                        <input id="btnStop" align="center" type="button"
-                                               value="<%=session.getAttribute("button.stay.online")%>"
-                                               onclick="stopTimer();"/>
-                                    </td>
-                                </tr>
-                            </table>
                         </td>
                     </tr>
                 </table>
@@ -601,11 +571,8 @@ function keyDown(val) {
     <tr>
         <td style="text-align: center;">
             <form name="mainForm">
-                <fieldset
-                        style="-moz-border-radius:15px;  border-radius: 15px;  -webkit-border-radius: 15px; width: 100%">
-                    <div id="tableData">
-
-                    </div>
+                <fieldset style="-moz-border-radius:15px;  border-radius: 15px;  -webkit-border-radius: 15px;">
+                    <div id="tableData"></div>
                 </fieldset>
             </form>
         </td>

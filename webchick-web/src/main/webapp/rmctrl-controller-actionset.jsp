@@ -59,10 +59,10 @@
             text-wrap: suppress;
         }
     </style>
-    <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <link rel="stylesheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/custom/style/tabstyle.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/custom/style/progressbar.css"/>
+    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
     <script type="text/javascript">
         /**logout*/
         function doLogout() {
@@ -87,7 +87,7 @@
             var table = document.getElementById("tblProgress");
             table.style.display = "none";
             resetTimer();
-            window.location.replace('<a href="./rmtctrl-actionset.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>&doResetTimeout=true');
+            window.location.replace('<a href="./rmtctrl-actionset.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>');
         }
         function disconnectTimer() {
             // clear refresh during display disconection
@@ -166,8 +166,8 @@
     <tr>
         <td align="center">
             <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px; width: 95%">
-                <a href="./rmtctrl-actionset.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=cellinkId%>&programId=<%=controller.getProgramId()%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>&doResetTimeout=true">
-                    <img src="resources/images/refresh.gif" style="cursor: pointer" border="0"/>
+                <a href="./rmtctrl-actionset.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=cellinkId%>&programId=<%=controller.getProgramId()%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>">
+                    <img src="resources/custom/images/refresh.gif" style="cursor: pointer" border="0"/>
                     &nbsp;<%=session.getAttribute("button.refresh")%>&nbsp;
                 </a>
                 <table style="font-size:90%;" width="100%" border="0">
@@ -195,7 +195,7 @@
                                     <% if (screen.getId() == MAIN_SCREEN) {%>
                                     <td nowrap>
                                         <a class="<%=cssClass%>"
-                                           href="./rmctrl-main-screen-ajax.jsp?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&screenId=<%=MAIN_SCREEN%>&doResetTimeout=true"
+                                           href="rmctrl-main-screen-ajax.jsp?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&screenId=<%=MAIN_SCREEN%>"
                                            id="<%=screen.getId()%>"
                                            onclick='document.body.style.cursor = "wait"'><%=screen.getUnicodeTitle()%>
                                         </a>
@@ -203,7 +203,7 @@
                                     <% } else if (screen.getTitle().equals("Graphs")) {%>
                                     <td nowrap>
                                         <a class="<%=cssClass%>"
-                                           href="./rmtctrl-graph.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>&doResetTimeout=true"
+                                           href="./rmtctrl-graph.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>"
                                            id="<%=screen.getId()%>"
                                            onclick='document.body.style.cursor = "wait"'><%=screen.getUnicodeTitle()%>
                                         </a>
@@ -211,7 +211,7 @@
                                     <% } else if (screen.getTitle().equals("Action Set Buttons")) {%>
                                     <td nowrap>
                                         <a class="<%=cssClass%>"
-                                           href="./rmtctrl-actionset.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>&doResetTimeout=true"
+                                           href="./rmtctrl-actionset.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>"
                                            id="<%=screen.getId()%>"
                                            onclick='document.body.style.cursor = "wait"'><%=screen.getUnicodeTitle()%>
                                         </a>
@@ -219,7 +219,7 @@
                                     <% } else {%>
                                     <td nowrap>
                                         <a class="<%=cssClass%>"
-                                           href="./rmctrl-controller-screens-ajax.jsp?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>&doResetTimeout=true"
+                                           href="rmctrl-controller-screens-ajax.jsp?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>"
                                            id="<%=screen.getId()%>"
                                            onclick='document.body.style.cursor = "wait"'><%=screen.getUnicodeTitle()%>
                                         </a>
@@ -260,8 +260,8 @@
                 <table width="100%">
                     <tr>
                         <td align="center">
-                            <a href="./rmtctrl-screens.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>&doResetTimeout=true">
-                                <img src="resources/images/refresh.gif" style="cursor: pointer"
+                            <a href="./rmtctrl-screens.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>">
+                                <img src="resources/custom/images/refresh.gif" style="cursor: pointer"
                                      border="0"/>&nbsp;<%=session.getAttribute("button.refresh")%>&nbsp;
                             </a>
                         </td>

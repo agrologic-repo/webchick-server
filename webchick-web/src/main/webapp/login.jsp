@@ -102,19 +102,12 @@
 <head>
     <title><%=session.getAttribute("login.page.title")%></title>
     <meta name="Author" content="Valery Manakhimov">
-    <link rel="shortcut icon" href="resources/images/favicon5.ico">
-    <script language="javascript" src="resources/javascript/menu.js">;</script>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="shortcut icon" href="resources/custom/images/favicon5.ico">
+    <script language="javascript" src="resources/custom/javascript/menu.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
 </head>
 <body>
 <table align="center" valign="middle">
-
-    <%--<tr>--%>
-        <%--<td>--%>
-
-        <%--</td>--%>
-    <%--</tr>--%>
-
     <tr>
         <td align="center" valign="middle">
             <form id="loginForm" name="loginForm" action="./login.html" method="POST" style="display: inline">
@@ -122,16 +115,16 @@
                        width="400px">
                     <th colspan="2"
                         style="border : 1px solid blue; ;border-collapse:collapse;background:#283d9a; color: #FFFFFF;">
-                        <h3><img src="resources/images/key.png"><%=session.getAttribute("login.page.header")%></h3>
+                        <h3><img src="resources/custom/images/key.png"><%=session.getAttribute("login.page.header")%></h3>
                     </th>
-                    <% String errormessage = (String) request.getAttribute("errormessage");
+                    <%  String errormessage = (String) request.getAttribute("errormessage");
                         if (errormessage != null) {%>
-                    <tr style="border : 1px solid blue;border-collapse:collapse;background:#FF0000">
-                        <td nowrap colspan="3"><font color="#FFFFFF"
-                                                     style="font-weight: bold;"><%=session.getAttribute("user.password.incorrect")%>
-                        </font></td>
-                    </tr>
-                    <%}%>
+                        <tr style="border : 1px solid blue;border-collapse:collapse;background:#FF0000">
+                            <td nowrap colspan="3">
+                                <span style="font-color:FFFFFF; font-weight: bold;"><%=session.getAttribute("user.password.incorrect")%>
+                            </span></td>
+                        </tr>
+                        <%}%>
                     <tr>
                         <td width="30%" colspan="2" color="white"><br><%=session.getAttribute("user.login.info")%></td>
                     </tr>

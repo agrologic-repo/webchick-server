@@ -5,7 +5,6 @@
 <%@ page import="com.agrologic.app.model.UserRole" %>
 
 <%  User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -13,20 +12,15 @@
 
     long userId = Long.parseLong(request.getParameter("userId"));
     long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-
     request.setAttribute("cellinkId", cellinkId);
 
-    UserRole role = (UserRole) request.getAttribute("role");
-    if (role == null) {
-        role = UserRole.USER;
-    }
-
+    UserRole role = user.getRole();
     HashMap<Long, Long> nextScrIdsByCntrl = (HashMap<Long, Long>) request.getAttribute("nextScrIdsByCntrl");
 
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
     Locale currLocal = (Locale) session.getAttribute("currLocale");
     if (!oldLocal.equals(currLocal)) {
-        response.sendRedirect("./rmctrl-main-screen-ajax.jsp?userId=" + userId + "&cellinkId=" + cellinkId + "&doResetTimeout=true");
+        response.sendRedirect("./rmctrl-main-screen-ajax.jsp?userId=" + userId + "&cellinkId=" + cellinkId + "");
     }
 
 
@@ -38,8 +32,33 @@
 </title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="shortcut icon" type="image/x-icon" href="img/favicon5.ico" title="AgroLogic Ltd."/>
-<link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
-<link rel="stylesheet" type="text/css" href="css/progressbar.css"/>
+<link rel="stylesheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+<link rel="stylesheet" type="text/css" href="resources/custom/style/tabstyle.css"/>
+<link rel="stylesheet" type="text/css" href="resources/custom/style/progressbar.css"/>
+<style type="text/css">
+    div.tableHolder {
+        OVERFLOW: auto;
+        WIDTH: 800px;
+        HEIGHT: 600px;
+        POSITION: relative;
+    }
+
+    thead td {
+        Z-INDEX: 20;
+        POSITION: relative;
+        TOP: expression(this.offsetParent.scrollTop-2);
+        HEIGHT: 20px;
+        TEXT-ALIGN: center
+    }
+
+    tfoot td {
+        Z-INDEX: 20;
+        POSITION: relative;
+        TOP: expression(this.offsetParent.clientHeight - this.offsetParent.scrollHeight + this.offsetParent.scrollTop);
+        HEIGHT: 20px;
+        TEXT-ALIGN: left;
+    }
+</style>
 <script type="text/javascript">
     var timeoutID;
     function getXMLObject() { //XML OBJECT
@@ -89,7 +108,7 @@
                         timeoutID = window.setTimeout("ajaxFunction();", 10000);
                     } else {
                         clearTimeout(timeoutID);
-                        timeoutID = window.setTimeout("ajaxFunction();", 10000);
+                        timeoutID = window.setTimeout("ajaxFunction();", 5000);
                     }
                 } else {
                     var innerHTML = "<table class=\"errMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"
@@ -511,65 +530,43 @@ function keyDown(val) {
     }
 }
 </script>
-<script type="text/javascript" src="resources/javascript/fhelp.js"></script>
-<script type="text/javascript" src="resources/javascript/fglobal.js"></script>
+<script type="text/javascript" src="resources/custom/javascript/fhelp.js"></script>
+<script type="text/javascript" src="resources/custom/javascript/fglobal.js"></script>
 </head>
 <body onload="setAutoLoad();">
 <table border="0" cellPadding=1 cellSpacing=1 width="100%" align="center">
     <tr>
         <td style="text-align: center;">
-            <fieldset style="-moz-border-radius:15px;  border-radius: 15px;  -webkit-border-radius: 15px; width: 100%">
+            <fieldset style="-moz-border-radius:15px;  border-radius: 15px;  -webkit-border-radius: 15px;">
                 <table border="0" cellPadding=1 cellSpacing=1 width="85%">
                     <tr>
-                        <td>
-                            <%@include file="toplang.jsp" %>
+                        <td width="35%">
+                            <jsp:include page="toplang.jsp"/>
                         </td>
-                        <td>
+                        <td width="65%">
                             <jsp:include page="./cellinkname.html?cellinkId=<%=cellinkId%>"/>
                         </td>
                     </tr>
-                </table>
-
-                <table border="0" cellPadding=1 cellSpacing=1 width="100%">
                     <tr>
-                        <td>
-                            <!-- logout table -->
-                            <table id="tblProgress" align="center" style="display:none;">
-                                <tr>
-                                    <td>
-                                        <div id="divMessage" style="text-align:center;font-size:medium"></div>
-                                        <div id="divSliderBG"><img src="resources/images/Transparent.gif" height="1" width="1">
-                                        </div>
-                                        <div id="divSlider"><img src="resources/images/Transparent.gif" height="1" width="1">
-                                        </div>
-                                        <input id="btnStop" align="center" type="button"
-                                               value="<%=session.getValue("button.stay.online")%>"
-                                               onclick="stopTimer();">
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td valign="bottom">
-                            <img src="resources/images/chicken-icon.png" border="0" hspace="5"/>
+                        <td valign="bottom" colspan="2">
+                            <img src="resources/custom/images/chicken-icon.png" border="0" hspace="5"/>
                             <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
                                 <%=session.getAttribute("button.flocks")%>
                             </a>
                             <% String access = (String) request.getSession().getAttribute("access");%>
                             <% if (!access.toLowerCase().equals("regular")) {%>
                             <%if (role == UserRole.USER) {%>
-                            <img src="resources/images/cellinks.png" border="0" hspace="5"/>
-                            <a href="<%=request.getContextPath()%>/my-farms.html?userId=<%=userId%>">
+                            <img src="resources/custom/images/cellinks.png" border="0" hspace="5"/>
+                            <a href="./my-farms.html?userId=<%=userId%>">
                                 <%=session.getAttribute("button.myfarms")%>
                             </a>
                             <%} else {%>
-                            <img src="resources/images/cellinks.png" border="0" hspace="5" alt=""/>
-                            <a href="<%=request.getContextPath()%>/overview.html?userId=<%=userId%>">
+                            <img src="resources/custom/images/cellinks.png" border="0" hspace="5" alt=""/>
+                            <a href="./overview.html?userId=<%=userId%>">
                                 <%=session.getAttribute("button.overview")%>
                             </a>
                             <%}%>
-                            <img src="resources/images/logout.gif" border="0" hspace="5" alt=""/>
+                            <img src="resources/custom/images/logout.gif" border="0" hspace="5" alt=""/>
                             <a href="logout.html">
                                 <%=session.getAttribute("label.logout")%>
                             </a>
@@ -583,8 +580,7 @@ function keyDown(val) {
     <tr>
         <td style="text-align: center;">
             <form name="mainForm" action="">
-                <fieldset
-                        style="-moz-border-radius:15px;  border-radius: 15px;  -webkit-border-radius: 15px; width: 100%">
+                <fieldset style="-moz-border-radius:15px;  border-radius: 15px;  -webkit-border-radius: 15px;">
                     <div id="tableData">
 
                     </div>

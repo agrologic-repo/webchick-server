@@ -42,10 +42,10 @@
 <head>
     <title>All Table Data</title>
 
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <script type="text/javascript" src="resources/javascript/util.js">;</script>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/custom/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
     <script type="text/javascript">
         function validate() {
             if (document.editForm.Nprogramname.value == "") {
@@ -233,7 +233,7 @@
                                                                                 value="<%=data.getPosition()%>"
                                                                                 size="5"></td>
                                         <td align="center" width="200px">
-                                            <img src="resources/images/close.png" title="Delete This Data" border="0"/>
+                                            <img src="resources/custom/images/close.png" title="Delete This Data" border="0"/>
                                             <a href="javascript:removeData(<%=programId %>,<%=screenId %>,<%=tableId%>,<%=data.getId()%>);"><%=session.getAttribute("button.delete")%>
                                             </a></td>
                                     </tr>

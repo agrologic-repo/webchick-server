@@ -306,8 +306,8 @@
         <servlet-class>com.agrologic.app.web.RemoveTransactServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AddDistrebutFormServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.AddDistrebutFormServlet</servlet-class>
+        <servlet-name>AddDistributeFormServlet</servlet-name>
+        <servlet-class>com.agrologic.app.web.AddDistributeFormServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>RCActionSetServlet</servlet-name>
@@ -414,6 +414,10 @@
         <servlet-class>com.agrologic.app.web.RemoveSystemStateServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>RemoveSpreadServlet</servlet-name>
+        <servlet-class>com.agrologic.app.web.RemoveSpreadServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>EditSystemStateFormServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.EditSystemStateFormServlet</servlet-class>
     </servlet>
@@ -480,10 +484,6 @@
     <servlet>
         <servlet-name>ClearControllerData</servlet-name>
         <servlet-class>com.agrologic.app.web.ClearControllerData</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MyServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.MyServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginNameServlet</servlet-name>
@@ -688,7 +688,7 @@
     </servlet>
     <servlet>
         <servlet-name>FlockManagment</servlet-name>
-        <servlet-class>com.agrologic.app.web.FlockManagment</servlet-class>
+        <servlet-class>com.agrologic.app.web.FlockManagement</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ListProgramScreens</servlet-name>
@@ -983,7 +983,7 @@
         <url-pattern>/remove-transact.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AddDistrebutFormServlet</servlet-name>
+        <servlet-name>AddDistributeFormServlet</servlet-name>
         <url-pattern>/add-distribute.html</url-pattern>
     </servlet-mapping>
     <servlet>
@@ -1113,6 +1113,11 @@
         <url-pattern>/addsystemstatetranslate.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>RemoveSpreadServlet</servlet-name>
+        <url-pattern>/remove-spread.html</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>RemoveSystemStateServlet</servlet-name>
         <url-pattern>/remove-systemstate.html</url-pattern>
     </servlet-mapping>
@@ -1183,10 +1188,6 @@
     <servlet-mapping>
         <servlet-name>ClearControllerData</servlet-name>
         <url-pattern>/clear-controller-data.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MyServlet</servlet-name>
-        <url-pattern>/MyServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>60</session-timeout>

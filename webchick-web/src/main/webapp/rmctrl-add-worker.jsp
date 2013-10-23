@@ -1,7 +1,6 @@
 <%@ page import="com.agrologic.app.dao.DaoType" %>
 <%@ page import="com.agrologic.app.dao.DbImplDecider" %>
 <%@ page import="com.agrologic.app.dao.WorkerDao" %>
-<%@ page import="com.agrologic.app.dao.mysql.impl.WorkerDaoImpl" %>
 <%@ page import="com.agrologic.app.model.Worker" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="language.jsp" %>
@@ -9,7 +8,7 @@
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDaoImpl.class);
+    WorkerDao workerDao = DbImplDecider.use(DaoType.MYSQL).getDao(WorkerDao.class);
     Collection<Worker> workerList = workerDao.getAllByCellinkId(cellinkId);
 %>
 <!DOCTYPE html>
@@ -17,9 +16,9 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
-    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/custom/style/calendar.css"/>
+    <script type="text/javascript" src="resources/custom/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function validate() {
             var name = document.getElementById('name').value;
@@ -107,7 +106,7 @@
                 <td><input type="text" id="define" name="define" size="20" value=""></td>
                 <td><input type="text" id="phone" name="phone" size="10" value=""></td>
                 <td><input type="text" id="hourcost" name="hourcost" value="" size="10"></td>
-                <td align="center"><img src="resources/images/plus1.gif" border="0" hspace="4">
+                <td align="center"><img src="resources/custom/images/plus1.gif" border="0" hspace="4">
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
@@ -121,7 +120,7 @@
                 </td>
                 <td><%=w.getHourCost() %>
                 </td>
-                <td align="center"><img src="resources/images/close.png" border="0" hspace="4">
+                <td align="center"><img src="resources/custom/images/close.png" border="0" hspace="4">
                     <a href="javascript:window.location='./remove-worker.html?cellinkId=<%=cellinkId%>&controllerId=<%=controllerId%>&flockId=<%=flockId%>&workerId=<%=w.getId()%>';">Remove</a>
                 </td>
             </tr>

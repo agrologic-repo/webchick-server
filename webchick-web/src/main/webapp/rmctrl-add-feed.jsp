@@ -2,8 +2,6 @@
 <%@ page import="com.agrologic.app.dao.DbImplDecider" %>
 <%@ page import="com.agrologic.app.dao.FeedDao" %>
 <%@ page import="com.agrologic.app.dao.FeedTypeDao" %>
-<%@ page import="com.agrologic.app.dao.mysql.impl.FeedDaoImpl" %>
-<%@ page import="com.agrologic.app.dao.mysql.impl.FeedTypeDaoImpl" %>
 <%@ page import="com.agrologic.app.model.Feed" %>
 <%@ page import="com.agrologic.app.model.FeedType" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -13,18 +11,18 @@
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    FeedDao feedDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedDaoImpl.class);
+    FeedDao feedDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedDao.class);
     Collection<Feed> feedList = feedDao.getAllByFlockId(flockId);
-    FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDaoImpl.class);
+    FeedTypeDao feedTypeDao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedTypeDao.class);
     Collection<FeedType> feedTypeList = feedTypeDao.getAllByCellinkId(cellinkId);
 %>
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
-    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/custom/style/calendar.css"/>
+    <script type="text/javascript" src="resources/custom/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function calcTotalCost(amount, price, total) {
             // calculate cost
@@ -130,7 +128,7 @@
             <tr>
                 <td><input type="text" id="amount" name="amount"></td>
                 <td><input type="text" id="startDate" name="startDate" size="10" readonly>
-                    <img src="resources/images/calendar.png" border="0" onclick="GetDate('start');"/></td>
+                    <img src="resources/custom/images/calendar.png" border="0" onclick="GetDate('start');"/></td>
                 <td>
                     <select id="feedtypeid" name="feedtypeid">
                         <option value="0" select></option>
@@ -142,7 +140,7 @@
                 </td>
                 <td><input type="text" id="numberAccount" name="numberAccount" value=""></td>
                 <td><input type="text" id="total" name="total" readonly value="" size="10"></td>
-                <td align="center"><img src="resources/images/plus1.gif" border="0" hspace="4">
+                <td align="center"><img src="resources/custom/images/plus1.gif" border="0" hspace="4">
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
@@ -166,7 +164,7 @@
                 <td><%=feed.getNumberAccount()%>
                 <td><%=feed.getTotal()%>
                 </td>
-                <td align="center"><img src="resources/images/close.png" border="0" hspace="4">
+                <td align="center"><img src="resources/custom/images/close.png" border="0" hspace="4">
                     <a href="javascript:window.location='./remove-feed.html?cellinkId=<%=cellinkId%>&controllerId=<%=controllerId%>&flockId=<%=flockId%>&feedId=<%=feed.getId()%>';">Remove</a>
                 </td>
             </tr>

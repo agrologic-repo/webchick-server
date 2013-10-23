@@ -43,9 +43,9 @@
 <head>
     <title><%=session.getAttribute("myfarms.page.title") %>
     </title>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
+    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
     <script type="text/javascript">
         function disconnectCellink(cellinkId) {
             if (!confirm("Are you sure ?")) {
@@ -84,7 +84,7 @@
                                     <tbody>
                                     <tr>
                                         <td valign="top">
-                                            <img class="link" src="resources/images/chicken_house1.jpg"
+                                            <img class="link" src="resources/custom/images/chicken_house1.jpg"
                                                  onclick="javascript:window.location.href='./rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>' "/>
                                         </td>
                                         <td align="center">
@@ -98,7 +98,7 @@
                                                 <tr>
                                                     <td colspan="2">
                                                         <a class="button"
-                                                           href="./rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>&role=<%=user.getRole() %>"><%=session.getAttribute("button.show.houses") %>
+                                                           href="rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>&role=<%=user.getRole() %>"><%=session.getAttribute("button.show.houses") %>
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -123,7 +123,7 @@
                                                             <tr>
                                                                 <%if (cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {%>
                                                                 <td>
-                                                                    <img src="resources/images/disconnect.png"
+                                                                    <img src="resources/custom/images/disconnect.png"
                                                                          style="cursor: pointer" border="0" hspace="5"/>
                                                                     <a href="#"
                                                                        onclick="disconnectCellink(<%=cellink.getId() %>)">
@@ -132,14 +132,14 @@
                                                                 </td>
                                                                 <%}%>
                                                                 <td>
-                                                                    <img src="resources/images/setting.png"
+                                                                    <img src="resources/custom/images/setting.png"
                                                                          style="cursor: pointer" border="0" hspace="5"/>
                                                                     <a href="./cellink-setting.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
                                                                         <%=session.getAttribute("button.setting")%>
                                                                     </a>
                                                                 </td>
                                                                 <td>
-                                                                    <img src="resources/images/refresh.gif" style="cursor: pointer"
+                                                                    <img src="resources/custom/images/refresh.gif" style="cursor: pointer"
                                                                          border="0" hspace="5"/>
                                                                     <a href="./my-farms.html?userId=<%=cellink.getUserId()%>">
                                                                         <%=session.getAttribute("button.refresh")%>
@@ -159,7 +159,7 @@
                                     <tbody>
                                     <tr>
                                         <td valign="top">
-                                            <img class="link" src="resources/images/chicken_house1.jpg"/>
+                                            <img class="link" src="resources/custom/images/chicken_house1.jpg"/>
                                         </td>
                                         <td align="center">
                                             <table>
@@ -190,7 +190,7 @@
                                                         <table class="table-list">
                                                             <tr>
                                                                 <td>
-                                                                    <img src="resources/images/setting.png"
+                                                                    <img src="resources/custom/images/setting.png"
                                                                          style="cursor: pointer"
                                                                          title="<%=session.getAttribute("button.connect.cellink")%>"
                                                                          border="0" hspace="5"/>
@@ -198,7 +198,7 @@
                                                                     </a>
                                                                 </td>
                                                                 <td>
-                                                                    <img src="resources/images/refresh.gif" style="cursor: pointer"
+                                                                    <img src="resources/custom/images/refresh.gif" style="cursor: pointer"
                                                                          border="0" hspace="5"/>
                                                                     <a href="./my-farms.html?userId=<%=cellink.getUserId()%>"><%=session.getAttribute("button.refresh")%>
                                                                     </a>

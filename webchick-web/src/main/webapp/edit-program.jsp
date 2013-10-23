@@ -21,9 +21,9 @@
     <title>Edit Program</title>
 
 
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css">
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css">
+    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
     <script type="text/javascript" language="javascript">
         function validate() {
             if (document.editForm.Nprogramname.value == "") {

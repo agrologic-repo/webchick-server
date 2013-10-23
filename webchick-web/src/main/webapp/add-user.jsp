@@ -15,11 +15,10 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title>Add User</title>
-
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <title><%=session.getAttribute("user.page.add.title")%></title>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
     <script type="text/javascript">
         function clearForm() {
             document.addForm.Nusername.value = "";

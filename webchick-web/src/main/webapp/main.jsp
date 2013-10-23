@@ -13,8 +13,8 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=session.getAttribute("home.page.title")%></title>
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
 
 </head>
 <body>
@@ -59,7 +59,7 @@
                 </ul>
                 <p><h2><%=session.getAttribute("label.help")%></h2></p>
                 <ul class="niceList">
-                    <li><a target="_blank" href="./help.html"><%=session.getAttribute("label.help")%></a>
+                    <li><a target="_blank" href="help.html"><%=session.getAttribute("label.help")%></a>
                         - <%=session.getAttribute("label.help.descript")%>
                     </li>
                 </ul>

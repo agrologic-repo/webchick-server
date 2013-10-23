@@ -15,7 +15,7 @@
 
     String logoString = domainDao.getLogoPath((String) session.getAttribute("domain"));
     if (logoString == null) {
-        logoString = "resources/images/agrologiclogo.png";
+        logoString = "resources/custom/images/agrologiclogo.png";
     }
 
     String company = domainDao.getCompany((String) session.getAttribute("domain"));
@@ -98,7 +98,7 @@
             <%=session.getAttribute("label.welcome")%>
             <strong><%=user.getLogin()%></strong>
             <span>|</span>
-            <a href="./my-profile.jsp?userId=<%=user.getId()%>"><%=session.getAttribute("button.profile")%></a>&nbsp;
+            <a href="my-profile.jsp?userId=<%=user.getId()%>"><%=session.getAttribute("button.profile")%></a>&nbsp;
             <span>|</span>
             <a href="./help.html"><%=session.getAttribute("label.help")%></a>
             <span>|</span>

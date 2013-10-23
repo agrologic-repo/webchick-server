@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
 
     <title>Webchick Terms and Conditions</title>
 </head>

@@ -30,10 +30,10 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Screen Manager - Screens</title>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
-    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
+    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/custom/javascript/util.js">;</script>
 
     <script language="Javascript">
         /**
@@ -201,29 +201,29 @@
             <td colspan="2">
                 <button id="Preview" name="Preview" type="button"
                         onclick="redirect('./screen-preview.html?programId=<%=program.getId()%>');">
-                    <img src="resources/images/preview.png" style="cursor: pointer" hspace="5"
+                    <img src="resources/custom/images/preview.png" style="cursor: pointer" hspace="5"
                          border="0"/><%=session.getAttribute("button.preview")%>
                 </button>
                 <button id="Add" name="Add" type="button"
                         onclick="redirect('./add-screen.html?programId=<%=program.getId()%>');">
-                    <img src="resources/images/screen.gif" style="cursor: pointer" hspace="5"
+                    <img src="resources/custom/images/screen.gif" style="cursor: pointer" hspace="5"
                          border="0"/><%=session.getAttribute("button.add.screen")%>
                 </button>
                 <button id="Relays" name="Relays" type="button"
                         onclick="redirect('./program-relays.html?programId=<%=program.getId()%>&translateLang=<%=translateLang%>');">
-                    <img src="resources/images/relay.png" style="cursor: pointer" hspace="5" border="0"/>Relays
+                    <img src="resources/custom/images/relay.png" style="cursor: pointer" hspace="5" border="0"/>Relays
                 </button>
                 <button id="Alarms" name="Alarms" type="button"
                         onclick="redirect('./program-alarms.html?programId=<%=program.getId()%>');">
-                    <img src="resources/images/alarm1.gif" style="cursor: pointer" hspace="5" border="0"/>Alarms
+                    <img src="resources/custom/images/alarm1.gif" style="cursor: pointer" hspace="5" border="0"/>Alarms
                 </button>
                 <button id="SystemStates" name="System States" type="button"
                         onclick="redirect('./program-systemstates.html?programId=<%=program.getId()%>');">
-                    <img src="resources/images/system.gif" style="cursor: pointer" hspace="5" border="0"/>System States
+                    <img src="resources/custom/images/system.gif" style="cursor: pointer" hspace="5" border="0"/>System States
                 </button>
                 <button id="btnUnchickUnusedData" name="btnUnchickUnusedData"
                         onclick="return uncheckUnusedData(<%=program.getId()%>);">
-                    <img src="resources/images/check.png" style="cursor: pointer" hspace="5" border="0"/>Clear Unused Data
+                    <img src="resources/custom/images/check.png" style="cursor: pointer" hspace="5" border="0"/>Clear Unused Data
                 </button>
             </td>
         </tr>
@@ -275,13 +275,13 @@
                                 <input type="text" name="position" value="<%=screen.getPosition()%>" size="5"/>
                             </td>
                             <td class="centerCell">
-                                <img src="resources/images/edit.gif" style="cursor: pointer" hspace="5" border="0" title='Edit'/>
+                                <img src="resources/custom/images/edit.gif" style="cursor: pointer" hspace="5" border="0" title='Edit'/>
                                 <a href="./editscreenrequest.html?programId=<%=program.getId()%>&screenId=<%=screen.getId()%>">
                                     <%=session.getAttribute("button.edit")%>
                                 </a>
                             </td>
                             <td class="centerCell">
-                                <img src="resources/images/close.png" title="Remove" hspace="5" style="cursor: pointer" border="0"/>
+                                <img src="resources/custom/images/close.png" title="Remove" hspace="5" style="cursor: pointer" border="0"/>
                                 <a href="javascript:removeScreen(<%=screen.getProgramId()%>,<%=screen.getId()%>);">
                                     <%=session.getAttribute("button.delete")%>
                                 </a>

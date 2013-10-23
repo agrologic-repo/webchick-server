@@ -1,0 +1,345 @@
+body {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #000000;
+    margin: 0 auto;
+}
+
+H1 {
+    color: #A62A2A;
+    margin: 0px;
+    padding: 0px;
+}
+
+H2 {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 0px;
+    padding: 0px;
+    color: maroon;
+    text-transform: capitalize;
+}
+
+H3 {
+    margin: 0px;
+    padding: 0px;
+    color: maroon;
+    font-weight: bold;
+}
+
+H3 A.active {
+    background-color: white;
+    color: blue;
+}
+
+H4 {
+    color: red;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+TABLE.table-list {
+    border: 1px solid #C6C6C6;
+    border-color: #848C96;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+TABLE.lang-container {
+    vertical-align: top;
+    margin: 0px;
+    padding: 0px;
+}
+
+TH {
+    background-color: #736F6E;
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 2px;
+}
+
+TH.leftHeader {
+    text-align: left;
+    min-width: 100px;
+}
+
+TH.centerHeader {
+    text-align: center;
+    min-width: 100px;
+}
+
+TH.rightHeader {
+    text-align: right;
+    min-width: 100px;
+}
+
+TH.leftHeaderSmall {
+    text-align: left;
+    max-width: 50px;
+}
+
+TH.centerHeaderSmall {
+    text-align: center;
+    max-width: 50px;
+}
+
+TH.rightHeaderSmall {
+    text-align: right;
+    max-width: 50px;
+}
+
+TH.housesHeader {
+    text-align: center;
+    font-size: 12pt;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: blue;
+    background-color: #FFFF99;
+    /*background-color:#599;*/
+    height: 12pt;
+    width: 250px;
+}
+
+TR.selected {
+    background: orange;
+}
+
+TR.unselected {
+    background: white;
+}
+
+TD {
+    color: #000000;
+    font-weight: bold;
+}
+
+TD.selected {
+    background: orange;
+}
+
+TD.tdselected {
+    background: orange;
+}
+
+TD.rightCell {
+    text-align: right;
+}
+
+TD.leftCell {
+    text-align: left;
+}
+
+TD.centerCell {
+    text-align: center;
+}
+
+TD.dataCol {
+    background-color: #ADD8E6;
+    color: #333333;
+}
+
+TD.housesHeader {
+    text-align: center;
+    font-size: 12pt;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: blue;
+    background-color: #FFFF99;
+    /*background-color:#599;*/
+    height: 12pt;
+    width: 200px;
+}
+
+TD.tableHeaders {
+    font-size: 10pt;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: black;
+    background: #ADD8EE;
+}
+
+TD.tableValues {
+    color: black;
+    height: 12pt;
+    width: 50px;
+}
+
+TD.greenValues {
+    background: green;
+    font-weight: bold;
+    color: white;
+}
+
+TD.redValues {
+    background: red;
+    color: yellow;
+}
+
+INPUT.selected {
+    background: orange;
+    color: orange;
+}
+
+INPUT.unselected {
+    background: white;
+    color: black;
+}
+
+button.smallbutton {
+    font-size: 11px;
+}
+
+button.actionbutton {
+    padding: 5px;
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+}
+
+.image:hover img {
+    border: 0.5px solid #ccc;
+}
+
+.image img {
+    border: 0px solid #ccc;
+}
+
+.formHelpLink:hover {
+    text-decoration: underline;
+}
+
+.formHelpLink {
+    background-color: #FFFFFF;
+    color: #0000FF;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 0px 0px 0px 0px;
+    margin: 0px;
+    cursor: help;
+    cursor: pointer;
+}
+
+/*A:link, a:visited {text-decoration:none;font-weight:bold;color: #0000FF;}
+A:hover {color:#0000FF;text-decoration:underline;}*/
+a:link {
+    text-decoration: none;
+    color: #0000FF;
+}
+
+a:visited {
+    text-decoration: none;
+    color: #0000FF;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #0000EE;
+}
+
+a:active {
+    text-decoration: underline;
+    color: #0000EE;
+}
+
+#helpBox {
+    background-color: #F0EFFF;
+    color: #0000FF;
+    overflow: hidden;
+    z-index: 999;
+    position: absolute;
+    margin: auto;
+    width: 250px;
+    height: 250px;
+    padding-left: 0px;
+    border: 2px solid black;
+    display: none;
+}
+
+#helpBoxInner {
+    position: relative;
+    color: Black;
+    background-color: #ffffff;
+    left: 0px;
+    top: 0px;
+    overflow: auto;
+    width: 195px;
+    height: 338px;
+    border: 0px;
+    padding: 5px;
+    margin: 0px;
+    font-size: 11px;
+}
+
+#helpBox a {
+    color: #0000FF;
+}
+
+#helpBoxInner p {
+    padding: 0px 0px 0px 0px;
+}
+
+/*----------------------------------------------------------------------------------------*/
+/* TOOLTIP                                                                                */
+/* + help icon from: http://famfamfam.com/lab/icons/silk/                                 */
+/*----------------------------------------------------------------------------------------*/
+.toolTip {
+    /* This is the hook that the jQuery script will use */
+    padding-right: 20px; /* This is need to make sure that the help icon is always visible */
+    background: transparent url(http://img.tradepub.com/images/help.gif) no-repeat right;
+    color: #FFFFFF;
+    cursor: help;
+    font-family: arial;
+    position: relative; /* This contains the .toolTipWrapper div that is absolutely positioned  */
+}
+
+.toolTipWrapper {
+    /* The wrapper holds its insides together */
+    width: 175px;
+    position: absolute; /* Absolute will make the tooltip float above other content in the page */
+    top: 20px;
+    display: none; /* It has to be displayed none so that the jQuery fadein and fadeout functions will work */
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 12px; /* A font size is needed to maintain consistancy */
+}
+
+.toolTipTop {
+    /* Top section of the tooltip */
+    width: 175px;
+    height: 30px;
+    background: transparent url(http://img.tradepub.com/images/bubbleTop.gif) no-repeat;
+}
+
+.toolTipMid {
+    /* Middle section of the tooltip */
+    padding: 6px 8px;
+    background: #164197 url(http://img.tradepub.com/images/bubbleMid.gif) repeat-x top;
+}
+
+.toolTipBtm {
+    /* Bottom Section of the tooltip */
+    height: 13px;
+    background: transparent url(http://img.tradepub.com/images/bubbleBtm.gif) no-repeat;
+}
+
+.shell {
+    min-height: 768px;
+    height: auto;
+    width: 980px;
+    margin: 0 auto;
+}
+
+.table-list-small {
+    border: 0px solid #C6C6C6;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-list-small td {
+    font-family: verdana, arial;
+    font-size: 12px;
+    color: #949494;
+    padding: 1px;
+    margin: 1px;
+}

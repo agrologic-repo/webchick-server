@@ -18,8 +18,8 @@
     <title>Edit Cellink</title>
 
 
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
     <style>
         tr.unselected {
             background: white;
@@ -31,7 +31,7 @@
             color: white;
         }
     </style>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
     <script type="text/javascript">
         function addController(userId, cellinkId) {
             redirect("./add-controller.jsp?userId=" + userId + "&cellinkId=" + cellinkId);
@@ -84,7 +84,7 @@
                             </tr>
                             <tr>
                                 <td valign="top">
-                                    <img border="0" src="resources/images/cellink.jpg"/>
+                                    <img border="0" src="resources/custom/images/cellink.jpg"/>
                                 </td>
                             </tr>
                             <tr>
@@ -196,14 +196,14 @@
                                             </a></td>
                                             <td align="center">
                                                 <a href="./editcontrollerrequest.html?userId=<%=editCellink.getId() %>&cellinkId=<%=controller.getCellinkId() %>&controllerId=<%=controller.getId()%>">
-                                                    <img src="resources/images/edit.gif" style="cursor: pointer" border="0"
+                                                    <img src="resources/custom/images/edit.gif" style="cursor: pointer" border="0"
                                                          hspace="5"/><%=session.getAttribute("button.edit")%>
                                                 </a>
                                             </td>
                                             <td align="center">
                                                 <a href="javascript:removeController('<%=editCellink.getId()%>','<%=cellinkId%>','<%=controller.getId()%>');"
                                                    onclick="return confirmRemove();">
-                                                    <img src="resources/images/close.png" style="cursor: pointer" border="0"
+                                                    <img src="resources/custom/images/close.png" style="cursor: pointer" border="0"
                                                          hspace="5"/><%=session.getAttribute("button.delete")%>
                                                 </a>
                                             </td>

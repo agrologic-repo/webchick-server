@@ -30,18 +30,17 @@
         request.getSession().setAttribute("dir", "ltr");
     } else {
         locale = Locale.US;
-
         request.getSession().setAttribute("dir", "ltr");
     }
-    Locale oldLocale = (Locale) session.getAttribute("currLocale");
 
+    Locale oldLocale = (Locale) session.getAttribute("currLocale");
     session.setAttribute("currLocale", locale);
     if (oldLocale == null) {
         oldLocale = locale;
     }
     session.setAttribute("oldLocale", oldLocale);
 
-    ResourceBundle bundle = ResourceBundle.getBundle("MessagesBundle", locale);
+    ResourceBundle bundle = ResourceBundle.getBundle("labels", locale);
     for (Enumeration<String> e = bundle.getKeys(); e.hasMoreElements(); ) {
         String key = e.nextElement();
         String s = bundle.getString(key);

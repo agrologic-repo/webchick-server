@@ -8,7 +8,7 @@
     <title>Download Excel</title>
 </head>
 <body>
-<table style="border:1px solid #ff0000;background-color:f7f7f7" align="center">
+<table style="border:1px solid #ff0000;background-color:#f7f7f7" align="center">
     <tr style="font-weight:bold;">
         <td align="center" align="center" colspan=2 style="border-bottom: 2px solid #000000;">Download Excel File</td>
     </tr>

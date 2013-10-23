@@ -22,8 +22,8 @@
 <head>
     <title>Edit User</title>
 
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
     <script type="text/javascript">
         function validateEmail(email) {
             var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
@@ -117,9 +117,9 @@
                 <table border=0 cellPadding=1 cellSpacing=1 width="736">
                     <tr>
                         <td>
-                            <h1><%=session.getAttribute("edit.user")%></h1>
+                            <h1><%=session.getAttribute("user.page.edit.title")%></h1>
                             <h2><%=editUser.getFirstName()%> <%=editUser.getFirstName()%></h2>
-                            <img border="0" src="resources/images/user1.png"/>
+                            <img border="0" src="resources/custom/images/user1.png"/>
                         </td>
                     </tr>
                     <tr>
