@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css">
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
     <script language="Javascript">
         function reset() {
             document.getElementById("msgText").innerHTML = "";
@@ -68,10 +68,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <button id="btnUpdate" name="btnUpdate" type="submit"><img src="resources/custom/images/edit.gif"
+                            <button id="btnUpdate" name="btnUpdate" type="submit"><img src="resources/images/edit.gif"
                                                                                        hspace="5"><%=session.getAttribute("button.update") %>
                             </button>
-                            <button type="button" onclick='self.close();'><img src="resources/custom/images/close.png"
+                            <button type="button" onclick='self.close();'><img src="resources/images/close.png"
                                                                                hspace="5"><%=session.getAttribute("button.cancel") %>
                             </button>
                         </td>

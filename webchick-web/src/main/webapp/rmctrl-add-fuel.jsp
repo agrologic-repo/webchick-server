@@ -23,9 +23,9 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/calendar.css"/>
-    <script type="text/javascript" src="resources/custom/javascript/calendar.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function calcTotalCost(amount, price, total) {
             // calculate cost
@@ -111,7 +111,7 @@
             <td><input type="text" id="amount" name="amount"
                        onblur="javascript:calcTotalCost('amount', 'price', 'total');"></td>
             <td><input type="text" id="startDate" name="startDate" size="10" readonly>
-                <img src="resources/custom/images/calendar.png" border="0" onclick="GetDate('start');"/></td>
+                <img src="resources/images/calendar.png" border="0" onclick="GetDate('start');"/></td>
             <td><input type="text" id="price" name="price" size="10"
                        onblur="javascript:calcTotalCost('amount', 'price', 'total');">
                 <select id="currency" name="currency">
@@ -122,7 +122,7 @@
             <td><input type="text" id="numberAccount" name="numberAccount" value="" size="10"></td>
             <td><input type="text" id="total" name="total" readonly value="" size="10"></td>
             <td align="center">
-                <img src="resources/custom/images/plus1.gif" border="0" hspace="4">
+                <img src="resources/images/plus1.gif" border="0" hspace="4">
                 <a href="javascript:validate();">Add</a>
             </td>
 
@@ -139,7 +139,7 @@
             <td><%=fuel.getNumberAccount()%>
             <td><%=fuel.getTotal()%>
             </td>
-            <td align="center"><img src="resources/custom/images/close.png" border="0" hspace="4">
+            <td align="center"><img src="resources/images/close.png" border="0" hspace="4">
                 <a href="javascript:window.location='./remove-fuel.html?cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fuelId=<%=fuel.getId()%>';">Remove</a>
             </td>
         </tr>

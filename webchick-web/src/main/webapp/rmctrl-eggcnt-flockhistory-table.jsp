@@ -30,10 +30,10 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title></title>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/calendar.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/multiopt.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/multiopt.css"/>
 </head>
 <body>
 <form action="./rmctrl-eggcnt-flockhistory-table.jsp">

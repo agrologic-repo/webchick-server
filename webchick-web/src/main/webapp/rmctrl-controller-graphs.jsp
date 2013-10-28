@@ -33,7 +33,7 @@
     String graphURLTH;
     String filenameth = GenerateGraph.generateChartTempHum(controllerId, session, new PrintWriter(out), currLocal);
     if (filenameth.contains("public_error")) {
-        graphURLTH = request.getContextPath() + "/resources/custom/images/public_nodata_500x300.png";
+        graphURLTH = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
     } else {
         graphURLTH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameth;
     }
@@ -41,7 +41,7 @@
     String filenamewft = GenerateGraph.generateChartWaterFeedTemp(controllerId, session, new PrintWriter(out), currLocal);
     String graphURLWFT;
     if (filenameth.contains("public_error")) {
-        graphURLWFT = request.getContextPath() + "/resources/custom/images/public_nodata_500x300.png";
+        graphURLWFT = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
     } else {
         graphURLWFT = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamewft;
     }
@@ -51,14 +51,14 @@
 <head>
     <title><%=session.getAttribute("all.screen.page.title")%>
     </title>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/tabstyle.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/jquery-ui.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
 
-    <%--<script type="text/javascript" src="resources/custom/javascript/util.js">;</script>--%>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery-ui.js">;</script>
+    <%--<script type="text/javascript" src="resources/javascript/util.js">;</script>--%>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
     <script>
         $(function () {
             $("#accordion-graph").accordion({

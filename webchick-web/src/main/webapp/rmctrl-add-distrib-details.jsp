@@ -15,8 +15,8 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/calendar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
     <style type="text/css">
         div.tableHolder {
             OVERFLOW: auto;
@@ -43,7 +43,7 @@
             text-wrap: suppress
         }
     </style>
-    <script type="text/javascript" src="resources/custom/javascript/calendar.js">;</script>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function calcTotalCost(amount, price, total) {
             // calculate cost
@@ -112,7 +112,7 @@
         <tr>
             <th>Date</th>
             <td><input type="text" id="startDate" name="startDate" size="10" readonly>
-                <img src="resources/custom/images/calendar.png" border="0" onclick="GetDate('start');"/></td>
+                <img src="resources/images/calendar.png" border="0" onclick="GetDate('start');"/></td>
             <th>Number Account</th>
             <td><input type="text" id="account" name="account" size="10"></td>
             <th>Sex</th>

@@ -3,7 +3,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Cellink Web Application</title>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
 </head>
 <body onload="redirect('main.jsp')"></body>
 </html>

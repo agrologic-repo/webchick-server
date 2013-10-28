@@ -18,9 +18,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Change password</title>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css">
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css">
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" language="javascript">
 
         function validate() {
@@ -103,7 +103,7 @@
                                             <button id="btnBack" name="btnBack" onclick='return back("./main.jsp");'>
                                                 &nbsp;Back&nbsp;</button>
                                             <button id="btnUpdate" name="btnUpdate" onclick='return validate();'><img
-                                                    src="resources/custom/images/save.gif"> <%=session.getAttribute("button.save") %>
+                                                    src="resources/images/save.gif"> <%=session.getAttribute("button.save") %>
                                             </button>
                                         </td>
                                     </tr>

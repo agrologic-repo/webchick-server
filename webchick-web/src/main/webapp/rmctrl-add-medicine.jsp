@@ -18,8 +18,8 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/calendar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
     <style type="text/css">
         div.tableHolder {
             OVERFLOW: auto;
@@ -46,7 +46,7 @@
             text-wrap: suppress
         }
     </style>
-    <script type="text/javascript" src="resources/custom/javascript/calendar.js">;</script>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function calcTotalCost(amount, price, total) {
             // calculate cost
@@ -125,7 +125,7 @@
                 <td><input type="text" id="price" name="price" value="" size="10"
                            onblur="javascript:calcTotalCost('amount', 'price', 'total');"></td>
                 <td><input type="text" id="total" name="total" readonly value="" size="10"></td>
-                <td align="center"><img src="resources/custom/images/plus1.gif" border="0" hspace="4">
+                <td align="center"><img src="resources/images/plus1.gif" border="0" hspace="4">
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
@@ -139,7 +139,7 @@
                 </td>
                 <td><%=medicine.getTotal() %>
                 </td>
-                <td align="center"><img src="resources/custom/images/close.png" border="0" hspace="4">
+                <td align="center"><img src="resources/images/close.png" border="0" hspace="4">
                     <a href="javascript:window.location='./remove-medicine.html?cellinkId=<%=cellinkId%>&controllerId=<%=controllerId%>&flockId=<%=flockId%>&medicineId=<%=medicine.getId() %>';">Remove</a>
                 </td>
             </tr>

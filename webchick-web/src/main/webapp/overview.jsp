@@ -54,12 +54,14 @@
 }
 %>
 
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Webchick overview</title>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <style type='text/css'>
         #search {
             cursor: pointer;
@@ -73,12 +75,10 @@
             cursor: pointer;
         }
     </style>
-    <script type="text/javascript" src="resources/custom/javascript/jquery.min.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery-latest.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery.tablesorter.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery.tablesorter.min.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
-    <script type='text/javascript'>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.tablesorter.js"></script>
+    <script type="text/javascript">
         //<![CDATA[
         /**
          * search function
@@ -121,16 +121,25 @@
 
         $(function () {
             $('#table-cellinks').tablesorter({
-                sortList: [[1, 0]], widgets: ['zebra'],
+                sortList: [[1, 0]],widgets: ["zebra"],
                 // These are detected by default,
                 // but you can change or disable them
                 headers: {
                     6: { sorter: "dateTimeFormat" }
                 }
+
             });
         });
-    </script>
-    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#selectall').click(function () {
+                $('.selectedId').prop('checked', this.checked);
+            });
+
+            $('.selectedId').change(function () {
+                var check = ($('.selectedId').filter(":checked").length == $('.selectedId').length);
+                $('#selectall').prop("checked", check);
+            });
+        });
         /**
          *
          */
@@ -195,7 +204,7 @@
                             <table border="0" style="border-collapse: collapse;">
                                 <tr>
                                     <td style="padding: 1px 2px 1px 5px; vertical-align: middle">
-                                        <img class="images" src="resources/custom/images/online.gif" style="vertical-align: middle"
+                                        <img class="images" src="resources/images/online.gif" style="vertical-align: middle"
                                              hspace="5"/>
                                         <a href="overview.html?state=1"><%=session.getAttribute("cellink.state.online")%>
                                         </a>
@@ -203,7 +212,7 @@
                                 </tr>
                                 <tr>
                                     <td style="padding: 1px 2px 1px 5px; vertical-align: middle">
-                                        <img src="resources/custom/images/running.gif" style="vertical-align: middle"
+                                        <img src="resources/images/running.gif" style="vertical-align: middle"
                                              hspace="5">
                                         <a href="overview.html?state=3"><%=session.getAttribute("cellink.state.running")%>
                                         </a>
@@ -211,7 +220,7 @@
                                 </tr>
                                 <tr>
                                     <td style="padding: 1px 2px 1px 5px; vertical-align: middle">
-                                        <img src="resources/custom/images/offline.gif" style="vertical-align: middle"
+                                        <img src="resources/images/offline.gif" style="vertical-align: middle"
                                              hspace="5"/>
                                         <a href="overview.html?state=0"><%=session.getAttribute("cellink.state.offline")%>
                                         </a>
@@ -230,8 +239,8 @@
     <tr bgcolor="#D5EFFF">
         <td align="justify" colspan="6">
             <input type="text" name="searchText" id="searchText" value="<%=searchText%>"/>
-            <img id="search" src="resources/custom/images/search.png" border="0" redirectUrl="./overview.html"/>
-            <img id="refresh" src="resources/custom/images/refresh.png" border="0" onclick="redirect('./overview.html')"/>
+            <img id="search" src="resources/images/search.png" border="0" redirectUrl="./overview.html"/>
+            <img id="refresh" src="resources/images/refresh.png" border="0" onclick="redirect('./overview.html')"/>
 
             <form id="formFilter" name="formFilter" style="display: inline;">
                 <%=session.getAttribute("cellink.states")%> :
@@ -245,7 +254,7 @@
                     <%}%>
                 </select>
                 &nbsp;
-                <img id="filter" src="resources/custom/images/filter.png" border="0"/>
+                <img id="filter" src="resources/images/filter.png" border="0"/>
             </form>
 
             <form name="mainForm" style="display: inline;">
@@ -266,64 +275,53 @@
     <tr>
         <td colspan="4" width="100%">
             <form id="formFarms" name="formFarms" style="display:inline">
-                <table id="table-cellinks" class="tablesorter" border="0" cellpadding="2" cellspacing="1" width="100%">
+                <table id="table-cellinks" class="tablesorter">
                     <thead>
                     <tr>
                         <td>
-                            <input type="checkbox" name="checkAll" id="checkAll">
+                            <%--<input type="checkbox" name="checkAll" id="checkAll">--%>
+                            <input type="checkbox" id="selectall"></input>
+
                         </td>
-                        <th width="40">
-                            <%=session.getAttribute("table.col.cellink.id")%>
-                        </th>
-                        <th>
-                            <%=session.getAttribute("table.col.cellink.name")%>
-                        </th>
-                        <th>
-                            <%=session.getAttribute("table.col.cellink.version")%>
-                        </th>
-                        <th>
-                            <%=session.getAttribute("table.col.cellink.user")%>
-                        </th>
-                        <th>
-                            <%=session.getAttribute("table.col.cellink.sim")%>
-                        </th>
-                        <th>
-                            <%=session.getAttribute("table.col.cellink.lastupdate")%>
-                        </th>
-                        <th colspan="2">
-                            <%=session.getAttribute("table.col.cellink.action")%>
-                        </th>
+                        <th width="50px"><span><%=session.getAttribute("table.col.cellink.id")%></span></th>
+                        <th><%=session.getAttribute("table.col.cellink.name")%></th>
+                        <th><%=session.getAttribute("table.col.cellink.version")%></th>
+                        <th><%=session.getAttribute("table.col.cellink.user")%></th>
+                        <th><%=session.getAttribute("table.col.cellink.sim")%></th>
+                        <th><%=session.getAttribute("table.col.cellink.lastupdate")%></th>
+                        <th colspan="2"><%=session.getAttribute("table.col.cellink.action")%></th>
                     </tr>
                     </thead>
                     <tbody>
                     <%if (cellinks.size() != 0) {%>
                     <%int rows = 0;%>
                     <%for (Cellink cellink : cellinks) {%>
-                    <% if ((rows % 2) == 0) {%>
-                    <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
-                    <%} else {%>
-                    <tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">
-                    <%}%>
+                        <% if ((rows % 2) == 0) {%>
+                            <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
+                        <%} else {%>
+                            <tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">
+                        <%}%>
                         <td>
-                            <input type="checkbox" id=cb<%=cellink.getId()%> name=cb<%=cellink.getId()%>/>
+                            <%--<input type="checkbox" id=cb<%=cellink.getId()%> name=cb<%=cellink.getId()%>/>--%>
+                            <input type="checkbox" class="selectedId" id="cb<%=cellink.getId()%>" name="selectedId" value="<%=cellink.getId()%>" />
                         </td>
                         <td>
                             <%=cellink.getId()%>
                         </td>
                         <td>
                             <%if (cellink.getCellinkState().getValue() == CellinkState.STATE_ONLINE || cellink.getCellinkState().getValue() == CellinkState.STATE_START) {%>
-                            <img src="resources/custom/images/online.gif" onmouseover="this.src='resources/custom/images/honline.gif'"
-                                 onmouseout="this.src='resources/custom/images/online.gif'"
+                            <img src="resources/images/online.gif" onmouseover="this.src='resources/images/honline.gif'"
+                                 onmouseout="this.src='resources/images/online.gif'"
                                  title="<%=cellink.getName()%> (<%=session.getAttribute("cellink.state.online")%>)"
                                  onclick="redirect('./rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>&screenId=1&')"/>
                             <%} else if (cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {%>
-                            <img src="resources/custom/images/running.gif"
-                                 onmouseover="this.src='resources/custom/images/hrunning.gif'"
-                                 onmouseout="this.src='resources/custom/images/running.gif'"
+                            <img src="resources/images/running.gif"
+                                 onmouseover="this.src='resources/images/hrunning.gif'"
+                                 onmouseout="this.src='resources/images/running.gif'"
                                  title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.running")%>)"
                                  onclick="window.location.href = './all-cellinks.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>&screenId=1&'"/>
                             <%} else {%>
-                            <img src="resources/custom/images/offline.gif"
+                            <img src="resources/images/offline.gif"
                                  title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.offline")%>)"/>
                             <%}%>
                             <%
@@ -331,11 +329,11 @@
                                         || cellink.getCellinkState().getValue() == CellinkState.STATE_START
                                         || cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {
                             %>
-                            <a href="rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
-                                <%=cellink.getName()%>
-                            </a>
+                                <a href="rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
+                                    <%=cellink.getName()%>
+                                </a>
                             <%} else {%>
-                            <%=cellink.getName()%>
+                                <%=cellink.getName()%>
                             <%}%>
                         </td>
                         <td>
@@ -355,7 +353,7 @@
                         %>
                         <td align="center" valign="middle">
                             <a href="rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
-                                <img src="resources/custom/images/display.png" style="cursor: pointer"
+                                <img src="resources/images/display.png" style="cursor: pointer"
                                      title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
                                      hspace="5"/><%=session.getAttribute("button.connect.cellink")%>
                             </a>
@@ -363,21 +361,21 @@
                         <%} else if (cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {%>
                         <td align="center" valign="middle">
                             <a href="rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
-                                <img src="resources/custom/images/display.png" style="cursor: pointer"
+                                <img src="resources/images/display.png" style="cursor: pointer"
                                      title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
                                      hspace="5"/><%=session.getAttribute("button.chicken.coop")%>
                             </a>
                         </td>
                         <%} else {%>
                         <td align="center">
-                            <img src="resources/custom/images/not-available.gif" hspace="5"
+                            <img src="resources/images/not-available.gif" hspace="5"
                                  title="(<%=session.getAttribute("cellink.state.offline")%>)"/>
                             <%=session.getAttribute("button.noaction.cellink")%>
                         </td>
                         <%}%>
                         <td align="center" valign="middle">
                             <a href="./cellink-setting.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
-                                <img src="resources/custom/images/setting.png" style="cursor: pointer"
+                                <img src="resources/images/setting.png" style="cursor: pointer"
                                      title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
                                      hspace="5"/><%=session.getAttribute("button.setting")%>
                             </a>

@@ -30,8 +30,8 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 <title>Add New Data</title>
-<link rel="stylesheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-<link rel="stylesheet" type="text/css" href="resources/custom/style/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
 <STYLE TYPE="text/css" media="all">
     .ui-autocomplete {
         position: absolute;
@@ -42,8 +42,8 @@
     }
 </STYLE>
 
-<script type="text/javascript" src="resources/custom/javascript/jquery.js">;</script>
-<script type="text/javascript" src="resources/custom/javascript/jquery-ui.js">;</script>
+<script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+<script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
 <script type="text/javascript">
     $(document).ready(function () {
         $("input#dataType").autocomplete({

@@ -745,7 +745,7 @@ function keyDown(val) {
     }
 }
 </script>
-<link rel="stylesheet" type="text/css" href="resources/custom/style/rmtstyle.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/rmtstyle.css"/>
 </head>
 <body onload="doSetCaretPosition (document.editForm.Nvalue,document.editForm.Nvalue.value.length-1)"
       onunload="closeWindow();">

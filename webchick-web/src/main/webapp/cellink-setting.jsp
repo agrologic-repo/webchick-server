@@ -20,9 +20,9 @@
     <title><%=session.getAttribute("label.cellink.setting.title")%>
     </title>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-   <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+   <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function addController(userId, cellinkId) {
             redirect("./add-controller.jsp?userId=" + userId + "&cellinkId=" + cellinkId);
@@ -83,7 +83,7 @@
                                     </tr>
                                     <tr>
                                         <td valign="top">
-                                            <img border="0" src="resources/custom/images/cellink.jpg"/>
+                                            <img border="0" src="resources/images/cellink.jpg"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -214,7 +214,7 @@
                                                         <%}%>
                                                     </td>
                                                     <td align="center">
-                                                        <img src="resources/custom/images/edit.gif" style="cursor: pointer" border="0"
+                                                        <img src="resources/images/edit.gif" style="cursor: pointer" border="0"
                                                              hspace="5"/>
                                                         <a href="./editcontrollerrequest.html?userId=<%=editCellink.getUserId() %>&cellinkId=<%=controller.getCellinkId() %>&controllerId=<%=controller.getId()%>">
                                                             <%=session.getAttribute("button.edit")%>
@@ -222,7 +222,7 @@
                                                     </td>
                                                     <% if (user.getRole() != UserRole.USER) {%>
                                                     <td align="center">
-                                                        <img src="resources/custom/images/close.png" style="cursor: pointer" border="0"
+                                                        <img src="resources/images/close.png" style="cursor: pointer" border="0"
                                                              hspace="5"/>
                                                         <a href="javascript:removeController('<%=editCellink.getUserId()%>','<%=cellinkId%>','<%=controller.getId()%>');">
                                                             <%=session.getAttribute("button.delete")%>

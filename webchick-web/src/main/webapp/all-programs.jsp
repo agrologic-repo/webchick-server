@@ -25,8 +25,8 @@
     <title><%=session.getAttribute("maintenance.page.title")%>
     </title>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <style type='text/css'>
         #search {
             cursor: pointer
@@ -36,11 +36,7 @@
             cursor: pointer;
         }
     </style>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery.min.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery-latest.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery.tablesorter.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery.tablesorter.min.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type='text/javascript'>//<![CDATA[
     $(window).load(function () {
         $("#search").click(function () {
@@ -126,10 +122,10 @@
                 <input type="text" id="searchText" value="<%=searchText%>"/>
             </td>
             <td align="justify">
-                <img id="search" src="resources/custom/images/search.png" border="0" redirectUrl="./all-programs.html"/>
+                <img id="search" src="resources/images/search.png" border="0" redirectUrl="./all-programs.html"/>
             </td>
             <td align="justify">
-                <img id="refresh" src="resources/custom/images/refresh.png" border="0"
+                <img id="refresh" src="resources/images/refresh.png" border="0"
                      onclick="redirect('./all-programs.html')"/>
             </td>
 
@@ -161,14 +157,10 @@
                     <table id="table-programs" class="tablesorter">
                         <thead>
                         <tr>
-                            <th><%=session.getAttribute("table.col.program.id")%>
-                            </th>
-                            <th><%=session.getAttribute("table.col.program.created")%>
-                            </th>
-                            <th><%=session.getAttribute("table.col.program.modified")%>
-                            </th>
-                            <th colspan="3"><%=session.getAttribute("table.col.program.action")%>
-                            </th>
+                            <th><%=session.getAttribute("table.col.program.id")%></th>
+                            <th><%=session.getAttribute("table.col.program.created")%></th>
+                            <th><%=session.getAttribute("table.col.program.modified")%></th>
+                            <th colspan="3"><%=session.getAttribute("table.col.program.action")%></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -187,19 +179,19 @@
                             <td><%=program.getCreatedDate()%></td>
                             <td><%=program.getModifiedDate()%></td>
                             <td align="center">
-                                <img src="resources/custom/images/preview.png" style="cursor: pointer" hspace="5" border="0"/>
+                                <img src="resources/images/preview.png" style="cursor: pointer" hspace="5" border="0"/>
                                 <a href="./screen-preview.html?programId=<%=program.getId()%>">
                                     <%=session.getAttribute("button.preview")%>
                                 </a>
                             </td>
                             <td align="center">
-                                <img src="resources/custom/images/edit.gif" style="cursor: pointer" hspace="5" border="0"/>
+                                <img src="resources/images/edit.gif" style="cursor: pointer" hspace="5" border="0"/>
                                 <a href="./editprogramrequest.html?programId=<%=program.getId()%>">
                                     <%=session.getAttribute("button.edit")%>
                                 </a>
                             </td>
                             <td align="center">
-                                <img src="resources/custom/images/close.png" style="cursor: pointer" hspace="5" border="0"/>
+                                <img src="resources/images/close.png" style="cursor: pointer" hspace="5" border="0"/>
                                 <a href="./removeprogram.html?programId=<%=program.getId()%>"
                                    onclick="return confirmRemove();">
                                     <%=session.getAttribute("button.delete")%>

@@ -31,10 +31,10 @@
 <head>
     <title>Screen Manager - Tables On Screen</title>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css">
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css">
-    <script type="text/javascript" src="resources/custom/javascript/util.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
 
     <script type="text/javascript">
         function save(programId, screenId) {
@@ -184,14 +184,14 @@
                                             <input type="text" name="position" value="<%=table.getPosition() %>"
                                                    size="5"></td>
                                         <td class="centerCell">
-                                            <img src="resources/custom/images/edit.gif" style="cursor: pointer" border="0"
+                                            <img src="resources/images/edit.gif" style="cursor: pointer" border="0"
                                                  title='Edit This Table'/>
                                             <a href="./edittablerequest.html?programId=<%=table.getProgramId()%>&screenId=<%=table.getScreenId()%>&tableId=<%=table.getId()%>">
                                                 <%=session.getAttribute("button.edit") %>
                                             </a>
                                         </td>
                                         <td class="centerCell">
-                                            <img src="resources/custom/images/close.png" hspace="5" border="0"/>
+                                            <img src="resources/images/close.png" hspace="5" border="0"/>
                                             <a href="javascript:removeTable(<%=screen.getProgramId()%>,<%=table.getScreenId()%>,<%=table.getId()%>);">
                                                 <%=session.getAttribute("button.delete") %>
                                             </a>

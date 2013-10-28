@@ -17,9 +17,9 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/calendar.css"/>
-    <script type="text/javascript" src="resources/custom/javascript/calendar.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function calcTotalCost(amount, price, total) {
             // calculate cost
@@ -115,7 +115,7 @@
             <tr>
                 <td><input type="text" id="feedtype" name="feedtype"></td>
                 <td><input type="text" id="price" name="price" value=""></td>
-                <td align="center"><img src="resources/custom/images/plus1.gif" border="0" hspace="4">
+                <td align="center"><img src="resources/images/plus1.gif" border="0" hspace="4">
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
@@ -125,7 +125,7 @@
                 </td>
                 <td><%=feedType.getPrice()%>
                 </td>
-                <td align="center"><img src="resources/custom/images/close.png" border="0" hspace="4">
+                <td align="center"><img src="resources/images/close.png" border="0" hspace="4">
                     <a href="javascript:window.location='./remove-feedtype.html?cellinkId=<%=cellinkId%>&controllerId=<%=controllerId%>&flockId=<%=flockId%>&feedTypeId=<%=feedType.getId()%>';">Remove</a>
                 </td>
             </tr>

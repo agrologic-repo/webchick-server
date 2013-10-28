@@ -15,7 +15,7 @@
 
     String logoString = domainDao.getLogoPath((String) session.getAttribute("domain"));
     if (logoString == null) {
-        logoString = "resources/custom/images/agrologiclogo.png";
+        logoString = "resources/images/agrologiclogo.png";
     }
 
     String company = domainDao.getCompany((String) session.getAttribute("domain"));

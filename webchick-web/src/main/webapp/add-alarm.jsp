@@ -17,7 +17,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Add Alarm</title>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <script type="text/javascript">
         function reset() {
             document.getElementById("msgAlarmText").innerHTML = "";

@@ -20,7 +20,7 @@
     <title><%=cellink.getName()%>
     </title>
 
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/rmtstyle.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/rmtstyle.css"/>
 </head>
 <body>
 <br>
@@ -31,18 +31,18 @@
 <br>
 
 <h3><a href="rmctrl-main-screen-ajax.jsp?cellinkId=<%=cellink.getId()%>&screenId=1" target="body" class="leftlink"><img
-        src="resources/custom/images/ComputerScreen.gif" style="border:0px;height:32px;width:32px;"> Screens </a></h3>
+        src="resources/images/ComputerScreen.gif" style="border:0px;height:32px;width:32px;"> Screens </a></h3>
 Control your farm as if you were sitting in front of it.
 <br>
 
-<h3><a href="rmctrl-underconstruction.jsp" target="body" class="leftlink"><img src="resources/custom/images/configure.png"
+<h3><a href="rmctrl-underconstruction.jsp" target="body" class="leftlink"><img src="resources/images/configure.png"
                                                                                style="border:0px;height:32px;width:32px;">
     Preferences</a></h3>
-<!--a href="rmctrl-preferences.jsp" target="rightPage" class="leftlink"><img src="resources/custom/images/configure.png" style="border:0px;height:32px;width:32px;"> Preferences</a-->
+<!--a href="rmctrl-preferences.jsp" target="rightPage" class="leftlink"><img src="resources/images/configure.png" style="border:0px;height:32px;width:32px;"> Preferences</a-->
 Set preferences to specifically meet your needs.
 <br>
 
-<h3><a href="rmctrl-underconstruction.jsp" target="body" class="leftlink"><img src="resources/custom/images/support.png"
+<h3><a href="rmctrl-underconstruction.jsp" target="body" class="leftlink"><img src="resources/images/support.png"
                                                                                style="border:0px;height:32px;width:32px;">
     Help</a></h3>
 All the resources you need to take full advantage of Remote Cellink.

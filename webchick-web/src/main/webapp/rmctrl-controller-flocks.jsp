@@ -18,14 +18,14 @@
     <title><%=session.getAttribute("flock.page.title")%>
     </title>
 
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/calendar.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
 
-    <script type="text/javascript" src="resources/custom/javascript/jquery.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery-ui.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/calendar.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function validate() {
             var flockName = document.getElementById('flockName').value;
@@ -80,11 +80,11 @@
                     </td>
                     <td width="20%">
                         <a href="rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
-                            <img src="resources/custom/images/display.png" style="cursor: pointer" border="0"/>
+                            <img src="resources/images/display.png" style="cursor: pointer" border="0"/>
                             &nbsp;<%=session.getAttribute("button.screens")%>&nbsp;
                         </a>
                         <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
-                            <img src="resources/custom/images/chicken-icon.png" style="cursor: pointer" border="0"/>
+                            <img src="resources/images/chicken-icon.png" style="cursor: pointer" border="0"/>
                             <%=session.getAttribute("main.screen.page.flocks")%>
                         </a>
                     </td>
@@ -175,14 +175,14 @@
                                             </td>
                                             <td align="center"><input type="text" value="" size="10" readonly
                                                                       name="startDate" id="startDate">
-                                                <img src="resources/custom/images/calendar.png" border="0"
+                                                <img src="resources/images/calendar.png" border="0"
                                                      onclick="GetDate('start');"/></td>
                                             <td align="center"><input type="text" value="" size="10" readonly>
-                                                <img src="resources/custom/images/calendar.png" border="0"
+                                                <img src="resources/images/calendar.png" border="0"
                                                      style="filter: alpha(opacity=30);opacity: .30;background-color:#111"/>
                                             </td>
                                             <td align="center"><a href="javascript:validate();">
-                                                <img src="resources/custom/images/plus1.gif" hspace="5"
+                                                <img src="resources/images/plus1.gif" hspace="5"
                                                      style="cursor: pointer"
                                                      border="0" space="5"><br/></img>
                                                 <%=session.getAttribute("button.add")%>
@@ -210,26 +210,26 @@
                                             </td>
                                             <td align="center"><input type="text" value="<%=flock.getStartTime()%>"
                                                 size="10" readonly>
-                                                <img src="resources/custom/images/calendar.png" border="0"
+                                                <img src="resources/images/calendar.png" border="0"
                                                      style="filter: alpha(opacity=30);opacity: .30;background-color:#111"/>
                                             </td>
                                             <td align="center">
                                                 <% if (!flock.getStatus().equals("Close")) {%>
                                                 <input type="text" value="" readonly size="10"
                                                        name="end<%=fid%>Date" id="end<%=fid%>Date">
-                                                <img src="resources/custom/images/calendar.png" border="0"
+                                                <img src="resources/images/calendar.png" border="0"
                                                      onclick="GetDate('end<%=fid%>');"/>
                                                 <%} else {%>
                                                 <input type="text" value="<%=flock.getEndTime()%>" size="10"
                                                        readonly>
-                                                <img src="resources/custom/images/calendar.png" border="0"
+                                                <img src="resources/images/calendar.png" border="0"
                                                      style="filter: alpha(opacity=30);opacity: .30;background-color:#111"/>
                                                 <%}%>
                                             </td>
                                             <td align="center">
                                                 <% if (!flock.getStatus().equals("Close")) {%>
                                                 <a href="javascript:closeFlock(<%=flock.getFlockId()%>);">
-                                                    <img src="resources/custom/images/lock.gif" hspace="5"
+                                                    <img src="resources/images/lock.gif" hspace="5"
                                                          style="cursor: pointer"
                                                          border="0" space="5"><br/></img>
                                                     <%=session.getAttribute("button.close")%>
@@ -238,7 +238,7 @@
                                             </td>
                                             <td align="center">
                                                 <a href="./rmctrl-flock-graphs.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&controllerId=<%=controller.getId()%>&flockId=<%=flock.getFlockId() %>&programId=<%=controller.getProgramId()%>">
-                                                    <img src="resources/custom/images/graph2.gif" hspace="5"
+                                                    <img src="resources/images/graph2.gif" hspace="5"
                                                          style="cursor: pointer"
                                                          border="0"><br/></img>
                                                     <%=session.getAttribute("button.graphs")%>
@@ -246,14 +246,14 @@
                                             </td>
                                             <td align="center">
                                                 <a href="./flock-manager.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&controllerId=<%=controller.getId()%>&flockId=<%=flock.getFlockId() %>">
-                                                    <img src="resources/custom/images/summary.gif" hspace="5"
+                                                    <img src="resources/images/summary.gif" hspace="5"
                                                          style="cursor: pointer" border="0"><br/></img>
                                                     <%=session.getAttribute("button.manage")%>
                                                 </a>
                                             </td>
                                             <td align="center">
                                                 <a href="javascript:removeFlock(<%=flock.getFlockId()%>);">
-                                                    <img src="resources/custom/images/close.png" hspace="5"
+                                                    <img src="resources/images/close.png" hspace="5"
                                                          style="cursor: pointer"
                                                          border="0" space="5"><br/></img>
                                                     <%=session.getAttribute("button.delete")%>

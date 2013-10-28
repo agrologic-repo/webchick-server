@@ -32,9 +32,9 @@
 </title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="shortcut icon" type="image/x-icon" href="img/favicon5.ico" title="AgroLogic Ltd."/>
-<link rel="stylesheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-<link rel="stylesheet" type="text/css" href="resources/custom/style/tabstyle.css"/>
-<link rel="stylesheet" type="text/css" href="resources/custom/style/progressbar.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
 <style type="text/css">
     div.tableHolder {
         OVERFLOW: auto;
@@ -530,8 +530,7 @@ function keyDown(val) {
     }
 }
 </script>
-<script type="text/javascript" src="resources/custom/javascript/fhelp.js"></script>
-<script type="text/javascript" src="resources/custom/javascript/fglobal.js"></script>
+<script type="text/javascript" src="resources/javascript/fhelp.js"></script>
 </head>
 <body onload="setAutoLoad();">
 <table border="0" cellPadding=1 cellSpacing=1 width="100%" align="center">
@@ -549,24 +548,24 @@ function keyDown(val) {
                     </tr>
                     <tr>
                         <td valign="bottom" colspan="2">
-                            <img src="resources/custom/images/chicken-icon.png" border="0" hspace="5"/>
+                            <img src="resources/images/chicken-icon.png" border="0" hspace="5"/>
                             <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
                                 <%=session.getAttribute("button.flocks")%>
                             </a>
                             <% String access = (String) request.getSession().getAttribute("access");%>
                             <% if (!access.toLowerCase().equals("regular")) {%>
                             <%if (role == UserRole.USER) {%>
-                            <img src="resources/custom/images/cellinks.png" border="0" hspace="5"/>
+                            <img src="resources/images/cellinks.png" border="0" hspace="5"/>
                             <a href="./my-farms.html?userId=<%=userId%>">
                                 <%=session.getAttribute("button.myfarms")%>
                             </a>
                             <%} else {%>
-                            <img src="resources/custom/images/cellinks.png" border="0" hspace="5" alt=""/>
+                            <img src="resources/images/cellinks.png" border="0" hspace="5" alt=""/>
                             <a href="./overview.html?userId=<%=userId%>">
                                 <%=session.getAttribute("button.overview")%>
                             </a>
                             <%}%>
-                            <img src="resources/custom/images/logout.gif" border="0" hspace="5" alt=""/>
+                            <img src="resources/images/logout.gif" border="0" hspace="5" alt=""/>
                             <a href="logout.html">
                                 <%=session.getAttribute("label.logout")%>
                             </a>

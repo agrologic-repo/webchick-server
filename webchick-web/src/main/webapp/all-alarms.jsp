@@ -28,12 +28,12 @@
 <head>
     <title>Alarms Collection</title>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
 
-    <script type="text/javascript" src="resources/custom/javascript/ftabs.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/util.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/javascript/ftabs.js">;</script>
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function save() {
             var datas = document.addForm.dataid;
@@ -130,12 +130,12 @@
                                                 </span>
                                 </td>
                                 <td>
-                                    <img src="resources/custom/images/edit.gif">
+                                    <img src="resources/images/edit.gif">
                                     <a href="#"
                                        onclick="window.open('edit-alarm.jsp?translateLang=<%=translateLang%>&alarmName=<%=alarmName.getText()%>&alarmId=<%=alarmName.getId()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');">Edit</a>
                                 </td>
                                 <td>
-                                    <img src="resources/custom/images/delete.gif">
+                                    <img src="resources/images/delete.gif">
                                     <a href="./remove-alarm.html?translateLang=<%=translateLang %>&alarmId=<%=alarmName.getId() %>">Remove</a>
                                 </td>
                             </tr>

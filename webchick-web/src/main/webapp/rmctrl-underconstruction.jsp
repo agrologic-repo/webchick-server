@@ -15,7 +15,7 @@
 
     <title>Under Construction</title>
 
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/rmtstyle.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/rmtstyle.css"/>
 </head>
 <body>
 <br>
@@ -24,7 +24,7 @@
 <hr>
 <h3>Requested page is currently under construction.</h3>
 <br><br>
-<img src="resources/custom/images/under_construction.jpg">
+<img src="resources/images/under_construction.jpg">
 
 <p>Please check back soon!</p>
 <hr>

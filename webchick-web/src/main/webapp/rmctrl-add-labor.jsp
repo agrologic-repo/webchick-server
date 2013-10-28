@@ -21,9 +21,9 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/calendar.css"/>
-    <script type="text/javascript" src="resources/custom/javascript/calendar.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function validate() {
             var strd = document.getElementById('startDate').value;
@@ -118,10 +118,10 @@
                     </select>
                 </td>
                 <td><input type="text" id="startDate" name="startDate" size="10" readonly>
-                    <img src="resources/custom/images/calendar.png" border="0" onclick="GetDate('start');"/></td>
+                    <img src="resources/images/calendar.png" border="0" onclick="GetDate('start');"/></td>
                 <td><input type="text" id="hours" name="hours" value="" size="10"></td>
                 <td><input type="text" id="salary" name="salary" readonly value="" size="10"></td>
-                <td align="center"><img src="resources/custom/images/plus1.gif" border="0" hspace="4">
+                <td align="center"><img src="resources/images/plus1.gif" border="0" hspace="4">
                     <a href="javascript:validate();">Add</a>
                 </td>
             </tr>
@@ -144,7 +144,7 @@
                 </td>
                 <td><%=l.getSalary() %>
                 </td>
-                <td align="center"><img src="resources/custom/images/close.png" border="0" hspace="4">
+                <td align="center"><img src="resources/images/close.png" border="0" hspace="4">
                     <a href="javascript:window.location='./remove-labor.html?cellinkId=<%=cellinkId%>&controllerId=<%=controllerId%>&flockId=<%=flockId%>&laborId=<%=l.getId()%>';">Remove</a>
                 </td>
             </tr>

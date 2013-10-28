@@ -1,6 +1,4 @@
-<link rel="stylesheet" type="text/css" href="resources/custom/style/jquery-ui.css"/>
-<script type="text/javascript" src="resources/custom/javascript/jquery.js">;</script>
-<script type="text/javascript" src="resources/custom/javascript/jquery-ui.js">;</script>
+<link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:choose>
     <c:when test="${empty message}">

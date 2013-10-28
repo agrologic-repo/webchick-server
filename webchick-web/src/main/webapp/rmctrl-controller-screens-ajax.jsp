@@ -37,9 +37,9 @@
 <head>
 <title><%=session.getAttribute("all.screen.page.title")%>
 </title>
-<link rel="stylesheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-<link rel="stylesheet" type="text/css" href="resources/custom/style/tabstyle.css"/>
-<link rel="stylesheet" type="text/css" href="resources/custom/style/progressbar.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
 <style type="text/css">
     div.tableHolder {
         OVERFLOW: auto;
@@ -543,7 +543,7 @@ function keyDown(val) {
     <table style="width: auto;height: 45px; border: 1px solid #6699FF; background: white;" align="center">
         <tr>
             <td>
-                <img src="resources/custom/images/loader.gif" border="0" alt="" hspace="10"><%=session.getAttribute("page.loading")%>
+                <img src="resources/images/loader.gif" border="0" alt="" hspace="10"><%=session.getAttribute("page.loading")%>
             </td>
         </tr>
     </table>

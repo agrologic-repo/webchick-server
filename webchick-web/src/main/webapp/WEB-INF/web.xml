@@ -1002,7 +1002,14 @@
         <servlet-name>AutocompleteDataType</servlet-name>
         <url-pattern>/autocomplete-data</url-pattern>
     </servlet-mapping>
-
+    <servlet>
+        <servlet-name>AutocompleteControllerName</servlet-name>
+        <servlet-class>com.agrologic.app.web.AutocompleteControllerName</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AutocompleteControllerName</servlet-name>
+        <url-pattern>/autocomplete-controller-name</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>EditUserServlet</servlet-name>
         <url-pattern>/edituserrequest.html</url-pattern>

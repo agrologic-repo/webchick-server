@@ -37,13 +37,11 @@ public class AddControllerFormServlet extends AbstractServlet {
         String forwardLink = "./cellink-setting.html";
         Long userId = Long.parseLong(request.getParameter("userId"));
         Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-        String title = request.getParameter("Ntitle");
-        String netName = request.getParameter("Nnetname");
-        Long programId = Long.parseLong(request.getParameter("Nprogramid"));
-        String newControllNameList = request.getParameter("Ncontrollernamelist");
-        String newControllName = request.getParameter("Ncontrollername");
-        String newControllNameCheckBox = request.getParameter("newControllerName");
-        String active = request.getParameter("Nactive");
+        String title = request.getParameter("title");
+        String netName = request.getParameter("netname");
+        Long programId = Long.parseLong(request.getParameter("programid"));
+        String controllerType = request.getParameter("controllerType");
+        String active = request.getParameter("active");
         Controller controller = new Controller();
 
         controller.setId(null);
@@ -51,16 +49,7 @@ public class AddControllerFormServlet extends AbstractServlet {
         controller.setTitle(title);
         controller.setCellinkId(cellinkId);
         controller.setProgramId(programId);
-
-        if (newControllNameCheckBox != null) {
-            if ("ON".equals(newControllNameCheckBox.toUpperCase())) {
-                controller.setName(newControllName);
-            } else {
-                controller.setName(newControllNameList);
-            }
-        } else {
-            controller.setName(newControllNameList);
-        }
+        controller.setName(controllerType);
 
         if ((active != null) && "ON".equals(active.toUpperCase())) {
             controller.setActive(true);
@@ -77,7 +66,6 @@ public class AddControllerFormServlet extends AbstractServlet {
             request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request,
                     response);
         } catch (SQLException ex) {
-
             // error page
             logger.error("Error occurs while adding cellink !");
             request.setAttribute("message", "Error occurs while adding controller !");

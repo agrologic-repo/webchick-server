@@ -59,10 +59,10 @@
             text-wrap: suppress;
         }
     </style>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/tabstyle.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/progressbar.css"/>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         /**logout*/
         function doLogout() {
@@ -167,7 +167,7 @@
         <td align="center">
             <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px; width: 95%">
                 <a href="./rmtctrl-actionset.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=cellinkId%>&programId=<%=controller.getProgramId()%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>">
-                    <img src="resources/custom/images/refresh.gif" style="cursor: pointer" border="0"/>
+                    <img src="resources/images/refresh.gif" style="cursor: pointer" border="0"/>
                     &nbsp;<%=session.getAttribute("button.refresh")%>&nbsp;
                 </a>
                 <table style="font-size:90%;" width="100%" border="0">
@@ -261,7 +261,7 @@
                     <tr>
                         <td align="center">
                             <a href="./rmtctrl-screens.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>">
-                                <img src="resources/custom/images/refresh.gif" style="cursor: pointer"
+                                <img src="resources/images/refresh.gif" style="cursor: pointer"
                                      border="0"/>&nbsp;<%=session.getAttribute("button.refresh")%>&nbsp;
                             </a>
                         </td>

@@ -25,7 +25,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css">
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
     <script language="javascript" type="text/javascript">
         function reset() {
             document.getElementById("msgTranslation").innerHTML = "";
@@ -114,10 +114,10 @@
                     <tr>
                         <td>
                             <button id="btnAdd" name="btnAdd" type="submit">
-                                <img src="resources/custom/images/plus1.gif"/><%=session.getAttribute("button.ok") %>
+                                <img src="resources/images/plus1.gif"/><%=session.getAttribute("button.ok") %>
                             </button>
                             <button type="button" onclick='self.close();'>
-                                <img src="resources/custom/images/close.png"/><%=session.getAttribute("button.cancel") %>
+                                <img src="resources/images/close.png"/><%=session.getAttribute("button.cancel") %>
                             </button>
                         </td>
                     </tr>

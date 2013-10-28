@@ -62,9 +62,9 @@
     <title>Controllers</title>
 
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css">
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css">
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function addController(userId, cellinkId) {
             redirect("./add-controller.jsp?userId=" + userId + "&cellinkId=" + cellinkId);
@@ -96,7 +96,7 @@
             </td>
             <td width="390" align="right">
                 <button id="btnAdd" name="btnAdd" onclick="addController(<%=userId%>,<%=cellinkId%>);">
-                    <img src="resources/custom/images/plus1.gif"/><%=session.getAttribute("button.add.controller")%>
+                    <img src="resources/images/plus1.gif"/><%=session.getAttribute("button.add.controller")%>
                 </button>
             </td>
         </tr>
@@ -150,10 +150,10 @@
                             <td width="" align="center"><%=controller.getProgramId() %>
                             </td>
                             <td width="" align="center">
-                                <img src="resources/custom/images/edit.gif" style="cursor: pointer"
+                                <img src="resources/images/edit.gif" style="cursor: pointer"
                                      title="<%=session.getAttribute("button.edit.controller")%>" border="0"
                                      onclick="redirect('edit-controller.jsp?userId=<%=selectedUser.getId() %>&cellinkId=<%=controller.getCellinkId() %>&controllerId=<%=controller.getId()%>')">
-                                <img src="resources/custom/images/delete123.gif" style="cursor: pointer"
+                                <img src="resources/images/delete123.gif" style="cursor: pointer"
                                      title="<%=session.getAttribute("button.delete.controller")%>" border="0"
                                      onclick="javascript:removeController('<%=controller.getId()%>')">
                             </td>

@@ -19,9 +19,9 @@
 <head>
 
     <title>In\Out Temperature and Humidity Graph 24 Hour</title>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/multiopt.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/multiopt.css"/>
 </head>
 <body>
 <form action="./rmctrl-flock24graph-ioh.jsp">

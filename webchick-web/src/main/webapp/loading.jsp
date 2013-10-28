@@ -2,7 +2,7 @@
     <table style="width: auto;height: 45px; border: 1px solid #6699FF; background: white;" align="center">
         <tr>
             <td>
-                <img src="resources/custom/images/loader.gif" border="0" alt="" hspace="10"><%=session.getAttribute("page.loading")%>
+                <img src="resources/images/loader.gif" border="0" alt="" hspace="10"><%=session.getAttribute("page.loading")%>
             </td>
         </tr>
     </table>

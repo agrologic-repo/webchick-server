@@ -25,9 +25,9 @@
 <html>
 <head>
 <title><%=session.getAttribute("flock.page.title")%>></title>
-<link rel="stylesheet" href="resources/custom/style/jquery-ui.css" />
-<script src="resources/custom/javascript/jquery.js"></script>
-<script src="resources/custom/javascript/jquery-ui.js"></script>
+<link rel="stylesheet" href="resources/style/jquery-ui.css" />
+<script src="resources/javascript/jquery.js"></script>
+<script src="resources/javascript/jquery-ui.js"></script>
 <script>
     $(function() {
         $( "#tabs" ).tabs({
@@ -59,11 +59,11 @@
                     </td>
                     <td width="20%">
                         <a href="rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
-                            <img src="resources/custom/images/display.png" style="cursor: pointer" border="0"/>
+                            <img src="resources/images/display.png" style="cursor: pointer" border="0"/>
                             &nbsp;<%=session.getAttribute("button.screens")%>&nbsp;
                         </a>
                         <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
-                            <img src="resources/custom/images/chicken-icon.png" style="cursor: pointer" border="0"/>
+                            <img src="resources/images/chicken-icon.png" style="cursor: pointer" border="0"/>
                             <%=session.getAttribute("main.screen.page.flocks")%>
                         </a>
                     </td>

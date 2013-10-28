@@ -39,12 +39,12 @@
 <head>
     <title><%=session.getAttribute("history.graph.page.title")%>
     </title>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/jquery-ui.css"/>
-    <script type="text/javascript" src="resources/custom/javascript/util.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery.js">;</script>
-    <script type="text/javascript" src="resources/custom/javascript/jquery-ui.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
+    <script type="text/javascript" src="resources/javascript/util.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
     <script>
         $(function () {
             $("#accordion-daily-graph").accordion({
@@ -95,11 +95,11 @@
                         </td>
                         <td width="20%">
                             <a href="rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
-                                <img src="resources/custom/images/display.png" style="cursor: pointer" hspace="5"
+                                <img src="resources/images/display.png" style="cursor: pointer" hspace="5"
                                      border="0"/><%=session.getAttribute("button.screens")%>
                             </a>
                             <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
-                                <img src="resources/custom/images/chicken-icon.png" style="cursor: pointer" hspace="5"
+                                <img src="resources/images/chicken-icon.png" style="cursor: pointer" hspace="5"
                                      border="0"/><%=session.getAttribute("main.screen.page.flocks")%>
                             </a>
                         </td>
@@ -151,19 +151,19 @@
                                             <td>
                                                 <a href="./exptoexcelhistory.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>"
                                                    onclick="window.location.href.replace('./exptoexcelhistory.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>')">
-                                                    <img src="resources/custom/images/excel.gif" style="cursor: pointer"
+                                                    <img src="resources/images/excel.gif" style="cursor: pointer"
                                                          hspace="5"
                                                          border="0"/><%=session.getAttribute("button.export")%>
                                                 </a>
                                                 <a title="Table" style="cursor: pointer"
                                                    onclick="window.open('./rmctrl-flockhistory-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
-                                                    <img src="resources/custom/images/table.gif" style="cursor: pointer"
+                                                    <img src="resources/images/table.gif" style="cursor: pointer"
                                                          hspace="5"
                                                          border="0"/><%=session.getAttribute("button.table")%>
                                                 </a>
                                                 <a title="Table" style="cursor: pointer"
                                                    onclick="window.open('./rmctrl-eggcnt-flockhistory-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
-                                                    <img src="resources/custom/images/table.gif" style="cursor: pointer"
+                                                    <img src="resources/images/table.gif" style="cursor: pointer"
                                                          hspace="5"
                                                          border="0"/><%=session.getAttribute("button.eggcount.table")%>
                                                 </a>
@@ -243,12 +243,12 @@
                                             <td>
                                             </td>
                                             <td>
-                                                <img src="resources/custom/images/excel.gif" style="cursor: pointer" hspace="5"
+                                                <img src="resources/images/excel.gif" style="cursor: pointer" hspace="5"
                                                      border="0"/>
                                                 <a href="./exptoexcelhistory24.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&growDay=<%=growDay%>">
                                                     <%=session.getAttribute("button.export")%>
                                                 </a>
-                                                <img src="resources/custom/images/table.gif" style="cursor: pointer" hspace="5"
+                                                <img src="resources/images/table.gif" style="cursor: pointer" hspace="5"
                                                      border="0"/>
                                                 <a onclick="window.open('./rmctrl-flockhistory24-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&growDay=<%=growDay%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
                                                     <%=session.getAttribute("button.table")%>

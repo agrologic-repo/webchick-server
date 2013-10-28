@@ -27,9 +27,9 @@
 <head>
     <title>Add Screen</title>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function showScreens(object) {
             if (object == "program") {

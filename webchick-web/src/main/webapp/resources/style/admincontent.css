@@ -480,14 +480,11 @@ table.tablesorter {
     font-family:arial;
     background-color: #CDCDCD;
     margin:10px 0pt 15px;
-    /*font-size: 8pt;*/
     width: 100%;
-    /*text-align: left;*/
 }
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
     background-color: #D5EFFF;
     border: 1px solid #FFF;
-    /*font-size: 8pt;*/
     padding: 4px;
 }
 table.tablesorter thead tr .header {
@@ -515,7 +512,7 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
     background-color: #8dbdd8;
 }
 
-ac_results {
+.ac_results {
     padding: 0px;
     border: 1px solid #84a10b;
     background-color: #84a10b;

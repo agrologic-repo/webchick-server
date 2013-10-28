@@ -13,8 +13,8 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=session.getAttribute("home.page.title")%></title>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
 
 </head>
 <body>

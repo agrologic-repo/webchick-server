@@ -21,42 +21,135 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("controller.page.add.title")%></title>
+    <title><%=session.getAttribute("controller.page.add.title")%>
+    </title>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/jquery-ui.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <style>
+    .ui-autocomplete {
+        max-height: 100px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    </style>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
     <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $("input#controllerType").autocomplete({
+                width: 300,
+                max: 10,
+                delay: 500,
+                minLength: 0,
+                autoFocus: true,
+                cacheLength: 0,
+                scroll: true,
+                highlight: false,
+                source: function (request, response) {
+                    $.ajax({
+                        url: "./autocomplete-controller-name",
+                        dataType: "json",
+                        data: request,
+                        success: function( data) {
+                            response( $.map( data.sendString, function( item ) {
+                                return {
+                                    label: item.key,
+                                    value: item.key + ":" + item.value
+                                }
+                            }));
+                        }
+                    });
+                },
+                select: function( event, ui ) {
+                    var arr = ui.item.value.split(':');
+                    $( "#netname" ).val(arr[1]);
+                    $( "input#controllerType" ).val( arr[0] );
+                    return false;
+                }
+            }).focus(function () {$(this).autocomplete("search","")});
+
+        });
+        /**
+         * spin for net name {0-99}
+         */
+        $(function () {
+            $("#spinner").spinner({
+                spin: function( event, ui ) {
+                    if ( ui.value > 99 ) {
+                        $( this ).spinner( "value", 0 );
+                        return false;
+                    } else if ( ui.value < 0 ) {
+                        $( this ).spinner( "value", 99 );
+                        return false;
+                    }
+                }
+            });
+        });
+
+        function setNetName() {
+            var temp = $("#netname").val();
+            if (temp.length > 2) {
+                temp = temp.substring(0, 2);
+            }
+            var i = $("#spinner").val();
+            if (i / 10 >= 1) {
+                temp = temp + i;
+            } else {
+                temp = temp + "0" + i;
+            }
+            $("#netname").val(temp);
+        }
+
         function reset() {
+            document.getElementById("msgControlerType").innerHTML = "";
             document.getElementById("msgNetName").innerHTML = "";
             document.getElementById("msgProgramId").innerHTML = "";
             document.getElementById("msgTitle").innerHTML = ""
         }
         function validate() {
             reset();
-            if (document.addForm.Ntitle.value == "") {
-                document.getElementById("msgTitle").innerHTML = "&nbsp; Title can't be empty";
+            var valid = true;
+            if (document.addForm.title.value == "") {
+                document.getElementById("msgTitle").innerHTML = "Field can't be empty";
                 document.getElementById("msgTitle").style.color = "RED";
                 event.returnValue = false;
-                document.addForm.Ntitle.focus();
+                document.addForm.title.focus();
+                valid = false;
             } else {
-                document.addForm.Ntitle.value = encode(document.addForm.Ntitle);
+                document.addForm.title.value = encode(document.addForm.title);
             }
-            if (document.addForm.Nnetname.value == "") {
-                document.getElementById("msgNetName").innerHTML = "&nbsp;Net name can't be empty";
+
+
+            if (document.addForm.spinner.value == "") {
+                document.getElementById("msgNetName").innerHTML = "Field can't be empty";
                 document.getElementById("msgNetName").style.color = "RED";
                 event.returnValue = false;
-                document.addForm.Nnetname.focus();
+                document.addForm.spinner.focus();
+                valid = false;
             }
-            if (document.addForm.Nprogramid.value == "None") {
-                document.getElementById("msgProgramId").innerHTML = "&nbsp;Program Version doesn't choosed";
+
+            if(document.addForm.controllerType.value == "") {
+                document.getElementById("msgControlerType").innerHTML = "Field can't be empty";
+                document.getElementById("msgControlerType").style.color = "RED";
+                event.returnValue = false;
+                document.addForm.controllerType.focus();
+                valid = false;
+            }
+
+            if (document.addForm.programid.value == "None") {
+                document.getElementById("msgProgramId").innerHTML = "Field can't be empty";
                 document.getElementById("msgProgramId").style.color = "RED";
                 event.returnValue = false;
-                document.addForm.Nprogramid.focus();
+                document.addForm.programid.focus();
+                valid = false;
             }
             if (!valid) {
                 return false;
             }
+            setNetName();
         }
         function encode(txtObj) {
             var source = txtObj.value;
@@ -64,16 +157,6 @@
             for (i = 0; i < source.length; i++)
                 result += '&#' + source.charCodeAt(i) + ';';
             return result;
-        }
-        function showNewName() {
-            var checked = addForm.newControllerName.checked;
-            if (checked == true) {
-                document.getElementById('existingNameDiv').style.display = "none";
-                document.getElementById('newNameDiv').style.display = "inline";
-            } else {
-                document.getElementById('existingNameDiv').style.display = "inline";
-                document.getElementById('newNameDiv').style.display = "none";
-            }
         }
     </script>
 </head>
@@ -100,25 +183,37 @@
 
                                 <div><p style="color:red;">Boxes with an asterisk next to them are required</div>
                                 <table>
-                                    <input id="userId" type="hidden" name="userId" class=rightTitles
+                                    <input id="userId" type="hidden" name="userId"
                                            value="<%=userId %>">
-                                    <input id="cellinkId" type="hidden" name="cellinkId" class=rightTitles
+                                    <input id="cellinkId" type="hidden" name="cellinkId"
                                            value="<%=cellinkId %>">
                                     <tr>
-                                        <td>Title *</td>
-                                        <td><input id="Ntitle" type="text" name="Ntitle" style="width:100px"></td>
+                                        <td>House Name *</td>
+                                        <td><input id="title" type="text" name="title" style="width:100px"></td>
                                         <td id="msgTitle"></td>
                                     </tr>
                                     <tr>
                                         <td>Net name *</td>
-                                        <td><input id="Nnetname" type="text" name="Nnetname" style="width:100px"></td>
+                                        <td>
+                                            <input id="spinner" name="spinner" style="width:20px"/>
+                                            <input id="netname" type="hidden" name="netname" value="">
+
+                                        </td>
                                         <td id="msgNetName"></td>
                                     </tr>
+
                                     <tr>
-                                        <td> Program Version *</td>
+                                        <td>Type *</td>
                                         <td>
-                                            <select id="Nprogramid" name="Nprogramid" style="width:120px">
-                                                <option value="None" selected>Select
+                                            <input id="controllerType" name="controllerType" style="width:100px"/>
+                                        </td>
+                                        <td id="msgControlerType"></td>
+                                    </tr>
+                                    <tr>
+                                        <td> Program *</td>
+                                        <td>
+                                            <select id="programid" name="programid">
+                                                <option value="None" selected>
                                                         <% for(Program p:programs) {%>
                                                 <option value="<%=p.getId() %>"><%=p.getName() %>
                                                         <%}%>
@@ -127,33 +222,11 @@
                                         <td id="msgProgramId"></td>
                                     </tr>
                                     <tr>
-                                        <td>Name&nbsp;</td>
-                                        <td>
-                                            <div id="existingNameDiv" name="existingNameDiv" style="display:block;">
-                                                <select id="Ncontrollernamelist" name="Ncontrollernamelist"
-                                                        class="dropDownList" style="width:130px">
-                                                    <option value=""></option>
-                                                    <% for (String n : controllernames) {%>
-                                                    <option value="<%=n%>"><%=n%>
-                                                    </option>
-                                                    <%}%>
-                                                </select>
-                                            </div>
-                                            <div id="newNameDiv" name="newNameDiv" style="display:none;">
-                                                <input type="text" name="Ncontrollername"
-                                                       onfocus="this.style.background='orange'"
-                                                       onblur="this.style.background='white'"/>
-                                            </div>
-                                        </td>
-                                        <td><input type="checkbox" id="newControllerName" name="newControllerName"
-                                                   onclick="showNewName()">Add Name</input></td>
-                                    </tr>
-                                    <tr>
                                         <td>Status</td>
                                         <td>
-                                            <input type="checkbox" name="Nactive" id="Nactive" checked>Active</input>
+                                            <input type="checkbox" name="active" id="active" checked>Active</input>
                                         </td>
-                                        <td>&nbsp;</td>
+                                        <td></td>
                                     </tr>
                                 </table>
                             </td>

@@ -16,8 +16,8 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=session.getAttribute("database.page.title")%></title>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
 </head>
 <body>
 <div id="header">
@@ -40,7 +40,7 @@
         <tr>
             <td colspan="9">
                 <a href="./dumpdatabase" onclick="window.location.href.replace('./dumpdatabase')">
-                    <img src="resources/custom/images/database.png" style="cursor: pointer" hspace="5"
+                    <img src="resources/images/database.png" style="cursor: pointer" hspace="5"
                          border="0"/><%=session.getAttribute("button.database")%>
                 </a>
             </td>

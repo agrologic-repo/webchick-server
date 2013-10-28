@@ -23,9 +23,9 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/custom/style/calendar.css"/>
-    <script type="text/javascript" src="resources/custom/javascript/calendar.js">;</script>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
+    <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
     <script type="text/javascript">
         function validate() {
             var name = document.getElementById('name').value;
@@ -109,7 +109,7 @@
                 <td><input type="text" id="expenses" name="expenses"></td>
                 <td><input type="text" id="revenues" name="revenues"></td>
                 <td align="center">
-                    <img src="resources/custom/images/plus1.gif" border="0" hspace="4"><a href="javascript:validate();">Add</a>
+                    <img src="resources/images/plus1.gif" border="0" hspace="4"><a href="javascript:validate();">Add</a>
                 </td>
             </tr>
             <% for (Transaction t : transactList) {%>
@@ -120,7 +120,7 @@
                 </td>
                 <td><%=t.getRevenues() %>
                 </td>
-                <td align="center"><img src="resources/custom/images/close.png" border="0" hspace="4">
+                <td align="center"><img src="resources/images/close.png" border="0" hspace="4">
                     <a href="javascript:window.location='./remove-transact.html?cellinkId=<%=cellinkId%>&controllerId=<%=controllerId%>&flockId=<%=flockId%>&transactId=<%=t.getId()%>';">Remove</a>
                 </td>
             </tr>

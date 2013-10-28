@@ -24,8 +24,8 @@
     <title>User Info</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/custom/style/menubar.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <style type="text/css">
         tr.unselected {
             background: white;
@@ -37,7 +37,7 @@
             color: white;
         }
     </style>
-    <script type="text/javascript" src="resources/custom/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/javascript/general.js">;</script>
 
     <script type="text/javascript">
         function confrimRemove() {
@@ -87,7 +87,7 @@
             </tr>
             <tr>
                 <td valign="top">
-                    <img src="resources/custom/images/user1.png"/>
+                    <img src="resources/images/user1.png"/>
                 </td>
             </tr>
             <tr>
@@ -217,26 +217,26 @@
                                 <%}%>
                                 <td align="center" valign="middle">
                                     <a href="rmctrl-main-screen-ajax.jsp?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getName() %>&screenId=1">
-                                    <img src="resources/custom/images/display.png" style="cursor: pointer" border="0" hspace="5"/>
+                                    <img src="resources/images/display.png" style="cursor: pointer" border="0" hspace="5"/>
                                     <%=session.getAttribute("button.connect")%>
                                     </a>
 
                                 </td>
                                 <td align="center" valign="middle">
                                     <a href="./cellink-setting.html?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>">
-                                        <img src="resources/custom/images/info.gif" style="cursor: pointer" border="0" hspace="5"/>
+                                        <img src="resources/images/info.gif" style="cursor: pointer" border="0" hspace="5"/>
                                         <%=session.getAttribute("button.info")%>
                                     </a>
                                 </td>
                                 <td align="center" valign="middle">
                                     <a href="./editcellinkrequest.html?userId=<%= editUser.getId()%>&cellinkId=<%=cellink.getId()%>">
-                                        <img src="resources/custom/images/edit.gif" style="cursor: pointer" border="0" hspace="5"/>
+                                        <img src="resources/images/edit.gif" style="cursor: pointer" border="0" hspace="5"/>
                                         <%=session.getAttribute("button.edit")%>
                                     </a>
                                 </td>
                                 <td align="center" valign="middle">
                                     <a href="javascript:removeCellink(<%=editUser.getId()%>,<%=cellink.getId()%>);">
-                                        <img src="resources/custom/images/close.png" style="cursor: pointer" border="0" hspace="5"/>
+                                        <img src="resources/images/close.png" style="cursor: pointer" border="0" hspace="5"/>
                                         <%=session.getAttribute("button.delete")%>
                                     </a>
                                 </td>
