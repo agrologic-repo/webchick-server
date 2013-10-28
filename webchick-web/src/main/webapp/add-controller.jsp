@@ -14,8 +14,6 @@
 
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    Collection<Program> programs = (Collection<Program>) session.getAttribute("programs");
-    Collection<String> controllernames = (Collection<String>) session.getAttribute("controllernames");
 %>
 
 <!DOCTYPE html>
@@ -70,7 +68,6 @@
                     return false;
                 }
             }).focus(function () {$(this).autocomplete("search","")});
-
         });
         /**
          * spin for net name {0-99}
@@ -88,7 +85,9 @@
                 }
             });
         });
-
+        /**
+         * set net name by controller type and net number
+         */
         function setNetName() {
             var temp = $("#netname").val();
             if (temp.length > 2) {
@@ -103,11 +102,45 @@
             $("#netname").val(temp);
         }
 
+        $(document).ready(function () {
+            $("input#program").autocomplete({
+                width: 300,
+                max: 10,
+                delay: 500,
+                minLength: 0,
+                autoFocus: true,
+                cacheLength: 0,
+                scroll: true,
+                highlight: false,
+                source: function (request, response) {
+                    $.ajax({
+                        url: "./autocomplete-program",
+                        dataType: "json",
+                        data: request,
+                        success: function( data) {
+                            response( $.map( data.programsMap, function( item ) {
+                                return {
+                                    label: item.key,
+                                    value: item.key + ":" + item.value
+                                }
+                            }));
+                        }
+                    });
+                },
+                select: function( event, ui ) {
+                    var arr = ui.item.value.split(':');
+                    $( "input#program" ).val( arr[0] );
+                    $( "input#programid" ).val( arr[1] );
+                    return false;
+                }
+            }).focus(function () {$(this).autocomplete("search","")});
+        });
+
         function reset() {
-            document.getElementById("msgControlerType").innerHTML = "";
-            document.getElementById("msgNetName").innerHTML = "";
-            document.getElementById("msgProgramId").innerHTML = "";
             document.getElementById("msgTitle").innerHTML = ""
+            document.getElementById("msgNetName").innerHTML = "";
+            document.getElementById("msgControllerType").innerHTML = "";
+            document.getElementById("msgProgramId").innerHTML = "";
         }
         function validate() {
             reset();
@@ -132,18 +165,18 @@
             }
 
             if(document.addForm.controllerType.value == "") {
-                document.getElementById("msgControlerType").innerHTML = "Field can't be empty";
-                document.getElementById("msgControlerType").style.color = "RED";
+                document.getElementById("msgControllerType").innerHTML = "Field can't be empty";
+                document.getElementById("msgControllerType").style.color = "RED";
                 event.returnValue = false;
                 document.addForm.controllerType.focus();
                 valid = false;
             }
 
-            if (document.addForm.programid.value == "None") {
+            if (document.addForm.program.value == "") {
                 document.getElementById("msgProgramId").innerHTML = "Field can't be empty";
                 document.getElementById("msgProgramId").style.color = "RED";
                 event.returnValue = false;
-                document.addForm.programid.focus();
+                document.addForm.title.focus();
                 valid = false;
             }
             if (!valid) {
@@ -207,17 +240,13 @@
                                         <td>
                                             <input id="controllerType" name="controllerType" style="width:100px"/>
                                         </td>
-                                        <td id="msgControlerType"></td>
+                                        <td id="msgControllerType"></td>
                                     </tr>
                                     <tr>
                                         <td> Program *</td>
                                         <td>
-                                            <select id="programid" name="programid">
-                                                <option value="None" selected>
-                                                        <% for(Program p:programs) {%>
-                                                <option value="<%=p.getId() %>"><%=p.getName() %>
-                                                        <%}%>
-                                            </select>
+                                            <input id="program" name="program" style="width:100px"/>
+                                            <input id="programid" type="hidden"  name="programid" style="width:100px"/>
                                         </td>
                                         <td id="msgProgramId"></td>
                                     </tr>
