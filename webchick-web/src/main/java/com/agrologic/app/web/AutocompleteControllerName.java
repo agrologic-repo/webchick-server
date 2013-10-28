@@ -45,17 +45,8 @@ public class AutocompleteControllerName extends AbstractServlet {
         try {
             result = controllerDao.getControllerSendStringNames(name);
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
-
-
-//        JSONArray arrayObj = new JSONArray();
-//        Collection<String> keys = result.keySet();
-//        for(String key:keys){
-//            arrayObj.put("" + key + "");
-//        }
-//        out.println(arrayObj.toString());
-//        out.close();
 
         JSONObject json = new JSONObject();
         JSONArray sendStrings = new JSONArray();
@@ -72,7 +63,7 @@ public class AutocompleteControllerName extends AbstractServlet {
         try {
             json.put("sendString",sendStrings);
         } catch (JSONException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
         out.println(json.toString());
