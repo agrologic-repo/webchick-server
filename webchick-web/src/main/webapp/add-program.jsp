@@ -12,7 +12,6 @@
         response.sendRedirect("./index.htm");
         return;
     }
-    Collection<Program> programs = (Collection<Program>) request.getAttribute("programs");
 %>
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
@@ -20,8 +19,52 @@
     <title>Add program</title>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="StyleSheet" type="text/css" href="resources/style/jquery-ui.css"/>
+    <style>
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    </style>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
+
     <script type="text/javascript">
+        $(document).ready(function () {
+            $("input#program").autocomplete({
+                width: 300,
+                max: 10,
+                delay: 500,
+                minLength: 0,
+                autoFocus: true,
+                cacheLength: 0,
+                scroll: true,
+                highlight: false,
+                source: function (request, response) {
+                    $.ajax({
+                        url: "./autocomplete-program",
+                        dataType: "json",
+                        data: request,
+                        success: function( data) {
+                            response( $.map( data.programsMap, function( item ) {
+                                return {
+                                    label: item.key,
+                                    value: item.key + ":" + item.value
+                                }
+                            }));
+                        }
+                    });
+                },
+                select: function( event, ui ) {
+                    var arr = ui.item.value.split(':');
+                    $( "input#program" ).val( arr[0] );
+                    $( "input#Selectedprogramid" ).val( arr[1] );
+                    return false;
+                }
+            }).focus(function () {$(this).autocomplete("search","")});
+        });
         function reset() {
             document.getElementById("msgProgramId").innerHTML = "";
             document.getElementById("msgName").innerHTML = "";
@@ -121,19 +164,26 @@
                                     <tr>
                                         <td align="left">Select Program *</td>
                                         <td colspan="2">
-                                            <select id="Selectedprogramid" name="Selectedprogramid"
-                                                    style="width:120px;">
-                                                <%for (Program program : programs) { %>
-                                                <option value="<%=program.getId()%>"><%=program.getName()%>
-                                                </option>
-                                                <%}%>
-                                            </select>
+                                            <%--<select id="Selectedprogramid" name="Selectedprogramid"--%>
+                                                    <%--style="width:120px;">--%>
+                                                <%--<%for (Program program : programs) { %>--%>
+                                                <%--<option value="<%=program.getId()%>"><%=program.getName()%>--%>
+                                                <%--</option>--%>
+                                                <%--<%}%>--%>
+                                            <%--</select>--%>
+
+                                            <input id="program" name="program" style="width:100px"/>
+                                            <input id="Selectedprogramid" type="hidden"  name="Selectedprogramid" style="width:100px"/>
+
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="left">Program ID *</td>
-                                        <td><input id="Nprogramid" type="text" name="Nprogramid" style="width:120px"
-                                                   onchange="validateProgId();"></td>
+                                        <td>
+                                            <input id="Nprogramid" type="text" name="Nprogramid" style="width:120px"
+                                                   onchange="validateProgId();">
+                                        </td>
+
                                         <td id="msgProgramId"></td>
                                     </tr>
                                     <tr>

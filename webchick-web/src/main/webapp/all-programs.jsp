@@ -99,7 +99,7 @@
             <% if (user.getRole() == UserRole.USER || user.getRole() == UserRole.DISTRIBUTOR) {%>
             redirect("./access-denied.jsp");
             <%} else {%>
-            redirect("./add-program.html");
+            redirect("./add-program.jsp");
             <%}%>
             return false;
         }
@@ -149,7 +149,7 @@
 
             <% if (user.getRole() == UserRole.ADMIN) {%>
             <td width="80%">
-                <button type="button" onclick="redirect('./add-program.html')">
+                <button type="button" onclick="redirect('./add-program.jsp')">
                     &nbsp;<%=session.getAttribute("button.add.program")%>
                 </button>
                 <button type="button" onclick="redirect('./all-relays.html')">

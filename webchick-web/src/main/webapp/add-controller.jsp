@@ -26,7 +26,7 @@
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <style>
     .ui-autocomplete {
-        max-height: 100px;
+        max-height: 200px;
         overflow-y: auto;
         overflow-x: hidden;
     }
