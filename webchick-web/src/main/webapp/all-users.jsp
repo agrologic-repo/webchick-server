@@ -83,10 +83,18 @@
          * sorting users table
          */
         $(document).ready(function () {
-            $("#table-users").tablesorter()
-//            $("#table-users").tablesorter({sortList: [
-//                [0, 0]
-//            ], widgets: ['zebra']});
+            $("#table-users").tablesorter({
+                sortList: [[0, 0]], widgets: ['zebra'],
+                // These are detected by default,
+                // but you can change or disable them
+                headers: {
+                    // Disable sorting on the first column
+                    5: { sorter:false },
+                    6: { sorter:false }
+                }
+
+            });
+
         });
         //]]>
     </script>

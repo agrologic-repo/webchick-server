@@ -109,11 +109,20 @@
             },
             format: function (s) {
                 if(s == "") {
-                    return new Date(0,0,0).getTime();
+                    return 0;
                 } else {
                     var temp = s.split(' ');
                     var date = temp[1].split('/');
-                    return new Date(date[2], date[1], date[0]).getTime();
+                    var time = temp[0].split(':');
+
+                    var day = date[0] * 60 * 24;
+                    var month = date[1] * 60 * 24 * 31;
+                    var year = date[2] * 60 * 24 * 366;
+                    var hour = time[0] * 60;
+                    var minutes = time[1];
+                    var seconds = time[2];
+                    var result = day + month + year + hour + minutes + seconds;
+                    return result;
                 }
             },
             type: 'numeric'
@@ -125,9 +134,11 @@
                 // These are detected by default,
                 // but you can change or disable them
                 headers: {
-                    6: { sorter: "dateTimeFormat" }
+                    // Disable sorting on the first column
+                    0: { sorter:false },
+                    6: { sorter: "dateTimeFormat" },
+                    7: { sorter:false }
                 }
-
             });
         });
         $(document).ready(function () {
@@ -278,11 +289,11 @@
                 <table id="table-cellinks" class="tablesorter">
                     <thead>
                     <tr>
-                        <td>
+                        <th>
                             <%--<input type="checkbox" name="checkAll" id="checkAll">--%>
-                            <input type="checkbox" id="selectall"></input>
+                            <input type="checkbox" id="selectall"/>
 
-                        </td>
+                        </th>
                         <th width="50px"><span><%=session.getAttribute("table.col.cellink.id")%></span></th>
                         <th><%=session.getAttribute("table.col.cellink.name")%></th>
                         <th><%=session.getAttribute("table.col.cellink.version")%></th>

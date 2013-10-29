@@ -37,10 +37,16 @@
         }
     </style>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
-    <script type='text/javascript'>//<![CDATA[
+    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery-latest.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.tablesorter.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.tablesorter.min.js">;</script>
+
+    <script type='text/javascript'>
+    //<![CDATA[
     $(window).load(function () {
         $("#search").click(function () {
-            var text = $('#searchText').val();
+            var text = $("#searchText").val();
             var redirectUrl = $(this).attr('redirectUrl');
             window.location.href = redirectUrl + "?searchText=" + text;
         });
@@ -48,17 +54,26 @@
 
     $.tablesorter.addParser({
         // set a unique id
-        id: 'dateTimeFormat',
+        id: "dateTimeFormat",
         is: function (s) {
             return false;
         },
         format: function (s) {
             if(s == "") {
-                return new Date(0,0,0).getTime();
+                return 0;
             } else {
                 var temp = s.split(' ');
                 var date = temp[1].split('/');
-                return new Date(date[2], date[1], date[0]).getTime();
+                var time = temp[0].split(':');
+
+                var day = date[0] * 60 * 24;
+                var month = date[1] * 60 * 24 * 31;
+                var year = date[2] * 60 * 24 * 366;
+                var hour = time[0] * 60;
+                var minutes = time[1];
+
+                var result = day + month + year + hour + minutes;
+                return result;
             }
         },
         type: 'numeric'
@@ -71,13 +86,15 @@
             // but you can change or disable them
             headers: {
                 1: { sorter: "dateTimeFormat" },
-                2: { sorter: "dateTimeFormat" }
+                2: { sorter: "dateTimeFormat" },
+                3: { sorter: false }
             }
         });
     });
     //]]>
     </script>
     <script type="text/javascript">
+
         function addProgram() {
             <% if (user.getRole() == UserRole.USER || user.getRole() == UserRole.DISTRIBUTOR) {%>
             redirect("./access-denied.jsp");
@@ -89,6 +106,7 @@
         function confirmRemove() {
             return confirm("This action will remove program from database.\nDo you want to continue ?");
         }
+
         function removeProgram(programId) {
             if (confirm("Are you sure ?") == true) {
                 redirect("./removeprogram.html?programId=" + programId);
@@ -166,16 +184,13 @@
                         <tbody>
                         <%int rawCount = 0;%>
                         <%for (Program program : programs) {%>
-                        <% if ((rawCount % 2) == 0) {%>
-                        <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
-                                <%} else {%>
-                        <tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">
-                            <%}%>
-                            <td>
-                                <a href="./all-screens.html?programId=<%=program.getId()%>"><%=program.getName()%>
-                                </a>
-                            </td>
-
+                        <%--<% if ((rawCount % 2) == 0) {%>--%>
+                        <%--<tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">--%>
+                                <%--<%} else {%>--%>
+                        <%--<tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">--%>
+                            <%--<%}%>--%>
+                        <tr>
+                            <td><a href="./all-screens.html?programId=<%=program.getId()%>"><%=program.getName()%></a></td>
                             <td><%=program.getCreatedDate()%></td>
                             <td><%=program.getModifiedDate()%></td>
                             <td align="center">
