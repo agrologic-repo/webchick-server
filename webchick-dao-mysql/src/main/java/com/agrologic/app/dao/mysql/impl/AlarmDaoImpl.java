@@ -41,7 +41,7 @@ public class AlarmDaoImpl implements AlarmDao {
      */
     @Override
     public void insert(Alarm alarm) {
-        logger.debug("Creating alarm with id [{}]", alarm.getId());
+        logger.debug("Inserting alarm with id [{}]", alarm.getId());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("id", alarm.getId());
         valuesToInsert.put("name", alarm.getText());
@@ -78,7 +78,7 @@ public class AlarmDaoImpl implements AlarmDao {
      */
     @Override
     public void insertTranslation(Long alarmId, Long langId, String translation) {
-        logger.debug("Creating alarm translation with id [{}] and language id [{}] ", alarmId, langId);
+        logger.debug("Inserting alarm translation with id [{}] and language id [{}] ", alarmId, langId);
         String sqlQuery =
                 "insert into alarmbylanguage(alarmid,langid,unicodename) values (?,?,?) " +
                         "on duplicate key update UnicodeName=values(UnicodeName)";

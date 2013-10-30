@@ -166,7 +166,7 @@ public class MySqlDaoFactory extends DaoFactory {
         }
 
         /**
-         * Acquires a connection object from the pool. In case the pool is empty creating a new connection object
+         * Acquires a connection object from the pool. In case the pool is empty Inserting a new connection object
          *
          * @return Connection object
          */

@@ -29,7 +29,7 @@ public class DistribDaoImpl implements DistribDao {
 
     @Override
     public void insert(Distrib distrib) throws SQLException {
-        logger.debug("Creating alarm with id [{}]", distrib.getId());
+        logger.debug("Inserting distribute with id [{}]", distrib.getId());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("flockid", distrib.getFlockId());
         valuesToInsert.put("accountnumber", distrib.getAccountNumber());

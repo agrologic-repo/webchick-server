@@ -30,7 +30,7 @@ public class LanguageDaoImpl implements LanguageDao {
     }
 
     public void insert(Language language) throws SQLException {
-        logger.debug("Creating language with id [{}]", language.getId());
+        logger.debug("Inserting language with id [{}]", language.getId());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("id", language.getId());
         valuesToInsert.put("lang", language.getLanguage());

@@ -32,7 +32,7 @@ public class RelayDaoImpl implements RelayDao {
      */
     @Override
     public void insert(Relay relay) {
-        logger.debug("Creating relay with id [{}]", relay.getId());
+        logger.debug("Inserting relay with id [{}]", relay.getId());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("id", relay.getId());
         valuesToInsert.put("name", relay.getText());

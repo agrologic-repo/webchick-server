@@ -46,7 +46,7 @@ public class CellinkDaoImpl implements CellinkDao {
      */
     @Override
     public void insert(Cellink cellink) throws SQLException {
-        logger.debug("Creating cellink with name [{}]", cellink.getName());
+        logger.debug("Inserting cellink with name [{}]", cellink.getName());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         if (cellink.getId() != null) {
             valuesToInsert.put("cellinkid", cellink.getId());

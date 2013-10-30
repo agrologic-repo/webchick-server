@@ -32,7 +32,7 @@ public class ScreenDaoImpl implements ScreenDao {
 
     @Override
     public void insert(Screen screen) throws SQLException {
-        logger.debug("Creating screen with title [{}]", screen.getTitle());
+        logger.debug("Inserting screen with title [{}]", screen.getTitle());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("programid", screen.getProgramId());
         valuesToInsert.put("title", screen.getTitle());
@@ -188,7 +188,7 @@ public class ScreenDaoImpl implements ScreenDao {
 
     @Override
     public void insertExistScreen(Screen screen) throws SQLException {
-        logger.debug("Creating screen with title [{}]", screen.getTitle());
+        logger.debug("Inserting screen with title [{}]", screen.getTitle());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("screenid", screen.getId());
         valuesToInsert.put("programid", screen.getProgramId());

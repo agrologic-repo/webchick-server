@@ -24,7 +24,7 @@ public class TransactionDaoImpl implements TransactionDao {
     public TransactionDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        this.jdbcInsert.setTableName("transactions");
+        this.jdbcInsert.setTableName("transaction");
         this.dao = dao;
     }
 
@@ -48,7 +48,7 @@ public class TransactionDaoImpl implements TransactionDao {
 
     @Override
     public void insert(Transaction transaction) throws SQLException {
-        String sqlQuery = "insert into transactions values (?,?,?,?,?)";
+        String sqlQuery = "insert into transaction values (?,?,?,?,?)";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -73,7 +73,7 @@ public class TransactionDaoImpl implements TransactionDao {
 
     @Override
     public void remove(Long id) throws SQLException {
-        String sqlQuery = "delete from transactions where ID=?";
+        String sqlQuery = "delete from transaction where ID=?";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -94,7 +94,7 @@ public class TransactionDaoImpl implements TransactionDao {
 
     @Override
     public Transaction getById(Long id) throws SQLException {
-        String sqlQuery = "select * from transactions where ID=?";
+        String sqlQuery = "select * from transaction where ID=?";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -122,7 +122,7 @@ public class TransactionDaoImpl implements TransactionDao {
 
     @Override
     public List<Transaction> getAll() throws SQLException {
-        String sqlQuery = "select * from transactions";
+        String sqlQuery = "select * from transaction";
         PreparedStatement prepstmt = null;
         Connection con = null;
 
@@ -173,7 +173,7 @@ public class TransactionDaoImpl implements TransactionDao {
 
     @Override
     public List<Transaction> getAllByFlockId(Long flockId) throws SQLException {
-        String sqlQuery = "select * from transactions where FlockID=?";
+        String sqlQuery = "select * from transaction where FlockID=?";
         PreparedStatement prepstmt = null;
         Connection con = null;
 

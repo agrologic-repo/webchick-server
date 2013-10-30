@@ -30,7 +30,7 @@ public class WorkerDaoImpl implements WorkerDao {
 
     @Override
     public void insert(Worker worker) throws SQLException {
-        logger.debug("Creating worker with name [{}]", worker.getName());
+        logger.debug("Inserting worker with name [{}]", worker.getName());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("name", worker.getName());
         valuesToInsert.put("define", worker.getDefine());

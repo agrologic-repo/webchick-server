@@ -38,7 +38,7 @@ public class ProgramRelayDaoImpl implements ProgramRelayDao {
      */
     @Override
     public void insert(ProgramRelay programRelay) throws SQLException {
-        logger.debug("Creating program relay [{}] [{}] ", programRelay, programRelay.getRelayTextId());
+        logger.debug("Inserting program relay [{}] [{}] ", programRelay, programRelay.getRelayTextId());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("dataid", programRelay.getDataId());
         valuesToInsert.put("bitnumber", programRelay.getBitNumber());

@@ -29,7 +29,7 @@ public class FlockDaoImpl implements FlockDao {
 
     @Override
     public void insert(Flock flock) throws SQLException {
-        logger.debug("Creating flock with id [{}]", flock.getFlockId());
+        logger.debug("Inserting flock with id [{}]", flock.getFlockId());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("flockid", flock.getFlockId());
         valuesToInsert.put("controllerid", flock.getControllerId());
@@ -42,11 +42,11 @@ public class FlockDaoImpl implements FlockDao {
 
     @Override
     public void update(Flock flock) throws SQLException {
-        String sql = "update flocks set ControllerId=?, Name=?, Status=?,StartDate=?,EndDate=? where FlockID=?";
+        String sql = "update flocks set ControllerId=?, Name=?, Status=?,StartDate=?,EndDate=?, Currency=?  where FlockID=?";
         logger.debug("Update flock with id [{}]", flock.getFlockId());
         jdbcTemplate.update(sql,
                 new Object[]{flock.getControllerId(), flock.getFlockName(), flock.getStatus(), flock.getStartTime(),
-                        flock.getEndTime()});
+                        flock.getEndTime(),flock.getCurrency(), flock.getFlockId()});
     }
 
     @Override
@@ -119,7 +119,7 @@ public class FlockDaoImpl implements FlockDao {
         String sql = "update flocks set Status='Close' , EndDate=? where FlockID=? ";
         Validate.notNull(flockId, "Flock ID can not be null");
         logger.debug("Close flock with id [{}]", flockId);
-        jdbcTemplate.update(sql, new Object[]{flockId, endDate});
+        jdbcTemplate.update(sql, new Object[]{endDate,flockId});
     }
 
     @Override
@@ -203,6 +203,19 @@ public class FlockDaoImpl implements FlockDao {
         }
         return result.get(0);
     }
+
+    @Override
+    public Integer getFlockTotalFeedConsumption(Long flockId)throws SQLException {
+        String sql = "select value, sum(value) as value from controllerdata value where dataid in (1301,1358)" +
+                " and controllerid in (select controllerid FROM flocks where flockid=?);";
+        logger.debug("Get feed consumtpion in flock with id [{}]", flockId);
+        List<Integer> result = jdbcTemplate.queryForList(sql, new Object[]{flockId}, Integer.class);
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result.get(0);
+    }
+
 
     @Override
     public Map<String, String> getHistoryN() {

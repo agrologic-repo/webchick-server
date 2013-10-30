@@ -22,25 +22,19 @@ public class DataDaoImpl implements DataDao {
     private final Logger logger = LoggerFactory.getLogger(DataDaoImpl.class);
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    private final SimpleJdbcInsert jdbcInsertDataTable;
-    private final SimpleJdbcInsert jdbcInsertSpecialTable;
 
 
     public DataDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("datatable");
-        this.jdbcInsertDataTable = new SimpleJdbcInsert(jdbcTemplate);
-        this.jdbcInsertDataTable.setTableName("tabledata");
-        this.jdbcInsertSpecialTable = new SimpleJdbcInsert(jdbcTemplate);
-        this.jdbcInsertSpecialTable.setTableName("specialdatalabels");
 
         this.dao = dao;
     }
 
     @Override
     public void insert(Data data) throws SQLException {
-        logger.debug("Creating cellink with name [{}]", data.getTitle());
+        logger.debug("Inserting cellink with name [{}]", data.getTitle());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("Type", data.getType());
         valuesToInsert.put("Status", data.isStatus());
@@ -175,8 +169,8 @@ public class DataDaoImpl implements DataDao {
         valuesToInsert.put("ProgramId", programId);
         valuesToInsert.put("displayontable", display);
         valuesToInsert.put("Position", position);
-//        SimpleJdbcInsert jdbcInsertDataTable = new SimpleJdbcInsert(jdbcTemplate);
-//        jdbcInsertDataTable.setTableName("tabledata");
+        SimpleJdbcInsert jdbcInsertDataTable = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsertDataTable.setTableName("tabledata");
         jdbcInsertDataTable.execute(valuesToInsert);
     }
 
@@ -203,8 +197,8 @@ public class DataDaoImpl implements DataDao {
         valuesToInsert.put("ProgramId", programId);
         valuesToInsert.put("LangId", langId);
         valuesToInsert.put("SpecialLabel", label);
-//        SimpleJdbcInsert jdbcInsertSpecialTable = new SimpleJdbcInsert(jdbcTemplate);
-//        jdbcInsertSpecialTable.setTableName("specialdatalabels");
+        SimpleJdbcInsert jdbcInsertSpecialTable = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsertSpecialTable.setTableName("specialdatalabels");
         jdbcInsertSpecialTable.execute(valuesToInsert);
     }
 
@@ -423,6 +417,8 @@ public class DataDaoImpl implements DataDao {
     @Override
     public Collection<Data> getOnScreenDataList(Long programId, Long screenId, Long tableId, Long langId)
             throws SQLException {
+        logger.debug("Get data by program with id [{}], screen id [{}] , table id [{}] and language id [{}] ",
+                new Object[]{programId, screenId, tableId, langId, });
         String sql = "select * from tabledata as td "
                 + "left join datatable on datatable.dataid=td.dataid "
                 + "left join databylanguage on datatable.dataid=databylanguage.dataid and databylanguage.langid=? "

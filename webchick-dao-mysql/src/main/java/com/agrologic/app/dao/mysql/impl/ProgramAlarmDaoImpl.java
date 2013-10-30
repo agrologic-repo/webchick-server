@@ -40,7 +40,7 @@ public class ProgramAlarmDaoImpl implements ProgramAlarmDao {
      */
     @Override
     public void insert(ProgramAlarm programAlarm) throws SQLException {
-        logger.debug("Creating program alarm [{}] [{}]", programAlarm, programAlarm.getAlarmTextId());
+        logger.debug("Inserting program alarm [{}] [{}]", programAlarm, programAlarm.getAlarmTextId());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("digitnumber", programAlarm.getDigitNumber());
         valuesToInsert.put("text", programAlarm.getText());

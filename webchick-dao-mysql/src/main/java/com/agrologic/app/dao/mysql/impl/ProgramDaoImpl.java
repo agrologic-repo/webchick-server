@@ -31,7 +31,7 @@ public class ProgramDaoImpl implements ProgramDao {
 
     @Override
     public void insert(Program program) throws SQLException {
-        logger.debug("Creating program with id [{}]", program.getId());
+        logger.debug("Inserting program with id [{}]", program.getId());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("programid", program.getId());
         valuesToInsert.put("name", program.getName());
@@ -77,7 +77,7 @@ public class ProgramDaoImpl implements ProgramDao {
 
     @Override
     public Program getById(Long id) throws SQLException {
-        logger.debug("Get alarm with id [{}]", id);
+        logger.debug("Get program with id [{}]", id);
         String sqlQuery = "select * from programs where ProgramID=?";
         List<Program> programs = jdbcTemplate.query(sqlQuery, new Object[]{id}, RowMappers.program());
         if (programs.isEmpty()) {

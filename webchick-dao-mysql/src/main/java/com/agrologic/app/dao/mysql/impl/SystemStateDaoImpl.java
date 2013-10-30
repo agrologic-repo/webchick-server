@@ -35,7 +35,7 @@ public class SystemStateDaoImpl implements SystemStateDao {
      */
     @Override
     public void insert(SystemState systemState) throws SQLException {
-        logger.debug("Creating systemState with id [{}]", systemState.getId());
+        logger.debug("Inserting systemState with id [{}]", systemState.getId());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("id", systemState.getId());
         valuesToInsert.put("name", systemState.getText());

@@ -37,7 +37,7 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public void insert(User user) throws SQLException {
-        logger.debug("Creating user with id [{}]", user.getLogin());
+        logger.debug("Inserting user with id [{}]", user.getLogin());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         if (user.getId() != null) {
             valuesToInsert.put("userid", user.getId());

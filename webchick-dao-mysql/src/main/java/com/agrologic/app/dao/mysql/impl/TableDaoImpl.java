@@ -32,7 +32,7 @@ public class TableDaoImpl implements TableDao {
 
     @Override
     public void insert(Table table) throws SQLException {
-        logger.debug("Creating table with title [{}]", table.getTitle());
+        logger.debug("Inserting table with title [{}]", table.getTitle());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("screenid", table.getScreenId());
         valuesToInsert.put("programid", table.getProgramId());
@@ -211,6 +211,8 @@ public class TableDaoImpl implements TableDao {
     @Override
     public Collection<Table> getScreenTables(Long programId, Long screenId, Long langId, Boolean showAll)
             throws SQLException {
+        logger.debug("Get tables by program with id [{}], screen id [{}] and language id [{}] ",
+                new Object[]{programId, screenId, langId, });
         String sqlQuery = "select * from screentable"
                 + " left join tablebylanguage on tablebylanguage.tableid=screentable.tableid"
                 + " and tablebylanguage.langid=? where programid=? and screenid=?";

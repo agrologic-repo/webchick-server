@@ -40,7 +40,7 @@ public class ProgramSystemStateDaoImpl implements ProgramSystemStateDao {
 
     @Override
     public void insert(ProgramSystemState programSystemState) throws SQLException {
-        logger.debug("Creating program systemState [{}] [{}] ", programSystemState, programSystemState.getSystemStateTextId());
+        logger.debug("Inserting program systemState [{}] [{}] ", programSystemState, programSystemState.getSystemStateTextId());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("dataid", programSystemState.getDataId());
         valuesToInsert.put("number", programSystemState.getNumber());
