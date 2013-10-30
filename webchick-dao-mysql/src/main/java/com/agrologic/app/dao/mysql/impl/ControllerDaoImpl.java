@@ -45,7 +45,7 @@ public class ControllerDaoImpl implements ControllerDao {
      */
     @Override
     public void insert(Controller controller) throws SQLException {
-        logger.debug("Creating controller with name [{}]", controller.getName());
+        logger.debug("Inserting controller with name [{}]", controller.getName());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         if (controller.getId() != null) {
             valuesToInsert.put("controllerid", controller.getId());
@@ -215,10 +215,9 @@ public class ControllerDaoImpl implements ControllerDao {
      * {@inheritDoc}
      */
     @Override
-    public void saveNewDataValueOnController(Long id, Long dataId, Long value)
-            throws SQLException {
+    public void saveNewDataValueOnController(Long id, Long dataId, Long value) throws SQLException {
         logger.debug("Add new value to change on controller with id [{}]", id);
-        String sql = "insert into newcontrollerdata (ControllerID,DataID,Value) "
+        String sql = "insert into controllerdata (ControllerID,DataID,Value) "
                 + "values(?,?,?) on duplicate key update Value=values(Value)";
         jdbcTemplate.update(sql, new Object[]{id, dataId, value});
     }
@@ -334,5 +333,22 @@ public class ControllerDaoImpl implements ControllerDao {
         logger.debug("Get all controllers that belongs to active cellink with id [{}]", cellinkId);
         String sql = "select * from controllers where cellinkid=? and active=1";
         return jdbcTemplate.query(sql, new Object[]{cellinkId}, RowMappers.controller());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<String, String> getControllerSendStringNames(String searchText) throws SQLException {
+        logger.debug("Get all send string controller names by creteria [{}]", searchText);
+        String sql = "SELECT name, sendstr FROM controll where length(sendstr) <=3 and name like ?";
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql,
+                new Object[]{(searchText == null) ? "%%" : "%" + searchText + "%"});
+        Map<String, String> sendStrings = new HashMap<String, String>();
+
+        for (Map m : result) {
+            sendStrings.put((String) m.get("name"), (String) m.get("sendstr"));
+        }
+        return sendStrings;
     }
 }
