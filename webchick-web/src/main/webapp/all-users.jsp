@@ -219,13 +219,13 @@
                     <table id="table-users" class="tablesorter">
                         <thead>
                         <tr>
-                            <th width="40"><%=session.getAttribute("table.col.user.id")%></th>
-                            <th align="center" width="100" nowrap><%=session.getAttribute("table.col.user.login")%></th>
-                            <th align="center" width="100" nowrap><%=session.getAttribute("table.col.user.name")%></th>
-                            <th align="center" width="100" nowrap><%=session.getAttribute("table.col.user.phone")%></th>
-                            <th align="center" width="150" nowrap><%=session.getAttribute("table.col.user.company")%></th>
-                            <th align="center" width="100" nowrap><%=session.getAttribute("table.col.user.cellinks")%></th>
-                            <th align="center" width="300" nowrap colspan="3"><%=session.getAttribute("table.col.user.action")%></th>
+                            <th><%=session.getAttribute("table.col.user.id")%></th>
+                            <th><%=session.getAttribute("table.col.user.login")%></th>
+                            <th><%=session.getAttribute("table.col.user.name")%></th>
+                            <th><%=session.getAttribute("table.col.user.phone")%></th>
+                            <th><%=session.getAttribute("table.col.user.company")%></th>
+                            <th><%=session.getAttribute("table.col.user.cellinks")%></th>
+                            <th colspan="3"><%=session.getAttribute("table.col.user.action")%></th>
                         </tr>
                         </thead>
                         <tbody>

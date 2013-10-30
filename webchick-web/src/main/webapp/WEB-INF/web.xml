@@ -74,10 +74,6 @@
         <servlet-class>com.agrologic.app.web.ProgramDetailsServet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AddProgramServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.AddProgramServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>AddProgramFormServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.AddProgramFormServlet</servlet-class>
     </servlet>
@@ -548,10 +544,6 @@
     <servlet-mapping>
         <servlet-name>ProgramDetailsServet</servlet-name>
         <url-pattern>/programdetails.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AddProgramServlet</servlet-name>
-        <url-pattern>/add-program.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AddProgramFormServlet</servlet-name>

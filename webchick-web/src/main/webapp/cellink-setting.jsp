@@ -154,8 +154,7 @@
                                         <td width="100%">
                                             <b><%=editCellink.getControllers().size()%>
                                             </b>&nbsp;<%=session.getAttribute("label.records")%>
-                                            <table class="table-list" border=1
-                                                   >
+                                            <table class="table-list" border="1">
                                                 <thead>
                                                 <tr>
                                                     <th align="center"

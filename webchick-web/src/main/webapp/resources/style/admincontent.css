@@ -477,15 +477,22 @@ button {
 
 /* tables */
 table.tablesorter {
+    border: 1px solid #C6C6C6;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
     font-family:arial;
     background-color: #CDCDCD;
-    margin:10px 0pt 15px;
-    width: 100%;
+    /*margin:10px 0pt 15px;*/
 }
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+    height: 20px;
+    border: 1px solid #C6C6C6;
+    border-collapse: collapse;
     background-color: #D5EFFF;
-    border: 1px solid #FFF;
-    padding: 4px;
+    color: #000000;
+    font-weight: bold;
+    background-color: #D5EFFF;
 }
 table.tablesorter thead tr .header {
     background-image: url(../images/bg.gif);

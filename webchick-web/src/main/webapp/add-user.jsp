@@ -71,38 +71,38 @@
             var valid = true;
             reset();
             if (document.addForm.Nrole.value == "0") {
-                document.getElementById("msgRole").innerHTML = "&nbsp;Choose role ";
+                document.getElementById("msgRole").innerHTML = "Field can't be empty";
                 document.getElementById("msgRole").style.color = "RED";
                 document.addForm.Nlname.focus();
                 valid = false;
             }
             if (document.addForm.Nphone.value == "") {
-                document.getElementById("msgPhone").innerHTML = "&nbsp;Phone can't be empty, type none ";
+                document.getElementById("msgPhone").innerHTML = "Field can't be empty";
                 document.getElementById("msgPhone").style.color = "RED";
                 document.addForm.Nphone.focus();
                 valid = false;
             }
             if (document.addForm.Nlname.value == "") {
-                document.getElementById("msgLName").innerHTML = "&nbsp;Last name can't be empty";
+                document.getElementById("msgLName").innerHTML = "Field can't be empty";
                 document.getElementById("msgLName").style.color = "RED";
                 document.addForm.Nlname.focus();
                 valid = false;
             }
             if (document.addForm.Nfname.value == "") {
-                document.getElementById("msgFName").innerHTML = "&nbsp;First name can't be empty";
+                document.getElementById("msgFName").innerHTML = "Field can't be empty";
                 document.getElementById("msgFName").style.color = "RED";
                 event.returnValue = false;
                 document.addForm.Nfname.focus();
                 valid = false;
             }
             if (document.addForm.Npassword.value == "") {
-                document.getElementById("msgPassword").innerHTML = "&nbsp;Password can't be empty";
+                document.getElementById("msgPassword").innerHTML = "Field can't be empty";
                 document.getElementById("msgPassword").style.color = "RED";
                 document.addForm.Npassword.focus();
                 valid = false;
             }
             if (document.addForm.Nusername.value == "") {
-                document.getElementById("msgUserName").innerHTML = "&nbsp;User name can't be empty";
+                document.getElementById("msgUserName").innerHTML = "Field can't be empty";
                 document.getElementById("msgUserName").style.color = "RED";
                 document.addForm.Nusername.focus();
                 valid = false;
@@ -133,68 +133,54 @@
         <table border="0" cellPadding=1 cellSpacing=1 width="100%">
             <tr>
                 <td>
-                    <p>
-
-                    <h1>Add User</h1></p>
+                   <h1><%=session.getAttribute("user.page.add.title")%></h1>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <p>
-
-                    <h2>add user </h2></p>
+                    <h2><%=session.getAttribute("user.page.add.title")%></h2>
                     <div><p style="color:red;">Boxes with an asterisk next to them are required</p></div>
-                    <table borderColor=#0000ff cellSpacing=1 cellPadding=1 align=left bgColor=#ffffff border=0
-                           width="100%">
+                    <table>
                         <tr>
-                            <td class="">Login *</td>
-                            <td><input id="Nusername" type="text" name="Nusername" onchange="validateLoginName();"
-                                       onfocus="this.style.background='orange'" onblur="this.style.background='white'"/>
+                            <td>Login *</td>
+                            <td><input id="Nusername" type="text" name="Nusername" onchange="validateLoginName();"/>
                             </td>
                             <td id="msgUserName"></td>
                         </tr>
                         <tr>
                             <td class="">Password *</td>
-                            <td><input class="textFeild" id="Npassword" type="password" name="Npassword"
-                                       onfocus="this.style.background='orange'" onblur="this.style.background='white'"/>
+                            <td><input class="textFeild" id="Npassword" type="password" name="Npassword"/>
                             </td>
-                            <td id="msgPassword" align="left"></td>
+                            <td id="msgPassword"></td>
                         </tr>
                         <tr>
-                            <td class="">Fist name *</td>
-                            <td><input id="Nfname" type="text" name="Nfname" onfocus="this.style.background='orange'"
-                                       onblur="this.style.background='white'"/></td>
-                            <td id="msgFName" align="left"></td>
+                            <td>Fist name *</td>
+                            <td><input id="Nfname" type="text" name="Nfname" /></td>
+                            <td id="msgFName"></td>
                         </tr>
                         <tr>
-                            <td class="">Last name *</td>
-                            <td><input id="Nlname" type="text" name="Nlname" onfocus="this.style.background='orange'"
-                                       onblur="this.style.background='white'"/></td>
+                            <td>Last name *</td>
+                            <td><input id="Nlname" type="text" name="Nlname"/></td>
                             <td id="msgLName"></td>
                         </tr>
                         <tr>
                             <td class="">Phone</td>
-                            <td><input id="Nphone" type="text" name="Nphone" onfocus="this.style.background='orange'"
-                                       onblur="this.style.background='white'"/></td>
+                            <td><input id="Nphone" type="text" name="Nphone"/></td>
                             <td id="msgPhone"></td>
                         </tr>
                         <tr>
                             <td class="">Email</td>
-                            <td><input id="Nemail" type="text" name="Nemail" onfocus="this.style.background='orange'"
-                                       onblur="this.style.background='white'"/></td>
+                            <td><input id="Nemail" type="text" name="Nemail"/></td>
                             <td id="msgEmail" align="left" height="22"></td>
                         </tr>
                         <tr>
                             <td class="">Role *</td>
                             <td>
-                                <select id="Nrole" name="Nrole" class="dropDownList" style="width:130px">
+                                <select id="Nrole" name="Nrole" class="dropDownList">
                                     <option value="0"></option>
-                                    <option value="1"><%=session.getAttribute("user.role.admin")%>
-                                    </option>
-                                    <option value="2"><%=session.getAttribute("user.role.regular")%>
-                                    </option>
-                                    <option value="3"><%=session.getAttribute("user.role.advanced")%>
-                                    </option>
+                                    <option value="1"><%=session.getAttribute("user.role.admin")%></option>
+                                    <option value="2"><%=session.getAttribute("user.role.regular")%></option>
+                                    <option value="3"><%=session.getAttribute("user.role.advanced")%></option>
                                 </select>
                             </td>
                             <td id="msgRole"></td>
@@ -203,22 +189,19 @@
                             <td class="">Company</td>
                             <td>
                                 <div id="existingCompanyDiv" name="existingCompanyDiv" style="display:block;">
-                                    <select id="Ncompanylist" name="Ncompanylist" class="dropDownList"
-                                            style="width:130px">
+                                    <select id="Ncompanylist" name="Ncompanylist" class="dropDownList">
                                         <option value=""></option>
                                         <% for (String c : companies) {%>
-                                        <option value="<%=c%>"><%=c%>
-                                        </option>
+                                            <option value="<%=c%>"><%=c%></option>
                                         <%}%>
                                     </select>
                                 </div>
                                 <div id="newCompanyDiv" name="newCompanyDiv" style="display:none;">
-                                    <input type="text" name="Ncompany" value="" onfocus="this.style.background='orange'"
-                                           onblur="this.style.background='white'"/>
+                                    <input type="text" name="Ncompany"/>
                                 </div>
                             </td>
-                            <td><input type="checkbox" id="newCompany" name="newCompany" onclick="showNewCompany()"> Add
-                                Company
+                            <td><input type="checkbox" id="newCompany" name="newCompany" onclick="showNewCompany()">
+                                Add Company</input>
                             </td>
                             </td>
                         </tr>
@@ -227,10 +210,11 @@
             </tr>
             <tr>
                 <td>
-                    <button id="btnCancel" name="btnCancel"
-                            onclick='return back("./all-users.html");'><%=session.getAttribute("button.cancel")%>
+                    <button id="btnCancel" name="btnCancel" onclick='return back("./all-users.html");'>
+                        <%=session.getAttribute("button.cancel")%>
                     </button>
-                    <button type="submit" onclick='return validate();'><%=session.getAttribute("button.ok")%>
+                    <button type="submit" onclick='return validate();'>
+                        <%=session.getAttribute("button.ok")%>
                     </button>
                 </td>
             </tr>
