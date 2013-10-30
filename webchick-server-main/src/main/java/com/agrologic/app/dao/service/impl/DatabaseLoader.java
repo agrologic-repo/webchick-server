@@ -67,8 +67,6 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
                 }
             }
 
-//            logger.debug("Alarm size : " + dba.getAlarmDao().getAll().size());
-
             user = dba.getUserDao().getById(userId);
             if (cellinkId == -1) {
                 // get cellinks and add to user cellink list
@@ -82,44 +80,58 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
             for (Cellink cellink : user.getCellinks()) {
                 // get controllers of cellink and add to cellink controller list
                 Collection<Controller> controllers = dba.getControllerDao().getActiveCellinkControllers(cellink.getId());
-                cellink.setControllers((Collection<Controller>) controllers);
+                cellink.setControllers(controllers);
+
                 for (Controller controller : controllers) {
                     // get controller program and add to controller object
                     Program program = dba.getProgramDao().getById(controller.getProgramId());
-                    controller.setProgram(program);
-                    // get program relays and add to program object
-                    program.setProgramRelays((List) dba.getProgramRelayDao()
-                            .getAllProgramRelays(controller.getProgramId(), langId));
-                    // get program alarms and add to program object
-                    program.setProgramAlarms((List) dba.getProgramAlarmDao()
-                            .getAllProgramAlarms(controller.getProgramId(), langId));
-                    // get program system states and add to program object
-                    program.setProgramSystemStates((List) dba.getProgramSystemStateDao()
-                            .getAllProgramSystemStates(controller.getProgramId(), langId));
-                    // get program screens and add to program object
-                    Collection<Screen> screenList = dba.getScreenDao().getAllProgramScreens(program.getId(), langId);
-                    program.setScreens((List<Screen>) screenList);
-                    for (Screen screen : screenList) {
-                        // get screen tables and add to screen object
-                        List<Table> tableList = (List<Table>) dba.getTableDao()
-                                .getScreenTables(screen.getProgramId(), screen.getId(), langId, false);
-                        for (Table table : tableList) {
-                            // get table data and add to table object
+                    if(!programs.contains(program)) {
+                        logger.info("program not exist in set of programs ");
 
-                            List<Data> dataList = (List<Data>) dba.getDataDao()
-                                    .getOnScreenDataList(
-                                            table.getProgramId(),
-                                            table.getScreenId(),
-                                            table.getId(),
-                                            langId);
-                            table.setDataList(dataList);
+                        controller.setProgram(program);
+                        // get program relays and add to program object
+                        program.setProgramRelays((List) dba.getProgramRelayDao()
+                                .getAllProgramRelays(controller.getProgramId(), langId));
+                        // get program alarms and add to program object
+                        program.setProgramAlarms((List) dba.getProgramAlarmDao()
+                                .getAllProgramAlarms(controller.getProgramId(), langId));
+                        // get program system states and add to program object
+                        program.setProgramSystemStates((List) dba.getProgramSystemStateDao()
+                                .getAllProgramSystemStates(controller.getProgramId(), langId));
+                        // get program screens and add to program object
+                        Collection<Screen> screenList = dba.getScreenDao().getAllProgramScreens(program.getId(), langId);
+                        program.setScreens((List<Screen>) screenList);
+                        for (Screen screen : screenList) {
+                            // get screen tables and add to screen object
+                            List<Table> tableList = (List<Table>) dba.getTableDao()
+                                    .getScreenTables(screen.getProgramId(), screen.getId(), langId, false);
+                            for (Table table : tableList) {
+                                // get table data and add to table object
+                                Thread.sleep(1);
+                                List<Data> dataList = (List<Data>) dba.getDataDao()
+                                        .getOnScreenDataList(
+                                                table.getProgramId(),
+                                                table.getScreenId(),
+                                                table.getId(),
+                                                langId);
+                                table.setDataList(dataList);
+                            }
+                            screen.setTables(tableList);
                         }
-                        screen.setTables(tableList);
-                    }
 
-                    List<Data> specialdataList = (List<Data>) dba.getDataDao()
-                            .getSpecialData(controller.getProgramId(), langId);
-                    program.setSpecialList(specialdataList);
+                        List<Data> specialData = (List<Data>) dba.getDataDao()
+                                .getSpecialData(controller.getProgramId(), langId);
+                        program.setSpecialList(specialData);
+                        controller.setProgram(program);
+                        programs.add(program);
+                    } else {
+                        logger.info("program is exist in set of programs ");
+                        for(Program p:programs) {
+                            if(p.getId().equals(controller.getProgramId())) {
+                                controller.setProgram(p);
+                            }
+                        }
+                    }
 
                     Collection<Data> dataList = dba.getDataDao().getControllerDataValues(controller.getId());
                     Map<Long, Data> dataValues = new HashMap<Long, Data>();
@@ -127,8 +139,6 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
                         dataValues.put(d.getId(), d);
                     }
                     controller.initOnlineData(dataValues);
-                    controller.setProgram(program);
-                    programs.add(program);
                 }
             }
             logger.info(" Controller data was successfully loaded .");
