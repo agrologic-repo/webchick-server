@@ -44,12 +44,8 @@ public class EditControllerServlet extends AbstractServlet {
                 request.setAttribute("editcontroller", editController);
 
                 ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
-                List<Program> programs = (List<Program>) programDao.getAll();
-                logger.info("retrieve programs");
-                request.setAttribute("programs", programs);
-
-                List<String> controllernames = (List<String>) controllerDao.getControllerNames();
-                request.setAttribute("controllernames", controllernames);
+                Program program = programDao.getById(editController.getProgramId());
+                editController.setProgram(program);
 
                 request.getRequestDispatcher("./edit-controller.jsp?userId=" + userId + "&celinkId="
                         + cellinkId).forward(request, response);

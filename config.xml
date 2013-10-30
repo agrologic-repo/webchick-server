@@ -12,9 +12,9 @@
         <entry key="keepalive.timeout" value="3"/>
         <entry key="com.port" value="COM3"/>
         <entry key="database.driver" value="com.mysql.jdbc.Driver"/>
-        <entry key="database.url" value="jdbc:mysql://localhost:3306/agrodb?autoReconnect=true"/>
-        <entry key="database.user" value="root"/>
-        <entry key="database.password" value="agro1950"/>
+        <entry key="database.url" value="jdbc:mysql://204.93.160.169:3306/agrodb?autoReconnect=true"/>
+        <entry key="database.user" value="client"/>
+        <entry key="database.password" value="pass123$"/>
         <entry key="com.baud" value="9600"/>
         <entry key="com.sot" value="25000"/>
         <entry key="com.eot" value="2000"/>
@@ -23,8 +23,8 @@
         <entry key="runatstartup" value="true"/>
         <entry key="access" value="regular"/>
         <entry key="webchick.uri" value="http://localhost:8080/webchick/startpage.html"/>
-        <entry key="cellink.id" value="167"/>
-        <entry key="user.id" value="155"/>
+        <entry key="cellink.id" value="178"/>
+        <entry key="user.id" value="164"/>
         <entry key="pc.comm" value="1"/>
         <entry key="server.comport" value="COM3"/>
         <entry key="role" value="1"/>

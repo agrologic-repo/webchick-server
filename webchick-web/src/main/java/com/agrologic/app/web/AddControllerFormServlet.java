@@ -15,7 +15,6 @@ import java.sql.SQLException;
 
 public class AddControllerFormServlet extends AbstractServlet {
 
-
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *

@@ -28,61 +28,40 @@ public class EditControllerFormServlet extends AbstractServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         logger.error("Unauthorized access!");
-
-
         PrintWriter out = response.getWriter();
-
         try {
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
                 response.sendRedirect("./login.jsp");
             } else {
-                User user = (User) request.getSession().getAttribute("user");
                 String forwardLink = "./cellink-setting.html";
-
-//                if (user.getRole() == UserRole.ADMIN) {
-//                    forwardLink = "./cellinkinfo.html";
-//                } else {
-//                    forwardLink = "./cellink-setting.html";
-//                }
-
                 Long userId = Long.parseLong(request.getParameter("userId"));
                 Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
                 Long controllerId = Long.parseLong(request.getParameter("controllerId"));
-                String title = request.getParameter("Ntitle");
-                String netName = request.getParameter("Nnetname");
-                Long programId = Long.parseLong(request.getParameter("NprogramId"));
-                String newControllNameList = request.getParameter("Ncontrollernamelist");
-                String newControllName = request.getParameter("Ncontrollername");
-                String newControllNameCheckBox = request.getParameter("newControllerName");
-                String active = request.getParameter("Nactive");
+
+                String title = request.getParameter("title");
+                String netName = request.getParameter("netname");
+                Long programId = Long.parseLong(request.getParameter("programId"));
+                String controllerType = request.getParameter("controllerType");
+                String active = request.getParameter("active");
 
                 try {
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                     Controller controller = controllerDao.getById(controllerId);
-
                     controller.setNetName(netName);
                     controller.setTitle(title);
                     controller.setCellinkId(cellinkId);
                     controller.setProgramId(programId);
-
-                    if ((newControllNameCheckBox != null) && "ON".equals(newControllNameCheckBox.toUpperCase())) {
-                        controller.setName(newControllName);
-                    } else {
-                        controller.setName(newControllNameList);
-                    }
-
+                    controller.setName(controllerType);
                     if ((active != null) && "ON".equals(active.toUpperCase())) {
                         controller.setActive(true);
                     } else {
                         controller.setActive(false);
                     }
-
                     controllerDao.update(controller);
+
                     logger.info("Controller " + controller + " successfully updated !");
-                    request.setAttribute("message",
-                            "Controller with ID " + controller.getId()
-                                    + " successfully updated !");
+                    request.setAttribute("message", "Controller with ID " + controller.getId() + " successfully updated !");
                     request.setAttribute("error", false);
                     request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
                             + cellinkId).forward(request, response);

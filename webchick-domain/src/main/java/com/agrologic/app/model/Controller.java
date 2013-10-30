@@ -60,6 +60,10 @@ public class Controller implements Serializable {
         return netName;
     }
 
+    public String getNetNumber() {
+        return netName.substring(2);
+    }
+
     public void setNetName(String netName) {
         this.netName = netName;
     }
