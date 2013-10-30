@@ -184,14 +184,61 @@
                 <!--This option is useful if threads are waiting for the connection from pool. Without this threads would wait
                 forever and you're risking to get your app down if all the threads stuck.-->
                 <property name="checkoutTimeout" value="10000"/>
-                <property name="acquireIncrement" value="3"/>
-                <property name="initialPoolSize" value="2"/>
-                <property name="maxIdleTime" value="18000"/>
-                <property name="maxPoolSize" value="50"/>
-                <property name="minPoolSize" value="2"/>
-                <property name="maxStatements" value="50"/>
-                <property name="testConnectionOnCheckin" value="true"/>
             </bean>
         </property>
     </bean>
+
+    <!--&lt;!&ndash;Создаем Ленивый DataSource, который по возможности не будет вытягивать настоящее&ndash;&gt;-->
+    <!--&lt;!&ndash;соединение к БД из настоящего пула до тех пор пока это правда необходимо. Например, &ndash;&gt;-->
+    <!--&lt;!&ndash;если Hibernate достает данные из кеша и не делает запрос в БД, нам не нужно&ndash;&gt;-->
+    <!--&lt;!&ndash;настоящее соединение. Однако если не использовать ленивый DataSource, то соединение&ndash;&gt;-->
+    <!--&lt;!&ndash;будет вытянуто и транзакция будет начата если метод помечен @Transactional&ndash;&gt;-->
+    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">-->
+        <!--<property name="defaultTransactionIsolationName" value="TRANSACTION_READ_COMMITTED"/>-->
+        <!--<property name="defaultAutoCommit" value="false"/>-->
+        <!--<property name="targetDataSource">-->
+            <!--&lt;!&ndash;Это собственно настоящий DB Pool. Многие говорят что пул, который Hibernate&ndash;&gt;-->
+            <!--&lt;!&ndash;использует по умолчанию не является серьезным и использование его в production&ndash;&gt;-->
+            <!--&lt;!&ndash;коде не допустимо. Однако C3P0 как раз не является пулом по умочанию, у Hibernate &ndash;&gt;-->
+            <!--&lt;!&ndash;есть свой внутренний пул для "поиграться", однако это не C3P0 как многие думают! С другими&ndash;&gt;-->
+            <!--&lt;!&ndash;же пулами не сравнивал на самом деле, поэтому не могу сказать какой лучше,&ndash;&gt;-->
+            <!--&lt;!&ndash;C3P0 используется исторически во многих приложениях с Hibernate. &ndash;&gt;-->
+            <!--<bean class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">-->
+                <!--<property name="driverClass" value="${jdbc.driver}"/>-->
+                <!--<property name="jdbcUrl" value="${jdbc.url}"/>-->
+                <!--<property name="user" value="${jdbc.user}"/>-->
+                <!--<property name="password" value="${jdbc.password}"/>-->
+                <!--&lt;!&ndash;Эта опция показывает сколько PreparedStatement'ов должно быть закешировано&ndash;&gt;-->
+                <!--&lt;!&ndash;на стороне Java, в самом Connection Pool. Имейте в виду что СУБД может &ndash;&gt;-->
+                <!--&lt;!&ndash;требовать дополнительной настройки для того чтоб эта опция показала себя эффективной&ndash;&gt;-->
+                <!--<property name="maxStatements" value="1500"/>-->
+                <!--&lt;!&ndash;А это сколько PreparedStatement'ов каждое соединение может кешировать для себя &ndash;&gt;-->
+                <!--<property name="maxStatementsPerConnection" value="50"/>-->
+                <!--&lt;!&ndash;Вот это самая сложная опция и для того чтоб ее правильно настроить,&ndash;&gt;-->
+                <!--&lt;!&ndash;нам нужны нагрузочные тесты а также рабочее в PROD приложение&ndash;&gt;-->
+                <!--&lt;!&ndash;Есть разные стратегии по работе с соединениями которые влияют на оптимальный&ndash;&gt;-->
+                <!--&lt;!&ndash;размер DB Pool'a, подробней читайте прекрасную книгу Release It!&ndash;&gt;-->
+                <!--<property name="maxPoolSize" value="50"/>-->
+                <!--&lt;!&ndash;MySQL прибивает соединение если оно не использовалось какое-то время.&ndash;&gt;-->
+                <!--&lt;!&ndash;По умолчанию это 8 часов. Дабы избежать неприятных исключений нам &ndash;&gt;-->
+                <!--&lt;!&ndash;нужно бомбардировать MySQL запросами каждый N часов (минут)&ndash;&gt;-->
+                <!--<property name="idleConnectionTestPeriod" value="3600"/>-->
+                <!--&lt;!&ndash;Если мы испытываем большую нагрузку и/или запросы выполняются очень долго,&ndash;&gt;-->
+                <!--&lt;!&ndash;мы сможем обслуживать 50 пользователей одновременно (размер пула), однако &ndash;&gt;-->
+                <!--&lt;!&ndash;при увеличении нагрузки, клиенты начнут выстраиваться в очередь и просто ждать&ndash;&gt;-->
+                <!--&lt;!&ndash;заблокированные в synchronized методах внутри DB Pool'a. Дабы мы не оказались&ndash;&gt;-->
+                <!--&lt;!&ndash;в ситуации, когда мы заблокированы надолго и приложение совсем не отвечает, &ndash;&gt;-->
+                <!--&lt;!&ndash;через 10 секунд простаивания в очереди выбрасывается исключение и сервер разгружается&ndash;&gt;-->
+                <!--&lt;!&ndash;от лишних запросов. Да, это исключение и это неприятно, однако лучше отвалится &ndash;&gt;-->
+                <!--&lt;!&ndash;несколько клиентов (особенно если это DDoS'еры поганые) нежели сайт будет в полной отключке.&ndash;&gt;-->
+                <!--<property name="checkoutTimeout" value="10000"/>-->
+                <!--<property name="testConnectionOnCheckin" value="true"/>-->
+                <!--<property name="acquireRetryAttempts" value="1"/>-->
+                <!--<property name="acquireIncrement" value="3"/>-->
+                <!--<property name="initialPoolSize" value="2"/>-->
+                <!--<property name="maxIdleTime" value="18000"/>-->
+                <!--<property name="minPoolSize" value="2"/>-->
+            <!--</bean>-->
+        <!--</property>-->
+    <!--</bean>-->
 </beans>

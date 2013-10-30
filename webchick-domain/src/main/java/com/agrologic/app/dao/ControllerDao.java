@@ -240,4 +240,12 @@ public interface ControllerDao {
      * @throws SQLException if failed to retrieve controllers .
      */
     Collection<Controller> getAll() throws SQLException;
+
+    /**
+     * Retrieve all send string names by creteria
+     *
+     * @return the map with send string names
+     * @throws SQLException if failed to retrieve send string names.
+     */
+    Map<String, String> getControllerSendStringNames(String searchText) throws SQLException;
 }
