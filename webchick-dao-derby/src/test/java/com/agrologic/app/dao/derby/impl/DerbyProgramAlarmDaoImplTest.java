@@ -3,13 +3,20 @@ package com.agrologic.app.dao.derby.impl;
 import com.agrologic.app.model.ProgramAlarm;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.Collection;
 
 import static junit.framework.Assert.assertEquals;
-
-@Ignore
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration({"/common-dao-context.xml", "/derby-dao-context.xml"})
+@TransactionConfiguration
+@Transactional
 public class DerbyProgramAlarmDaoImplTest extends AbstractDaoTest {
 
     @Override
