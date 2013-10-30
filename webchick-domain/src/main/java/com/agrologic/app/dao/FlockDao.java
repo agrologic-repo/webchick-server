@@ -44,6 +44,7 @@ public interface FlockDao {
 
     Integer getUpdatedGrowDayHistory24(Long flockId) throws SQLException;
 
+    Integer getFlockTotalFeedConsumption(Long flockId)throws SQLException;
 
     Flock getById(Long flockId) throws SQLException;
 
