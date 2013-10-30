@@ -358,7 +358,7 @@ public class WebchickDBCreator extends javax.swing.JFrame {
                     Configuration configuration = new Configuration();
                     configuration.setLanguage(((LanguageEntry) cmbLanguages.getSelectedItem()).getLang());
                     String path = txtDatabaseDir.getText();
-                    delete(new File(path + "\\agrodb_for_tests"));
+                    delete(new File(path + "\\agrodb"));
                     System.setProperty("derby.system.home", path);
                     DatabaseManager dbMgr = new DatabaseManager(DaoType.MYSQL);
                     String userId = txtUserId.getText();
@@ -370,7 +370,7 @@ public class WebchickDBCreator extends javax.swing.JFrame {
                     lblCreatingStatus.setText(CREATING_EMBEDDED_DATABASE);
                     dbMgr.runCreateTablesTask();
                     lblCreatingStatus.setText(START_INSERT_DATA_TO_THE_EMBEDDED_DATABASE);
-//                    dbMgr.runInsertLoadedData();
+                    dbMgr.runInsertLoadedData();
                     dbMgr.finish();
                     prgBarCreateStatus.setIndeterminate(false);
                     prgBarCreateStatus.setVisible(false);

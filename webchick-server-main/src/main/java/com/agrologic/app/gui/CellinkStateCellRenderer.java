@@ -24,10 +24,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class CellinkStateCellRenderer extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 1L;
 
-//  Color even = new Color(255, 255, 255);
-//  Color odd = new Color(255, 255, 170);
-//  Color system = new Color(236, 233, 216);
-
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {
