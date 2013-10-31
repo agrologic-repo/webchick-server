@@ -216,7 +216,7 @@
             <form id="formUsers" name="formUsers">
                 <td colspan="9" width="100%">
                     <%if (users.size() > 0) {%>
-                    <table id="table-users" class="tablesorter">
+                    <table id="table-users" class="tablesorter" border="1">
                         <thead>
                         <tr>
                             <th><%=session.getAttribute("table.col.user.id")%></th>

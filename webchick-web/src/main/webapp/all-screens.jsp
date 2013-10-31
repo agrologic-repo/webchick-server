@@ -32,10 +32,26 @@
     <title>Screen Manager - Screens</title>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
-
+    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery-latest.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.tablesorter.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.tablesorter.min.js">;</script>
     <script language="Javascript">
+        $(function () {
+            $('#table-screens').tablesorter({
+                widgets: ['zebra'],
+
+                headers: {
+                    1: { sorter: false },
+                    2: { sorter: false },
+                    4: { sorter: false }
+                }
+            });
+        });
+
         /**
          * Add new screen .
          */
@@ -73,6 +89,7 @@
             var posScreenMap = new Hashtable();
 
             var chb = document.formScreen.list;
+
             var poss = document.formScreen.position;
 
             // if only one check table-list
@@ -153,7 +170,7 @@
          *
          */
         function filterLanguages(programId) {
-            var langId = document.formScreen.Lang_Filter.value;
+            var langId = document.formScreen.languageFilter.value;
             redirect("./all-screens.html?programId=" + programId + "&translateLang=" + langId);
             return false;
         }
@@ -172,7 +189,7 @@
     <%@include file="usermenuontop.jsp" %>
 </div>
 <div id="main-shell">
-    <table border="0" cellPadding=1 cellSpacing=1>
+    <table border="0" width="100%">
         <tr>
             <td>
                 <h1 style=""><%=session.getAttribute("screens.page.header")%>
@@ -231,25 +248,28 @@
             <td colspan="2">
                 <%=screens.size()%>&nbsp;</b><%=session.getAttribute("label.records")%>
                 <form id="formScreen" name="formScreen">
-                    <table class="table-list" border=1 >
+                    <table id="table-screens" class="tablesorter" style="border:1px, solid, #C6C6C6">
                         <thead>
                         <tr>
-                            <th class="centerHeader" width="150px">Title</th>
-                            <th class="centerHeader" width="180px">Text
-                                <select id="Lang_Filter" name="Lang_Filter"
+                            <th>Title</th>
+                            <td>
+                                <span>
+                                <select id="languageFilter" name="languageFilter"
                                         onchange="return filterLanguages(<%=program.getId()%>);">
                                     <%for (Language l : languages) {%>
                                     <option value="<%=l.getId()%>"><%=l.getLanguage()%>
                                     </option>
                                     <%}%>
                                 </select>
-                            </th>
-                            <th class="centerHeader" width="150px">Description</th>
-                            <th class="centerHeader">Show All &nbsp;&nbsp;&nbsp;
+                                </span>
+                            </td>
+                            <th>Description</th>
+                            <th>
                                 <input type="checkbox" id="listall" name="listall" title="Show"
                                        onclick="checkedAll();"/></th>
-                            <th class="centerHeader">Position</th>
-                            <th class="centerHeader" width="250px" colspan="2">Action</th>
+                            </th>
+                            <th>Position</th>
+                            <th colspan="2">Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -260,27 +280,28 @@
                                 <%} else {%>
                         <tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">
                             <%}%>
-                            <td style="padding-left:25px">
+                            <td>
                                 <a href="./all-tables.html?programId=<%=screen.getProgramId()%>&screenId=<%=screen.getId()%>&translateLang=<%=translateLang%>"><%=screen.getTitle()%>
                                 </a></td>
-                            <td class="leftCell"
+                            <td
                                 ondblclick="window.open('add-screentranslate.jsp?screenId=<%=screen.getId()%>&langId=<%=translateLang%>&screenName=<%=screen.getTitle()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');"><%=screen.getUnicodeTitle()%>
                             </td>
-                            <td class="leftCell"><%=screen.getDescript()%>
+                            <td><%=screen.getDescript()%>
                             </td>
-                            <td class="centerCell">
-                                <input type="checkbox" name="list" <%=screen.isChecked()%> value="<%=screen.getId()%>"
-                                       onclick="check(<%=screen.getId()%>);"/></td>
-                            <td class="centerCell">
+                            <td align="center">&nbsp;&nbsp;
+                                <input type="checkbox" class="list" name="list" <%=screen.isChecked()%>
+                                       value="<%=screen.getId()%>"/>
+                                &nbsp;&nbsp;</td>
+                            <td>
                                 <input type="text" name="position" value="<%=screen.getPosition()%>" size="5"/>
                             </td>
-                            <td class="centerCell">
+                            <td>
                                 <img src="resources/images/edit.gif" style="cursor: pointer" hspace="5" border="0" title='Edit'/>
                                 <a href="./editscreenrequest.html?programId=<%=program.getId()%>&screenId=<%=screen.getId()%>">
                                     <%=session.getAttribute("button.edit")%>
                                 </a>
                             </td>
-                            <td class="centerCell">
+                            <td>
                                 <img src="resources/images/close.png" title="Remove" hspace="5" style="cursor: pointer" border="0"/>
                                 <a href="javascript:removeScreen(<%=screen.getProgramId()%>,<%=screen.getId()%>);">
                                     <%=session.getAttribute("button.delete")%>
@@ -306,11 +327,11 @@
         </tr>
     </table>
     <script type="text/javascript">
-        var length = document.formScreen.Lang_Filter.options.length;
+        var length = document.formScreen.languageFilter.options.length;
         for (var i = 0; i < length; i++) {
             var translateLang = parseInt(<%=request.getParameter("translateLang")%>);
-            if (document.formScreen.Lang_Filter.options[i].value == translateLang) {
-                document.formScreen.Lang_Filter.selectedIndex = i;
+            if (document.formScreen.languageFilter.options[i].value == translateLang) {
+                document.formScreen.languageFilter.selectedIndex = i;
                 break;
             }
         }

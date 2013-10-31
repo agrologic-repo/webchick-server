@@ -290,9 +290,7 @@
                     <thead>
                     <tr>
                         <th>
-                            <%--<input type="checkbox" name="checkAll" id="checkAll">--%>
                             <input type="checkbox" id="selectall"/>
-
                         </th>
                         <th width="50px"><span><%=session.getAttribute("table.col.cellink.id")%></span></th>
                         <th><%=session.getAttribute("table.col.cellink.name")%></th>
@@ -313,8 +311,8 @@
                             <tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">
                         <%}%>
                         <td>
-                            <%--<input type="checkbox" id=cb<%=cellink.getId()%> name=cb<%=cellink.getId()%>/>--%>
-                            <input type="checkbox" class="selectedId" id="cb<%=cellink.getId()%>" name="selectedId" value="<%=cellink.getId()%>" />
+                            <input type="checkbox" class="selectedId" name="selectedId" id="cb<%=cellink.getId()%>"
+                                   value="<%=cellink.getId()%>" />
                         </td>
                         <td>
                             <%=cellink.getId()%>
