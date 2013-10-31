@@ -161,7 +161,10 @@ public class RowMappers {
             programRelay.setRelayNumber(rs.getInt("RelayNumber"));
             programRelay.setRelayTextId(rs.getLong("RelayTextID"));
             try {
-                programRelay.setUnicodeText(rs.getString("UnicodeText"));
+                if(rs.getString("UnicodeText") != null ) {
+                    programRelay.setUnicodeText(rs.getString("UnicodeText"));
+                }
+
             } catch (SQLException ex) {
                 programRelay.setUnicodeText(programRelay.getText());
             }
@@ -185,21 +188,6 @@ public class RowMappers {
                 alarm.setLangId((long) 1);
                 alarm.setUnicodeText(alarm.getText());
             }
-//            try {
-//                rs.
-//                alarm.setLangId(rs.getLong("LangID"));
-//            } catch (SQLException ex) {
-//                // by default language id is english
-//                alarm.setLangId((long) 1);
-//            }
-//
-//            try {
-//                alarm.setUnicodeText(rs.getString("UnicodeName"));
-//            } catch (SQLException ex) {
-//                // if unicode for this alarm does not exist
-//                // we take the text that was inserted for name
-//                alarm.setUnicodeText(alarm.getText());
-//            }
             return alarm;
         }
     }
@@ -215,7 +203,9 @@ public class RowMappers {
             programAlarm.setProgramId(rs.getLong("ProgramID"));
             programAlarm.setAlarmTextId(rs.getLong("AlarmTextID"));
             try {
-                programAlarm.setText(rs.getString("UnicodeName"));
+                if(rs.getString("UnicodeName") != null) {
+                    programAlarm.setText(rs.getString("UnicodeName"));
+                }
             } catch (SQLException ex) {    /*
                  * ignore
                  */
@@ -261,11 +251,14 @@ public class RowMappers {
             programSystemState.setSystemStateNumber(rs.getInt("SystemStateNumber"));
             programSystemState.setSystemStateTextId(rs.getLong("SystemStateTextID"));
             try {
-                programSystemState.setText(rs.getString("UnicodeName"));
-            } catch (SQLException ex) {    /*
+                if(rs.getString("UnicodeName") != null) {
+                    programSystemState.setText(rs.getString("UnicodeName"));
+                }
+            } catch (SQLException ex) {
+                /**
                  * ignore
                  */
-
+                programSystemState.setText(rs.getString("Text"));
             }
             return programSystemState;
         }
