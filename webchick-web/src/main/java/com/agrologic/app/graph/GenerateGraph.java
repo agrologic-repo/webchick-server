@@ -40,7 +40,7 @@ public class GenerateGraph {
                 if (setClock.getValue() == null) {
                     graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
                 } else {
-                    graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, values, setClock.getValue(), locale);
+                    graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, values, setClock.getValueToUI(), locale);
                 }
 
                 // Write the chart image to the temporary directory
