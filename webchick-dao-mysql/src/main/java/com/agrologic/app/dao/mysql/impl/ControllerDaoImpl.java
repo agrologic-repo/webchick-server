@@ -12,11 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -274,24 +272,6 @@ public class ControllerDaoImpl implements ControllerDao {
             return null;
         }
         return graphString.get(0);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isDataReady(Long userId) throws SQLException {
-        logger.debug("Check if any data of given user already loaded ");
-        String sql = "select dataid from controllerdata where controllerid in "
-                + "(select controllerid from controllers where cellinkid in "
-                + "(select cellinkid from cellinks where userid=? ))";
-        List<Integer> result = jdbcTemplate.query(sql, new Object[]{userId}, new RowMapper<Integer>() {
-            @Override
-            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getInt(rowNum);
-            }
-        });
-        return result.isEmpty() ? false : true;
     }
 
     /**
