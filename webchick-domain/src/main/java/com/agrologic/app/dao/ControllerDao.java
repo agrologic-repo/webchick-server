@@ -163,24 +163,6 @@ public interface ControllerDao {
     String getControllerGraph(Long id) throws SQLException;
 
     /**
-     * Return true if any data of any cellink received during connection was started
-     *
-     * @param userId the user id
-     * @return true if data received , otherwise false.
-     * @throws SQLException if failed to sql execute query.
-     */
-    boolean isDataReady(Long userId) throws SQLException;
-
-//    /**
-//     * Return true if any data of controller received during connection was started
-//     *
-//     * @param id the controller id
-//     * @return true if data exist , otherwise false.
-//     * @throws SQLException if failed to execute sql query.
-//     */
-//    boolean isControllerDataReady(Long id) throws SQLException;
-
-    /**
      * Retrieve last updated time of graph24hour table of specified controller.
      *
      * @param controllerId the controller id.

@@ -187,9 +187,6 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
     }
 
     public Long getValueToUI() {
-//        if(value == null) {
-//            value = -1L;
-//        }
         Long valueView = value;
         if (format == null) {
             valueView = value;
@@ -250,11 +247,6 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
         } else {
             return "";
         }
-    }
-
-    public String printDataValue() {
-        Long valueToView = getValueToUI();
-        return new DataFormat(format).toStringValue(valueToView);
     }
 
     public String displayTemplateValue() {

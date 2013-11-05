@@ -1,6 +1,5 @@
 package com.agrologic.app.model;
 
-import com.agrologic.app.exception.ObjectDoesNotExist;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -158,32 +157,6 @@ public class User implements Serializable {
         }
 
         return onlineCellinks;
-    }
-
-    public Collection<Cellink> getOfflineCellinks() {
-        List<Cellink> offlineCellinks = new ArrayList<Cellink>();
-
-        for (Cellink c : cellinks) {
-            if (c.getState() == CellinkState.STATE_OFFLINE) {
-                offlineCellinks.add(c);
-            }
-        }
-
-        return offlineCellinks;
-    }
-
-    public Cellink getCellinkById(Long id) throws ObjectDoesNotExist {
-        for (Cellink c : cellinks) {
-            if (c.getId().equals(id)) {
-                return c;
-            }
-        }
-
-        throw new ObjectDoesNotExist("The farm with ID " + id + " does not exist !");
-    }
-
-    public String userRoleText() {
-        return role.getText();
     }
 
     @Override
