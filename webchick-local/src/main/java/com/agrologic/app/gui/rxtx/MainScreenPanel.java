@@ -229,9 +229,7 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
         for (Data d : onScreenData) {
             if (d.getId().compareTo(Long.valueOf(3154)) == 0) {
                 try {
-//                    int mask = 0x0001;
                     int val = (d.getValue().intValue());
-                    //int on   = val&mask;
                     if (val > 0) {
                         result = true;
                     }

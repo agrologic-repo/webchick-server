@@ -8,6 +8,7 @@ import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Controller;
+import com.agrologic.app.util.ApplicationUtil;
 import com.agrologic.app.util.Windows;
 
 import javax.swing.*;
@@ -163,11 +164,7 @@ public class DesignScreen extends javax.swing.JDialog {
             setProgress(0);
             progressBar.setVisible(true);
             progressBar.setIndeterminate(true);
-            try {
-                Thread.sleep(SLEEP_TIME);
-                // imitate a long-running task
-            } catch (InterruptedException e) {
-            }
+            ApplicationUtil.sleep(SLEEP_TIME);
             setProgress(100);
             return null;
         }

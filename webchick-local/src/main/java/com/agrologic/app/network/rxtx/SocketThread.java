@@ -5,13 +5,12 @@ import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.dao.service.DatabaseLoadAccessor;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
-import com.agrologic.app.exception.ObjectDoesNotExist;
 import com.agrologic.app.exception.SerialPortControlFailure;
+import com.agrologic.app.gui.rxtx.ApplicationLocal;
 import com.agrologic.app.gui.rxtx.StatusPanel;
-import com.agrologic.app.gui.rxtx.WCSLWindow;
 import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Controller;
-import com.agrologic.app.util.LocalUtil;
+import com.agrologic.app.util.ApplicationUtil;
 import com.agrologic.app.util.StatusChar;
 import org.apache.log4j.Logger;
 
@@ -39,15 +38,15 @@ public final class SocketThread extends Observable implements Runnable, Network 
     private RequestMessageQueue requestQueue;
     private ResponseMessageMap responseMessageMap;
     private Message sendMessage;
-    private WCSLWindow wcsl;
+    private ApplicationLocal app;
     private StatusPanel statusPanel;
     private boolean DEBUG = false;
     private Logger logger = Logger.getLogger(SocketThread.class);
 
-    public SocketThread(WCSLWindow wcsl, DatabaseManager dbManager)
-            throws NumberFormatException, ObjectDoesNotExist, SerialPortControlFailure {
+    public SocketThread(ApplicationLocal app, DatabaseManager dbManager) throws NumberFormatException,
+            SerialPortControlFailure {
         super();
-        this.wcsl = wcsl;
+        this.app = app;
         this.networkState = NetworkState.STATE_STARTING;
         this.dbManager = dbManager;
         this.requestQueue = new RequestMessageQueue();
@@ -69,31 +68,20 @@ public final class SocketThread extends Observable implements Runnable, Network 
                 com = new SerialPortControl(comport, this);
                 logger.info("Communication port opened successfully!");
             } catch (SerialPortControlFailure e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
                 throw new SerialPortControlFailure(e.getMessage(), e);
             }
         }
-
-        try {
-            // parsingReceiveBuffer controller message managers
-            logger.info("Initialization messages");
-            initControllerMessageManagers(configuration);
-        } catch (ObjectDoesNotExist e) {
-            closingComport();
-            logger.error(e.getMessage());
-            throw new ObjectDoesNotExist(e.getMessage());
-        }
+        initControllerMessageManagers();
     }
 
-    private void initControllerMessageManagers(Configuration settingPreferences) throws ObjectDoesNotExist {
+    private void initControllerMessageManagers() {
         DatabaseLoadAccessor dla = dbManager.getDatabaseLoader();
-        Collection<Controller> tempControllers =
-                dla.getUser().getCellinkById(Long.parseLong(settingPreferences.getCellinkId())).getControllers();
-
+        Collection<Controller> controllers = dla.getUser().getCellinks().iterator().next().getControllers();
         // Here we transform each controller into
         // the observer the manager of messages
         DatabaseAccessor dbaccessor = dbManager.getDatabaseGeneralService();
-        for (Controller c : tempControllers) {
+        for (Controller c : controllers) {
             MessageManager cmm = new MessageManager(c, dbaccessor);
             controllerManagers.add(cmm);
         }
@@ -108,7 +96,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
             try {
                 switch (networkState) {
                     case STATE_IDLE:
-                        LocalUtil.sleep(10);
+                        ApplicationUtil.sleep(10);
                         break;
 
                     case STATE_STOP:
@@ -128,13 +116,13 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         break;
 
                     case STATE_BUSY:
-                        LocalUtil.sleep(100);
+                        ApplicationUtil.sleep(100);
                         statusPanel.setProgress("" + StatusChar.getChar());
                         statusPanel.setControllerStatus(getControllersStatus());
                         break;
 
                     case STATE_DELAY:
-                        LocalUtil.sleep(nxtDelay);
+                        ApplicationUtil.sleep(nxtDelay);
                         setThreadState(NetworkState.STATE_SEND);
                         requestQueue.notifyToCreateRequestToChange();
 
@@ -230,7 +218,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                     case STATE_ABORT:
                         stop = true;
                         closingComport();
-                        wcsl.showErrorMsg("Network Error", "Connection aborted .\nCheck USB cable connection !");
+                        app.showErrorMessage("Network Error", "Connection aborted .\nCheck USB cable connection !");
 
                         break;
 
@@ -290,7 +278,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
         if (controllerManagers.size() > 0) {
             setThreadState(NetworkState.STATE_DELAY);
         } else {
-            JOptionPane.showMessageDialog(wcsl, "Can not start communication.\n No active controllers .");
+            JOptionPane.showMessageDialog(app, "Can not start communication.\n No active controllers .");
             setThreadState(NetworkState.STATE_STOP);
         }
     }

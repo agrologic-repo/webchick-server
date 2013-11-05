@@ -15,6 +15,3 @@ public class TableLabel extends JLabel {
         setFont(new Font(getFont().getFontName(), fontStyle, fontSize));
     }
 }
-
-
-//~ Formatted by Jindent --- http://www.jindent.com

@@ -1,6 +1,7 @@
 package com.agrologic.app.gui.rxtx;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class StatusPanel extends JSeparator {
 
@@ -22,30 +23,49 @@ public class StatusPanel extends JSeparator {
         lblProgress = new JLabel();
         lblControllerStatus = new JLabel();
 
-        setMaximumSize(new java.awt.Dimension(940, 20));
-        setMinimumSize(new java.awt.Dimension(940, 20));
-        setPreferredSize(new java.awt.Dimension(940, 20));
+        setMaximumSize(new java.awt.Dimension(940, 25));
+        setMinimumSize(new java.awt.Dimension(940, 25));
+        setPreferredSize(new java.awt.Dimension(940, 25));
         setLayout(null);
+        int x = 2;
+        int y = 2;
+        int w = 100;
+        int h = 20;
 
+        lblHouse.setFont(new Font("Arial", Font.BOLD, 13));
         lblHouse.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         add(lblHouse);
-        lblHouse.setBounds(2, 2, 100, 17);
+        lblHouse.setBounds(x, y, w, h);
 
+        x += w;
+        w += 50;
+
+        lblSendMsg.setFont(new Font("Arial", Font.BOLD, 13));
         lblSendMsg.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         add(lblSendMsg);
-        lblSendMsg.setBounds(102, 2, 120, 17);
+        lblSendMsg.setBounds(x, y, w, h);
 
+        x += w;
+        w += 200;
+
+        lblReceiveMsg.setFont(new Font("Arial", Font.BOLD, 13));
         lblReceiveMsg.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         add(lblReceiveMsg);
-        lblReceiveMsg.setBounds(222, 2, 150, 17);
+        lblReceiveMsg.setBounds(x, y, w, h);
 
+        x += w;
+        w = 30;
+        lblProgress.setFont(new Font("Arial", Font.BOLD, 13));
         lblProgress.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         add(lblProgress);
-        lblProgress.setBounds(372, 2, 50, 17);
+        lblProgress.setBounds(x, y, w, h);
+        x += w;
+        w = 500;
 
+        lblControllerStatus.setFont(new Font("Arial", Font.BOLD, 13));
         lblControllerStatus.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         add(lblControllerStatus);
-        lblControllerStatus.setBounds(422, 2, 450, 17);
+        lblControllerStatus.setBounds(x, y, w, h);
     }
 
     public void setSendMsg(String sendMsg) {

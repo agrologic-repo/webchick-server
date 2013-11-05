@@ -17,6 +17,7 @@ import com.agrologic.app.exception.SerialPortControlFailure;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.messaging.ResponseMessage;
 import com.agrologic.app.network.CommControl;
+import com.agrologic.app.util.ApplicationUtil;
 import gnu.io.*;
 import org.apache.log4j.Logger;
 
@@ -82,11 +83,7 @@ public class SerialPortControl implements SerialPortEventListener {
     private void clearAvailableData() throws IOException {
         while (availableData() > 0) {
             clearInputStream();
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-                // ignore
-            }
+            ApplicationUtil.sleep(10);
         }
     }
 
@@ -136,29 +133,29 @@ public class SerialPortControl implements SerialPortEventListener {
         }
     }
 
-    /**
-     * Write a buffer array over a serial port.
-     *
-     * @param message the message object
-     * @param sot     the start of transmission index.
-     * @param eot     the end of transmission index.
-     * @throws IOException if I/O exception occurs.
-     */
-    public synchronized void write(final Message message, final int sot, final int eot) throws IOException {
-        state = SlipProtocol.SlipStates.WAIT;
-        // reset counter
-        resetCount();
-        clearBuffer();
-        sendTime = System.currentTimeMillis();
-        sotrecieved = false;
-        sotDelay = sot;
-        eotDelay = eot;
-        out.write(message.getBuffer());
-        if (DEBUG) {
-            logger.info("Sent :  " + message);
-        }
-
-    }
+//    /**
+//     * Write a buffer array over a serial port.
+//     *
+//     * @param message the message object
+//     * @param sot     the start of transmission index.
+//     * @param eot     the end of transmission index.
+//     * @throws IOException if I/O exception occurs.
+//     */
+//    public synchronized void write(final Message message, final int sot, final int eot) throws IOException {
+//        state = SlipProtocol.SlipStates.WAIT;
+//        // reset counter
+//        resetCount();
+//        clearBuffer();
+//        sendTime = System.currentTimeMillis();
+//        sotrecieved = false;
+//        sotDelay = sot;
+//        eotDelay = eot;
+//        out.write(message.getBuffer());
+//        if (DEBUG) {
+//            logger.info("Sent :  " + message);
+//        }
+//
+//    }
 
     /**
      * Write a buffer array over a serial port.
@@ -180,7 +177,7 @@ public class SerialPortControl implements SerialPortEventListener {
         eotDelay = eot;
 
         if ((vindex != null) && (vindex.length() > 0)) {
-            out.write(mergeIndexAndBuffer(vindex.getBytes(), message.getBuffer()));
+            out.write(combineIndexAndBuffer(vindex.getBytes(), message.getBuffer()));
         } else {
             out.write(message.getBuffer());
         }
@@ -193,11 +190,13 @@ public class SerialPortControl implements SerialPortEventListener {
     }
 
     /**
-     * @param index
-     * @param buffer
-     * @return
+     * Prepare request to send . Combine index and buffer into one buffer.
+     *
+     * @param index the index of buffer
+     * @param buffer the buffer with data
+     * @return buffer contain index and data to send
      */
-    private byte[] mergeIndexAndBuffer(byte[] index, byte[] buffer) {
+    private byte[] combineIndexAndBuffer(byte[] index, byte[] buffer) {
         byte[] sendBuffer = new byte[index.length + buffer.length];
         int i = 0;
 
@@ -218,8 +217,7 @@ public class SerialPortControl implements SerialPortEventListener {
      */
     public synchronized Message read() {
         final ResponseMessage response;
-        if (protocolType == Protocol.LOW_BINARY
-                || protocolType == Protocol.HIGH_BINARY) {
+        if (protocolType == Protocol.LOW_BINARY || protocolType == Protocol.HIGH_BINARY) {
             response = new ResponseMessage(buffer, ResponseMessage.Format.BINARY);
         } else {
             response = new ResponseMessage(buffer, ResponseMessage.Format.TEXT);
@@ -232,7 +230,9 @@ public class SerialPortControl implements SerialPortEventListener {
     }
 
     /**
+     * Skips over and discards <code>in#available()</code> bytes of data from this input stream.
      *
+     * @see        java.io.InputStream#skip(long)
      */
     public void clearInputStream() {
         try {
@@ -290,14 +290,11 @@ public class SerialPortControl implements SerialPortEventListener {
                     buffer[count++] = (byte) data;
                 }
                 sendTime = System.currentTimeMillis();
-                Thread.sleep(1);
+                ApplicationUtil.sleep(1);
             }
         } catch (IOException e) {
             e.printStackTrace();
             network.setThreadState(NetworkState.STATE_ABORT);
-        } catch (InterruptedException e) {
-            // ignore
-            e.printStackTrace();
         }
     }
 
@@ -330,7 +327,7 @@ public class SerialPortControl implements SerialPortEventListener {
                         break;
                 }
                 sendTime = System.currentTimeMillis();
-                Thread.sleep(5);
+                ApplicationUtil.sleep(5);
             }
             if (state == SlipProtocol.SlipStates.READY) {
                 buffer = clearGarbage(buffer, count);
@@ -339,10 +336,6 @@ public class SerialPortControl implements SerialPortEventListener {
                 network.setThreadState(NetworkState.STATE_READ);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            network.setThreadState(NetworkState.STATE_ABORT);
-        } catch (InterruptedException e) {
-            // ignore
             e.printStackTrace();
             network.setThreadState(NetworkState.STATE_ABORT);
         }
