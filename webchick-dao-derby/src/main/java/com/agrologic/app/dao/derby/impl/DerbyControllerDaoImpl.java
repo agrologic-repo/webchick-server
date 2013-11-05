@@ -293,7 +293,7 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
         int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId);
 
         if (exist == 1) {
-            jdbcTemplate.update(sqlUpdateQuery, values, updateTime);
+            jdbcTemplate.update(sqlUpdateQuery, values, updateTime, controllerId);
         } else {
             SimpleJdbcInsert jdbcControllerDataInsert = new SimpleJdbcInsert(jdbcTemplate);
             jdbcControllerDataInsert.setTableName("GRAPH24HOURS");
