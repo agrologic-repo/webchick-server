@@ -3,7 +3,6 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.GasDao;
-import com.agrologic.app.dao.mysql.impl.GasDaoImpl;
 import com.agrologic.app.model.Gas;
 
 import javax.servlet.ServletException;

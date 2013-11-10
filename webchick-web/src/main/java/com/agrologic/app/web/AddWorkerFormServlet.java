@@ -3,7 +3,6 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.WorkerDao;
-import com.agrologic.app.dao.mysql.impl.WorkerDaoImpl;
 import com.agrologic.app.model.Worker;
 
 import javax.servlet.ServletException;
@@ -11,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
 
 public class AddWorkerFormServlet extends AbstractServlet {

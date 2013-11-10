@@ -1,7 +1,6 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.mysql.impl.TransactionDaoImpl;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.Transaction;

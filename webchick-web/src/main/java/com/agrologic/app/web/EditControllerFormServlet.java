@@ -5,7 +5,6 @@ import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Controller;
-import com.agrologic.app.model.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

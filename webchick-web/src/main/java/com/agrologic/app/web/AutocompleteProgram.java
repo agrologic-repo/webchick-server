@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Map;
 
 public class AutocompleteProgram extends AbstractServlet {
     private static final long serialVersionUID = 1L;

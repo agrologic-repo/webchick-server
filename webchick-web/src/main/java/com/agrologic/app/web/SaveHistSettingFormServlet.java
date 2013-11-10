@@ -4,7 +4,6 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.HistorySettingDao;
-import com.agrologic.app.dao.mysql.impl.HistorySettingDaoImpl;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.HistorySetting;
 

@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 

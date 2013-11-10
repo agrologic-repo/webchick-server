@@ -2,9 +2,10 @@
 package com.agrologic.app.web;
 
 
-import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.mysql.impl.SpreadDaoImpl;
-import com.agrologic.app.model.Controller;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.FlockDao;
+import com.agrologic.app.dao.SpreadDao;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.Spread;
 
@@ -14,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 
 public class AddSpreadFormServlet extends AbstractServlet {

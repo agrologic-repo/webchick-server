@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.Collection;
 
 public class SaveMeterForm extends AbstractServlet {
@@ -64,8 +63,8 @@ public class SaveMeterForm extends AbstractServlet {
                 }
                 logger.info("retrieve user and user cellinks and all controllers of each cellink");
                 request.setAttribute("controllers", controllers);
-                response.sendRedirect("./flock-manager.html?celinkId=" + cellinkId + "&controllerId="
-                        + controllerId + "&flockId=" + flockId);
+                request.getRequestDispatcher("./flock-manager.html?celinkId=" + cellinkId + "&controllerId="
+                        + controllerId + "&flockId=" + flockId).forward(request, response);
             } catch (Exception ex) {
                 request.getRequestDispatcher("./flock-manager.html?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);

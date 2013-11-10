@@ -2,7 +2,6 @@ package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.*;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

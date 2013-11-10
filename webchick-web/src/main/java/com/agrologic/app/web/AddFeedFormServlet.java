@@ -1,9 +1,6 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.dao.mysql.impl.FeedDaoImpl;
-import com.agrologic.app.dao.mysql.impl.FeedTypeDaoImpl;
-import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Feed;
 import com.agrologic.app.model.FeedType;
 import com.agrologic.app.model.Flock;
@@ -13,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 
 public class AddFeedFormServlet extends AbstractServlet {

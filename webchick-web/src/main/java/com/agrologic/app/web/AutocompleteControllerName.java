@@ -3,7 +3,6 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.model.Data;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 public class AutocompleteControllerName extends AbstractServlet {
