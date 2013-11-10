@@ -38,7 +38,6 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
     private Controller controller;
     private DatabaseManager dbManager;
     private Timer timerDB;
-    private static Logger logger = Logger.getLogger(MainScreenPanel.class);
 
     /**
      * Creates new form MainScreenPanel

@@ -3,8 +3,10 @@ package com.agrologic.app.gui.rxtx;
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
+import com.agrologic.app.exception.DatabaseNotFound;
 import com.agrologic.app.exception.RestartApplicationException;
 import com.agrologic.app.exception.SerialPortControlFailure;
+import com.agrologic.app.exception.WrongDatabaseException;
 import com.agrologic.app.gui.ConfigurationDialog;
 import com.agrologic.app.gui.rxtx.flock.DesignScreen;
 import com.agrologic.app.gui.rxtx.flock.FlockManager;
@@ -25,6 +27,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -123,10 +126,14 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
                     showErrorMessage("Error",e.getMessage());
                     openConfiguration();
                     System.exit(0);
-                } catch (Exception e) {
+                } catch (WrongDatabaseException e) {
                     loadingDialog.setVisible(false);
                     showErrorMessage("Error",e.getMessage());
                     openConfiguration();
+                    System.exit(0);
+                } catch (DatabaseNotFound e) {
+                    loadingDialog.setVisible(false);
+                    showErrorMessage("Error",e.getMessage());
                     System.exit(0);
                 }
             }
