@@ -2,12 +2,6 @@
 <%@ page import="com.agrologic.app.dao.DbImplDecider" %>
 <%@ page import="com.agrologic.app.dao.TransactionDao" %>
 <%@ page import="com.agrologic.app.model.Transaction" %>
-<%--
-    Document   : rmctrl-add-transaction
-    Created on : Apr 20, 2011, 4:36:36 PM
-    Author     : JanL
---%>
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="language.jsp" %>
 
@@ -16,7 +10,7 @@
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
     TransactionDao transactDao = DbImplDecider.use(DaoType.MYSQL).getDao(TransactionDao.class);
-    Collection<Transaction> transactList = transactDao.getAll();
+    Collection<Transaction> transactList = transactDao.getAllByFlockId(flockId);
 %>
 <!DOCTYPE html>
 

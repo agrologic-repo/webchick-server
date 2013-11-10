@@ -410,6 +410,10 @@
         <servlet-class>com.agrologic.app.web.RemoveSystemStateServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>RemoveFeedServlet</servlet-name>
+        <servlet-class>com.agrologic.app.web.RemoveFeedServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>RemoveSpreadServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.RemoveSpreadServlet</servlet-class>
     </servlet>
@@ -962,6 +966,12 @@
         <servlet-name>RemoveLaborServlet</servlet-name>
         <url-pattern>/remove-labor.html</url-pattern>
     </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>RemoveFeedServlet</servlet-name>
+        <url-pattern>/remove-feed.html</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>RemoveMedicineServlet</servlet-name>
         <url-pattern>/remove-medicine.html</url-pattern>

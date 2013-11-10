@@ -10,7 +10,7 @@
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
     DistribDao distribDao = DbImplDecider.use(DaoType.MYSQL).getDao(DistribDao.class);
-//    Collection<Distrib> distribList = distribDao.getAllByFlockId(flockId);
+    Collection<Distrib> distribList = distribDao.getAllByFlockId(flockId);
 %>
 <!DOCTYPE html>
 
@@ -88,7 +88,6 @@
     <input type="hidden" id="controllerId" name="controllerId" value="<%=controllerId%>">
     <input type="hidden" id="flockId" name="flockId" value="<%=flockId%>">
     <button type="button" onclick='javascript:closePopup()'>Close</button>
-    <input type="submit" value="Add">
     <br><br><br>
     <table border="1" style="width: 700px;border:1px solid #C6C6C6; border-collapse: collapse;">
         <thead>

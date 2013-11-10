@@ -2,7 +2,6 @@
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ include file="language.jsp" %>
 
-<%@ page import="com.agrologic.app.model.Program" %>
 <%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
