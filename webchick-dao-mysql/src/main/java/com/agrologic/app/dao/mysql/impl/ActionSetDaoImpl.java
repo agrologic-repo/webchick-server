@@ -199,35 +199,8 @@ public class ActionSetDaoImpl implements ActionSetDao {
 
     @Override
     public List<ActionSet> getAllOnScreen(Long programId) throws SQLException {
-
         // call method with default language english
         return getAllOnScreen(programId, Long.valueOf(1));
-
-//      String sqlQuery = "select * from actionset as actset "
-//              + "inner join programactionset as progactset "
-//              + "where programid=? and actset.ValueID=progactset.ValueID and progactset.DisplayOnPage='yes'";
-//
-////      String sqlQuery = "select * from actionset as actset "
-////              + "left join programactionset as progactset on actset.ValueID=progactset.ValueID "
-////              + "left join actionsetbylanguage on actionsetbylanguage.ValueID=actset.ValueID and actionsetbylanguage.langid=? "
-////              + "where programid=? and actset.ValueID=progactset.ValueID and progactset.DisplayOnPage='yes'";
-//
-//      PreparedStatement prepstmt = null;
-//      Connection con = null;
-//
-//      try {
-//          con = dao.getConnection();
-//          prepstmt = con.prepareStatement(sqlQuery);
-//          prepstmt.setLong(1, programId);
-//          ResultSet rs = prepstmt.executeQuery();
-//          return makeActionSetList(rs);
-//      } catch (SQLException e) {
-//          printSQLException(e);
-//          throw new SQLException("Cannot Retrieve ProgramActionSet From DataBase", e);
-//      } finally {
-//          prepstmt.close();
-//          closeConnection(con);
-//      }
     }
 
     @Override

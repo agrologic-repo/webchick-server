@@ -27,6 +27,9 @@ public class DistribDaoImpl implements DistribDao {
         this.dao = dao;
     }
 
+    /**
+     * (@inh)
+     */
     @Override
     public void insert(Distrib distrib) throws SQLException {
         logger.debug("Inserting distribute with id [{}]", distrib.getId());
@@ -80,6 +83,6 @@ public class DistribDaoImpl implements DistribDao {
     public List<Distrib> getAllByFlockId(Long flockId) throws SQLException {
         logger.debug("Get all distribute data ");
         String sql = "select * from distribute where FlockID=?";
-        return jdbcTemplate.query(sql, RowMappers.distrib());
+        return jdbcTemplate.query(sql,new Object[]{flockId},  RowMappers.distrib());
     }
 }

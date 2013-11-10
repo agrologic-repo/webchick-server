@@ -2,16 +2,28 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DomainDao;
+import com.agrologic.app.dao.mappers.RowMappers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class DomainDaoImpl implements DomainDao {
     protected final DaoFactory dao;
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
+    private final Logger logger = LoggerFactory.getLogger(DomainDaoImpl.class);
 
-    public DomainDaoImpl(DaoFactory dao) {
+    public DomainDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        this.jdbcInsert.setTableName("domains");
         this.dao = dao;
     }
 
@@ -22,52 +34,25 @@ public class DomainDaoImpl implements DomainDao {
 
     @Override
     public String getLogoPath(String domain) throws SQLException {
+        logger.debug("Get logo path ");
         String sqlQuery = "select logopath from domains where domain=? ";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, domain);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getString("logopath");
-            } else {
-                return "resources/images/agrologiclogo.png";
-            }
-        } catch (SQLException e) {
-            throw new SQLException("Cannot Retrieve Controllers From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        List<String> domainlogoPaths = jdbcTemplate.queryForList(sqlQuery, new Object[]{domain}, String.class);
+        if (domainlogoPaths.isEmpty()) {
+            return "resources/images/agrologiclogo.png";
         }
+        return domainlogoPaths.get(0);
     }
 
     @Override
     public String getCompany(String domain) throws SQLException {
-        String sqlQuery = "select company from domains where domain=? ";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setString(1, domain);
-            ResultSet rs = prepstmt.executeQuery();
 
-            if (rs.next()) {
-                return rs.getString("company");
-            } else {
-                return "Agrologic";
-            }
-        } catch (SQLException e) {
-            throw new SQLException("Cannot Retrieve domains From DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        logger.debug("Get company ");
+        String sqlQuery = "select company from domains where domain=? ";
+        List<String> companies = jdbcTemplate.queryForList(sqlQuery, new Object[]{domain}, String.class);
+        if (companies.isEmpty()) {
+            return "Agrologic";
         }
+        return companies.get(0);
     }
 }
 

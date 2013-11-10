@@ -32,9 +32,12 @@ public class DataDaoImpl implements DataDao {
         this.dao = dao;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insert(Data data) throws SQLException {
-        logger.debug("Inserting cellink with name [{}]", data.getTitle());
+        logger.debug("Inserting data with name [{}]", data.getTitle());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("Type", data.getType());
         valuesToInsert.put("Status", data.isStatus());
@@ -48,25 +51,21 @@ public class DataDaoImpl implements DataDao {
     }
 
     /**
-     * Updates an existing data row in table datatable
-     *
-     * @param data an object that encapsulates a data attributes
-     * @throws SQLException if failed to update the data in the database
+     * {@inheritDoc}
      */
     @Override
     public void update(Data data) throws SQLException {
+        logger.debug("update data with id [{}]", data.getId());
         String sql = "update datatable set Label=? where DataID=?";
         jdbcTemplate.update(sql, new Object[]{data.getLabel(), data.getId()});
     }
 
     /**
-     * Removes a data from the datatable database
-     *
-     * @param dataId the id of the data to be removed from the database
-     * @throws SQLException if failed to remove the data from the database
+     * {@inheritDoc}
      */
     @Override
     public void remove(Long dataId) throws SQLException {
+        logger.debug("remove data with id [{}]", dataId);
         String sql = "delete from datatable where DataID=?";
         jdbcTemplate.update(sql, new Object[]{dataId});
     }
@@ -114,6 +113,9 @@ public class DataDaoImpl implements DataDao {
         jdbcTemplate.batchUpdate(sql, batch);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insertTranslation(Collection<Data> dataList) throws SQLException {
         String sql = "insert into databylanguage values (?, ?, ?) ";
@@ -129,6 +131,9 @@ public class DataDaoImpl implements DataDao {
         jdbcTemplate.batchUpdate(sql, batch);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insertTableData(Long tableId, Long screenId, Long programId, Collection<Data> dataList) throws SQLException {
         String sql = "INSERT INTO TABLEDATA (DATAID, TABLEID, SCREENID, PROGRAMID, DISPLAYONTABLE, POSITION ) "
@@ -149,15 +154,7 @@ public class DataDaoImpl implements DataDao {
     }
 
     /**
-     * Insert new data to datatable database
-     *
-     * @param programId the id of program
-     * @param screenId  the id of screen
-     * @param tableId   the id of table
-     * @param dataId    the id of data
-     * @param display   the string to display 'yes' or 'no'
-     * @param position  the number of position
-     * @throws java.sql.SQLException if failed to update the data in the tabledata
+     * {@inheritDoc}
      */
     @Override
     public void insertDataToTable(Long programId, Long screenId, Long tableId, Long dataId, String display,
@@ -175,11 +172,7 @@ public class DataDaoImpl implements DataDao {
     }
 
     /**
-     * Insert data id , table id , and program id into association table datatable
-     *
-     * @param newProgramId the id of added program
-     * @param oldProgramId the id of selected program to get data data from it
-     * @throws java.sql.SQLException
+     * {@inheritDoc}
      */
     @Override
     public void insertDataList(Long newProgramId, Long oldProgramId) throws SQLException {
@@ -190,6 +183,9 @@ public class DataDaoImpl implements DataDao {
         jdbcTemplate.update(sql, newProgramId, oldProgramId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insertSpecialData(Long programId, Long dataId, Long langId, String label) throws SQLException {
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
@@ -202,6 +198,9 @@ public class DataDaoImpl implements DataDao {
         jdbcInsertSpecialTable.execute(valuesToInsert);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insertDataTranslation(Long dataId, Long langId, String translate) throws SQLException {
         String sql = "insert into databylanguage values (?,?,?) on duplicate key update " +
@@ -209,24 +208,36 @@ public class DataDaoImpl implements DataDao {
         jdbcTemplate.update(sql, dataId, langId, translate);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clearControllerData(Long controllerId) throws SQLException {
         String sql = "delete from controllerdata where controllerid=? ";
         jdbcTemplate.update(sql, controllerId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void moveData(Long screenId, Long programId, Long tableId) throws SQLException {
         String sql = "update tabledata set screenid=? where programid=? and tableid=? ";
         jdbcTemplate.update(sql, screenId, programId, tableId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Data getById(Long dataId) throws SQLException {
         String sql = "select * from datatable where dataid=?";
         return jdbcTemplate.queryForObject(sql, new Object[]{dataId}, RowMappers.data());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Data getById(Long dataId, Long langId) throws SQLException {
         String sql = "select * from datatable inner join databylanguage on datatable.DataID=databylanguage.DataID "
@@ -234,6 +245,9 @@ public class DataDaoImpl implements DataDao {
         return jdbcTemplate.queryForObject(sql, new Object[]{dataId, langId}, RowMappers.data());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Data getGrowDay(Long controllerId) throws SQLException {
         String sql = "select * from datatable as d inner join" +
@@ -243,6 +257,9 @@ public class DataDaoImpl implements DataDao {
         return result.get(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Data getSetClockByController(Long controllerId) throws SQLException {
         String sql = "select * from datatable "
@@ -260,6 +277,9 @@ public class DataDaoImpl implements DataDao {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Data getChangedDataValue(Long controllerId) throws SQLException {
         String sql = "select * from datatable as d inner join "
@@ -279,12 +299,18 @@ public class DataDaoImpl implements DataDao {
         return res.get(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> find(Long type) throws SQLException {
         String sql = "select * from datatable where type  like ?";
         return jdbcTemplate.query(sql, new Object[]{"%" + type + "%"}, RowMappers.data());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getAll() throws SQLException {
         String sql = "select * from datatable";
@@ -292,10 +318,7 @@ public class DataDaoImpl implements DataDao {
     }
 
     /**
-     * Retrieves data relays from datatable
-     *
-     * @return a list of Data objects, each object reflects a row in table datatable
-     * @throws java.sql.SQLException if failed to retrieve data from the database
+     * {@inheritDoc}
      */
     @Override
     public Collection<Data> getRelays() throws SQLException {
@@ -303,10 +326,7 @@ public class DataDaoImpl implements DataDao {
     }
 
     /**
-     * Retrieves data alarms from datatable
-     *
-     * @return a list of Data objects, each object reflects a row in table datatable
-     * @throws java.sql.SQLException if failed to retrieve data from the database
+     * {@inheritDoc}
      */
     @Override
     public Collection<Data> getAlarms() throws SQLException {
@@ -314,22 +334,25 @@ public class DataDaoImpl implements DataDao {
     }
 
     /**
-     * Retrieves data system states from database
-     *
-     * @return a list of Data objects, each object reflects a row in table datatable
-     * @throws java.sql.SQLException if failed to retrieve data from the database
+     * {@inheritDoc}
      */
     @Override
     public Collection<Data> getSystemStates() throws SQLException {
         return getSpecial("System States");
     }
 
-    private Collection<Data> getSpecial(String string) throws SQLException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<Data> getSpecial(String string) throws SQLException {
         String sql = "select * from datatable where IsSpecial in "
                 + "(select ID from Special where Text=?)";
         return jdbcTemplate.query(sql, new Object[]{string}, RowMappers.data());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getTableDataList(Long programId, Long screenId, Long tableId, String display) throws SQLException {
         String sql = "select datatable.DataID , datatable.Type ,datatable.Status , datatable.ReadOnly, " +
@@ -344,6 +367,9 @@ public class DataDaoImpl implements DataDao {
                 RowMappers.data());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getTableDataList(Long programId, Long screenId, Long tableId, Long langId, String display)
             throws SQLException {
@@ -364,7 +390,9 @@ public class DataDaoImpl implements DataDao {
         return jdbcTemplate.query(sql, new Object[]{langId, langId, programId, screenId, tableId},
                 RowMappers.data());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getHistoryDataList() throws SQLException {
         String sql = "select * from datatable "
@@ -372,14 +400,18 @@ public class DataDaoImpl implements DataDao {
                 + " and databylanguage.LangID=1 and datatable.isspecial=5 order by datatable.DataID";
         return jdbcTemplate.query(sql, RowMappers.data());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getAllWithTranslation() throws SQLException {
         String sql = " select * from datatable left join databylanguage on datatable.dataid=databylanguage.dataid "
                 + "order by datatable.dataid ";
         return jdbcTemplate.query(sql, RowMappers.data());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getControllerData(Long controllerId) throws SQLException {
         String sql = "select * from controllerdata" +
@@ -387,14 +419,18 @@ public class DataDaoImpl implements DataDao {
                 " where controllerdata.ControllerID=? ";
         return jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getControllerDataValues(Long controllerId) throws SQLException {
         String sql = "select * from datatable as dt inner join controllerdata "
                 + "as cd on dt.dataid=cd.dataid and cd.controllerid=?";
         return jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getOnlineTableDataList(Long controllerId, Long programId, Long screenId, Long tableId,
                                                    Long langId) throws SQLException {
@@ -413,7 +449,9 @@ public class DataDaoImpl implements DataDao {
         return jdbcTemplate.query(sql, new Object[]{programId, screenId, tableId, langId, programId, langId, controllerId},
                 RowMappers.data());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getOnScreenDataList(Long programId, Long screenId, Long tableId, Long langId)
             throws SQLException {
@@ -431,12 +469,8 @@ public class DataDaoImpl implements DataDao {
                 + "order by td.position ";
         return jdbcTemplate.query(sql, new Object[]{langId, langId, programId, screenId, tableId}, RowMappers.data());
     }
-
     /**
-     * Unchecked data on table that not used in given program id
-     *
-     * @param programId the program id
-     * @throws SQLException if failed to execute the query
+     * {@inheritDoc}
      */
     @Override
     public void uncheckNotUsedDataOnAllScreens(Long programId, Long controllerId) throws SQLException {
@@ -444,65 +478,41 @@ public class DataDaoImpl implements DataDao {
                 + " (select dataid from controllerdata where controllerid=?)";
         jdbcTemplate.update(sql, programId, controllerId);
     }
-
     /**
-     * Remove all data in specified table from the database.
-     *
-     * @param programId the program id
-     * @throws SQLException if failed to remove the data from the tabledata
+     * {@inheritDoc}
      */
     @Override
     public void removeDataFromTable(Long programId) throws SQLException {
         String sql = "delete from tabledata where ProgramID=?";
         jdbcTemplate.update(sql, programId);
     }
-
     /**
-     * Remove all data in specified table from the database.
-     *
-     * @param programId the program id
-     * @param screenId  the screen id
-     * @throws SQLException if failed to remove the data from the tabledata
-     */
-    @Override
-    public void removeDataFromTable(Long programId, Long screenId) throws SQLException {
-        String sql = "delete from tabledata where ProgramID=? and ScreenID=?";
-        jdbcTemplate.update(sql, programId, screenId);
-    }
-
-    /**
-     * Remove all data in specified table from the database.
-     *
-     * @param programId the program id
-     * @param screenId  the screen id
-     * @param tableId   the table id
-     * @throws SQLException if failed to remove the data from the tabledata
+     * {@inheritDoc}
      */
     @Override
     public void removeDataFromTable(Long programId, Long screenId, Long tableId) throws SQLException {
         String sql = "delete from tabledata where ProgramID=? and ScreenID=? and TableID=?";
         jdbcTemplate.update(sql, programId, screenId, tableId);
     }
-
     /**
-     * Removes a data from the datatable database
-     *
-     * @param tableId the id of the table
-     * @param dataId  the id of the data
-     * @throws SQLException if failed to remove the data from the tabledata
+     * {@inheritDoc}
      */
     @Override
     public void removeDataFromTable(Long programId, Long screenId, Long tableId, Long dataId) throws SQLException {
         String sql = "delete from tabledata where ProgramID=? and ScreenID=? and TableID=? and DataID=?";
         jdbcTemplate.update(sql, programId, screenId, tableId, dataId);
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeSpecialDataFromTable(Long programId, Long dataId) throws SQLException {
         String sql = "delete from specialdatalabels where ProgramID=? and DataID=?";
         jdbcTemplate.update(sql, programId, dataId);
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveChanges(final Long programId, final Long screenId, final Long tableId, final Map<Long, String> showMap,
                             Map<Long, Integer> positionMap) throws SQLException {
@@ -536,7 +546,9 @@ public class DataDaoImpl implements DataDao {
             }
         });
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getProgramDataRelays(Long programId) throws SQLException {
         String sql = "select * from datatable where DataID in " +
@@ -544,21 +556,27 @@ public class DataDaoImpl implements DataDao {
 
         return jdbcTemplate.query(sql, new Object[]{programId}, RowMappers.data());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getProgramDataAlarms(Long programId) throws SQLException {
         String sql = "select * from datatable where DataID in "
                 + "(select distinct DataID from programalarms where ProgramID=?)";
         return jdbcTemplate.query(sql, new Object[]{programId}, RowMappers.data());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getProgramDataSystemStates(Long programId) throws SQLException {
         String sql = "select * from datatable where DataID in "
                 + "(select distinct DataID  from programsysstates where ProgramID=?)";
         return jdbcTemplate.query(sql, new Object[]{programId}, RowMappers.data());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getSpecialData(Long programId, Long langId) throws SQLException {
         String sql = "select * from specialdatalabels "
@@ -566,7 +584,9 @@ public class DataDaoImpl implements DataDao {
                 + "where programId=? and langId=? ";
         return jdbcTemplate.query(sql, new Object[]{programId, langId}, RowMappers.data());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Data> getAllBySpecial(Integer special) throws SQLException {
         String sql = "select * from datatable where isspecial = ?";

@@ -321,8 +321,8 @@ public class FlockDaoImpl implements FlockDao {
 
     @Override
     public Collection<Flock> getAllFlocksByController(Long controllerId) throws SQLException {
-        String sql = "select * from flocks where ControllerID=?";
         logger.debug("Get all flocks that belongs to controller with id [{}]", controllerId);
+        String sql = "select * from flocks where ControllerID=?";
         return jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.flock());
     }
 }

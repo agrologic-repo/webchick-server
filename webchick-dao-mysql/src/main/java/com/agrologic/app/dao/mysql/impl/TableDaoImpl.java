@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -94,45 +95,35 @@ public class TableDaoImpl implements TableDao {
 
     @Override
     public void insertTableTranslation(Long tableId, Long langId, String translation) throws SQLException {
-        String sqlQuery =
+        logger.debug("Insert translate for table with id [{}] in language id [{}] " , new Object[] { tableId, langId});
+        String sql =
                 "insert into tablebylanguage values (?,?,?) on duplicate key update UnicodeTitle=values(UnicodeTitle)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, tableId);
-            prepstmt.setLong(2, langId);
-            prepstmt.setString(3, translation);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException("Cannot Insert Translation To The DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.update(sql, new Object[]{tableId,langId,translation});
     }
 
     @Override
     public void insertTranslation(final Collection<Table> tables) throws SQLException {
         logger.debug("Insert collection translation of tables ");
         final String sql = "insert into tablebylanguage values (?,?,?)";
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+        try {
+            jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Table table = Lists.newArrayList(tables).get(i);
-                ps.setLong(1, table.getId());
-                ps.setLong(2, table.getLangId());
-                ps.setString(3, table.getUnicodeTitle() == null ? "" : table.getUnicodeTitle());
-            }
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    Table table = Lists.newArrayList(tables).get(i);
+                    ps.setLong(1, table.getId());
+                    ps.setLong(2, table.getLangId());
+                    ps.setString(3, table.getUnicodeTitle() == null ? "" : table.getUnicodeTitle());
+                }
 
-            @Override
-            public int getBatchSize() {
-                return tables.size();
-            }
-        });
+                @Override
+                public int getBatchSize() {
+                    return tables.size();
+                }
+            });
+        } catch (DuplicateKeyException e) {
+            //e.printStackTrace();
+        }
     }
 
     @Override
@@ -146,7 +137,8 @@ public class TableDaoImpl implements TableDao {
     }
 
     @Override
-    public void saveChanges(final Map<Long, String> showMap, final Map<Long, Integer> positionMap, final Long screenId,
+    public void saveChanges(final Map<Long, String> showMap, final Map<Long, Integer> positionMap,
+                            final Long screenId,
                             final Long programId) throws SQLException {
 
         logger.debug("Save changes of table position and show ");
@@ -212,7 +204,7 @@ public class TableDaoImpl implements TableDao {
     public Collection<Table> getScreenTables(Long programId, Long screenId, Long langId, Boolean showAll)
             throws SQLException {
         logger.debug("Get tables by program with id [{}], screen id [{}] and language id [{}] ",
-                new Object[]{programId, screenId, langId, });
+                new Object[]{programId, screenId, langId,});
         String sqlQuery = "select * from screentable"
                 + " left join tablebylanguage on tablebylanguage.tableid=screentable.tableid"
                 + " and tablebylanguage.langid=? where programid=? and screenid=?";

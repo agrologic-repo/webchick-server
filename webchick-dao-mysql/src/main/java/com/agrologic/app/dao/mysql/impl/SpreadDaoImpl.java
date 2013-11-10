@@ -2,6 +2,8 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.SpreadDao;
+import com.agrologic.app.dao.mappers.RowMappers;
+import com.agrologic.app.model.Gas;
 import com.agrologic.app.model.Spread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +15,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SpreadDaoImpl implements SpreadDao {
     protected final DaoFactory dao;
@@ -28,151 +32,52 @@ public class SpreadDaoImpl implements SpreadDao {
         this.dao = dao;
     }
 
-    private Spread makeSpread(ResultSet rs) throws SQLException {
-        Spread spread = new Spread();
-        spread.setId(rs.getLong("ID"));
-        spread.setFlockId(rs.getLong("FlockID"));
-        spread.setAmount(rs.getInt("Amount"));
-        spread.setDate(rs.getString("Date"));
-        spread.setNumberAccount(rs.getInt("NumberAccount"));
-        spread.setPrice(rs.getFloat("Price"));
-        spread.setTotal(rs.getFloat("Total"));
-        return spread;
-    }
-
-    private List<Spread> makeSpreadList(ResultSet rs) throws SQLException {
-        List<Spread> spreadList = new ArrayList<Spread>();
-
-        while (rs.next()) {
-            spreadList.add(makeSpread(rs));
-        }
-
-        return spreadList;
-    }
-
     @Override
     public void insert(Spread spread) throws SQLException {
-        String sqlQuery = "INSERT INTO SPREAD (FLOCKID, AMOUNT, DATE, NUMBERACCOUNT, PRICE, TOTAL) "
-                + "VALUES (?,?,?,?,?,?) ";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, spread.getFlockId());
-            prepstmt.setInt(2, spread.getAmount());
-            prepstmt.setString(3, spread.getDate());
-            prepstmt.setInt(4, spread.getNumberAccount());
-            prepstmt.setFloat(5, spread.getPrice());
-            prepstmt.setFloat(6, spread.getTotal());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Insert Spread To The DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Inserting spread with type [{}]", spread.getFlockId());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("FlockID", spread.getFlockId());
+        valuesToInsert.put("Amount", spread.getAmount());
+        valuesToInsert.put("Date", spread.getDate());
+        valuesToInsert.put("NumberAccount", spread.getNumberAccount());
+        valuesToInsert.put("Price", spread.getPrice());
+        valuesToInsert.put("Total", spread.getTotal());
+        jdbcInsert.execute(valuesToInsert);
     }
 
     @Override
     public void remove(Long id) throws SQLException {
-        String sqlQuery = "delete from spread where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Delete Controller From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Remove spread with id [{}]", id);
+        String sql = "delete from spread where ID=?";
+        jdbcTemplate.update(sql, id);
     }
 
     @Override
     public Spread getById(Long id) throws SQLException {
-        String sqlQuery = "select * from spread where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return makeSpread(rs);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Spread " + id + " From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        logger.debug("Get spread with id [{}]", id);
+        String sql = "select * from spread where ID=?";
+        List<Spread> gasList = jdbcTemplate.query(sql, new Object[]{id}, RowMappers.spread());
+        if (gasList.isEmpty()) {
+            return null;
         }
+        return gasList.get(0);
     }
 
     @Override
     public List<Spread> getAllByFlockId(Long flockId) throws SQLException {
-        String sqlQuery = "select * from spread where FlockID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, flockId);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            return makeSpreadList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve All Spread of Flock " + flockId + " From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Get all spread data with flock id {} ", flockId);
+        String sql = "select * from spread where FlockID=?";
+        return jdbcTemplate.query(sql,new Object[]{flockId},  RowMappers.spread());
     }
 
     @Override
     public String getCurrencyById(Long id) throws SQLException {
-        String sqlQuery = "select * from currency where ID=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, id);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getString("Symbol");
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Retrieve Spread " + id + " From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
+        logger.debug("Get currency ");
+        String sql = "select * from currency where ID=?";
+        List<String> stringList = jdbcTemplate.queryForList(sql, new Object[]{id}, String.class);
+        if (stringList.isEmpty()) {
+            return null;
         }
+        return stringList.get(0);
     }
 }
