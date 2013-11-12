@@ -5,16 +5,16 @@ import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.gui.rxtx.graph.AbstractGraph;
-import com.agrologic.app.gui.rxtx.graph.Graph24FWI;
-import com.agrologic.app.gui.rxtx.graph.Graph24IOH;
-import com.agrologic.app.gui.rxtx.graph.GraphType;
+import com.agrologic.app.gui.rxtx.graph.*;
 import com.agrologic.app.i18n.LocaleManager;
+import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
 import org.jfree.chart.ChartPanel;
 
 import javax.swing.*;
+import javax.swing.plaf.DimensionUIResource;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class Graphs24HourPanel extends JPanel {
 
     private int width = 800;
-    private int height = 600;
+    private int height = 550;
     private long currControllerId;
     private ControllerDao controllerDao;
     private DataDao dataDao;
@@ -61,27 +61,36 @@ public class Graphs24HourPanel extends JPanel {
         } catch (SQLException ex) {
             Logger.getLogger(Graphs24HourPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        setSize(width, (height+10) * 2);
     }
 
     public void createGraph(Long controllerId) throws SQLException {
         currControllerId = controllerId;
         String values = controllerDao.getControllerGraph(controllerId);
+        Controller controller = controllerDao.getById(controllerId);
         Data setClock = dataDao.getSetClockByController(controllerId);
-        if (values != null && values.length() >= AbstractGraph.LENGHT) {
+        if (controller.getName().contains("616")) {
             AbstractGraph graph;
-
             Locale locale = getCurrentLocale();
-            if (setClock == null || setClock.getValue() == null) {
-                graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
-                createAndAddChartPanel(graph);
-                graph = new Graph24FWI(GraphType.IN_FEED_WATER, values, Long.valueOf("0"), locale);
-                createAndAddChartPanel(graph);
-            } else {
-                long value = DataFormat.convertToTimeFormat(setClock.getValue());
-                graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, values, value, locale);
-                createAndAddChartPanel(graph);
-                graph = new Graph24FWI(GraphType.IN_FEED_WATER, values, value, locale);
-                createAndAddChartPanel(graph);
+            graph = new Graph24InputTemp(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
+            createAndAddChartPanel(graph);
+        } else {
+            if (values != null && values.length() >= AbstractGraph.LENGHT) {
+                AbstractGraph graph;
+                Locale locale = getCurrentLocale();
+                if (setClock == null || setClock.getValue() == null) {
+                    graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
+                    createAndAddChartPanel(graph);
+                    graph = new Graph24FWI(GraphType.IN_FEED_WATER, values, Long.valueOf("0"), locale);
+                    createAndAddChartPanel(graph);
+                } else {
+                    long value = DataFormat.convertToTimeFormat(setClock.getValue());
+                    graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, values, value, locale);
+                    createAndAddChartPanel(graph);
+                    graph = new Graph24FWI(GraphType.IN_FEED_WATER, values, value, locale);
+                    createAndAddChartPanel(graph);
+                }
             }
         }
     }
@@ -99,8 +108,8 @@ public class Graphs24HourPanel extends JPanel {
      * @param graph the created graph
      */
     private void createAndAddChartPanel(AbstractGraph graph) {
-        ChartPanel chartpanel = new ChartPanel(graph.createChart());
-        chartpanel.setSize(width, height);
+        ChartPanel chartpanel = new  ChartPanel(graph.createChart(), width, height, width, height, width, height,
+                false, true, true, true, true, true);
         chartpanel.setVisible(true);
         add(chartpanel);
         chartPanels.add(chartpanel);

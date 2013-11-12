@@ -127,7 +127,10 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
             if (screen.getTitle().equals("Graphs")) {
                 logger.info("Initialization screen with graphs {} ", screen);
                 screenPanel = new Graphs24HourPanel(controller.getId());
-                screenPanel.setPreferredSize(new Dimension(screenPanel.getWidth(), screenPanel.getHeight()));
+//                screenPanel.setPreferredSize(new Dimension(screenPanel.getWidth(), screenPanel.getHeight()));
+                int w = screenPanel.getWidth();
+                int h = screenPanel.getHeight();
+                screenPanel.setPreferredSize(new Dimension(w, h));
                 addScreenPanelToTabsPane(screen, screenPanel);
             } else {
                 logger.info("Initialization screen without graphs {} ", screen);
@@ -226,16 +229,16 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
     /**
      * Create ListIterator with screens that used in second screen panel
      *
-     * @return listIter that referenced on list of screen objects for second screen panel.
+     * @return listIterator that referenced on list of screen objects for second screen panel.
      */
     public ListIterator<Screen> removeUnusedScreen() {
-        ListIterator<Screen> listIter = controller.getProgram().getScreens().listIterator();
-        while (listIter.hasNext()) {
-            if (skipScreen(listIter.next())) {
-                listIter.remove();
+        ListIterator<Screen> listIterator = controller.getProgram().getScreens().listIterator();
+        while (listIterator.hasNext()) {
+            if (skipScreen(listIterator.next())) {
+                listIterator.remove();
             }
         }
-        return listIter;
+        return listIterator;
     }
 
     public void setMainScreenPanel(MainScreenPanel mainScreenPanel) {
