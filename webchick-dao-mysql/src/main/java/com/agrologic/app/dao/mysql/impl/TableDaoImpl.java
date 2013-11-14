@@ -1,6 +1,5 @@
 package com.agrologic.app.dao.mysql.impl;
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.TableDao;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.Table;
@@ -13,7 +12,6 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
@@ -108,10 +106,10 @@ public class TableDaoImpl implements TableDao {
 
     @Override
     public void insertTableTranslation(Long tableId, Long langId, String translation) throws SQLException {
-        logger.debug("Insert translate for table with id [{}] in language id [{}] " , new Object[] { tableId, langId});
+        logger.debug("Insert translate for table with id [{}] in language id [{}] ", new Object[]{tableId, langId});
         String sql =
                 "insert into tablebylanguage values (?,?,?) on duplicate key update UnicodeTitle=values(UnicodeTitle)";
-        jdbcTemplate.update(sql, new Object[]{tableId,langId,translation});
+        jdbcTemplate.update(sql, new Object[]{tableId, langId, translation});
     }
 
     @Override
