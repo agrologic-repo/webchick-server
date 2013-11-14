@@ -61,7 +61,7 @@ public class TableDaoImpl implements TableDao {
     }
 
     @Override
-    public void insertTableToScreen(Table table) throws SQLException {
+    public void copyTable(Table table) throws SQLException {
         logger.debug("Inserting table with title [{}]", table.getTitle());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         valuesToInsert.put("tableid", table.getId());

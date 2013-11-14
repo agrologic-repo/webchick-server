@@ -61,9 +61,9 @@ public class AddSelectedScreenFormServlet extends AbstractServlet {
 
                         for (Table t : screenTables) {
                             t.setProgramId(programId);
-                            tableDao.insert(t);
-                            List<Data> tableData = (List<Data>) dataDao.getTableDataList(selectedProgramId, selectedScreenId,
-                                    t.getId(), null);
+                            tableDao.copyTable(t);
+                            List<Data> tableData = (List<Data>) dataDao.getTableDataList(selectedProgramId,
+                                    selectedScreenId, t.getId(), null);
 
                             for (Data d : tableData) {
                                 dataDao.insertDataToTable(programId, screen.getId(), t.getId(), d.getId(), "yes",
