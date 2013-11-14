@@ -7,7 +7,7 @@
     <parent>
         <artifactId>webchick-server</artifactId>
         <groupId>com.agrologic</groupId>
-        <version>6.6.1-SNAPSHOT</version>
+        <version>6.6.2-SNAPSHOT</version>
     </parent>
 
     <packaging>jar</packaging>
@@ -18,7 +18,7 @@
             <!--<configuration>-->
             <!--<archive>-->
             <!--<manifest>-->
-            <!--<mainClass>com.agrologic.app.gui.rxtx.WCSLWindow</mainClass>-->
+            <!--<mainClass>com.agrologic.app.gui.rxtx.Applicationn</mainClass>-->
             <!--</manifest>-->
             <!--</archive>-->
             <!--<descriptorRefs>-->
@@ -40,7 +40,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.agrologic.app.gui.rxtx.WCSLWindow</mainClass>
+                                    <mainClass>com.agrologic.app.gui.rxtx.ApplicationLocal</mainClass>
                                 </transformer>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
