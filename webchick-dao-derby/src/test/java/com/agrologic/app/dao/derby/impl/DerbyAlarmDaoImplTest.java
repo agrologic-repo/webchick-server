@@ -2,7 +2,6 @@ package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.model.Alarm;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,7 +41,10 @@ public class DerbyAlarmDaoImplTest extends AbstractDaoTest {
     @Test
     public void createTableImplementsWithAOP() throws SQLException {
         try {
-            ((CreatebleDao) alarmDao).createTable();
+            if(!((CreatebleDao) alarmDao).tableExist()) {
+                ((CreatebleDao) alarmDao).createTable();
+            }
+
             boolean result = ((CreatebleDao) alarmDao).tableExist();
             assertEquals(true, result);
         } catch (SQLException e) {

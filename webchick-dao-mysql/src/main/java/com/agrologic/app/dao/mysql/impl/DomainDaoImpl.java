@@ -15,16 +15,15 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DomainDaoImpl implements DomainDao {
-    protected final DaoFactory dao;
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
-    private final Logger logger = LoggerFactory.getLogger(DomainDaoImpl.class);
 
-    public DomainDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    protected final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
+    protected final Logger logger = LoggerFactory.getLogger(DomainDaoImpl.class);
+
+    public DomainDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("domains");
-        this.dao = dao;
     }
 
     @Override
@@ -45,7 +44,6 @@ public class DomainDaoImpl implements DomainDao {
 
     @Override
     public String getCompany(String domain) throws SQLException {
-
         logger.debug("Get company ");
         String sqlQuery = "select company from domains where domain=? ";
         List<String> companies = jdbcTemplate.queryForList(sqlQuery, new Object[]{domain}, String.class);

@@ -20,18 +20,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+// TODO : have to fix HistorySettingDao
 public class HistorySettingDaoImpl implements HistorySettingDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(HistorySettingDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(HistorySettingDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public HistorySettingDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public HistorySettingDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("historysetting");
-        this.dao = dao;
     }
 
     private HistorySetting makeHistorySetting(final ResultSet rs) throws SQLException {
@@ -55,79 +54,85 @@ public class HistorySettingDaoImpl implements HistorySettingDao {
     @Override
     public List<HistorySetting> getHistorySetting(Long programId) throws SQLException {
         String sqlQuery = "select * from historysetting where programId=?";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, programId);
-
-            ResultSet rs = prepstmt.executeQuery();
-
-            return makeHistorySettingList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Language ID From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        return null;
+        //jdbcTemplate.execute(sqlQuery);
+//        PreparedStatement prepstmt = null;
+//        Connection con = null;
+//
+//        try {
+//            con = dao.getConnection();
+//            prepstmt = con.prepareStatement(sqlQuery);
+//            prepstmt.setLong(1, programId);
+//
+//            ResultSet rs = prepstmt.executeQuery();
+//
+//            return makeHistorySettingList(rs);
+//        } catch (SQLException e) {
+//            dao.printSQLException(e);
+//
+//            throw new SQLException("Cannot Retrieve Language ID From DataBase");
+//        } finally {
+//            prepstmt.close();
+//            dao.closeConnection(con);
+//        }
     }
 
     @Override
     public void saveHistorySetting(List<HistorySetting> hsl) throws SQLException {
         String sqlQuery = "insert into historysetting" + " (ProgramID,DataID,Checked)"
                 + " values (?,?,?) on duplicate key update Checked=values(Checked)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            con.setAutoCommit(false);
-            prepstmt = con.prepareStatement(sqlQuery);
-
-            for (HistorySetting hs : hsl) {
-                prepstmt.setLong(1, hs.getProgramId());
-                prepstmt.setLong(2, hs.getDataId());
-                prepstmt.setString(3, hs.getChecked());
-                prepstmt.addBatch();
-            }
-
-            prepstmt.executeBatch();
-            con.commit();
-            con.setAutoCommit(true);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Save Screens In DataBase", e);
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.execute(sqlQuery);
+//        PreparedStatement prepstmt = null;
+//        Connection con = null;
+//
+//        try {
+//            con = dao.getConnection();
+//            con.setAutoCommit(false);
+//            prepstmt = con.prepareStatement(sqlQuery);
+//
+//            for (HistorySetting hs : hsl) {
+//                prepstmt.setLong(1, hs.getProgramId());
+//                prepstmt.setLong(2, hs.getDataId());
+//                prepstmt.setString(3, hs.getChecked());
+//                prepstmt.addBatch();
+//            }
+//
+//            prepstmt.executeBatch();
+//            con.commit();
+//            con.setAutoCommit(true);
+//        } catch (SQLException e) {
+//            dao.printSQLException(e);
+//
+//            throw new SQLException("Cannot Save Screens In DataBase", e);
+//        } finally {
+//            prepstmt.close();
+//            dao.closeConnection(con);
+//        }
     }
 
     @Override
     public List<HistorySetting> getSelectedHistorySetting(Long programId) throws SQLException {
+
         String sqlQuery = "select * from historysetting where programId=? and checked like '%true%'";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
+        return null;
 
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, programId);
-            ResultSet rs = prepstmt.executeQuery();
-            return makeHistorySettingList(rs);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Retrieve Language ID From DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+//        PreparedStatement prepstmt = null;
+//        Connection con = null;
+//
+//        try {
+//            con = dao.getConnection();
+//            prepstmt = con.prepareStatement(sqlQuery);
+//            prepstmt.setLong(1, programId);
+//            ResultSet rs = prepstmt.executeQuery();
+//            return makeHistorySettingList(rs);
+//        } catch (SQLException e) {
+//            dao.printSQLException(e);
+//
+//            throw new SQLException("Cannot Retrieve Language ID From DataBase");
+//        } finally {
+//            prepstmt.close();
+//            dao.closeConnection(con);
+//        }
     }
 }
 

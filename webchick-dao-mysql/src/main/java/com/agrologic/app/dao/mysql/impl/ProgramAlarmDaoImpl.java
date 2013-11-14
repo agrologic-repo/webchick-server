@@ -20,19 +20,18 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class ProgramAlarmDaoImpl implements ProgramAlarmDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(ProgramAlarmDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(ProgramAlarmDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
     /**
      * {@inheritDoc}
      */
-    public ProgramAlarmDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public ProgramAlarmDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("programalrams");
-        this.dao = dao;
     }
 
     /**

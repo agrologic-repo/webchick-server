@@ -1,41 +1,33 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.FeedDaoImpl;
-import com.agrologic.app.model.Feed;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.sql.*;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DerbyFeedDaoImpl extends FeedDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-
-    public DerbyFeedDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
-        super(jdbcTemplate, daoFactory);
+    public DerbyFeedDaoImpl(JdbcTemplate jdbcTemplate) {
+        super(jdbcTemplate);
     }
 
 
     @Override
     public boolean tableExist() throws SQLException {
-        Connection con = null;
-
         try {
-            con = dao.getConnection();
-
-            DatabaseMetaData dbmd = con.getMetaData();
+            DatabaseMetaData dbmd = jdbcTemplate.getDataSource().getConnection().getMetaData();
             ResultSet rs = dbmd.getTables(null, "APP", "FEED", null);
 
             if (!rs.next()) {
                 return false;
             }
-
         } catch (SQLException e) {
             throw new SQLException("Cannot get table FEED from DataBase", e);
-        } finally {
-            dao.closeConnection(con);
         }
 
         return true;
@@ -43,7 +35,7 @@ public class DerbyFeedDaoImpl extends FeedDaoImpl implements CreatebleDao, Dropa
 
     @Override
     public void createTable() throws SQLException {
-        String sqlQuery = "CREATE TABLE FEED "
+        String sql = "CREATE TABLE FEED "
                 + "( "
                 + "ID INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) , "
                 + "FLOCKID INT NOT NULL , "
@@ -53,85 +45,45 @@ public class DerbyFeedDaoImpl extends FeedDaoImpl implements CreatebleDao, Dropa
                 + "ACCOUNTNUMBER INT ,"
                 + "TOTAL DOUBLE"
                 + ")";
-
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (Exception e) {
-            throw new SQLException("Cannot create new FEED Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.execute(sql);
     }
 
     @Override
     public void dropTable() throws SQLException {
-        String sqlQueryFlock = "DROP TABLE APP.FEED ";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.executeUpdate(sqlQueryFlock);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot drop table feed ", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        String sql = "DROP TABLE APP.FEED ";
+        jdbcTemplate.execute(sql);
     }
 
-    @Override
-    public void insert(Feed feed) throws SQLException {
-        String sqlQuery = "INSERT INTO FEED ( FLOCKID, TYPE, AMOUNT, DATE, ACCOUNTNUMBER, TOTAL ) "
-                + " VALUES (?,?,?,?,?,?) ";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setLong(1, feed.getFlockId());
-            prepstmt.setLong(2, feed.getType());
-            prepstmt.setInt(3, feed.getAmount());
-            prepstmt.setString(4, feed.getDate());
-            prepstmt.setFloat(5, feed.getNumberAccount());
-            prepstmt.setFloat(6, feed.getTotal());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot Insert Feed To The DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
+//    @Override
+//    public void insert(Feed feed) throws SQLException {
+//        String sql = "INSERT INTO FEED ( FLOCKID, TYPE, AMOUNT, DATE, ACCOUNTNUMBER, TOTAL ) "
+//                + " VALUES (?,?,?,?,?,?) ";
+//        PreparedStatement prepstmt = null;
+//        Connection con = null;
+//
+//        try {
+//            con = dao.getConnection();
+//            prepstmt = con.prepareStatement(sql);
+//            prepstmt.setLong(1, feed.getFlockId());
+//            prepstmt.setLong(2, feed.getType());
+//            prepstmt.setInt(3, feed.getAmount());
+//            prepstmt.setString(4, feed.getDate());
+//            prepstmt.setFloat(5, feed.getNumberAccount());
+//            prepstmt.setFloat(6, feed.getTotal());
+//            prepstmt.executeUpdate();
+//        } catch (SQLException e) {
+//            dao.printSQLException(e);
+//            throw new SQLException("Cannot Insert Feed To The DataBase");
+//        } finally {
+//            prepstmt.close();
+//            dao.closeConnection(con);
+//        }
+//    }
 
     @Override
     public void deleteFromTable() throws SQLException {
-        String sqlQueryFlock = "DELETE  FROM APP.FEED ";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.executeUpdate(sqlQueryFlock);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot drop table feed ", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
-
+        String sql = "DELETE  FROM APP.FEED ";
+        jdbcTemplate.execute(sql);
     }
 }
 

@@ -20,16 +20,15 @@ import java.util.List;
 import java.util.Map;
 
 public class TransactionDaoImpl implements TransactionDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(TransactionDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(TransactionDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public TransactionDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public TransactionDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("transaction");
-        this.dao = dao;
     }
 
     @Override

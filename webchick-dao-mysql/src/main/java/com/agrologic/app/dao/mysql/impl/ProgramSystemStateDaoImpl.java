@@ -23,19 +23,18 @@ import java.util.*;
  * {@inheritDoc}
  */
 public class ProgramSystemStateDaoImpl implements ProgramSystemStateDao {
-    private final Logger logger = LoggerFactory.getLogger(ProgramSystemStateDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+    protected final Logger logger = LoggerFactory.getLogger(ProgramSystemStateDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     protected DaoFactory dao;
 
     /**
      * {@inheritDoc}
      */
-    public ProgramSystemStateDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public ProgramSystemStateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.setTableName("programsysstates");
-        this.dao = dao;
     }
 
     @Override

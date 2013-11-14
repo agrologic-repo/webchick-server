@@ -20,16 +20,15 @@ import java.util.List;
 import java.util.Map;
 
 public class FuelDaoImpl implements FuelDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(FuelDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(FuelDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public FuelDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public FuelDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("fuel");
-        this.dao = dao;
     }
 
     @Override

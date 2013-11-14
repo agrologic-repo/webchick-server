@@ -17,16 +17,15 @@ import java.util.List;
 import java.util.Map;
 
 public class ProgramDaoImpl implements ProgramDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(ProgramDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(ProgramDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public ProgramDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public ProgramDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("programs");
-        this.dao = dao;
     }
 
     @Override

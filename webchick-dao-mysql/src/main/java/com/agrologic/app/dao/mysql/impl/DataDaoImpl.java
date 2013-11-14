@@ -18,18 +18,17 @@ import java.util.*;
 
 public class DataDaoImpl implements DataDao {
 
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(DataDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(DataDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
 
-    public DataDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public DataDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("datatable");
 
-        this.dao = dao;
     }
 
     /**
@@ -282,17 +281,10 @@ public class DataDaoImpl implements DataDao {
      */
     @Override
     public Data getChangedDataValue(Long controllerId) throws SQLException {
-        String sql = "select * from datatable as d inner join "
-                + "(select DataID, value from newcontrollerdata where ControllerID=?) "
+        String sql = "select * from datatable as d inner join " +
+                "(select DataID, value from newcontrollerdata where ControllerID=?) "
                 + "as cd on d.DataID=cd.DataID";
-        List<Data> res = null;
-        try {
-            logger.info("getChangedDataValue is about to execute the following query:[" + sql + "]");
-            res = jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
-        } catch (EmptyResultDataAccessException e) {
-            logger.error("getChangedDataValue failed to execute the query due to exception! Return a null ", e);
-            logger.info("getChangedDataValue END");
-        }
+        List<Data> res = jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
         if (res.isEmpty()) {
             return null;
         }
@@ -409,16 +401,7 @@ public class DataDaoImpl implements DataDao {
                 + "order by datatable.dataid ";
         return jdbcTemplate.query(sql, RowMappers.data());
     }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Collection<Data> getControllerData(Long controllerId) throws SQLException {
-        String sql = "select * from controllerdata" +
-                " inner join datatable on datatable.dataid=controllerdata.dataid" +
-                " where controllerdata.ControllerID=? ";
-        return jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
-    }
+
     /**
      * {@inheritDoc}
      */
@@ -427,6 +410,24 @@ public class DataDaoImpl implements DataDao {
         String sql = "select * from datatable as dt inner join controllerdata "
                 + "as cd on dt.dataid=cd.dataid and cd.controllerid=?";
         return jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<Long,Long> getUpdatedControllerDataValues(Long controllerId) throws SQLException {
+        String sql = "select * from controllerdata where controllerid=?";
+        List<Map<String,Object>> results = jdbcTemplate.queryForList(sql, new Object[]{controllerId});
+        Map<Long,Long> resultMap = new HashMap<Long, Long>();
+        for (Map<String,Object> m : results){
+            Object id = m.get("DATAID");
+            Object val = m.get("VALUE");
+            Long dataId = Long.parseLong(id.toString());
+            Long value  = Long.parseLong(val.toString());
+            resultMap.put(dataId, value);
+        }
+        return resultMap;
     }
     /**
      * {@inheritDoc}

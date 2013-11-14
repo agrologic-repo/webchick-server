@@ -15,16 +15,15 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class FlockDaoImpl implements FlockDao {
-    protected final DaoFactory dao;
+
     protected final Logger logger = LoggerFactory.getLogger(FlockDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
     protected final SimpleJdbcInsert jdbcInsert;
 
-    public FlockDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public FlockDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("flocks");
-        this.dao = dao;
     }
 
     @Override

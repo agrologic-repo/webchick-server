@@ -111,6 +111,10 @@ public class RowMappers {
         return new TransactionMapper();
     }
 
+    public static ActionSetMapper actionSet() {
+        return new ActionSetMapper();
+    }
+
     private static class LanguageMapper implements RowMapper<Language> {
 
         @Override
@@ -827,6 +831,52 @@ public class RowMappers {
             destrib.setHandSum(rs.getLong("handsum"));
             destrib.setTotal(rs.getLong("total"));
             return destrib;
+        }
+    }
+
+    private static class ActionSetMapper implements RowMapper<ActionSet> {
+
+        @Override
+        public ActionSet mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ActionSet actionSet = new ActionSet();
+            actionSet.setValueId(rs.getLong("ValueID"));
+            actionSet.setDataId(rs.getLong("DataID"));
+            actionSet.setLabel(rs.getString("Label"));
+
+            try {
+                actionSet.setUnicodeText(rs.getString("UnicodeText"));
+            } catch (SQLException e) {
+                actionSet.setUnicodeText(rs.getString("Label"));
+            }
+
+            try {
+                actionSet.setScreenId(rs.getLong("ScreenId"));
+            } catch (SQLException e) {
+
+                // ignore
+            }
+
+            try {
+                actionSet.setProgramId(rs.getLong("ProgramId"));
+            } catch (SQLException e) {
+
+                // ignore
+            }
+
+            try {
+                actionSet.setPosition(rs.getInt("Position"));
+            } catch (SQLException e) {
+
+                // ignore
+            }
+
+            try {
+                actionSet.setDisplayOnPage(rs.getString("DisplayOnPage"));
+            } catch (SQLException e) {
+
+                // ignore
+            }
+            return actionSet;
         }
     }
 }

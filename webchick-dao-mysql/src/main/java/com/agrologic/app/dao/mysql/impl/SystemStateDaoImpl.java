@@ -15,19 +15,18 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class SystemStateDaoImpl implements SystemStateDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(SystemStateDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(SystemStateDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     private final SimpleJdbcInsert jdbcInsertTranslate;
 
-    public SystemStateDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public SystemStateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("systemstatenames");
         this.jdbcInsertTranslate = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsertTranslate.setTableName("systemstatebylanguage");
-        this.dao = dao;
     }
 
     /**

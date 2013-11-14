@@ -20,16 +20,15 @@ import java.util.List;
 import java.util.Map;
 
 public class MedicineDaoImpl implements MedicineDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(MedicineDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(MedicineDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public MedicineDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public MedicineDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("medicine");
-        this.dao = dao;
     }
 
     @Override

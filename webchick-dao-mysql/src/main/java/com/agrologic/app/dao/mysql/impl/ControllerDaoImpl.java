@@ -26,16 +26,14 @@ import java.util.*;
  * @author Valery Manakhimov
  */
 public class ControllerDaoImpl implements ControllerDao {
-    protected final DaoFactory dao;
     protected final Logger logger = LoggerFactory.getLogger(ControllerDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
     protected final SimpleJdbcInsert jdbcInsert;
 
-    public ControllerDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public ControllerDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("controllers");
-        this.dao = dao;
     }
 
     /**

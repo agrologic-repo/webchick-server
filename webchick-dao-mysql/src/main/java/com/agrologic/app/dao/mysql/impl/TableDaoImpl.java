@@ -19,16 +19,15 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class TableDaoImpl implements TableDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(TableDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(TableDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public TableDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public TableDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("screentable");
-        this.dao = dao;
     }
 
     @Override
@@ -60,6 +59,20 @@ public class TableDaoImpl implements TableDao {
         jdbcTemplate.update("delete from screentable where TableID=? and ScreenID=? and ProgramID=? ",
                 new Object[]{tableId, screenId, programId});
     }
+
+    @Override
+    public void insertTableToScreen(Table table) throws SQLException {
+        logger.debug("Inserting table with title [{}]", table.getTitle());
+        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("tableid", table.getId());
+        valuesToInsert.put("screenid", table.getScreenId());
+        valuesToInsert.put("programid", table.getProgramId());
+        valuesToInsert.put("title", table.getTitle());
+        valuesToInsert.put("displayonscreen", table.getDisplay());
+        valuesToInsert.put("position", table.getPosition());
+        jdbcInsert.execute(valuesToInsert);
+    }
+
 
     public void insert(final Collection<Table> tables) throws SQLException {
         logger.debug("Insert collection of tables ");

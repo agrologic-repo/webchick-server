@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import java.util.Collection;
 
 public abstract class AbstractDaoImpl {
-    protected final DaoFactory dao;
+
     protected final Logger logger;
     protected final JdbcTemplate jdbcTemplate;
     protected final SimpleJdbcInsert jdbcInsert;
@@ -18,7 +18,6 @@ public abstract class AbstractDaoImpl {
         this.logger = LoggerFactory.getLogger(clazz);
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        this.dao = dao;
     }
 
     public abstract <T> void insert(T t);

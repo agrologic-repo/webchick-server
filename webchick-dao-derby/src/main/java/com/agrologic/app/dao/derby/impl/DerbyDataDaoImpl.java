@@ -1,28 +1,25 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.DataDaoImpl;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.sql.*;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DerbyDataDaoImpl extends DataDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyDataDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
-        super(jdbcTemplate, daoFactory);
+    public DerbyDataDaoImpl(JdbcTemplate jdbcTemplate) {
+        super(jdbcTemplate);
     }
 
     @Override
     public boolean tableExist() throws SQLException {
-        Connection con = null;
-
         try {
-            con = dao.getConnection();
-
-            DatabaseMetaData dbmd = con.getMetaData();
+            DatabaseMetaData dbmd = jdbcTemplate.getDataSource().getConnection().getMetaData();
             ResultSet rs = dbmd.getTables(null, "APP", "DATATABLE", null);
 
             if (!rs.next()) {
@@ -30,8 +27,6 @@ public class DerbyDataDaoImpl extends DataDaoImpl implements CreatebleDao, Dropa
             }
         } catch (SQLException e) {
             throw new SQLException("Cannot get table DATATABLE from DataBase", e);
-        } finally {
-            dao.closeConnection(con);
         }
 
         return true;
@@ -46,119 +41,51 @@ public class DerbyDataDaoImpl extends DataDaoImpl implements CreatebleDao, Dropa
     }
 
     public void createDataTable() throws SQLException {
-        String sqlQuery = "CREATE TABLE DATATABLE " + "(DATAID INT NOT NULL , " + "TYPE INT NOT NULL , "
+        logger.debug("Create DATATABLE table");
+        String sql = "CREATE TABLE DATATABLE " + "(DATAID INT NOT NULL , " + "TYPE INT NOT NULL , "
                 + "STATUS SMALLINT NOT NULL, " + "READONLY SMALLINT NOT NULL, "
                 + "TITLE VARCHAR(100) NOT NULL, " + "FORMAT INT NOT NULL, " + "LABEL VARCHAR(100) NOT NULL, "
                 + "ISRELAY SMALLINT NOT NULL, " + "ISSPECIAL INT NOT NULL, " + "PRIMARY KEY (DATAID))";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (Exception e) {
-            throw new SQLException("Cannot create new DATATABLE Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.execute(sql);
     }
 
     public void createTableData() throws SQLException {
-        String sqlQuery = "CREATE TABLE TABLEDATA " + "(DATAID INT NOT NULL , " + "TABLEID INT NOT NULL , "
+        logger.debug("Create TABLEDATA table");
+        String sql = "CREATE TABLE TABLEDATA " + "(DATAID INT NOT NULL , " + "TABLEID INT NOT NULL , "
                 + "SCREENID INT NOT NULL, " + "PROGRAMID INT NOT NULL, "
                 + "DISPLAYONTABLE VARCHAR(10) NOT NULL, " + "POSITION INT NOT NULL, "
                 + "PRIMARY KEY (DATAID, TABLEID,SCREENID, PROGRAMID))";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (Exception e) {
-            throw new SQLException("Cannot create new DATATABLE Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.execute(sql);
     }
 
     public void createTableDataByLang() throws SQLException {
-        String sqlQuery = "CREATE TABLE DATABYLANGUAGE " + "(DATAID INT NOT NULL , " + " LANGID INT NOT NULL , "
+        logger.debug("Create DATABYLANGUAGE table");
+        String sql = "CREATE TABLE DATABYLANGUAGE " + "(DATAID INT NOT NULL , " + " LANGID INT NOT NULL , "
                 + "UNICODELABEL VARCHAR(500) NOT NULL, "
                 + "CONSTRAINT DTBYLANG_PK PRIMARY KEY (DATAID, LANGID))";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (Exception e) {
-            throw new SQLException("Cannot create new DATABYLANGUAGE Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.execute(sql);
     }
 
     public void createSpecialDataLabel() throws SQLException {
-        String sqlQuery = "CREATE TABLE SPECIALDATALABELS " + "(DATAID INT NOT NULL , " + "PROGRAMID INT NOT NULL , "
+        logger.debug("Create SPECIALDATALABELS table");
+        String sql = "CREATE TABLE SPECIALDATALABELS " + "(DATAID INT NOT NULL , " + "PROGRAMID INT NOT NULL , "
                 + "LANGID INT NOT NULL , " + "SPECIALLABEL VARCHAR(500) NOT NULL, "
                 + "PRIMARY KEY (DATAID,PROGRAMID,LANGID))";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (Exception e) {
-            throw new SQLException("Cannot create new DATABYLANGUAGE Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.execute(sql);
     }
 
     @Override
     public void dropTable() throws SQLException {
-        String sqlQueryFlock = "DROP TABLE APP.DATATABLE ";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.executeUpdate(sqlQueryFlock);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot drop table datatable ", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Drop DATATABLE table");
+        String sql = "DROP TABLE APP.DATATABLE ";
+        jdbcTemplate.execute(sql);
     }
 
     @Override
     public void deleteFromTable() throws SQLException {
-        String sqlQueryFlock = "DELETE  FROM APP.DATATABLE ";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.executeUpdate(sqlQueryFlock);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot drop table datatable ", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Drop DATATABLE table");
+        String sql = "DELETE  FROM APP.DATATABLE ";
+        jdbcTemplate.execute(sql);
     }
 }
 

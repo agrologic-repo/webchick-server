@@ -28,17 +28,14 @@ import java.util.Map;
  */
 
 public class CellinkDaoImpl implements CellinkDao {
-
-    protected final DaoFactory dao;
     protected final Logger logger = LoggerFactory.getLogger(CellinkDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
     protected final SimpleJdbcInsert jdbcInsert;
 
-    public CellinkDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public CellinkDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("cellinks");
-        this.dao = dao;
     }
 
     /**
@@ -51,12 +48,24 @@ public class CellinkDaoImpl implements CellinkDao {
         if (cellink.getId() != null) {
             valuesToInsert.put("cellinkid", cellink.getId());
         }
+//        valuesToInsert.put("name", cellink.getName());
+//        valuesToInsert.put("password", cellink.getPassword());
+//        valuesToInsert.put("userid", cellink.getUserId());
+//        valuesToInsert.put("sim", cellink.getSimNumber());
+//        valuesToInsert.put("type", cellink.getType());
+//        valuesToInsert.put("version", cellink.getVersion());
+//        valuesToInsert.put("state", cellink.getState());
+//        valuesToInsert.put("screenid", cellink.getScreenId());
+//        valuesToInsert.put("actual", cellink.isActual());
+//        valuesToInsert.put("cellinkid", cellink.getId());
+
         valuesToInsert.put("name", cellink.getName());
         valuesToInsert.put("password", cellink.getPassword());
         valuesToInsert.put("userid", cellink.getUserId());
         valuesToInsert.put("sim", cellink.getSimNumber());
         valuesToInsert.put("type", cellink.getType());
         valuesToInsert.put("version", cellink.getVersion());
+        valuesToInsert.put("time", cellink.getTime());
         valuesToInsert.put("state", cellink.getState());
         valuesToInsert.put("screenid", cellink.getScreenId());
         valuesToInsert.put("actual", cellink.isActual());

@@ -20,16 +20,15 @@ import java.util.Map;
 
 public class UserDaoImpl implements UserDao {
 
-    protected final DaoFactory dao;
+
     protected final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
     protected final SimpleJdbcInsert jdbcInsert;
 
-    public UserDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public UserDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName(USER_TABLE);
-        this.dao = dao;
     }
 
     /**
@@ -85,7 +84,7 @@ public class UserDaoImpl implements UserDao {
         String sqlQuery = "select * from users where UserID=?";
         List<User> users = jdbcTemplate.query(sqlQuery, new Object[]{id}, RowMappers.user());
         if (users.isEmpty()) {
-            return null;
+            return new User();
         }
         return users.get(0);
     }

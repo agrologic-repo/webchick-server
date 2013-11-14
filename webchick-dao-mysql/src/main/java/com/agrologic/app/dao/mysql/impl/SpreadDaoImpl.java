@@ -20,16 +20,15 @@ import java.util.List;
 import java.util.Map;
 
 public class SpreadDaoImpl implements SpreadDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(SpreadDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(SpreadDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public SpreadDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public SpreadDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("SPREAD");
-        this.dao = dao;
     }
 
     @Override

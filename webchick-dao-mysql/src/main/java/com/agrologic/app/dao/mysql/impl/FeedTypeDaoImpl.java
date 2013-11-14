@@ -19,16 +19,15 @@ import java.util.List;
 import java.util.Map;
 
 public class FeedTypeDaoImpl implements FeedTypeDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(FeedTypeDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(FeedTypeDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public FeedTypeDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public FeedTypeDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("feedtypes");
-        this.dao = dao;
     }
 
     @Override

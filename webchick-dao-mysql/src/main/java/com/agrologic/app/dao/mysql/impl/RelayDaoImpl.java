@@ -15,16 +15,15 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class RelayDaoImpl implements RelayDao {
-    private final Logger logger = LoggerFactory.getLogger(RelayDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+    protected final Logger logger = LoggerFactory.getLogger(RelayDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     protected DaoFactory dao;
 
-    public RelayDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public RelayDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.setTableName("relaynames");
-        this.dao = dao;
     }
 
     /**

@@ -38,11 +38,13 @@ public class DerbyVersionDaoImpl implements VersionDao {
             try {
                 stmt.close();
             } catch (SQLException ex) {
+
             }
 
             try {
                 con.close();
             } catch (SQLException ex) {
+
             }
         }
         version = version.substring(0, version.lastIndexOf("."));

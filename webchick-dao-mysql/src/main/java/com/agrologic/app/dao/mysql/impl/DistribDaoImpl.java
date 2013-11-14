@@ -15,16 +15,15 @@ import java.util.List;
 import java.util.Map;
 
 public class DistribDaoImpl implements DistribDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(DistribDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(DistribDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public DistribDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public DistribDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("distribute");
-        this.dao = dao;
     }
 
     /**

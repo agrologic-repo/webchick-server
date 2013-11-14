@@ -6,44 +6,36 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.ControllerDaoImpl;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
+import com.google.common.collect.Lists;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class DerbyControllerDaoImpl extends ControllerDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyControllerDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
-        super(jdbcTemplate, dao);
+    public DerbyControllerDaoImpl(JdbcTemplate jdbcTemplate) {
+        super(jdbcTemplate);
     }
 
     @Override
     public boolean tableExist() throws SQLException {
-        Connection con = null;
-
         try {
-            con = dao.getConnection();
-
-            DatabaseMetaData dbmd = con.getMetaData();
+            DatabaseMetaData dbmd = jdbcTemplate.getDataSource().getConnection().getMetaData();
             ResultSet rs = dbmd.getTables(null, "APP", "CONTROLLERS", null);
 
             if (!rs.next()) {
                 return false;
             }
         } catch (SQLException e) {
-            throw new SQLException("Cannot get  table Cellink from DataBase", e);
-        } finally {
-            dao.closeConnection(con);
+            throw new SQLException("Cannot get table cellink from DataBase", e);
         }
 
         return true;
@@ -58,81 +50,37 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
     }
 
     private void createControllerTable() throws SQLException {
-        String sqlQuery = "CREATE TABLE CONTROLLERS ( " + "CONTROLLERID INT NOT NULL,  " + "CELLINKID INT NOT NULL, "
+        logger.info("create table controllers if not exist");
+        String sql = "CREATE TABLE CONTROLLERS ( " + "CONTROLLERID INT NOT NULL,  " + "CELLINKID INT NOT NULL, "
                 + "TITLE VARCHAR(200) , " + "NETNAME VARCHAR(45) , " + "CONTROLLERNAME VARCHAR(45) , "
                 + "PROGRAMID INT NOT NULL, " + "AREA INT DEFAULT 0, " + "ACTIVE SMALLINT DEFAULT 0, "
                 + "PRIMARY KEY (CONTROLLERID), " + " FOREIGN KEY (CELLINKID) REFERENCES CELLINKS(CELLINKID)) ";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (Exception e) {
-            throw new SQLException("Cannot create new Controller Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.execute(sql);
     }
 
     private void createControllerDataTable() throws SQLException {
-        String sqlQuery = "CREATE TABLE CONTROLLERDATA ( " + "DATAID INT NOT NULL," + "CONTROLLERID INT NOT NULL,"
+        logger.info("create table controllerdata if not exist");
+        String sql = "CREATE TABLE CONTROLLERDATA ( " + "DATAID INT NOT NULL," + "CONTROLLERID INT NOT NULL,"
                 + "VALUE  INT DEFAULT 0," + "PRIMARY KEY (DATAID, CONTROLLERID),"
                 + "FOREIGN KEY (DATAID) REFERENCES DATATABLE (DATAID), "
                 + "FOREIGN KEY (CONTROLLERID) REFERENCES CONTROLLERS (CONTROLLERID))";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (Exception e) {
-            throw new SQLException("Cannot create Controllerdata Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.execute(sql);
     }
 
     private void createNewControllerData() throws SQLException {
-        String sqlQuery = "CREATE TABLE NEWCONTROLLERDATA " + "(CONTROLLERID INT NOT NULL, " + "DATAID INT NOT NULL , "
+        logger.info("create table newcontrollerdata if not exist");
+        String sql = "CREATE TABLE NEWCONTROLLERDATA " + "(CONTROLLERID INT NOT NULL, " + "DATAID INT NOT NULL , "
                 + "VALUE INT NOT NULL ," + "CONSTRAINT CNTRLDTA_PK PRIMARY KEY (CONTROLLERID,DATAID))";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (Exception e) {
-            throw new SQLException("Cannot create Newcontrollerdata Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.execute(sql);
     }
 
     private void createGraphTable() throws SQLException {
-        String sqlQuery = "CREATE TABLE GRAPH24HOURS " + "(CONTROLLERID INT NOT NULL, "
+        logger.info("create table graph24hours if not exist");
+        String sql = "CREATE TABLE GRAPH24HOURS " + "(CONTROLLERID INT NOT NULL, "
                 + "DATASET  VARCHAR(5000) , "
                 + "UPDATETIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,"
                 + "CONSTRAINT CNTRGRAPH_PK PRIMARY KEY (CONTROLLERID))";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (Exception e) {
-            throw new SQLException("Cannot create new GRAPH24HOURS Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.execute(sql);
     }
 
     /**
@@ -159,40 +107,9 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
     @Override
     public void insertControllerDataValues(Long controllerId, Iterator<Map.Entry<Long, Data>> dataValues)
             throws SQLException {
-        String sqlQuery = "INSERT INTO CONTROLLERDATA (DATAID, CONTROLLERID, VALUE) VALUES(?,?,-1) ";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            con.setAutoCommit(false);
-            prepstmt = con.prepareStatement(sqlQuery);
-
-            while (dataValues.hasNext()) {
-                Map.Entry<Long, Data> entry = dataValues.next();
-                prepstmt.setLong(1, entry.getKey());
-                prepstmt.setLong(2, controllerId);
-                prepstmt.addBatch();
-            }
-
-            prepstmt.executeBatch();
-            con.commit();
-            con.setAutoCommit(true);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    dao.printSQLException(ex);
-
-                    throw new SQLException("Transaction is being rolled back");
-                }
-            }
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Insert controllerdata values ");
+        String sql = "INSERT INTO CONTROLLERDATA (DATAID, CONTROLLERID, VALUE) VALUES(?,?,-1) ";
+        jdbcTemplate.execute(sql);
     }
 
     @Override
@@ -200,8 +117,7 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
         String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         String sqlInsertQuery = "INSERT INTO CONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
         String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
-        int exist = jdbcTemplate.queryForInt(sqlSelectQuery,
-                controllerId, dataId);
+        int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId, dataId);
         if (exist == 1) {
             jdbcTemplate.update(sqlUpdateQuery, value, controllerId, dataId);
         } else {
@@ -216,78 +132,56 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
     }
 
     @Override
-    public void updateControllerData(Long controllerId, Collection<Data> onlineData) throws SQLException {
+    public void updateControllerData(final Long controllerId, final Collection<Data> onlineData) throws SQLException {
         final String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         final String sqlInsertQuery = "INSERT INTO CONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
         final String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
+        final Collection<Data> dataToInsert = new ArrayList<Data>();
+        final Collection<Data> dataToUpdate = new ArrayList<Data>();
 
-        PreparedStatement prepstmtSelect = null;
-        PreparedStatement prepstmtInsert = null;
-        PreparedStatement prepstmtUpdate = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmtSelect = con.prepareStatement(sqlSelectQuery);
-            prepstmtInsert = con.prepareStatement(sqlInsertQuery);
-            prepstmtUpdate = con.prepareStatement(sqlUpdateQuery);
-            prepstmtSelect.setLong(1, controllerId);
-
-            for (Data dc : onlineData) {
-                prepstmtSelect.setLong(1, controllerId);
-                prepstmtSelect.setLong(2, dc.getId());
-
-                ResultSet rs = prepstmtSelect.executeQuery();
-
-                if (rs.next()) {
-
-                    // turn off autocommit
-                    int exist = rs.getInt("exist");
-
-                    if (exist == 1) {
-                        con.setAutoCommit(false);
-                        prepstmtUpdate.setLong(2, controllerId);
-                        prepstmtUpdate.setLong(3, dc.getId());
-                        prepstmtUpdate.setLong(1, dc.getValue());
-                        prepstmtUpdate.addBatch();
-                    } else {
-                        con.setAutoCommit(false);
-                        prepstmtInsert.setLong(1, controllerId);
-                        prepstmtInsert.setLong(2, dc.getId());
-                        prepstmtInsert.setLong(3, dc.getValue());
-                        prepstmtInsert.addBatch();
-                    }
-                }
-                con.setAutoCommit(true);
+        for (Data data : onlineData) {
+            int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId, data.getId());
+            if (exist == 1) {
+                dataToUpdate.add(data);
+            } else {
+                dataToInsert.add(data);
             }
-
-            con.setAutoCommit(false);
-            prepstmtInsert.executeBatch();
-            prepstmtUpdate.executeBatch();
-            con.commit();
-            con.setAutoCommit(true);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            if (con != null) {
-                try {
-                    con.rollback();
-                } catch (SQLException ex) {
-                    dao.printSQLException(ex);
-
-                    throw new SQLException("Transaction is being rolled back");
-                }
-            }
-        } finally {
-            prepstmtSelect.close();
-            prepstmtInsert.close();
-            prepstmtUpdate.close();
-            dao.closeConnection(con);
         }
+
+        jdbcTemplate.batchUpdate(sqlUpdateQuery, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Data data = Lists.newArrayList(dataToUpdate).get(i);
+                ps.setLong(1, data.getValue());
+                ps.setLong(2, controllerId);
+                ps.setLong(3, data.getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return dataToUpdate.size();
+            }
+        });
+
+        jdbcTemplate.batchUpdate(sqlInsertQuery, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Data data = Lists.newArrayList(dataToInsert).get(i);
+                ps.setLong(1, data.getValue());
+                ps.setLong(2, controllerId);
+                ps.setLong(3, data.getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return dataToInsert.size();
+            }
+        });
     }
 
     public void updateControllerGraph(Long controllerId, String values, Timestamp updateTime) throws SQLException {
         final String sqlSelectQuery = "SELECT COUNT(DATASET) AS EXIST FROM GRAPH24HOURS WHERE CONTROLLERID=?";
+        final String sqlInsertQuery = "INSERT INTO GRAPH24HOURS (CONTROLLERID, DATASET, UPDATETIME) VALUES (?, ?, ?)";
         final String sqlUpdateQuery = "UPDATE GRAPH24HOURS SET DATASET=? ,UPDATETIME=? WHERE CONTROLLERID=?";
 
         int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId);
@@ -310,47 +204,18 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
         String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM NEWCONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         String sqlInsertQuery = "INSERT INTO NEWCONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
         String sqlUpdateQuery = "UPDATE NEWCONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
-        PreparedStatement prepstmtSelect = null;
-        PreparedStatement prepstmtInsert = null;
-        PreparedStatement prepstmtUpdate = null;
-        Connection con = null;
+        int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId, dataId);
+        if (exist == 1) {
+            jdbcTemplate.update(sqlUpdateQuery, new Object[]{controllerId, dataId, value});
 
-        try {
-            con = dao.getConnection();
-            prepstmtSelect = con.prepareStatement(sqlSelectQuery);
-            prepstmtInsert = con.prepareStatement(sqlInsertQuery);
-            prepstmtUpdate = con.prepareStatement(sqlUpdateQuery);
-            prepstmtSelect.setLong(1, controllerId);
-            prepstmtSelect.setLong(2, dataId);
-
-            ResultSet rs = prepstmtSelect.executeQuery();
-
-            if (rs.next()) {
-
-                // turn off autocommit
-                int exist = rs.getInt("exist");
-
-                if (exist == 1) {
-                    prepstmtUpdate.setLong(2, controllerId);
-                    prepstmtUpdate.setLong(3, dataId);
-                    prepstmtUpdate.setLong(1, value);
-                    prepstmtUpdate.executeUpdate();
-                } else {
-                    prepstmtInsert.setLong(1, controllerId);
-                    prepstmtInsert.setLong(2, dataId);
-                    prepstmtInsert.setLong(3, value);
-                    prepstmtInsert.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Can't insert new row to newcontrollerdata table ", e);
-        } finally {
-            prepstmtSelect.close();
-            prepstmtInsert.close();
-            prepstmtUpdate.close();
-            dao.closeConnection(con);
+        } else {
+            SimpleJdbcInsert jdbcControllerDataInsert = new SimpleJdbcInsert(jdbcTemplate);
+            jdbcControllerDataInsert.setTableName("NEWCONTROLLERDATA");
+            Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+            valuesToInsert.put("CONTROLLERID", controllerId);
+            valuesToInsert.put("DATAID", dataId);
+            valuesToInsert.put("VALUE", value);
+            jdbcControllerDataInsert.execute(valuesToInsert);
         }
     }
 
@@ -359,86 +224,35 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
         String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         String sqlInsertQuery = "INSERT INTO CONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
         String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
-        PreparedStatement prepstmtSelect = null;
-        PreparedStatement prepstmtInsert = null;
-        PreparedStatement prepstmtUpdate = null;
-        Connection con = null;
 
-        try {
-            con = dao.getConnection();
-            prepstmtSelect = con.prepareStatement(sqlSelectQuery);
-            prepstmtInsert = con.prepareStatement(sqlInsertQuery);
-            prepstmtUpdate = con.prepareStatement(sqlUpdateQuery);
-            prepstmtSelect.setLong(1, controllerId);
-            prepstmtSelect.setLong(2, dataId);
+        int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId, dataId);
+        if (exist == 1) {
+            jdbcTemplate.update(sqlUpdateQuery, new Object[]{controllerId, dataId, value});
 
-            ResultSet rs = prepstmtSelect.executeQuery();
-
-            if (rs.next()) {
-
-                // turn off autocommit
-                int exist = rs.getInt("exist");
-
-                if (exist == 1) {
-                    prepstmtUpdate.setLong(2, controllerId);
-                    prepstmtUpdate.setLong(3, dataId);
-                    prepstmtUpdate.setLong(1, value);
-                    prepstmtUpdate.executeUpdate();
-                } else {
-                    prepstmtInsert.setLong(1, controllerId);
-                    prepstmtInsert.setLong(2, dataId);
-                    prepstmtInsert.setLong(3, value);
-                    prepstmtInsert.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Can't insert new row to controllerdata table ", e);
-        } finally {
-            prepstmtSelect.close();
-            prepstmtInsert.close();
-            prepstmtUpdate.close();
-            dao.closeConnection(con);
+        } else {
+            SimpleJdbcInsert jdbcControllerDataInsert = new SimpleJdbcInsert(jdbcTemplate);
+            jdbcControllerDataInsert.setTableName("CONTROLLERDATA");
+            Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+            valuesToInsert.put("CONTROLLERID", controllerId);
+            valuesToInsert.put("DATAID", dataId);
+            valuesToInsert.put("VALUE", value);
+            jdbcControllerDataInsert.execute(valuesToInsert);
         }
     }
 
     @Override
     public void dropTable() throws SQLException {
-        String sqlQueryFlock = "DROP TABLE APP.CONTROLLERS ";
-        Statement stmt = null;
-        Connection con = null;
+        logger.debug("Drop controllers table");
 
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.executeUpdate(sqlQueryFlock);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot drop table controller ", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        String sql = "DROP TABLE APP.CONTROLLERS ";
+        jdbcTemplate.execute(sql);
     }
 
     @Override
     public void deleteFromTable() throws SQLException {
-        String sqlQueryFlock = "DELETE  FROM APP.CONTROLLERS ";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.executeUpdate(sqlQueryFlock);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot drop table controller ", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        logger.debug("Delete controllers table");
+        String sql = "DELETE  FROM APP.CONTROLLERS ";
+        jdbcTemplate.execute(sql);
     }
 }
 

@@ -17,16 +17,15 @@ import java.util.List;
 import java.util.Map;
 
 public class LanguageDaoImpl implements LanguageDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(LanguageDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(LanguageDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public LanguageDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public LanguageDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("languages");
-        this.dao = dao;
     }
 
     public void insert(Language language) throws SQLException {

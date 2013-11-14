@@ -16,16 +16,15 @@ import java.util.List;
 import java.util.Map;
 
 public class WorkerDaoImpl implements WorkerDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(WorkerDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(WorkerDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public WorkerDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public WorkerDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("workers");
-        this.dao = dao;
     }
 
     @Override

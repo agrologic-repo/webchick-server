@@ -21,19 +21,17 @@ import java.util.*;
  * @author Valery Manakhimov
  */
 public class AlarmDaoImpl implements AlarmDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
-    private final SimpleJdbcInsert jdbcInsertTranslate;
+    protected final Logger logger = LoggerFactory.getLogger(AlarmDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
+    protected final SimpleJdbcInsert jdbcInsert;
+    protected final SimpleJdbcInsert jdbcInsertTranslate;
 
-    public AlarmDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public AlarmDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("alarmnames");
         this.jdbcInsertTranslate = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsertTranslate.setTableName("alarmbylanguage");
-        this.dao = dao;
     }
 
     /**

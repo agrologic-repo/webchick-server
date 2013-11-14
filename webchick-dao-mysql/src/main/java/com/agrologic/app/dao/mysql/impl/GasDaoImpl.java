@@ -20,16 +20,15 @@ import java.util.List;
 import java.util.Map;
 
 public class GasDaoImpl implements GasDao {
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(GasDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(GasDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public GasDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public GasDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("gas");
-        this.dao = dao;
     }
 
     @Override

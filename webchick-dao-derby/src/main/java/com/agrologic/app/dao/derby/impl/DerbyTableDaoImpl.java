@@ -1,29 +1,25 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.TableDaoImpl;
-import com.agrologic.app.model.Table;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.sql.*;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
-    public DerbyTableDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory daoFactory) {
-        super(jdbcTemplate, daoFactory);
+    public DerbyTableDaoImpl(JdbcTemplate jdbcTemplate) {
+        super(jdbcTemplate);
     }
 
     @Override
     public boolean tableExist() throws SQLException {
-        Connection con = null;
-
         try {
-            con = dao.getConnection();
-
-            DatabaseMetaData dbmd = con.getMetaData();
+            DatabaseMetaData dbmd = jdbcTemplate.getDataSource().getConnection().getMetaData();
             ResultSet rs = dbmd.getTables(null, "APP", "SCREENTABLE", null);
 
             if (!rs.next()) {
@@ -31,8 +27,6 @@ public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, Dro
             }
         } catch (SQLException e) {
             throw new SQLException("Cannot get table SCREENTABLE from DataBase", e);
-        } finally {
-            dao.closeConnection(con);
         }
 
         return true;
@@ -45,110 +39,57 @@ public class DerbyTableDaoImpl extends TableDaoImpl implements CreatebleDao, Dro
     }
 
     private void createTableScreenTable() throws SQLException {
-        String sqlQuery = "CREATE TABLE SCREENTABLE " + "(TABLEID INT NOT NULL , " + "SCREENID INT NOT NULL , "
+        String sql = "CREATE TABLE SCREENTABLE " + "(TABLEID INT NOT NULL , " + "SCREENID INT NOT NULL , "
                 + "PROGRAMID INT NOT NULL , " + "TITLE VARCHAR(250) NOT NULL, "
                 + "DISPLAYONSCREEN VARCHAR(10) NOT NULL, " + "POSITION INT NOT NULL, "
                 + "PRIMARY KEY (TABLEID,SCREENID,PROGRAMID), "
                 + "FOREIGN KEY (SCREENID,PROGRAMID) REFERENCES SCREENS(SCREENID,PROGRAMID))";
-        Statement stmt = null;
-        Connection con = null;
+        jdbcTemplate.execute(sql);
 
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot create new SCREENTABLE Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
     }
 
     private void createTableScreenTableByLanguage() throws SQLException {
-        String sqlQuery = "CREATE TABLE TABLEBYLANGUAGE " + "(TABLEID INT NOT NULL , " + "LANGID INT NOT NULL , "
+        String sql = "CREATE TABLE TABLEBYLANGUAGE " + "(TABLEID INT NOT NULL , " + "LANGID INT NOT NULL , "
                 + "UNICODETITLE VARCHAR(500) NOT NULL, " + "PRIMARY KEY (TABLEID, LANGID))";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.execute(sqlQuery);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot create new TABLEBYLANGUAGE Table", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        jdbcTemplate.execute(sql);
     }
 
-    @Override
-    public void insert(Table table) throws SQLException {
-        String sqlQuery = "insert into screentable values (?,?,?,?,?,?)";
-        PreparedStatement prepstmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            prepstmt = con.prepareStatement(sqlQuery);
-            prepstmt.setObject(1, table.getId());
-            prepstmt.setLong(2, table.getScreenId());
-            prepstmt.setLong(3, table.getProgramId());
-            prepstmt.setString(4, table.getTitle());
-            prepstmt.setString(5, table.getDisplay());
-            prepstmt.setInt(6, table.getPosition());
-            prepstmt.executeUpdate();
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-
-            throw new SQLException("Cannot Insert ScreenTable To The DataBase");
-        } finally {
-            prepstmt.close();
-            dao.closeConnection(con);
-        }
-    }
+//    @Override
+//    public void insert(Table table) throws SQLException {
+//        String sql = "insert into screentable values (?,?,?,?,?,?)";
+//        PreparedStatement prepstmt = null;
+//        Connection con = null;
+//
+//        try {
+//            con = dao.getConnection();
+//            prepstmt = con.prepareStatement(sql);
+//            prepstmt.setObject(1, table.getId());
+//            prepstmt.setLong(2, table.getScreenId());
+//            prepstmt.setLong(3, table.getProgramId());
+//            prepstmt.setString(4, table.getTitle());
+//            prepstmt.setString(5, table.getDisplay());
+//            prepstmt.setInt(6, table.getPosition());
+//            prepstmt.executeUpdate();
+//        } catch (SQLException e) {
+//            dao.printSQLException(e);
+//
+//            throw new SQLException("Cannot Insert ScreenTable To The DataBase");
+//        } finally {
+//            prepstmt.close();
+//            dao.closeConnection(con);
+//        }
+//    }
 
     @Override
     public void dropTable() throws SQLException {
-        String sqlQueryFlock = "DROP TABLE APP.SCREENTABLE ";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.executeUpdate(sqlQueryFlock);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot drop table screentable ", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        String sql = "DROP TABLE APP.SCREENTABLE ";
+        jdbcTemplate.execute(sql);
     }
 
     @Override
     public void deleteFromTable() throws SQLException {
-        String sqlQueryFlock = "DELETE  FROM APP.SCREENTABLE ";
-        Statement stmt = null;
-        Connection con = null;
-
-        try {
-            con = dao.getConnection();
-            stmt = con.createStatement();
-            stmt.executeUpdate(sqlQueryFlock);
-        } catch (SQLException e) {
-            dao.printSQLException(e);
-            throw new SQLException("Cannot drop table screentable ", e);
-        } finally {
-            stmt.close();
-            dao.closeConnection(con);
-        }
+        String sql = "DELETE  FROM APP.SCREENTABLE ";
+        jdbcTemplate.execute(sql);
     }
 }
 

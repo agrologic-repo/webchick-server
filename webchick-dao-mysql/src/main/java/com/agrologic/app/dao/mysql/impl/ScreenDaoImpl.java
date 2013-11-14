@@ -18,16 +18,15 @@ import java.util.*;
 
 public class ScreenDaoImpl implements ScreenDao {
 
-    protected final DaoFactory dao;
-    private final Logger logger = LoggerFactory.getLogger(ScreenDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+
+    protected final Logger logger = LoggerFactory.getLogger(ScreenDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public ScreenDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public ScreenDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("screens");
-        this.dao = dao;
     }
 
     @Override

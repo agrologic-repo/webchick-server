@@ -18,19 +18,18 @@ import java.util.*;
  * {@inheritDoc}
  */
 public class ProgramRelayDaoImpl implements ProgramRelayDao {
-    private final Logger logger = LoggerFactory.getLogger(ProgramRelayDaoImpl.class);
-    private final JdbcTemplate jdbcTemplate;
+    protected final Logger logger = LoggerFactory.getLogger(ProgramRelayDaoImpl.class);
+    protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
     protected DaoFactory dao;
 
     /**
      * {@inheritDoc}
      */
-    public ProgramRelayDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    public ProgramRelayDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.setTableName("programrelays");
-        this.dao = dao;
     }
 
     /**

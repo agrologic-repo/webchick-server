@@ -20,16 +20,15 @@ import java.util.List;
 import java.util.Map;
 
 public class FeedDaoImpl implements FeedDao {
-    protected final DaoFactory dao;
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
-    private final Logger logger = LoggerFactory.getLogger(FeedDaoImpl.class);
 
-    public FeedDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao) {
+    protected final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert jdbcInsert;
+    protected final Logger logger = LoggerFactory.getLogger(FeedDaoImpl.class);
+
+    public FeedDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("feed");
-        this.dao = dao;
     }
 
     /**
