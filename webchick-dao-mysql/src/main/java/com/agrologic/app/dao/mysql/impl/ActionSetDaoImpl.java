@@ -1,7 +1,6 @@
 package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.ActionSetDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.dao.mappers.Util;
 import com.agrologic.app.model.ActionSet;
@@ -11,8 +10,10 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
+
 /**
  * An implementation of {@link com.agrologic.app.dao.ActionSetDao} that is based on JdbcTemplate and working
  * with database.
@@ -188,10 +189,10 @@ public class ActionSetDaoImpl implements ActionSetDao {
 
     @Override
     public void insertActionSetTranslation(Long valueId, Long langId, String translate) throws SQLException {
-        logger.debug("Insert translation for action set  with value id [{}]" , valueId);
-        String sql =
-                "insert into tablebylanguage values (?,?,?) on duplicate key update UnicodeTitle=values(UnicodeTitle)";
-        jdbcTemplate.update(sql, new Object[]{valueId,langId,translate});
+        logger.debug("Insert translation for action set with value id [{}]", valueId);
+        String sql = "insert into actionsetbylanguage values (?,?,?) " +
+                "on duplicate key update UnicodeText=values(UnicodeText)";
+        jdbcTemplate.update(sql, new Object[]{valueId, langId, translate});
     }
 }
 
