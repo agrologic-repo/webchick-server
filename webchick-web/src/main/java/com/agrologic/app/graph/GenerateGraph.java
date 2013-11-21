@@ -20,7 +20,7 @@ import java.io.PrintWriter;
 import java.util.Locale;
 
 public class GenerateGraph {
-     private static final Logger logger = LoggerFactory.getLogger(GenerateGraph.class);
+    private static final Logger logger = LoggerFactory.getLogger(GenerateGraph.class);
 
     public static String generateChartTempHum(Long controllerId, HttpSession session, PrintWriter pw, Locale locale) {
         String filenameth = null;
@@ -76,7 +76,7 @@ public class GenerateGraph {
                 if (setClock.getValue() == null) {
                     graph = new Graph24FWI(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
                 } else {
-                    graph = new Graph24FWI(GraphType.IN_OUT_TEMP_HUMID, values, setClock.getValue(), locale);
+                    graph = new Graph24FWI(GraphType.IN_OUT_TEMP_HUMID, values, setClock.getValueToUI(), locale);
                 }
 
                 // Write the chart image to the temporary directory
