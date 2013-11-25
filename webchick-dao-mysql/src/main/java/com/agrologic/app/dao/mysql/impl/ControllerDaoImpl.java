@@ -1,7 +1,6 @@
 package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.dao.mappers.Util;
 import com.agrologic.app.model.Controller;
@@ -53,6 +52,7 @@ public class ControllerDaoImpl implements ControllerDao {
         valuesToInsert.put("programid", controller.getProgramId());
         valuesToInsert.put("area", controller.getArea());
         valuesToInsert.put("active", controller.isActive());
+        valuesToInsert.put("houseType", controller.getHouseType());
         jdbcInsert.execute(valuesToInsert);
     }
 
@@ -63,9 +63,10 @@ public class ControllerDaoImpl implements ControllerDao {
     public void update(Controller controller) throws SQLException {
         logger.debug("Update controller with id [{}]", controller.getId());
         jdbcTemplate.update("update controllers set Title=?, NetName=?, ControllerName=?, Area=?, ProgramID=?, "
-                + "Active=? where ControllerID=? ",
+                + "Active=?, HouseType=? where ControllerID=? ",
                 new Object[]{controller.getTitle(), controller.getNetName(), controller.getName(),
-                        controller.getArea(), controller.getProgramId(), controller.isActive(), controller.getId()});
+                        controller.getArea(), controller.getProgramId(), controller.isActive(),
+                        controller.getHouseType(), controller.getId()});
     }
 
     /**

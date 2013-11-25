@@ -41,14 +41,15 @@ public class AddControllerFormServlet extends AbstractServlet {
         Long programId = Long.parseLong(request.getParameter("programid"));
         String controllerType = request.getParameter("controllerType");
         String active = request.getParameter("active");
+        String houseType = request.getParameter("houseType");
         Controller controller = new Controller();
-
         controller.setId(null);
         controller.setNetName(netName);
         controller.setTitle(title);
         controller.setCellinkId(cellinkId);
         controller.setProgramId(programId);
         controller.setName(controllerType);
+        controller.setName(houseType);
 
         if ((active != null) && "ON".equals(active.toUpperCase())) {
             controller.setActive(true);

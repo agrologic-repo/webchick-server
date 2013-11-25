@@ -24,17 +24,32 @@
     <link rel="StyleSheet" type="text/css" href="resources/style/jquery-ui.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <style>
-    .ui-autocomplete {
-        max-height: 200px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
 
     </style>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
     <script type="text/javascript" language="javascript">
+        //        $(document).ready(function () {
+        //            var availableHouseType = [
+        //                "Broiler",
+        //                "Layers"
+        //            ];
+        //            $( "input#houseType" ).autocomplete({
+        //                delay: 0,
+        //                minLength: 0,
+        //                autoFocus: false,
+        //                cacheLength: 0,
+        //                source: availableHouseType
+        //            });
+        //        }).focus(function () {$(this).autocomplete("search","")});
+
+
         $(document).ready(function () {
             $("input#controllerType").autocomplete({
                 width: 300,
@@ -50,8 +65,8 @@
                         url: "./autocomplete-controller-name",
                         dataType: "json",
                         data: request,
-                        success: function( data) {
-                            response( $.map( data.sendString, function( item ) {
+                        success: function (data) {
+                            response($.map(data.sendString, function (item) {
                                 return {
                                     label: item.key,
                                     value: item.key + ":" + item.value
@@ -60,25 +75,27 @@
                         }
                     });
                 },
-                select: function( event, ui ) {
+                select: function (event, ui) {
                     var arr = ui.item.value.split(':');
-                    $( "#netname" ).val(arr[1]);
-                    $( "input#controllerType" ).val( arr[0] );
+                    $("#netname").val(arr[1]);
+                    $("input#controllerType").val(arr[0]);
                     return false;
                 }
-            }).focus(function () {$(this).autocomplete("search","")});
+            }).focus(function () {
+                        $(this).autocomplete("search", "")
+                    });
         });
         /**
          * spin for net name {0-99}
          */
         $(function () {
             $("#spinner").spinner({
-                spin: function( event, ui ) {
-                    if ( ui.value > 99 ) {
-                        $( this ).spinner( "value", 0 );
+                spin: function (event, ui) {
+                    if (ui.value > 99) {
+                        $(this).spinner("value", 0);
                         return false;
-                    } else if ( ui.value < 0 ) {
-                        $( this ).spinner( "value", 99 );
+                    } else if (ui.value < 0) {
+                        $(this).spinner("value", 99);
                         return false;
                     }
                 }
@@ -116,8 +133,8 @@
                         url: "./autocomplete-program",
                         dataType: "json",
                         data: request,
-                        success: function( data) {
-                            response( $.map( data.programsMap, function( item ) {
+                        success: function (data) {
+                            response($.map(data.programsMap, function (item) {
                                 return {
                                     label: item.key,
                                     value: item.key + ":" + item.value
@@ -126,13 +143,15 @@
                         }
                     });
                 },
-                select: function( event, ui ) {
+                select: function (event, ui) {
                     var arr = ui.item.value.split(':');
-                    $( "input#program" ).val( arr[0] );
-                    $( "input#programid" ).val( arr[1] );
+                    $("input#program").val(arr[0]);
+                    $("input#programid").val(arr[1]);
                     return false;
                 }
-            }).focus(function () {$(this).autocomplete("search","")});
+            }).focus(function () {
+                        $(this).autocomplete("search", "")
+                    });
         });
 
         function reset() {
@@ -163,7 +182,7 @@
                 valid = false;
             }
 
-            if(document.addForm.controllerType.value == "") {
+            if (document.addForm.controllerType.value == "") {
                 document.getElementById("msgControllerType").innerHTML = "Field can't be empty";
                 document.getElementById("msgControllerType").style.color = "RED";
                 event.returnValue = false;
@@ -245,9 +264,20 @@
                                         <td> Program *</td>
                                         <td>
                                             <input id="program" name="program" style="width:100px"/>
-                                            <input id="programid" type="hidden"  name="programid" style="width:100px"/>
+                                            <input id="programid" type="hidden" name="programid" style="width:100px"/>
                                         </td>
                                         <td id="msgProgramId"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>House Type</td>
+                                        <td>
+                                            <select id="houseType" name="houseType">
+                                                <option value=""></option>
+                                                <option value="Broiler">Broiler</option>
+                                                <option value="Layer">Layer</option>
+                                            </select>
+                                        </td>
+                                        <td id="msgHouseType"></td>
                                     </tr>
                                     <tr>
                                         <td>Status</td>

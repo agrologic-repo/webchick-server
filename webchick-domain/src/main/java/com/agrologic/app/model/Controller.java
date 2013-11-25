@@ -23,6 +23,7 @@ public class Controller implements Serializable {
     private Data setClock;
     private boolean on = true;
     private boolean active;
+    private String houseType;
     private Program program;
     private Collection<Flock> flocks;
     private HashMap<Long, Data> onlineData;
@@ -74,6 +75,14 @@ public class Controller implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getHouseType() {
+        return houseType;
+    }
+
+    public void setHouseType(String houseType) {
+        this.houseType = houseType;
     }
 
     public Long getProgramId() {

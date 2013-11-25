@@ -43,6 +43,7 @@ public class EditControllerFormServlet extends AbstractServlet {
                 Long programId = Long.parseLong(request.getParameter("programId"));
                 String controllerType = request.getParameter("controllerType");
                 String active = request.getParameter("active");
+                String houseType = request.getParameter("houseType");
 
                 try {
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
@@ -52,6 +53,7 @@ public class EditControllerFormServlet extends AbstractServlet {
                     controller.setCellinkId(cellinkId);
                     controller.setProgramId(programId);
                     controller.setName(controllerType);
+                    controller.setHouseType(houseType);
                     if ((active != null) && "ON".equals(active.toUpperCase())) {
                         controller.setActive(true);
                     } else {

@@ -165,7 +165,7 @@ public class RowMappers {
             programRelay.setRelayNumber(rs.getInt("RelayNumber"));
             programRelay.setRelayTextId(rs.getLong("RelayTextID"));
             try {
-                if(rs.getString("UnicodeText") != null ) {
+                if (rs.getString("UnicodeText") != null) {
                     programRelay.setUnicodeText(rs.getString("UnicodeText"));
                 }
 
@@ -207,7 +207,7 @@ public class RowMappers {
             programAlarm.setProgramId(rs.getLong("ProgramID"));
             programAlarm.setAlarmTextId(rs.getLong("AlarmTextID"));
             try {
-                if(rs.getString("UnicodeName") != null) {
+                if (rs.getString("UnicodeName") != null) {
                     programAlarm.setText(rs.getString("UnicodeName"));
                 }
             } catch (SQLException ex) {    /*
@@ -255,7 +255,7 @@ public class RowMappers {
             programSystemState.setSystemStateNumber(rs.getInt("SystemStateNumber"));
             programSystemState.setSystemStateTextId(rs.getLong("SystemStateTextID"));
             try {
-                if(rs.getString("UnicodeName") != null) {
+                if (rs.getString("UnicodeName") != null) {
                     programSystemState.setText(rs.getString("UnicodeName"));
                 }
             } catch (SQLException ex) {
@@ -405,6 +405,7 @@ public class RowMappers {
             controller.setCellinkId(rs.getLong("CellinkId"));
             controller.setProgramId(rs.getLong("ProgramId"));
             controller.setActive(rs.getBoolean("Active"));
+            controller.setHouseType(rs.getString("HouseType"));
             return controller;
         }
     }
