@@ -1,19 +1,13 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-
 <%@ include file="language.jsp" %>
-
 <%@ page import="com.agrologic.app.model.*" %>
 <%@ page import="java.util.Collection" %>
-
-
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-
     Program program = (Program) request.getAttribute("program");
     Collection<Data> dataSystemStates = (Collection<Data>) request.getAttribute("dataSystemStates");
     Collection<SystemState> systemStateNames = (Collection<SystemState>) request.getAttribute("systemStateNames");
@@ -27,19 +21,15 @@
     return null;
 }
 %>
-
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Assign System States</title>
-
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-
     <script type="text/javascript" src="resources/javascript/ftabs.js">;</script>
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
-
     <script type="text/javascript">
         function save() {
             var datas = document.addForm.dataid;
@@ -47,21 +37,17 @@
             var systemstatenames = document.addForm.systemstatenames;
             var dataMap = new Hashtable();
             var k = 0;
-            for (var i = 0; i < datas.length; i++) {
-                var bitMap = new Hashtable();
-                var datavalue = datas[i].value;
-                for (var j = k; j < (k + 10); j++) {
-                    var bitvalue = numbers[j].value;
-                    var selected = systemstatenames[j].selectedIndex;
-                    var relayText = systemstatenames[j].options[selected].innerHTML + "-" + selected;
-                    bitMap.put(bitvalue, relayText);
-                }
-                dataMap.put(datavalue, bitMap);
-                k += 10;
+            var bitMap = new Hashtable();
+            var datavalue = datas.value;
+            for (var j = 0; j < 30; j++) {
+                var bitvalue = numbers[j].value;
+                var selected = systemstatenames[j].selectedIndex;
+                var relayText = systemstatenames[j].options[selected].innerHTML + "-" + selected;
+                bitMap.put(bitvalue, relayText);
             }
+            dataMap.put(datavalue, bitMap);
             document.getElementById("datamap").value = dataMap;
         }
-
     </script>
 <head>
 <body>
@@ -72,9 +58,10 @@
     <table border="0" cellPadding=1 cellSpacing=1 width="100%">
         <tr>
             <td width="483">
-                <p>
+                <h1>Add Alarms</h1>
 
-                <h1>Add Alarms</h1></p>
+                <h2>Add System States to <%=program.getName()%>
+                </h2>
             </td>
         </tr>
         <tr>
@@ -84,10 +71,6 @@
         </tr>
         <tr>
             <td>
-                <p>
-
-                <h2> Add System States to <%=program.getName()%>
-                </h2></p>
                 <form id="addForm" name="addForm" action="./assignsystemstate.html" method="post"
                       onsubmit="return save();">
                     <input type="hidden" id="programId" name="programId" value="<%=program.getId()%>">
@@ -95,47 +78,48 @@
                     <table>
                         <tr>
                             <% for (Data dataSysState : dataSystemStates) {%>
-                            <td valign="top"><p>
-
-                                <h3><%=dataSysState.getLabel()%>
-                                </h3>
-                                <input type="hidden" id="dataid" name="dataid" value="<%=dataSysState.getId()%>">
-                                <table class="table-list" border="0" cellPadding=1 cellSpacing=1 width="100%">
-                                    <thead>
-                                    <tr>
-                                        <th align="left" width="20px">Number</th>
-                                        <th align="left" width="80px">Text</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <% int numbers = 10;%>
-                                    <%
-                                        Collection<ProgramSystemState> programSystemStates = program.getProgramSystemStateByData(dataSysState.getId());%>
-                                    <% for (int number = 1; number <= numbers; number++) {%>
-                                    <% ProgramSystemState systemState = findSystemState(programSystemStates, dataSysState.getId(), number);%>
-                                    <tr>
-                                        <td align="left" width="50px">
-                                            <input style="width:50px" type="text" name="numbers" value="<%=number%>">
-                                        </td>
-                                        <td align="left" width="80px">
-                                            <select id="systemstatenames" name="systemstatenames" style="width:auto;">
-                                                <% for (SystemState systemStateName : systemStateNames) {%>
-                                                <% if (systemState != null && systemState.getText().equals(systemStateName.getText())) {%>
-                                                <option value="<%=systemStateName.getId()%>"
-                                                        selected><%=systemStateName.getText()%>
-                                                </option>
-                                                <%} else {%>
-                                                <option value="<%=systemStateName.getId()%>"><%=systemStateName.getText()%>
-                                                </option>
-                                                <%}%>
-                                                <%}%>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <%}%>
-                                    </tbody>
-                                </table>
+                            <td valign="top"
+                            <h3><%=dataSysState.getLabel()%>
+                            </h3>
+                            <input type="hidden" id="dataid" name="dataid" value="<%=dataSysState.getId()%>">
+                            <table class="table-list" border="0" cellPadding=1 cellSpacing=1 width="100%">
+                                <thead>
+                                <tr>
+                                    <th align="left" width="20px">Number</th>
+                                    <th align="left" width="80px">Text</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <% int numbers = 30;%>
+                                <%
+                                    Collection<ProgramSystemState> programSystemStates = program.getProgramSystemStateByData(dataSysState.getId());%>
+                                <% for (int number = 1; number <= numbers; number++) {%>
+                                <% ProgramSystemState systemState = findSystemState(programSystemStates, dataSysState.getId(), number);%>
+                                <tr>
+                                    <td align="left" width="50px">
+                                        <input style="width:50px" type="text" name="numbers" value="<%=number%>">
+                                    </td>
+                                    <td align="left" width="80px">
+                                        <select id="systemstatenames" name="systemstatenames" style="width:auto;">
+                                            <% for (SystemState systemStateName : systemStateNames) {%>
+                                            <% if (systemState != null && systemState.getText()
+                                                    .equals(systemStateName.getText())) {%>
+                                            <option value="<%=systemStateName.getId()%>"
+                                                    selected><%=systemStateName.getText()%>
+                                            </option>
+                                            <%} else {%>
+                                            <option value="<%=systemStateName.getId()%>">
+                                                <%=systemStateName.getText()%>
+                                            </option>
+                                            <%}%>
+                                            <%}%>
+                                        </select>
+                                    </td>
+                                </tr>
                                 <%}%>
+                                </tbody>
+                            </table>
+                            <%}%>
                             </td>
                         </tr>
                         <tr>
@@ -155,6 +139,5 @@
         </tr>
     </table>
 </div>
-
 </body>
 </html>
