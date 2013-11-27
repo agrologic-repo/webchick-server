@@ -1,6 +1,5 @@
 package com.agrologic.app.dao.mysql.impl;
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.ScreenDao;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.Screen;
@@ -87,7 +86,8 @@ public class ScreenDaoImpl implements ScreenDao {
 
     public void insertTranslation(final Collection<Screen> screens, final Long langId) throws SQLException {
         logger.debug("Insert collection translation of screens ");
-        final String sql = "insert into screens values (?,?,?,?,?,?)";
+        final String sql = "insert into screenbylanguage values (?,?,?) " +
+                "on duplicate key update UnicodeTitle=values(UnicodeTitle)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
 
             @Override
@@ -119,14 +119,15 @@ public class ScreenDaoImpl implements ScreenDao {
     @Override
     public Screen getById(Long programId, Long screenId, Long langId) throws SQLException {
         logger.debug("Get screen with id [{}]", screenId);
-        String sqlQuery = "select * from screens "
-                + "inner join screenbylanguage "
-                + "on screenbylanguage.screenid=screens.screenid "
-                + "and screenbylanguage.langid=? and screens.ScreenID=? "
-                + "and screens.ProgramID=? and screens.DisplayOnPage='yes' "
-                + "order by screens.Position";
+        String sqlQuery = "select * from ( " +
+                "select * from screens " +
+                "where ScreenID=? " +
+                "and screens.ProgramID=? " +
+                "and screens.DisplayOnPage='yes') as screens " +
+                "left join screenbylanguage on screenbylanguage.screenid=screens.screenid " +
+                "and screenbylanguage.langid=? order by screens.Position";
         List<Screen> screens = jdbcTemplate.query(sqlQuery,
-                new Object[]{langId, screenId, programId}, RowMappers.screen());
+                new Object[]{screenId, programId, langId}, RowMappers.screen());
         if (screens.isEmpty()) {
             return null;
         }
@@ -164,7 +165,7 @@ public class ScreenDaoImpl implements ScreenDao {
                 + "on screenbylanguage.screenid = screens.screenid "
                 + "and screenbylanguage.langid=? "
                 + "where programid=?"
-                + " and DisplayOnPage like ? "
+                + " and displayonpage like ? "
                 + " order by position ";
         return jdbcTemplate.query(sqlQuery, new Object[]{langId, programId, displayOnPage == false ? "%yes%" : "%%"}, RowMappers.screen());
     }
