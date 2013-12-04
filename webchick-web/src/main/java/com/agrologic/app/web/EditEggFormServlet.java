@@ -3,6 +3,7 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.EggDao;
+import com.agrologic.app.model.Eggs;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +15,7 @@ import java.sql.SQLException;
 /**
  *
  */
-public class RemoveEggServlet extends AbstractServlet {
+public class EditEggFormServlet extends AbstractServlet {
 
 
     /**
@@ -38,9 +39,22 @@ public class RemoveEggServlet extends AbstractServlet {
 
         Long flockId = Long.parseLong(request.getParameter("flockId"));
         Integer day = Integer.parseInt(request.getParameter("day"));
+        Integer numOfBirds = Integer.parseInt(request.getParameter("numOfBirds"));
+        Integer eggQuantity = Integer.parseInt(request.getParameter("eggQuantity"));
+        Integer softShelled = Integer.parseInt(request.getParameter("softShelled"));
+        Integer cracked = Integer.parseInt(request.getParameter("cracked"));
+
+        Eggs eggs = new Eggs();
+        eggs.setFlockId(flockId);
+        eggs.setDay(day);
+        eggs.setNumOfBirds(numOfBirds);
+        eggs.setEggQuantity(eggQuantity);
+        eggs.setSoftShelled(softShelled);
+        eggs.setCracked(cracked);
+
         EggDao eggDao = DbImplDecider.use(DaoType.MYSQL).getDao(EggDao.class);
         try {
-            eggDao.remove(flockId, day);
+            eggDao.update(eggs);
         } catch (SQLException e) {
             e.printStackTrace();
         }
