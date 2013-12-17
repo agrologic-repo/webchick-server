@@ -110,6 +110,44 @@ public class MessageParser {
     }
 
     /**
+     * Create fixed response string of history data in order to bug on Image II controller .
+     *
+     * @param response the response
+     * @return fixed response string
+     */
+    public String parseHistoryIfComProtocolBinary(Message response) {
+        StringBuilder fixedResponse = new StringBuilder();
+        String[] stringToFix = response.toString().split(" ");
+        for (int i = 0; i < stringToFix.length; i++) {
+            if ((i != 1) && ((i - 1) % 3) != 0) {
+                fixedResponse.append(stringToFix[i]).append(" ");
+            }
+        }
+        return fixedResponse.toString();
+    }
+
+    /**
+     * Create fixed response string of history 24 hour data in order to bug on Image II controller .
+     *
+     * @param response the response
+     * @return fixed response string
+     */
+    public String parseHistory24IfComProtocolBinary(Message response) {
+        StringBuilder fixedResponse = new StringBuilder();
+        String[] stringToFix = response.toString().split(" ");
+        if (stringToFix.length == 2) {
+            fixedResponse.append(stringToFix[1]).append(" ");
+        } else if (stringToFix.length >= 48) {
+            for (int i = 0; i < stringToFix.length; i++) {
+                if (((i + 1) % 2) == 0) {
+                    fixedResponse.append(stringToFix[i]).append(" ");
+                }
+            }
+        }
+        return fixedResponse.toString();
+    }
+
+    /**
      * Return value after two's compliment operation .
      *
      * @param val the number

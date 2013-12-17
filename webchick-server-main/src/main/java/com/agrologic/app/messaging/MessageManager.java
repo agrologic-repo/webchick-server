@@ -9,6 +9,7 @@ import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.network.CommandType;
+import com.agrologic.app.util.ApplicationUtil;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
@@ -84,6 +85,7 @@ public class MessageManager implements Observer {
     @Override
     public void update(Observable o, Object c) {
         try {
+            ApplicationUtil.sleep(10);
             CommandType command = (CommandType) c;
             switch (command) {
                 case CREATE_REQUEST:
@@ -380,6 +382,7 @@ public class MessageManager implements Observer {
      * @throws SQLException
      */
     public void updateDataList(ResponseMessageMap responseMessageMap) throws SQLException {
+
         createOnlineData();
 
         Map<RequestMessage, ResponseMessage> responses = responseMessageMap.getResponseMap();
@@ -440,7 +443,12 @@ public class MessageManager implements Observer {
                     if (response.toString().equals("Request Error")) {
                         flockDao.updateHistoryByGrowDay(flock.getFlockId(), growDay, "-1");
                     } else {
-                        flockDao.updateHistoryByGrowDay(flock.getFlockId(), growDay, response.toString());
+                        if (controller.getName().startsWith("Image") && response.getFormat() == Message.Format.BINARY) {
+                            String fixedResponse = messageParser.parseHistoryIfComProtocolBinary(response);
+                            flockDao.updateHistoryByGrowDay(flock.getFlockId(), growDay, fixedResponse);
+                        } else {
+                            flockDao.updateHistoryByGrowDay(flock.getFlockId(), growDay, response.toString());
+                        }
                     }
                     break;
 
@@ -450,7 +458,12 @@ public class MessageManager implements Observer {
                     if (response.toString().equals("Request Error")) {
                         flockDao.updateHistory24ByGrowDay(flock.getFlockId(), growDay24, dnum, "-1");
                     } else {
-                        flockDao.updateHistory24ByGrowDay(flock.getFlockId(), growDay24, dnum, response.toString());
+                        if (controller.getName().startsWith("Image") && response.getFormat() == Message.Format.BINARY) {
+                            String fixedResponse = messageParser.parseHistory24IfComProtocolBinary(response);
+                            flockDao.updateHistory24ByGrowDay(flock.getFlockId(), growDay24, dnum, fixedResponse);
+                        } else {
+                            flockDao.updateHistory24ByGrowDay(flock.getFlockId(), growDay24, dnum, response.toString());
+                        }
                     }
                     break;
 
@@ -480,7 +493,7 @@ public class MessageManager implements Observer {
     }
 
     /**
-     * Return updatedValues with data to update.
+     * Return updatedValues with data to update .
      *
      * @return updatedValues the sorted map with updated values.
      */
@@ -488,8 +501,8 @@ public class MessageManager implements Observer {
         SortedMap<Long, Data> updatedValues = new TreeMap<Long, Data>();
         onlineDatatable = messageParser.getParsedDataMap();
         for (long key = 0; key < DATA_TABLE_SIZE; key++) {
-            if (onlineDatatable.containsKey(key)) {
-                Data d = onlineDatatable.get(key);
+            Data d = onlineDatatable.get(key);
+            if (d != null) {
                 if (d.isUpdated()) {
                     updatedValues.put(key, d);
                     d.setUpdated(false);
