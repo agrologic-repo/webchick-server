@@ -16,11 +16,7 @@ public interface ActionSetDao {
 
     public void remove(Long ActionSetId) throws SQLException;
 
-    public void insertActionSetToTable(Long programId) throws SQLException;
-
-    public void updateActionSetInTable(Long programId) throws SQLException;
-
-    public void removeActionSetFromTable(Long programId) throws SQLException;
+    public void insertProgramActionSet(ActionSet actionSet) throws SQLException;
 
     public List<ActionSet> getAll() throws SQLException;
 

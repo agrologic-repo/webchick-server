@@ -2,7 +2,6 @@ package com.agrologic.app;
 
 import com.agrologic.app.messaging.Message;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;

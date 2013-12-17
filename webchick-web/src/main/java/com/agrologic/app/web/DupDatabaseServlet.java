@@ -92,7 +92,7 @@ public class DupDatabaseServlet extends AbstractServlet {
         File backupFile;
         if (mysqlPath == null || mysqlPath.equals("")) {
             mysqlPath = getMySQLPath() + "\\mysqldump";
-            logger.info("Openning mysql from " + mysqlPath);
+            logger.info("Opening mysql from " + mysqlPath);
             backupFile = new File("C:\\database.sql");
         } else {
             mysqlPath = System.getenv("MYSQL_HOME") + "\\bin\\mysqldump";
@@ -123,11 +123,9 @@ public class DupDatabaseServlet extends AbstractServlet {
 
             // read any errors from the attempted command
             System.out.println("Here is the standard error of the command (if any):\n");
-
             while ((line = stdError.readLine()) != null) {
                 System.out.println(line);
             }
-
             stdError.close();
             fileWriter.close();
             inStreamReader.close();

@@ -178,7 +178,6 @@
          *
          */
         function setReadonly(screenid) {
-            alert(screenid)
             document.getElementById("txt" + screenid).setAttribute("readonly", false);
             document.getElementById("txt" + screenid).focus();
         }
@@ -240,7 +239,8 @@
                 </button>
                 <button id="btnUnchickUnusedData" name="btnUnchickUnusedData"
                         onclick="return uncheckUnusedData(<%=program.getId()%>);">
-                    <img src="resources/images/check.png" style="cursor: pointer" hspace="5" border="0"/>Clear Unused Data
+                    <img src="resources/images/check.png" style="cursor: pointer" hspace="5" border="0"/>Clear Unused
+                    Data
                 </button>
             </td>
         </tr>
@@ -284,7 +284,7 @@
                                 <a href="./all-tables.html?programId=<%=screen.getProgramId()%>&screenId=<%=screen.getId()%>&translateLang=<%=translateLang%>"><%=screen.getTitle()%>
                                 </a></td>
                             <td
-                                ondblclick="window.open('add-screentranslate.jsp?screenId=<%=screen.getId()%>&langId=<%=translateLang%>&screenName=<%=screen.getTitle()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');"><%=screen.getUnicodeTitle()%>
+                                    ondblclick="window.open('add-screentranslate.jsp?screenId=<%=screen.getId()%>&langId=<%=translateLang%>&screenName=<%=screen.getTitle()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');"><%=screen.getUnicodeTitle()%>
                             </td>
                             <td><%=screen.getDescript()%>
                             </td>
@@ -296,13 +296,15 @@
                                 <input type="text" name="position" value="<%=screen.getPosition()%>" size="5"/>
                             </td>
                             <td>
-                                <img src="resources/images/edit.gif" style="cursor: pointer" hspace="5" border="0" title='Edit'/>
+                                <img src="resources/images/edit.gif" style="cursor: pointer" hspace="5" border="0"
+                                     title='Edit'/>
                                 <a href="./editscreenrequest.html?programId=<%=program.getId()%>&screenId=<%=screen.getId()%>">
                                     <%=session.getAttribute("button.edit")%>
                                 </a>
                             </td>
                             <td>
-                                <img src="resources/images/close.png" title="Remove" hspace="5" style="cursor: pointer" border="0"/>
+                                <img src="resources/images/close.png" title="Remove" hspace="5" style="cursor: pointer"
+                                     border="0"/>
                                 <a href="javascript:removeScreen(<%=screen.getProgramId()%>,<%=screen.getId()%>);">
                                     <%=session.getAttribute("button.delete")%>
                                 </a>

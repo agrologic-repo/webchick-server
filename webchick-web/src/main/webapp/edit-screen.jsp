@@ -6,7 +6,7 @@
 <%@ page import="com.agrologic.app.model.Screen" %>
 <%@ page import="com.agrologic.app.model.User" %>
 
-<%  User user = (User) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -28,11 +28,9 @@
             var valid = true;
             reset();
             if (document.editForm.Ntitle.value == "") {
-                alert('Screen title');
                 document.editForm.Ntitle.focus();
                 return false;
             } else if (document.editForm.Nposition.value == "") {
-                alert('Screen position');
                 document.editForm.Nposition.focus();
                 return false;
             }

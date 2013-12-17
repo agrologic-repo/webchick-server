@@ -1,16 +1,11 @@
 package com.agrologic.app.dao.mysql.impl;
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DomainDao;
-import com.agrologic.app.dao.mappers.RowMappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 

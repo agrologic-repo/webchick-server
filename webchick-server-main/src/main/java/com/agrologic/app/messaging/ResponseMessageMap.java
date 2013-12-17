@@ -1,8 +1,3 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.messaging;
 
 import com.agrologic.app.network.CommandType;
@@ -57,7 +52,6 @@ public class ResponseMessageMap extends Observable {
                     break;
 
                 default:
-                    // unkown error
                     break;
             }
         }

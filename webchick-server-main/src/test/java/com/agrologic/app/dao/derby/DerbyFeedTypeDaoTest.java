@@ -10,20 +10,19 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FeedTypeDao;
 import com.agrologic.app.dao.derby.impl.DerbyFeedTypeDaoImpl;
 import com.agrologic.app.model.FeedType;
+import org.junit.*;
+
 import java.sql.SQLException;
 import java.util.List;
-
-import org.junit.*;
 
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Administrator
  */
 @Ignore
 public class DerbyFeedTypeDaoTest {
-    private Long cellinkId  = Long.valueOf(34);
+    private Long cellinkId = Long.valueOf(34);
     private Long flockId = Long.valueOf(1);
     private FeedType feedType;
     private FeedTypeDao dao;
@@ -52,13 +51,13 @@ public class DerbyFeedTypeDaoTest {
         assertTrue(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testDropTable() throws SQLException {
         ((DerbyFeedTypeDaoImpl) dao).dropTable();
         assertFalse(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testInsert() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -71,20 +70,20 @@ public class DerbyFeedTypeDaoTest {
         dao.insert(feedType);
     }
 
-//    @Test
+    //    @Test
     public void testRemove() throws SQLException {
         dao.remove(feedType.getId());
         feedType = dao.getById(flockId);
         assertNull(feedType);
     }
 
-//    @Test
+    //    @Test
     public void testRemoveAll() throws SQLException {
         List<FeedType> feedTypeList = dao.getAllByCellinkId(flockId);
-        for(FeedType g:feedTypeList) {
+        for (FeedType g : feedTypeList) {
             dao.remove(g.getId());
         }
         feedTypeList = dao.getAllByCellinkId(flockId);
-        assertEquals(0,feedTypeList.size());
+        assertEquals(0, feedTypeList.size());
     }
 }

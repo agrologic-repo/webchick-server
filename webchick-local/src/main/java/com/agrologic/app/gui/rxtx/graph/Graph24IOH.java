@@ -1,11 +1,4 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx.graph;
-
-//~--- non-JDK imports --------------------------------------------------------
 
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.util.DateLocal;
@@ -41,21 +34,11 @@ import java.util.Locale;
 
 public class Graph24IOH extends AbstractGraph {
 
-    int rendi, seri;
-
-    public Graph24IOH(GraphType type, String values, Long currnetTime) {
+    public Graph24IOH(GraphType type, String values, Long currentTime, Locale locale) {
         super(type, values);
-        this.currentTime = currnetTime;
-        chart = createChart();
-    }
-
-    public Graph24IOH(GraphType type, String values, Long currnetTime, Locale locale) {
-        super(type, values);
-        this.currentTime = currnetTime;
+        this.currentTime = currentTime;
         this.locale = locale;
         initLanguage();
-
-        // chart = createChart();
     }
 
     @Override
@@ -115,7 +98,6 @@ public class Graph24IOH extends AbstractGraph {
             tempAxis.setUpperBound(maxY + 1);
 
             XYDataset humDataset = createHumDataset();
-
             plot.setDataset(1, humDataset);
             plot.mapDatasetToRangeAxis(1, 1);
 
@@ -141,7 +123,6 @@ public class Graph24IOH extends AbstractGraph {
             legendTitle.setMargin(new RectangleInsets(UnitType.ABSOLUTE, 0.0D, 4.0D, 0.0D, 4.0D));
         } else {
             final XYPlot xyplot = new XYPlot();
-
             xyplot.setNoDataMessage("No data available!");
             xyplot.setNoDataMessageFont(new Font("Serif", 2, 15));
             xyplot.setNoDataMessagePaint(Color.red);
@@ -230,7 +211,7 @@ public class Graph24IOH extends AbstractGraph {
                 }
 
                 today = new Day(SerialDate.createInstance(now.getDate(), now.getMonth(), now.getYear()));
-
+                timeSeriesCollection.addSeries(insideseries);
                 // testing
                 hour = getHour();
 
@@ -254,61 +235,63 @@ public class Graph24IOH extends AbstractGraph {
                         minY = (int) floatValue;
                     }
                 }
-
-                timeSeriesCollection.addSeries(insideseries);
                 timeSeriesCollection.addSeries(outsideseries);
+
+
                 return timeSeriesCollection;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+            return timeSeriesCollection;
         }
-
-        return null;
     }
 
     private XYDataset createHumDataset() {
         final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+        try {
+            if (isEmpty()) {
+                return timeSeriesCollection;
+            } else {
+                DateLocal now = DateLocal.now();
+                DateLocal yday = now.addDays(-1);
+                int day = now.getDate();
+                int month = now.getMonth();
+                int year = now.getYear();
+                Day today = new Day(SerialDate.createInstance(day, month, year));
+                Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
 
-        if (isEmpty()) {
-            return timeSeriesCollection;
-        } else {
-            DateLocal now = DateLocal.now();
-            DateLocal yday = now.addDays(-1);
-            int day = now.getDate();
-            int month = now.getMonth();
-            int year = now.getYear();
-            Day today = new Day(SerialDate.createInstance(day, month, year));
-            Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
+                // testing
+                int hr = (int) (currentTime / 100) - 1;
+                final TimeSeries humidityseries = new TimeSeries(dictionary.get("graph.ioh.series.humidity"));
 
-            // testing
-            int hr = (int) (currentTime / 100) - 1;
-            final TimeSeries humidityseries = new TimeSeries(dictionary.get("graph.ioh.series.humidity"));
+                for (int i = HUMIDITY_INDEX + DAY_HOURS - 1; i >= HUMIDITY_INDEX; i--, hr--) {
+                    String value = DataFormat.formatToStringValue(DataFormat.HUMIDITY, Long.valueOf(datasetString[i]));
+                    int intValue = Integer.valueOf(value);
 
-            for (int i = HUMIDITY_INDEX + DAY_HOURS - 1; i >= HUMIDITY_INDEX; i--, hr--) {
-                String value = DataFormat.formatToStringValue(DataFormat.HUMIDITY, Long.valueOf(datasetString[i]));
-                int intValue = Integer.valueOf(value);
-
-                humidityseries.add(new Hour( /*
+                    humidityseries.add(new Hour( /*
                          * hour
                          */
-                        hr, today), intValue);
+                            hr, today), intValue);
 
-                if (hr == 0) {
-                    today = yesterday;
-                    hr = DAY_HOURS;
+                    if (hr == 0) {
+                        today = yesterday;
+                        hr = DAY_HOURS;
+                    }
+
+                    if (maxY < intValue) {
+                        maxY = 100;
+                    }
+
+                    if (minY > intValue) {
+                        minY = 0;
+                    }
                 }
 
-                if (maxY < intValue) {
-                    maxY = 100;
-                }
+                timeSeriesCollection.addSeries(humidityseries);
 
-                if (minY > intValue) {
-                    minY = 0;
-                }
+                return timeSeriesCollection;
             }
-
-            timeSeriesCollection.addSeries(humidityseries);
-
+        } catch (Exception e) {
             return timeSeriesCollection;
         }
     }

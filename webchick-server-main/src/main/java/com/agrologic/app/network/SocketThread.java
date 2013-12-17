@@ -10,7 +10,7 @@ import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
 import com.agrologic.app.model.Controller;
-import com.agrologic.app.util.CommonUtil;
+import com.agrologic.app.util.ApplicationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,7 +151,7 @@ public class SocketThread implements Runnable {
         } finally {
             if (cellink != null) {
                 logger.info("close connection : " + cellink);
-                CommonUtil.sleepSeconds(5);
+                ApplicationUtil.sleepSeconds(5);
 
                 // check if session was removed because of duplication socket was opened before
                 SocketThread socketToClose = clientSessions.getSessions().get(cellink.getId());
@@ -245,10 +245,7 @@ public class SocketThread implements Runnable {
     }
 
     private void waitDelayTime() {
-        try {
-            Thread.sleep(nxtDelay);
-        } catch (InterruptedException e) {
-        }
+        ApplicationUtil.sleep(nxtDelay);
         setThreadState(NetworkState.STATE_SEND);
     }
 
@@ -361,7 +358,7 @@ public class SocketThread implements Runnable {
                 stopThread = true;
             }
         }
-        CommonUtil.sleepMiliSeconds(50);
+        ApplicationUtil.sleepSeconds(1);
     }
 
     private void acceptCellink() {
@@ -391,7 +388,7 @@ public class SocketThread implements Runnable {
                 keepAlive = KeepAliveMessage.parseIncomingBytes(buffer);
                 logger.debug("Received keep alive [{}]", keepAlive);
             } catch (WrongMessageFormatException e) {
-                logger.info("KeepAlive message validation error.");
+                logger.info("KeepAlive message validation error.", e);
                 logger.info("The client IP:PORT [ " + commControl.getSocket().getRemoteSocketAddress() + " ]");
                 return false;
             }
@@ -417,7 +414,6 @@ public class SocketThread implements Runnable {
                 logger.error("The client IP:PORT [ " + commControl.getSocket().getRemoteSocketAddress() + " ]");
                 return false;
             }
-
         } catch (SocketException ex) {
             logger.trace("Client abruptly killed the connection without calling close !");
             logger.trace("The client IP:PORT [ " + commControl.getSocket().getRemoteSocketAddress() + " ]");

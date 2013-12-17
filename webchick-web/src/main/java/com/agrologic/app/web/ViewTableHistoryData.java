@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.*;
 
-public class RepresentInTableTheHistoryData extends AbstractServlet {
+public class ViewTableHistoryData extends AbstractServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *

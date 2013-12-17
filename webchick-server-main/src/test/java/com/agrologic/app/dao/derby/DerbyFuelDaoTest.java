@@ -10,15 +10,14 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FuelDao;
 import com.agrologic.app.dao.derby.impl.DerbyFuelDaoImpl;
 import com.agrologic.app.model.Fuel;
+import org.junit.*;
+
 import java.sql.SQLException;
 import java.util.List;
-
-import org.junit.*;
 
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -45,7 +44,7 @@ public class DerbyFuelDaoTest {
         dao = DbImplDecider.use(DaoType.MYSQL).getDao(FuelDao.class);
     }
 
-//    @Test
+    //    @Test
     public void testCreateTable() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -53,13 +52,13 @@ public class DerbyFuelDaoTest {
         assertTrue(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testDropTable() throws SQLException {
         ((DerbyFuelDaoImpl) dao).dropTable();
         assertFalse(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testInsert() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -75,12 +74,12 @@ public class DerbyFuelDaoTest {
         dao.insert(fuel);
         assertEquals(5, dao.getAllByFlockId(flockId).size());
         List<Fuel> Fuels = dao.getAllByFlockId(flockId);
-        for(Fuel g:Fuels) {
+        for (Fuel g : Fuels) {
             System.out.println(g);
         }
     }
 
-//    @Test
+    //    @Test
     public void testRemove() throws SQLException {
         dao.remove(fuel.getId());
         fuel = dao.getById(flockId);
@@ -90,10 +89,10 @@ public class DerbyFuelDaoTest {
     @Test
     public void testRemoveAll() throws SQLException {
         List<Fuel> FuelList = dao.getAllByFlockId(flockId);
-        for(Fuel g:FuelList) {
+        for (Fuel g : FuelList) {
             dao.remove(g.getId());
         }
         FuelList = dao.getAllByFlockId(flockId);
-        assertEquals(0,FuelList.size());
+        assertEquals(0, FuelList.size());
     }
 }

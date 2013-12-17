@@ -9,51 +9,88 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SecondScreenPanel extends JPanel implements ScreenUI {
 
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private static final int SCROLL_UNIT_INCREMENT = 32;
     private MainScreenPanel mainScreenPanel;
-    private DatabaseManager dbManager;
+    private final DatabaseManager dbManager;
     private Controller controller;
-    private Timer timerDB;
+    private Runnable task;
+    private ScheduledExecutorService executor;
     private Dimension dim;
     private TreeMap<Screen, TreeMap<Table, List<DataController>>> screenTableDataMap;
     private static Logger logger = LoggerFactory.getLogger(SecondScreenPanel.class);
 
-    public SecondScreenPanel(DatabaseManager dbManager, Controller controller) {
+    public SecondScreenPanel(final DatabaseManager dbManager, final Controller controller) {
         initComponents();
         setVisible(false);
         this.dbManager = dbManager;
         this.controller = controller;
         this.lblTitle.setText("<html>" + controller.getTitle() + "</html>");
         this.dim = Windows.screenResolution();
+
+        task = new Runnable() {
+
+            DatabaseAccessor dbaccessor = dbManager.getDatabaseGeneralService();
+            ;
+            private Map<Long, Long> dataList = null;
+
+            @Override
+            public void run() {
+                try {
+                    try {
+                        dataList = dbaccessor.getDataDao().getUpdatedControllerDataValues(controller.getId());
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+
+                    if (screenTableDataMap == null) {
+                        return;
+                    }
+
+                    Iterator<Screen> screenIterator = screenTableDataMap.keySet().iterator();
+                    while (screenIterator.hasNext()) {
+                        Screen screen = screenIterator.next();
+                        TreeMap<Table, List<DataController>> tableDataMap = screenTableDataMap.get(screen);
+                        Iterator<Table> tableIterator = tableDataMap.keySet().iterator();
+                        while (tableIterator.hasNext()) {
+                            Table table = tableIterator.next();
+                            List<DataController> dataFacadeList = tableDataMap.get(table);
+                            for (DataController df : dataFacadeList) {
+                                Set<Map.Entry<Long, Long>> entrySet = dataList.entrySet();
+                                for (Map.Entry<Long, Long> entry : entrySet) {
+                                    if (df.getId().equals(entry.getKey())) {
+                                        df.setValue(entry.getValue());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        };
+
+
     }
 
     public void startTimerThread() {
-        timerDB = new javax.swing.Timer(REFRESH_RATE, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                executeUpdate();
-            }
-        });
-        timerDB.start();
+        executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
     }
 
     public void stopTimerThread() {
-        timerDB.stop();
-        timerDB = null;
+        executor.shutdown();
     }
 
     public void initLoadedControllerData() {
@@ -127,7 +164,6 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
             if (screen.getTitle().equals("Graphs")) {
                 logger.info("Initialization screen with graphs {} ", screen);
                 screenPanel = new Graphs24HourPanel(controller.getId());
-//                screenPanel.setPreferredSize(new Dimension(screenPanel.getWidth(), screenPanel.getHeight()));
                 int w = screenPanel.getWidth();
                 int h = screenPanel.getHeight();
                 screenPanel.setPreferredSize(new Dimension(w, h));
@@ -333,60 +369,5 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
     // End of variables declaration//GEN-END:variables
 
     public synchronized void executeUpdate() {
-        Runnable task = new SwingWorker() {
-
-            DatabaseAccessor dbaccess = dbManager.getDatabaseGeneralService();
-            List<Data> dl = null;
-
-            @Override
-            protected Object doInBackground() throws Exception {
-                try {
-                    dl = (List<Data>) dbaccess.getDataDao().getControllerData(controller.getId());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (NoSuchElementException e) {
-                    e.printStackTrace();
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                //this in the other hand will always be executed on the EDT.
-                //This has to be done in the EDT because currently JTableBinding
-                //is not smart enough to realize that the notification comes in another
-                //thread and do a SwingUtilities.invokeLater. So we are force to execute this
-                // in the EDT. Seee http://markmail.org/thread/6ehh76zt27qc5fis and
-                // https://beansbinding.dev.java.net/issues/show_bug.cgi?id=60
-                if (screenTableDataMap == null) {
-                    return;
-                }
-
-                Iterator<Screen> screenIterator = screenTableDataMap.keySet().iterator();
-                while (screenIterator.hasNext()) {
-                    Screen screen = screenIterator.next();
-                    TreeMap<Table, List<DataController>> tableDataMap = screenTableDataMap.get(screen);
-                    Iterator<Table> tableIterator = tableDataMap.keySet().iterator();
-                    while (tableIterator.hasNext()) {
-                        Table table = tableIterator.next();
-                        List<DataController> dataFacadeList = tableDataMap.get(table);
-                        for (DataController df : dataFacadeList) {
-                            Iterator<Data> dataIterator = dl.iterator();
-                            while (dataIterator.hasNext()) {
-                                Data data = dataIterator.next();
-                                if (df.getId().equals(data.getId())) {
-                                    data.setFormat(df.getFormat());
-                                    //df.setValue(data.getValueToUI());
-                                    df.setValue(data.getValue());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        };
-        executorService.execute(task);
     }
 }

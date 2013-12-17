@@ -6,7 +6,6 @@
 package com.agrologic.app.dao.mysql.impl;
 
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.ProgramSystemStateDao;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.ProgramSystemState;
@@ -26,7 +25,6 @@ public class ProgramSystemStateDaoImpl implements ProgramSystemStateDao {
     protected final Logger logger = LoggerFactory.getLogger(ProgramSystemStateDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    protected DaoFactory dao;
 
     /**
      * {@inheritDoc}

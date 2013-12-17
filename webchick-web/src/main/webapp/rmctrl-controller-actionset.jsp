@@ -1,7 +1,6 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 
 <%@ include file="language.jsp" %>
-
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.*" %>
 <%@ page import="java.util.Collection" %>
@@ -15,7 +14,7 @@
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
-    Long screenId = Long.parseLong((String) request.getParameter("screenId"));
+    Long screenId = Long.parseLong(request.getParameter("screenId"));
     Controller controller = (Controller) request.getAttribute("controller");
     Program program = controller.getProgram();
     Collection<Screen> screens = program.getScreens();
@@ -28,37 +27,11 @@
         response.sendRedirect("./rmtctrl-actionset.html?lang=" + lang + "&userId=" + userId + "&cellinkId=" + cellinkId + "&screenId=" + screenId + "&controllerId=" + controllerId);
     }
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=session.getAttribute("all.screen.page.title")%>
     </title>
-
-    <style type="text/css">
-        div.tableHolder {
-            OVERFLOW: auto;
-            WIDTH: 800px;
-            HEIGHT: 600px;
-            POSITION: relative;
-        }
-
-        thead td {
-            Z-INDEX: 20;
-            POSITION: relative;
-            TOP: expression(this.offsetParent.scrollTop-2);
-            HEIGHT: 20px;
-            TEXT-ALIGN: center
-        }
-
-        tfoot td {
-            Z-INDEX: 20;
-            POSITION: relative;
-            TOP: expression(this.offsetParent.clientHeight - this.offsetParent.scrollHeight + this.offsetParent.scrollTop);
-            HEIGHT: 20px;
-            TEXT-ALIGN: left;
-            text-wrap: suppress;
-        }
-    </style>
     <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
@@ -122,41 +95,17 @@
 <table width="100%">
     <tr>
         <td align="center">
-            <fieldset style="-moz-border-radius:8px;  border-radius: 8px;  -webkit-border-radius: 8px; width: 95%">
+            <fieldset style="-moz-border-radius:8px;  border-radius: 8px;  -webkit-border-radius: 8px;">
                 <table border="0" cellPadding=1 cellSpacing=1 width="100%">
                     <tr>
-                        <td>
-                            <table align="center">
-                                <tr>
-                                    <td align="center" valign="top">
-                                        <h2><%=controller.getTitle()%>
-                                        </h2>
-                                    </td>
-                                </tr>
-                            </table>
+                        <td align="center">
+                            <h2><%=controller.getTitle()%>
+                            </h2>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <%@include file="toplang.jsp" %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table id="tblProgress" align="center" style="display:none;">
-                                <tr>
-                                    <td align="left">
-                                        <div id="divMessage" style="text-align:center;font-size:medium"></div>
-                                        <div id="divSliderBG"><img src="Images/Transparent.gif" height="1" width="1"/>
-                                        </div>
-                                        <div id="divSlider"><img src="Images/Transparent.gif" height="1" width="1"/>
-                                        </div>
-                                        <input id="btnStop" align="center" type="button"
-                                               value="<%=session.getAttribute("button.stay.online")%>"
-                                               onclick="stopTimer();"/>
-                                    </td>
-                                </tr>
-                            </table>
                         </td>
                     </tr>
                 </table>
@@ -166,10 +115,6 @@
     <tr>
         <td align="center">
             <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px; width: 95%">
-                <a href="./rmtctrl-actionset.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=cellinkId%>&programId=<%=controller.getProgramId()%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>">
-                    <img src="resources/images/refresh.gif" style="cursor: pointer" border="0"/>
-                    &nbsp;<%=session.getAttribute("button.refresh")%>&nbsp;
-                </a>
                 <table style="font-size:90%;" width="100%" border="0">
                     <tr>
                         <td valign="top">
@@ -254,16 +199,6 @@
                                     <%}%>
                                 </table>
                             </form>
-                        </td>
-                    </tr>
-                </table>
-                <table width="100%">
-                    <tr>
-                        <td align="center">
-                            <a href="./rmtctrl-screens.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=<%=screenId%>&controllerId=<%=controller.getId()%>">
-                                <img src="resources/images/refresh.gif" style="cursor: pointer"
-                                     border="0"/>&nbsp;<%=session.getAttribute("button.refresh")%>&nbsp;
-                            </a>
                         </td>
                     </tr>
                 </table>

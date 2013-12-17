@@ -53,7 +53,7 @@
             <td align="center">
                 <fieldset style="-moz-border-radius:8px;  border-radius: 8px;  -webkit-border-radius: 8px; width: 85%">
                     <br/>
-                    <jsp:include page="represent-in-tablehistory24.html"/>
+                    <jsp:include page="view-tablehistory24.html"/>
                 </fieldset>
             </td>
         </tr>

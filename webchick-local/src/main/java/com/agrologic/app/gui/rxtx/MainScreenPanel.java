@@ -6,7 +6,8 @@ import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.rxtx.DataController;
 import com.agrologic.app.util.Windows;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -15,13 +16,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MainScreenPanel extends JPanel implements ScreenUI {
 
@@ -37,13 +37,17 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
     private List<MainScreenPanel> otherMainScreens;
     private Controller controller;
     private DatabaseManager dbManager;
-    private Timer timerDB;
+    private ScheduledExecutorService executor;
+    private BufferedImage image;
+    private static Logger logger = LoggerFactory.getLogger(MainScreenPanel.class);
+
 
     /**
      * Creates new form MainScreenPanel
      */
-    public MainScreenPanel(DatabaseManager dbManager, Controller controller) {
+    public MainScreenPanel(final DatabaseManager dbManager, final Controller controller) {
         initComponents();
+
         this.dbManager = dbManager;
         this.me = this;
         this.controller = controller;
@@ -74,17 +78,68 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
         pnlHouse.add(btnHouse);
         add(pnlHouse);
 
+        try {
+            image = ImageIO.read(getClass().getResource("/images/alarm.gif"));
+        } catch (IOException e) {
+            logger.error("Cannot load icon alarm.gif");
+        }
+
         initLoadedControllerData();
         initScreenComponents();
 
-        timerDB = new javax.swing.Timer(ScreenUI.REFRESH_RATE, new ActionListener() {
+        Runnable task = new Runnable() {
+
+            private DatabaseAccessor dbaccessor;
+            private Map<Long, Long> dataList = null;
 
             @Override
-            public void actionPerformed(ActionEvent e) {
-                executeUpdate();
+            public void run() {
+                try {
+                    try {
+                        dbaccessor = dbManager.getDatabaseGeneralService();
+                        dataList = dbaccessor.getDataDao().getUpdatedControllerDataValues(controller.getId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    // this in the other hand will always be executed on the EDT.
+                    // This has to be done in the EDT because currently JTableBinding
+                    // is not smart enough to realize that the notification comes in another
+                    // thread and do a SwingUtilities.invokeLater. So we are force to execute this
+                    // in the EDT. See http://markmail.org/thread/6ehh76zt27qc5fis and
+                    // https://beansbinding.dev.java.net/issues/show_bug.cgi?id=60
+                    if (dataList == null) {
+                        return;
+                    }
+                    for (DataController df : dataControllerList) {
+                        Set<Map.Entry<Long, Long>> entrySet = dataList.entrySet();
+                        for (Map.Entry<Long, Long> entry : entrySet) {
+                            if (df.getId().equals(entry.getKey())) {
+                                df.setValue(entry.getValue());
+                                // check alarm data
+                                if (entry.getKey().compareTo(Long.valueOf(3154)) == 0) {
+                                    int val = (entry.getValue().intValue());
+                                    if (val > 0) {
+                                        try {
+                                            btnHouse.setIcon(new ImageIcon(image));
+                                        } catch (Exception e) {
+                                            logger.error("Cannot load alarm.gif");
+                                        }
+                                    } else {
+                                        btnHouse.setIcon(null);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
-        });
-        timerDB.start();
+        };
+
+        executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
     }
 
     @Override
@@ -108,7 +163,6 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
     @Override
     public void initScreenComponents() {
         btnHouse.setText("<html>" + controller.getTitle() + "</html>");
-//        setUpdatedTime(btnHouse);
         btnHouse.setSize(btnHouse.getText().length() * 2, btnHouse.getHeight());
         btnHouse.setToolTipText("<html>" + controller.getProgram().getName() + "</html>");
         dataPanel = new DataPanel(dataControllerList, controller, dbManager.getDatabaseGeneralService());
@@ -170,75 +224,6 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
 
     @Override
     public void executeUpdate() {
-        Runnable task = new SwingWorker() {
-
-            private DatabaseAccessor dbaccessor;
-            private List<Data> dataList = null;
-
-            @Override
-            protected Object doInBackground() throws Exception {
-                try {
-                    dbaccessor = dbManager.getDatabaseGeneralService();
-                    dataList = (List<Data>) dbaccessor.getDataDao().getControllerDataValues(controller.getId());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                // this in the other hand will always be executed on the EDT.
-                // This has to be done in the EDT because currently JTableBinding
-                // is not smart enough to realize that the notification comes in another
-                // thread and do a SwingUtilities.invokeLater. So we are force to execute this
-                // in the EDT. See http://markmail.org/thread/6ehh76zt27qc5fis and
-                // https://beansbinding.dev.java.net/issues/show_bug.cgi?id=60
-                for (DataController df : dataControllerList) {
-                    Iterator<Data> iter = dataList.iterator();
-                    while (iter.hasNext()) {
-                        Data data = iter.next();
-                        if (df.getId().equals(data.getId())) {
-                            df.setValue(data.getValueToUI());
-                        }
-                    }
-                }
-
-                if (isAlarmOnController(dataList)) {
-                    try {
-                        BufferedImage image = ImageIO.read(getClass().getResource("/images/alarm.gif"));
-                        btnHouse.setIcon(new ImageIcon(image));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    btnHouse.setIcon(null);
-                }
-            }
-        };
-        executorService.execute(task);
-    }
-
-    private boolean isAlarmOnController(Collection<Data> onScreenData) {
-        boolean result = false;
-
-        for (Data d : onScreenData) {
-            if (d.getId().compareTo(Long.valueOf(3154)) == 0) {
-                try {
-                    int val = (d.getValue().intValue());
-                    if (val > 0) {
-                        result = true;
-                    }
-                } catch (Exception e) {
-                    return result;
-                }
-            }
-        }
-
-        return result;
     }
 
     /**

@@ -1,20 +1,14 @@
 package com.agrologic.app.dao.mysql.impl;
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.GasDao;
 import com.agrologic.app.dao.mappers.RowMappers;
-import com.agrologic.app.model.Fuel;
 import com.agrologic.app.model.Gas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +60,6 @@ public class GasDaoImpl implements GasDao {
     public List<Gas> getAllByFlockId(Long flockId) throws SQLException {
         logger.debug("Get all gas data with flock id {} ", flockId);
         String sql = "select * from gas where FlockID=?";
-        return jdbcTemplate.query(sql,new Object[]{flockId}, RowMappers.gas());
+        return jdbcTemplate.query(sql, new Object[]{flockId}, RowMappers.gas());
     }
 }

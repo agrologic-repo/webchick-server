@@ -95,8 +95,8 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
 
                         program.setProgramRelays(programRelayDao.getAllProgramRelays(program.getId(), langId));
                         program.setProgramAlarms(programAlarmDao.getAllProgramAlarms(program.getId(), langId));
-                        program.setProgramSystemStates(programSystemStateDao.getAllProgramSystemStates(program.getId(),
-                                langId));
+                        program.setProgramSystemStates(
+                                programSystemStateDao.getAllProgramSystemStates(program.getId(), langId));
 
                         Long nextScreenID = screenDao.getSecondScreenAfterMain(program.getId());
                         Screen screen = screenDao.getById(program.getId(), screenId, langId);
@@ -356,11 +356,13 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                     List<ProgramRelay> relayList = getProgramRelaysByRelayType(programRelays, data.getId());
 
                     if (relayList.size() > 0) {
+
                         for (ProgramRelay relay : relayList) {
                             if (relay.getRelayNumber() != 0) {
                                 out.println(
                                         "<tr class='' onmouseover=\"this.className='selected'\" "
                                                 + "onmouseout=\"this.className=''\">");
+
                                 out.println("<td class=\"label\" nowrap>");
                                 out.println(relay.getUnicodeText());
                                 out.println("</td>");

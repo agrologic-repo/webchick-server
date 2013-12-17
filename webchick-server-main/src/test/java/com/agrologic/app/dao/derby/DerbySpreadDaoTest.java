@@ -10,16 +10,14 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.SpreadDao;
 import com.agrologic.app.dao.derby.impl.DerbySpreadDaoImpl;
 import com.agrologic.app.model.Spread;
-import java.sql.SQLException;
-import java.util.List;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import static org.junit.Assert.*;
 import org.junit.*;
 
+import java.sql.SQLException;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -54,13 +52,13 @@ public class DerbySpreadDaoTest {
         assertTrue(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testDropTable() throws SQLException {
         ((DerbySpreadDaoImpl) dao).dropTable();
         assertFalse(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testInsert() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -76,25 +74,25 @@ public class DerbySpreadDaoTest {
         dao.insert(spread);
         assertEquals(5, dao.getAllByFlockId(flockId).size());
         List<Spread> spreads = dao.getAllByFlockId(flockId);
-        for(Spread g:spreads) {
+        for (Spread g : spreads) {
             System.out.println(g);
         }
     }
 
-//    @Test
+    //    @Test
     public void testRemove() throws SQLException {
         dao.remove(spread.getId());
         spread = dao.getById(flockId);
         assertNull(spread);
     }
 
-//    @Test
+    //    @Test
     public void testRemoveAll() throws SQLException {
         List<Spread> spreadList = dao.getAllByFlockId(flockId);
-        for(Spread g:spreadList) {
+        for (Spread g : spreadList) {
             dao.remove(g.getId());
         }
         spreadList = dao.getAllByFlockId(flockId);
-        assertEquals(0,spreadList.size());
+        assertEquals(0, spreadList.size());
     }
 }

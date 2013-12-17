@@ -5,19 +5,19 @@
 package com.agrologic.app.dao;
 
 import com.agrologic.app.model.Screen;
-import java.sql.SQLException;
-import java.util.Collection;
 import org.junit.*;
 
+import java.sql.SQLException;
+import java.util.Collection;
+
 /**
- *
  * @author Administrator
  */
 @Ignore
 public class ScreenDaoTest {
-    long programId  = 83901;
-    long screenId   = 1;
-    long langId     = 1;
+    long programId = 83901;
+    long screenId = 1;
+    long langId = 1;
     ScreenDao dao;
 
     public ScreenDaoTest() {

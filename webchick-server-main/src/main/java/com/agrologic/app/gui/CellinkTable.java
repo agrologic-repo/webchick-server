@@ -9,6 +9,10 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,8 +24,12 @@ import java.util.concurrent.TimeUnit;
 
 public final class CellinkTable extends JTable {
     private static final long serialVersionUID = 1234432112344321L;
+    private JPopupMenu popupTableMenu;
+    private JMenuItem startedState;
+    private JMenuItem stoppedState;
     private Logger logger = Logger.getLogger(CellinkTable.class);
     private transient CellinkDao cellinkDao;
+
     private ScheduledExecutorService executor;
 
     public CellinkTable() {
@@ -35,6 +43,45 @@ public final class CellinkTable extends JTable {
         setAutoCreateRowSorter(false);
         setFont(new java.awt.Font("Tahoma", Font.PLAIN, 12));
         setDefaultRenderer(CellinkState.class, new CellinkStateCellRenderer());
+
+        popupTableMenu = new JPopupMenu();
+        startedState = new JMenuItem("Start");
+        startedState.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                int row = getSelectedRow();
+                setState(row, CellinkState.STATE_START);
+            }
+        });
+
+        popupTableMenu.add(startedState);
+        stoppedState = new JMenuItem("Stop");
+        stoppedState.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                int row = getSelectedRow();
+                setState(row, CellinkState.STATE_STOP);
+            }
+        });
+        popupTableMenu.add(stoppedState);
+        addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isMetaDown()) {
+                    popupTableMenu.show(CellinkTable.this, e.getX(), e.getY());
+                    // get the coordinates of the mouse click
+                    Point p = e.getPoint();
+                    // get the row index that contains that coordinate
+                    int rowNumber = CellinkTable.this.rowAtPoint(p);
+                    // Get the ListSelectionModel of the JTable
+                    ListSelectionModel model = CellinkTable.this.getSelectionModel();
+                    // set the selected interval of rows. Using the "rowNumber"
+                    // variable for the beginning and end selects only that one row.
+                    model.setSelectionInterval(rowNumber, rowNumber);
+                }
+            }
+        });
     }
 
     /**
@@ -71,33 +118,39 @@ public final class CellinkTable extends JTable {
                 private CellinkTableModel cellinkModel;
 
                 public void run() {
-                    cellinkModel = ((CellinkTableModel) getModel());
-                    if (cellinkModel.size() == 0) {
-                        cellinkModel.addAll(retrieveCellinks());
-                    } else {
-                        int countCellinksInMemory = ((CellinkTableModel) getModel()).size();
-                        int countCellinksInDatabase = countCellinks();
-
-                        if(countCellinksInMemory != countCellinksInDatabase) {
-                            List<Cellink> cellinkListTemp = (List<Cellink>) retrieveCellinks();
-                            int length = (countCellinksInMemory < countCellinksInDatabase)
-                                    ? cellinkModel.size()
-                                    : cellinkListTemp.size();
-                            cellinkModel.addAndRemoveAbsent(cellinkListTemp);
-                            cellinkModel.setReloadChanges(length, cellinkListTemp);
+                    try {
+                        cellinkModel = ((CellinkTableModel) getModel());
+                        if (cellinkModel.size() == 0) {
+                            cellinkModel.addAll(retrieveCellinks());
                         } else {
-                            List<Cellink> cellinkListTemp = (List<Cellink>) retrieveCellinks();
-                            int length = (countCellinksInMemory < countCellinksInDatabase)
-                                    ? cellinkModel.size()
-                                    : cellinkListTemp.size();
-                            cellinkModel.setReloadChanges(length, cellinkListTemp);
+                            int countCellinksInMemory = ((CellinkTableModel) getModel()).size();
+                            int countCellinksInDatabase = countCellinks();
+
+                            if (countCellinksInMemory != countCellinksInDatabase) {
+                                List<Cellink> cellinkListTemp = (List<Cellink>) retrieveCellinks();
+                                int length = (countCellinksInMemory < countCellinksInDatabase)
+                                        ? cellinkModel.size()
+                                        : cellinkListTemp.size();
+                                cellinkModel.addAndRemoveAbsent(cellinkListTemp);
+                                cellinkModel.setReloadChanges(length, cellinkListTemp);
+                            } else {
+                                List<Cellink> cellinkListTemp = (List<Cellink>) retrieveCellinks();
+                                int length = (countCellinksInMemory < countCellinksInDatabase)
+                                        ? cellinkModel.size()
+                                        : cellinkListTemp.size();
+                                cellinkModel.setReloadChanges(length, cellinkListTemp);
+                            }
                         }
+                        validate();
+                        repaint();
+                        invalidate();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    repaint();
-                    invalidate();
                 }
             };
-            executor = Executors.newScheduledThreadPool(1);
+
+            executor = Executors.newSingleThreadScheduledExecutor();
             executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
         }
     }
@@ -121,13 +174,13 @@ public final class CellinkTable extends JTable {
         }
     }
 
-    private int countCellinks() {
+    private synchronized int countCellinks() {
         if (cellinkDao == null) {
             cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         }
         try {
-
             return cellinkDao.count();
+
         } catch (SQLException ex) {
             logger.error("Load data error: " + ex.getMessage());
             return 0;
@@ -162,11 +215,11 @@ public final class CellinkTable extends JTable {
     }
 
     /**
-     * Return counter of current online cellinks .
+     * Return counter of current online cellink .
      *
      * @return onlineCount the online counter.
      */
-    public int onlineCellinks() {
+    public synchronized int onlineCellinks() {
         int onlineCount = 0;
         CellinkTableModel ctb = ((CellinkTableModel) getModel());
 
@@ -182,14 +235,14 @@ public final class CellinkTable extends JTable {
     }
 
     /**
-     * Return counter of current total cellinks .
+     * Return counter of current total cellink .
      *
-     * @return totalCellinks the total cellinks .
+     * @return totalCellinks the total cellink .
      */
     public int totalCellinks() {
-        CellinkTableModel ctb = ((CellinkTableModel) getModel());
-        synchronized (ctb.getData()) {
-            return ctb.getData().size();
+        CellinkTableModel cellinkTableModel = ((CellinkTableModel) getModel());
+        synchronized (cellinkTableModel.getData()) {
+            return cellinkTableModel.getData().size();
         }
     }
 

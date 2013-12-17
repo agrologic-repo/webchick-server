@@ -7,6 +7,7 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.gui.ServerUI;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkState;
+import com.agrologic.app.util.ApplicationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,16 +29,14 @@ public class ServerThread extends Observable implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(ServerThread.class);
     private static ClientSessions clientSessions;
     private final CellinkDao cellinkDao;
-    private final ScheduledExecutorService executor;
+    private ScheduledExecutorService executor;
     private ServerActivityStates currentState;
     private ServerSocket server;
-//    private Map<Long, SocketThread> threads;
 
     public ServerThread(ServerUI serverFacade) {
         cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         this.currentState = ServerActivityStates.IDLE;
         this.clientSessions = new ClientSessions(serverFacade, cellinkDao);
-        this.executor = Executors.newScheduledThreadPool(2);
     }
 
     /**
@@ -53,8 +52,8 @@ public class ServerThread extends Observable implements Runnable {
             logger.info("Try to open server on port : " + port);
             server = new ServerSocket(port, MAX_NUM_SOCKET, ia);
             server.setSoTimeout(SERVER_SOCKET_TIMEOUT);
+            executor = Executors.newScheduledThreadPool(2);
             executor.scheduleAtFixedRate(new SocketThreadStarter(this), 0L, 1L, TimeUnit.SECONDS);
-//            executor.scheduleAtFixedRate(new ClientSessionsSizeMonitor(this), 0L, 1L, TimeUnit.SECONDS);
             logger.info("ServerSocket opened on " + server.getLocalSocketAddress());
             return true;
         } catch (BindException ex) {
@@ -77,12 +76,7 @@ public class ServerThread extends Observable implements Runnable {
             switch (getServerState()) {
                 default:
                 case IDLE:
-                    try {
-                        Thread.sleep(100);
-                    } catch (Exception ex) {
-
-                    }
-
+                    ApplicationUtil.sleep(100);
                     break;
 
                 case START:
@@ -100,8 +94,7 @@ public class ServerThread extends Observable implements Runnable {
                 case RUNNING:
                     try {
                         Socket socket = server.accept();//start client session
-                        SocketThread newThread = clientSessions
-                                .createSessionWithClient(socket);
+                        SocketThread newThread = clientSessions.createSessionWithClient(socket);
                         setChanged();
                         notifyObservers(newThread);
                     } catch (SocketException ex) {
@@ -166,18 +159,11 @@ public class ServerThread extends Observable implements Runnable {
                     log.debug("Changing cellinks state to offline state...");
                     clientSessions.closeAllSessions();
                 }
-                log.debug("Cellinks state are offline now!");
-            } catch (SQLException e) {
-                e.printStackTrace();
+                logger.info("Close ServerSocket.");
+                server.close();
+
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-
-            try {
-                logger.info("Trying to close ServerSocket.");
-                server.close();
-            } catch (IOException ex) {
-                logger.error("Error closing ServerSocket. ", ex);
             }
         }
         executor.shutdown();

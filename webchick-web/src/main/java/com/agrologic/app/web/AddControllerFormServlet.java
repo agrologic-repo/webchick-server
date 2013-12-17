@@ -49,7 +49,7 @@ public class AddControllerFormServlet extends AbstractServlet {
         controller.setCellinkId(cellinkId);
         controller.setProgramId(programId);
         controller.setName(controllerType);
-        controller.setName(houseType);
+        controller.setHouseType(houseType);
 
         if ((active != null) && "ON".equals(active.toUpperCase())) {
             controller.setActive(true);

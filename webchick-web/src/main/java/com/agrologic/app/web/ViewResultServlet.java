@@ -62,7 +62,8 @@ public class ViewResultServlet extends AbstractServlet {
                     List<Program> programs = (List<Program>) programDao.getAll();
                     Program program = programDao.getById(programId);
                     ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                    List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(programId, translateLang, false);
+                    List<Screen> screens =
+                            (List<Screen>) screenDao.getAllScreensByProgramAndLang(programId, translateLang, false);
                     program.setScreens(screens);
 
                     TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);

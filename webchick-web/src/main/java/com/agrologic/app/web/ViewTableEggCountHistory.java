@@ -20,7 +20,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.*;
 
-public class RepresentInTableEggCountHistory extends AbstractServlet {
+public class ViewTableEggCountHistory extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP

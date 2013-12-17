@@ -44,7 +44,8 @@ public class CellinkInfoServlet extends AbstractServlet {
 
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                     Collection<Controller> controllers = controllerDao.getAllByCellink(cellink.getId());
-                    logger.info("retrieve {} controllers which connected to cellink {} ", controllers.size());
+                    logger.info("retrieve {} controllers which connected to cellink {} ", controllers.size(),
+                            cellink.getName());
 
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     for (Controller controller : controllers) {

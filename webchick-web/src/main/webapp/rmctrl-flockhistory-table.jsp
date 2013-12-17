@@ -68,7 +68,7 @@
                         </tr>
                     </table>
                     <br/>
-                    <jsp:include page="represent-in-tablehistory.html"/>
+                    <jsp:include page="view-tablehistory.html"/>
                 </fieldset>
             </td>
         </tr>

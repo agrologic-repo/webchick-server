@@ -35,15 +35,20 @@ public class EggDaoImpl implements EggDao {
         valuesToInsert.put("EggsQuantity", eggs.getEggQuantity());
         valuesToInsert.put("SoftShelled", eggs.getSoftShelled());
         valuesToInsert.put("Cracked", eggs.getCracked());
+        valuesToInsert.put("FeedConsump", eggs.getFeedConsump());
+        valuesToInsert.put("WaterConsump", eggs.getWaterConsump());
+        valuesToInsert.put("DailyMortal", eggs.getDailyMortal());
         jdbcInsert.execute(valuesToInsert);
     }
 
     @Override
     public void update(Eggs eggs) throws SQLException {
         logger.debug("Update eggs ");
-        String sql = "update eggs set SoftShelled=? , Cracked=? where FlockID=? and Day=?";
-        jdbcTemplate.update(sql, new Object[]{eggs.getSoftShelled(), eggs.getCracked(),
-                eggs.getFlockId(), eggs.getDay()});
+        String sql = "update eggs set NumOfBirds=?,EggsQuantity=?,SoftShelled=? ,Cracked=?, FeedConsump=?, " +
+                " WaterConsump=?, DailyMortal=? where FlockID=? and Day=?";
+        jdbcTemplate.update(sql, new Object[]{eggs.getNumOfBirds(), eggs.getEggQuantity(), eggs.getSoftShelled(),
+                eggs.getCracked(), eggs.getFeedConsump(), eggs.getWaterConsump(), eggs.getDailyMortal(), eggs.getFlockId(),
+                eggs.getDay()});
     }
 
     @Override

@@ -1,10 +1,4 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.messaging;
-
 
 import com.agrologic.app.model.Data;
 
@@ -12,7 +6,12 @@ import java.util.*;
 
 public class RequestMessageQueueHistory24 {
     private static final int DEFAULT_GROWDAY = 1;
+
+    /**
+     *
+     */
     public enum DataType {
+
         OVERALL_WATER_CONSUMPTION("D1", 1302), FEED_CONSUMPTION("D2", 1301),
         INSIDE_TEMPERATURE("D18", 3122), OUTSIDE_TEMPERATURE("D19", 3107), PER_HOUR_HUMIDITY("D20", 3142),
         PER_HOUR_WATER_CONSUMPTION("D21", 1302), WATER_2_CONSUMPTION("D42", 1329), FEED_2_CONSUMPTION("D43", 1328),
@@ -27,6 +26,7 @@ public class RequestMessageQueueHistory24 {
         public final String name;
         public final int id;
     }
+
     private Integer growDay;
     private final String netname;
     private final CyclicQueue<RequestMessage> requests;

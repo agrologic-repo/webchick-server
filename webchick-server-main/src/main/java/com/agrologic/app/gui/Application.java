@@ -12,14 +12,13 @@
 package com.agrologic.app.gui;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.exception.JarFileWasNotFound;
+import com.agrologic.app.exception.RestartApplicationException;
 import com.agrologic.app.exception.StartProgramException;
 import com.agrologic.app.model.Cellink;
-import com.agrologic.app.model.CellinkState;
 import com.agrologic.app.network.*;
+import com.agrologic.app.util.ApplicationUtil;
 import com.agrologic.app.util.Clock;
 import com.agrologic.app.util.ProgramInstanceLocker;
-import com.agrologic.app.util.RestartApplication;
 import com.agrologic.app.util.Windows;
 import org.apache.log4j.Logger;
 
@@ -40,13 +39,9 @@ public class Application extends JFrame implements Observer, ServerUI {
     private Thread serverThread;
     private ServerInfo serverInfo;
     private Clock clock;
-    private JPopupMenu popupTableMenu;
-    private JMenuItem startedState;
-    private JMenuItem stoppedState;
     private CellinkTable cellinkTable;
     private final Logger logger = Logger.getLogger(Application.class);
-    private static final String ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE = "Error opening socket \n" +
-            "host or port already in use !";
+    private static final String SOCKET_ALREADY_IN_USE = "Error opening socket \n Host or port already in use !";
     private static final String CANNOT_CREATE_LOCK_FILE = "Can't create Lock File.\nAccess is denied !";
 
     /**
@@ -71,26 +66,6 @@ public class Application extends JFrame implements Observer, ServerUI {
         cellinkTable = new CellinkTable();
         cellinkTableScrolPane.setViewportView(cellinkTable);
         paneServer.addTab("Cellink List", cellinkTableScrolPane);
-        popupTableMenu = new JPopupMenu();
-        startedState = new JMenuItem("Start");
-        startedState.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                int row = cellinkTable.getSelectedRow();
-                cellinkTable.setState(row, CellinkState.STATE_START);
-            }
-        });
-
-        popupTableMenu.add(startedState);
-        stoppedState = new JMenuItem("Stop");
-        stoppedState.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                int row = cellinkTable.getSelectedRow();
-                cellinkTable.setState(row, CellinkState.STATE_STOP);
-            }
-        });
-        popupTableMenu.add(stoppedState);
 
         Windows.setWindowsLAF(Application.this);
         Windows.centerOnScreen(Application.this);
@@ -150,32 +125,7 @@ public class Application extends JFrame implements Observer, ServerUI {
         this.clock = new Clock();
         this.clock.addObserver(serverInfo);
 
-        cellinkTable.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (e.isMetaDown()) {
-                    popupTableMenu.show(cellinkTable, e.getX(), e.getY());
-                    // get the coordinates of the mouse click
-                    Point p = e.getPoint();
-                    // get the row index that contains that coordinate
-                    int rowNumber = cellinkTable.rowAtPoint(p);
-                    // Get the ListSelectionModel of the JTable
-                    ListSelectionModel model = cellinkTable.getSelectionModel();
-                    // set the selected interval of rows. Using the "rowNumber"
-                    // variable for the beginning and end selects only that one row.
-                    model.setSelectionInterval(rowNumber, rowNumber);
-                }
-            }
-        });
         initServerSocketThread();
-
-//        try {
-//            String version = DbImplDecider.use(DaoType.MYSQL).getDao(VersionDao.class).getVersion();
-//        } catch (RuntimeException e) {
-//            logger.debug("Cannot get database version ", e);
-//            openConfiguration();
-//        }
     }
 
     public final void initServerSocketThread() {
@@ -189,7 +139,7 @@ public class Application extends JFrame implements Observer, ServerUI {
             serverThread.start();
             clock.start();
             if (serverSocketThread.getServerState() == ServerActivityStates.ERROR) {
-                JOptionPane.showMessageDialog(Application.this, ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE,
+                JOptionPane.showMessageDialog(Application.this, SOCKET_ALREADY_IN_USE,
                         "Error", JOptionPane.ERROR_MESSAGE);
                 serverSocketThread.setServerActivityState(ServerActivityStates.STOPPED);
             } else {
@@ -232,7 +182,8 @@ public class Application extends JFrame implements Observer, ServerUI {
 
                 } finally {
                     if (serverSocketThread.getServerState() == ServerActivityStates.ERROR) {
-                        JOptionPane.showMessageDialog(Application.this, ERROR_OPENING_SOCKET_SERVER_ADDRESS_ALREADY_IN_USE, "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(Application.this,
+                                SOCKET_ALREADY_IN_USE, "Error", JOptionPane.ERROR_MESSAGE);
                         serverSocketThread.setServerActivityState(ServerActivityStates.STOPPED);
                     } else {
                         btnStart.setEnabled(false);
@@ -326,9 +277,9 @@ public class Application extends JFrame implements Observer, ServerUI {
             if (arg instanceof ServerActivityStates) {
                 ServerActivityStates state = (ServerActivityStates) arg;
                 if (state == ServerActivityStates.START) {
-                    enableToolBarButtons(false);
+                    setEnableToolBarButtons(false);
                 } else if (state == ServerActivityStates.STOPPED) {
-                    enableToolBarButtons(true);
+                    setEnableToolBarButtons(true);
                 }
             }
         }
@@ -342,10 +293,9 @@ public class Application extends JFrame implements Observer, ServerUI {
         lblConnectedCellinks.setText(serverInfo.getActiveCellinks().toString());
     }
 
-    private void enableToolBarButtons(boolean enable) {
+    private void setEnableToolBarButtons(boolean enable) {
         btnStart.setEnabled(enable);
         btnStop.setEnabled(!enable);
-        //btnSetting.setEnabled(enable);
     }
 
     public void openConfiguration() {
@@ -358,12 +308,10 @@ public class Application extends JFrame implements Observer, ServerUI {
                 result = configDialog.showDialog();
             }
             if (result == true) {
-                RestartApplication.restartUsingFileClassAndProcessBuilder();
+                ApplicationUtil.restartApplication(Application.class);
             }
-        } catch (JarFileWasNotFound ex) {
-            logger.error("Cannot restart application . URI does not correct.", ex);
-        } catch (IOException ex) {
-            logger.error(ex.getMessage(), ex);
+        } catch (RestartApplicationException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -473,6 +421,7 @@ public class Application extends JFrame implements Observer, ServerUI {
         btnWizardDB.setMaximumSize(new java.awt.Dimension(32, 32));
         btnWizardDB.setMinimumSize(new java.awt.Dimension(32, 32));
         btnWizardDB.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
         ToolBar.add(btnWizardDB);
 
         pnlServer.setBorder(javax.swing.BorderFactory.createTitledBorder("Server Info"));

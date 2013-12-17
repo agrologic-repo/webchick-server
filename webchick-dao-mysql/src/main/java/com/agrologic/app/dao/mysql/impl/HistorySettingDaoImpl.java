@@ -6,7 +6,6 @@
 package com.agrologic.app.dao.mysql.impl;
 
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.HistorySettingDao;
 import com.agrologic.app.model.HistorySetting;
 import org.slf4j.Logger;
@@ -14,12 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 // TODO : have to fix HistorySettingDao
 public class HistorySettingDaoImpl implements HistorySettingDao {
 

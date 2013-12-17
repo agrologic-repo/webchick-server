@@ -61,9 +61,30 @@ public class DataPanel extends JPanel {
 
         int j = k;
 
+
         for (ProgramRelay programRelay : programRelays) {
             if (programRelay.getDataId().equals(data.getId())) {
-                if (programRelay.getRelayNumber() != 0) {
+
+                if (programRelay.getRelayNumber() == 0) {
+                    if (controller.getName().equals("WOD")) {
+                        if (data.getValue() == null || data.getValue() == -1) {
+                            programRelay.setOff();
+                        } else {
+                            programRelay.init(data.getValueToUI());
+                        }
+
+                        DataComponent dataComponent = new DataComponent(data, DataComponent.X_OFFSET,
+                                DataComponent.Y_OFFSET + DataComponent.HEIGHT * (i + j),
+                                DataComponent.X_OFFSET + maxWidth,
+                                DataComponent.Y_OFFSET + DataComponent.HEIGHT * (i + j),
+                                programRelay);
+                        j++;
+                        add(dataComponent.getLabel());
+                        add(dataComponent.getComponent());
+                    } else {
+                        continue;
+                    }
+                } else {
                     if (data.getValue() == null || data.getValue() == -1) {
                         programRelay.setOff();
                     } else {

@@ -54,11 +54,19 @@ public interface TableDao {
     void remove(Long programId, Long screenId, Long tableId) throws SQLException;
 
     /**
+     * Copy existing table
+     *
+     * @param table the table that was selected
+     * @throws SQLException if failed to copy table.
+     */
+    void copyTable(Table table) throws SQLException;
+
+    /**
      * Copy tables from specified program to new specified program table .
      *
      * @param newProgramId the new program id
      * @param oldProgramId the old program id , the program id that was selected by user.
-     * @throws SQLException if failed to insert the screens to the database.
+     * @throws SQLException if failed to insert the table to the database.
      */
     void insertDefaultTables(Long oldProgramId, Long newProgramId) throws SQLException;
 

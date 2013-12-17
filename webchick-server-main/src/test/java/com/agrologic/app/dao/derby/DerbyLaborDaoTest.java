@@ -10,15 +10,13 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.LaborDao;
 import com.agrologic.app.dao.derby.impl.DerbyLaborDaoImpl;
 import com.agrologic.app.model.Labor;
-import java.sql.SQLException;
-import java.util.List;
-
 import org.junit.*;
+
+import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -54,13 +52,13 @@ public class DerbyLaborDaoTest {
         assertTrue(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testDropTable() throws SQLException {
         ((DerbyLaborDaoImpl) dao).dropTable();
         assertFalse(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testInsert() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -72,7 +70,7 @@ public class DerbyLaborDaoTest {
         dao.insert(labor);
     }
 
-//    @Test
+    //    @Test
     public void testRemove() throws SQLException {
         dao.remove(labor.getId());
         labor = dao.getById(flockId);

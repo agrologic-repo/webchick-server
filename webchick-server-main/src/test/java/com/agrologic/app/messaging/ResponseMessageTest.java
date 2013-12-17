@@ -49,19 +49,19 @@ public class ResponseMessageTest {
 
     @Test
     public void calcCheckSumShortString() {
-        int checksum = ResponseMessage.calcChecksum(SINGLE_DATA_RESPONSE.getBytes(), 3, SINGLE_DATA_RESPONSE.length() - 5);
+        int checksum = ResponseMessage.calculateChecksum(SINGLE_DATA_RESPONSE.getBytes(), 3, SINGLE_DATA_RESPONSE.length() - 5);
         assertEquals(177, checksum);
     }
 
     @Test
     public void calcCheckSumGraphString() {
-        int checksum = ResponseMessage.calcChecksum(GRAPH_DATA_RESPONSE.getBytes(), 3, GRAPH_DATA_RESPONSE.length() - 4);
+        int checksum = ResponseMessage.calculateChecksum(GRAPH_DATA_RESPONSE.getBytes(), 3, GRAPH_DATA_RESPONSE.length() - 4);
         assertEquals(21, checksum);
     }
 
     @Test
     public void calcCheckSumLongString() {
-        int calcCheckSum = ResponseMessage.calcChecksum(MULTI_DATA_RESPONSE.getBytes(), 3,
+        int calcCheckSum = ResponseMessage.calculateChecksum(MULTI_DATA_RESPONSE.getBytes(), 3,
                 MULTI_DATA_RESPONSE.length() - 5);
         assertEquals(186, calcCheckSum);
     }
@@ -69,9 +69,9 @@ public class ResponseMessageTest {
     @Test
     @Ignore("overflow error checksum is calculated incorrectly")
     public void calcCheckSumLongStringError() {
-        int calcCheckSum = ResponseMessage.calcChecksum(MULTI_DATA_RESPONSE.getBytes(), 3,
+        int calcCheckSum = ResponseMessage.calculateChecksum(MULTI_DATA_RESPONSE.getBytes(), 3,
                 MULTI_DATA_RESPONSE.length() - 5);
-        int overflowCheckSum = ResponseMessage.overFlowErrorChecksum(MULTI_DATA_RESPONSE.getBytes(), 3,
+        int overflowCheckSum = ResponseMessage.overFlowErrorCorrectionChecksum(MULTI_DATA_RESPONSE.getBytes(), 3,
                 MULTI_DATA_RESPONSE.length() - 5);
         assertEquals(calcCheckSum, overflowCheckSum);
     }

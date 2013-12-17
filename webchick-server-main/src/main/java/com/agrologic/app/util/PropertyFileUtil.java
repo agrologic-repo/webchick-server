@@ -1,21 +1,8 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.util;
-
 
 import java.io.*;
 import java.util.Properties;
 
-/**
- * Title: PropertyFileUtil <br>
- * Decription: <br>
- * Copyright:   Copyright (c) 2008 <br>
- *
- * @version 1.0 <br>
- */
 public class PropertyFileUtil {
 
     /**
@@ -46,8 +33,8 @@ public class PropertyFileUtil {
      */
     public static boolean setProperty(String fileName, String comments, String key, String value) {
         try {
-            Properties props = new Properties();
 
+            Properties props = new Properties();
             props.load(new FileInputStream(fileName));
             props.put(key, value);
             props.store(new FileOutputStream(new File(fileName)), comments);
@@ -72,7 +59,6 @@ public class PropertyFileUtil {
 
         try {
             Properties props = new Properties();
-
             props.load(new FileInputStream(fileName));
             value = props.getProperty(key);
         } catch (FileNotFoundException ex) {

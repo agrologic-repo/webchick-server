@@ -39,9 +39,8 @@ public class TotalCellinkPieChart extends AbstractServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 try {
-                    DefaultPieDataset dataset = new DefaultPieDataset();
-                    JFreeChart jfc;
-                    CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);// DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
+
+                    CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                     CellinkCriteria criteria = new CellinkCriteria();
                     criteria.setState(CellinkState.STATE_OFFLINE);
                     final int offline = cellinkDao.getAll(criteria).size();
@@ -50,12 +49,12 @@ public class TotalCellinkPieChart extends AbstractServlet {
                     criteria.setState(CellinkState.STATE_ONLINE);
                     final int online = cellinkDao.getAll(criteria).size();
 
-                    dataset = new DefaultPieDataset();
+                    DefaultPieDataset dataset = new DefaultPieDataset();
                     dataset.setValue("Online", new Integer(online));
                     dataset.setValue("Offline", new Integer(offline));
                     dataset.setValue("Running", new Integer(running));
-                    jfc = ChartFactory.createPieChart3D("Total Cellinks Summary", dataset, true, false, false);
 
+                    JFreeChart jfc = ChartFactory.createPieChart3D("Total Cellinks Summary", dataset, true, false, false);
                     PiePlot pp = (PiePlot) jfc.getPlot();
 
                     pp.setSectionOutlinesVisible(false);

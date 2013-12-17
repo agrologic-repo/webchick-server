@@ -1,16 +1,7 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.util;
 
-
-
 import java.sql.Timestamp;
-
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 
 /**
@@ -50,7 +41,7 @@ public class DateLocal extends java.util.Date {
 
     public DateLocal addDays(int days) {
         return new DateLocal(super.getHours(), super.getMinutes(), super.getDate() + days, super.getMonth() + 1,
-                             super.getYear() + 1900);
+                super.getYear() + 1900);
     }
 
     public static DateLocal now() {
@@ -60,10 +51,10 @@ public class DateLocal extends java.util.Date {
     }
 
     public static String currentDate() {
-        Timestamp        time        = new Timestamp(System.currentTimeMillis());
-        Date             now         = new Date(time.getTime());
-        String           DATE_FORMAT = "hh:mm dd/M/yyyy";
-        SimpleDateFormat sdf         = new SimpleDateFormat(DATE_FORMAT);
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        Date now = new Date(time.getTime());
+        String DATE_FORMAT = "hh:mm dd/M/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 
         return sdf.format(now);
     }

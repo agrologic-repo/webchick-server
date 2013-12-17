@@ -16,8 +16,6 @@ import java.sql.SQLException;
  *
  */
 public class EditEggFormServlet extends AbstractServlet {
-
-
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -43,6 +41,9 @@ public class EditEggFormServlet extends AbstractServlet {
         Integer eggQuantity = Integer.parseInt(request.getParameter("eggQuantity"));
         Integer softShelled = Integer.parseInt(request.getParameter("softShelled"));
         Integer cracked = Integer.parseInt(request.getParameter("cracked"));
+        Long feedConsump = Long.parseLong(request.getParameter("feedConsump"));
+        Long waterConsump = Long.parseLong(request.getParameter("waterConsump"));
+        Long dailyMortal = Long.parseLong(request.getParameter("dailyMortal"));
 
         Eggs eggs = new Eggs();
         eggs.setFlockId(flockId);
@@ -51,6 +52,9 @@ public class EditEggFormServlet extends AbstractServlet {
         eggs.setEggQuantity(eggQuantity);
         eggs.setSoftShelled(softShelled);
         eggs.setCracked(cracked);
+        eggs.setFeedConsump(feedConsump);
+        eggs.setWaterConsump(waterConsump);
+        eggs.setDailyMortal(dailyMortal);
 
         EggDao eggDao = DbImplDecider.use(DaoType.MYSQL).getDao(EggDao.class);
         try {

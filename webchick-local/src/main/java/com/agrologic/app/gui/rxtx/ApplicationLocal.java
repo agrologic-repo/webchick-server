@@ -27,7 +27,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -93,6 +92,7 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
 
                         switch (loadState) {
                             case CREATE_DAO:
+                                logger.info("Creating derby database");
                                 dbManager = new DatabaseManager(DaoType.DERBY);
                                 dbManager.getDatabaseGeneralService().setDatabaseDir(PropertyFileUtil.getProgramPath());
                                 loadingDialog.setProgressValue(150);
@@ -101,18 +101,21 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
                                 break;
 
                             case LOAD_DATA:
+                                logger.info("Loading data from database");
                                 dbManager.doLoadTableData();
                                 loadingDialog.setProgressValue(250);
                                 i = 250;
                                 loadState = LoadState.CREATE_NETWORK;
                                 break;
                             case CREATE_NETWORK:
+                                logger.info("Create network threads");
                                 networkThread = new SocketThread(ApplicationLocal.this, dbManager);
                                 loadingDialog.setProgressValue(350);
                                 i = 350;
                                 loadState = LoadState.CREATE_SCREENS;
                                 break;
                             case CREATE_SCREENS:
+                                logger.info("Creating controller screens ");
                                 createControllersScreens();
                                 i = 490;
                                 loadState = LoadState.FINISH;
@@ -123,17 +126,26 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
                     }
                 } catch (SerialPortControlFailure e) {
                     loadingDialog.setVisible(false);
-                    showErrorMessage("Error",e.getMessage());
+                    logger.error(e);
+                    showErrorMessage("Error", e.getMessage());
                     openConfiguration();
                     System.exit(0);
                 } catch (WrongDatabaseException e) {
+
                     loadingDialog.setVisible(false);
-                    showErrorMessage("Error",e.getMessage());
+                    logger.error(e);
+                    showErrorMessage("Error", e.getMessage());
                     openConfiguration();
                     System.exit(0);
                 } catch (DatabaseNotFound e) {
                     loadingDialog.setVisible(false);
-                    showErrorMessage("Error",e.getMessage());
+                    logger.error(e);
+                    showErrorMessage("Error", e.getMessage());
+                    System.exit(0);
+                } catch (Exception e) {
+                    loadingDialog.setVisible(false);
+                    logger.error(e);
+                    showErrorMessage("Error", "");
                     System.exit(0);
                 }
             }
@@ -270,7 +282,7 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
     /**
      * Show error message
      *
-     * @param title the error message title
+     * @param title   the error message title
      * @param message the error message text
      */
     public void showErrorMessage(String title, String message) {

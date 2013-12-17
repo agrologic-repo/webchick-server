@@ -165,7 +165,8 @@ public class SerialPortControl implements SerialPortEventListener {
      * @param eot     the end of transmission index.
      * @throws IOException if I/O exception occurs.
      */
-    public synchronized void write(String vindex, final Message message, final int sot, final int eot) throws IOException {
+    public synchronized void write(String vindex, final Message message, final int sot, final int eot)
+            throws IOException {
         state = SlipProtocol.SlipStates.WAIT;
         // reset counter
         resetCount();
@@ -192,7 +193,7 @@ public class SerialPortControl implements SerialPortEventListener {
     /**
      * Prepare request to send . Combine index and buffer into one buffer.
      *
-     * @param index the index of buffer
+     * @param index  the index of buffer
      * @param buffer the buffer with data
      * @return buffer contain index and data to send
      */
@@ -232,7 +233,7 @@ public class SerialPortControl implements SerialPortEventListener {
     /**
      * Skips over and discards <code>in#available()</code> bytes of data from this input stream.
      *
-     * @see        java.io.InputStream#skip(long)
+     * @see java.io.InputStream#skip(long)
      */
     public void clearInputStream() {
         try {

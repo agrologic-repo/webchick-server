@@ -15,7 +15,8 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("user.page.add.title")%></title>
+    <title><%=session.getAttribute("user.page.add.title")%>
+    </title>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
@@ -133,66 +134,76 @@
         <table border="0" cellPadding=1 cellSpacing=1 width="100%">
             <tr>
                 <td>
-                   <h1><%=session.getAttribute("user.page.add.title")%></h1>
+                    <h1><%=session.getAttribute("user.page.add.title")%>
+                    </h1>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <h2><%=session.getAttribute("user.page.add.title")%></h2>
+                    <h2><%=session.getAttribute("user.page.add.title")%>
+                    </h2>
+
                     <div><p style="color:red;">Boxes with an asterisk next to them are required</p></div>
                     <table>
                         <tr>
-                            <td>Login *</td>
+                            <td><%=session.getAttribute("user.page.login")%> *</td>
                             <td><input id="Nusername" type="text" name="Nusername" onchange="validateLoginName();"/>
                             </td>
                             <td id="msgUserName"></td>
                         </tr>
                         <tr>
-                            <td class="">Password *</td>
+                            <td class=""><%=session.getAttribute("user.page.password")%> *</td>
                             <td><input class="textFeild" id="Npassword" type="password" name="Npassword"/>
                             </td>
                             <td id="msgPassword"></td>
                         </tr>
                         <tr>
-                            <td>Fist name *</td>
-                            <td><input id="Nfname" type="text" name="Nfname" /></td>
+                            <td><%=session.getAttribute("user.page.fname")%> *</td>
+                            <td><input id="Nfname" type="text" name="Nfname"/></td>
                             <td id="msgFName"></td>
                         </tr>
                         <tr>
-                            <td>Last name *</td>
+                            <td><%=session.getAttribute("user.page.lname")%> *</td>
                             <td><input id="Nlname" type="text" name="Nlname"/></td>
                             <td id="msgLName"></td>
                         </tr>
                         <tr>
-                            <td class="">Phone</td>
+                            <td class=""><%=session.getAttribute("user.page.phone")%>
+                            </td>
                             <td><input id="Nphone" type="text" name="Nphone"/></td>
                             <td id="msgPhone"></td>
                         </tr>
                         <tr>
-                            <td class="">Email</td>
+                            <td class=""><%=session.getAttribute("user.page.email")%>
+                            </td>
                             <td><input id="Nemail" type="text" name="Nemail"/></td>
                             <td id="msgEmail" align="left" height="22"></td>
                         </tr>
                         <tr>
-                            <td class="">Role *</td>
+                            <td class=""><%=session.getAttribute("user.page.role")%> *</td>
                             <td>
                                 <select id="Nrole" name="Nrole" class="dropDownList">
                                     <option value="0"></option>
-                                    <option value="1"><%=session.getAttribute("user.role.admin")%></option>
-                                    <option value="2"><%=session.getAttribute("user.role.regular")%></option>
-                                    <option value="3"><%=session.getAttribute("user.role.advanced")%></option>
+                                    <option value="1"><%=session.getAttribute("user.role.admin")%>
+                                    </option>
+                                    <option value="2"><%=session.getAttribute("user.role.regular")%>
+                                    </option>
+                                    <option value="3"><%=session.getAttribute("user.role.advanced")%>
+                                    </option>
                                 </select>
                             </td>
                             <td id="msgRole"></td>
                         </tr>
                         <tr>
-                            <td class="">Company</td>
+                            <td class=""><%=session.getAttribute("user.page.company")%>
+                            </td>
                             <td>
                                 <div id="existingCompanyDiv" name="existingCompanyDiv" style="display:block;">
                                     <select id="Ncompanylist" name="Ncompanylist" class="dropDownList">
                                         <option value=""></option>
                                         <% for (String c : companies) {%>
-                                            <option value="<%=c%>"><%=c%></option>
+                                        <option value="<%=c%>"><%=c%>
+                                        </option>
                                         <%}%>
                                     </select>
                                 </div>

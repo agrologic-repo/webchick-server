@@ -48,7 +48,8 @@ public class FlockManagement extends AbstractServlet {
                 request.getRequestDispatcher("./rmctrl-flock-management.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
             } catch (SQLException ex) {
-
+                request.getRequestDispatcher("./rmctrl-flock-management.jsp?celinkId=" + cellinkId + "&controllerId="
+                        + controllerId + "&flockId=" + flockId).forward(request, response);
             }
         } finally {
             out.close();

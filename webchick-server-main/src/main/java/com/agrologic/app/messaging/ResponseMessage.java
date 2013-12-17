@@ -1,7 +1,7 @@
-
 package com.agrologic.app.messaging;
 
-import com.agrologic.app.exception.ReadChecksumException;
+import com.agrologic.app.exception.ChecksumException;
+import com.agrologic.app.exception.ParsingReceivedChecksumException;
 import com.agrologic.app.network.ReadBuffer;
 import com.agrologic.app.util.ByteUtil;
 import org.apache.log4j.Logger;
@@ -148,26 +148,31 @@ public final class ResponseMessage implements Message {
                         }
                     }
                 }
-                calcCHS = calcChecksum(buffer, sot + 1, space);
-                recvCHS = readChecksum(receivedString, space + 1, eot);
+                calcCHS = calculateChecksum(buffer, sot + 1, space);
+                recvCHS = getChecksumFromReceivedBuffer(receivedString, space + 1, eot);
                 logger.debug("Calculated checksum { " + calcCHS + " } ");
                 logger.debug("Received   checksum { " + recvCHS + " }");
 
-                if (!checksumWithOverFlowErrorCorrect(buffer, calcCHS, recvCHS, sot, space)) {
-                    setMessageType(MessageType.ERROR);
-                    setErrorCodes(ErrorCodes.CHS_ERROR);
-                    logger.error("Checksum error detected. Calculated checksum: { " + calcCHS + " } ," +
-                            " Received checksum { " + recvCHS + " } .");
-                    return;
-                }
+                checkIfChecksumIdenticalToEachOther(buffer, calcCHS, recvCHS, sot, space);
 
                 if (isUnusedResponse()) {
                     logger.info("This response message was defined as unused.");
                     return;
                 }
             }
+        } catch (ParsingReceivedChecksumException e) {
+            setMessageType(MessageType.ERROR);
+            setErrorCodes(ErrorCodes.CHS_ERROR);
+            logger.error(e.getMessage(), e);
+            return;
+
+        } catch (ChecksumException e) {
+            setMessageType(MessageType.ERROR);
+            setErrorCodes(ErrorCodes.CHS_ERROR);
+            logger.error(e.getMessage(), e);
+            return;
         } catch (Exception e) {
-            logger.error("Response message initialisation error ", e);
+            logger.error(e.getMessage(), e);
             return;
         }
         // set parsed data
@@ -178,7 +183,7 @@ public final class ResponseMessage implements Message {
         format = LastIndicators.getIndicator(bufferFormat);
     }
 
-    private Format getFormat() {
+    public Format getFormat() {
         return format;
     }
 
@@ -198,27 +203,27 @@ public final class ResponseMessage implements Message {
         return false;
     }
 
-    private int readChecksum(final String receivedString, final int start, final int end) {
+    private int getChecksumFromReceivedBuffer(final String receivedString, final int start, final int end) {
         if (start < 0) {
-            throw new IllegalArgumentException("Negative SOT index");
+            throw new ParsingReceivedChecksumException("Negative SOT index");
         }
 
         if (end > receivedString.length()) {
-            throw new IllegalArgumentException("EOT index size  error : " + end);
+            throw new ParsingReceivedChecksumException("EOT index size  error : " + end);
         }
 
         if (start > end) {
-            throw new IllegalArgumentException("SOT index " + start + " bigger than EOT index " + end);
+            throw new ParsingReceivedChecksumException("SOT index " + start + " bigger than EOT index " + end);
         }
 
         try {
             return Integer.parseInt(receivedString.substring(start, end));
-        } catch (ReadChecksumException ex) {
-            throw new ReadChecksumException(receivedString.substring(start, end));
+        } catch (ParsingReceivedChecksumException ex) {
+            throw new ParsingReceivedChecksumException("Can not parse checksum " + receivedString.substring(start, end));
         }
     }
 
-    public static int calcChecksum(final byte[] buffer, int sot, int len) {
+    public static int calculateChecksum(final byte[] buffer, int sot, int len) {
         int checksum = 0;
 
         for (int i = sot; i < len + 1; i++) {
@@ -232,17 +237,17 @@ public final class ResponseMessage implements Message {
         return checksum;
     }
 
-    public static boolean checksumWithOverFlowErrorCorrect(byte[] buffer, int calcCHS, int recvCHS, int sot, int length) {
+    public static void checkIfChecksumIdenticalToEachOther(byte[] buffer, int calcCHS, int recvCHS, int sot, int length)
+            throws ChecksumException {
         if (calcCHS != recvCHS) {
-            calcCHS = overFlowErrorChecksum(buffer, sot + 1, length);
+            calcCHS = overFlowErrorCorrectionChecksum(buffer, sot + 1, length);
             if (calcCHS != recvCHS) {
-                return false;
+                throw new ChecksumException(recvCHS, calcCHS);
             }
         }
-        return true;
     }
 
-    public static int overFlowErrorChecksum(final byte[] buffer, int sot, int len) {
+    public static int overFlowErrorCorrectionChecksum(final byte[] buffer, int sot, int len) {
         int checksum = 0;
 
         for (int i = sot; i <= len; i++) {

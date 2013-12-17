@@ -56,45 +56,35 @@ public class RCControllerScreenAjax extends AbstractServlet {
 
                 LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                 long langId = languageDao.getLanguageId(lang);
+
                 final ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                final Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
+                final Controller controller = controllerDao.getById(controllerId);
+
                 final ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
-                final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
+                Program program = programDao.getById(controller.getProgramId());
+                controller.setProgram(program);
+
                 final ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(program.getId(),
+                        langId, false);
+                program.setScreens(screens);
+                Screen currScreen = screenDao.getById(program.getId(), screenId, langId);
 
-                TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
-                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                final TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                List<Table> tables = (List<Table>) tableDao.getScreenTables(program.getId(), currScreen.getId(),
+                        langId, false);
 
-                for (Controller controller : controllers) {
-                    if (controller.getId() == controllerId) {
-                        Program program = programDao.getById(controller.getProgramId());
-                        List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId(), langId);
-                        program.setProgramRelays(programRelays);
-
-                        List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(program.getId(),
-                                langId, false);
-                        for (Screen screen : screens) {
-                            if (screen.getId() == screenId) {
-                                Collection<Table> tables = tableDao.getScreenTables(program.getId(), screen.getId(),
-                                        langId, false);
-
-                                for (Table table : tables) {
-                                    Collection<Data> dataList = dataDao.getOnlineTableDataList(controller.getId(), program.getId(),
-                                            screen.getId(), table.getId(), langId);
-                                    table.setDataList(dataList);
-                                }
-                                screen.setTables(tables);
-                            }
-                        }
-
-                        program.setScreens(screens);
-                        controller.setProgram(program);
-                    } else {
-                        continue;
-                    }
+                final DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+                for (Table table : tables) {
+                    Collection<Data> dataList = dataDao.getOnlineTableDataList(controller.getId(), program.getId(),
+                            currScreen.getId(), table.getId(), langId);
+                    table.setDataList(dataList);
                 }
+                currScreen.setTables(tables);
 
-                Controller controller = findController(controllerId, controllers);
+                final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
+                List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId(), langId);
+                program.setProgramRelays(programRelays);
 
                 out.println();
                 out.println("<table style=\"font-size:90%;\" width=\"100%\" border=\"0\">");
@@ -122,7 +112,7 @@ public class RCControllerScreenAjax extends AbstractServlet {
                         cssClass = "";
                     }
 
-                    if (screen.getId() == MAIN_SCREEN) {
+                    if (screen.getId().equals(MAIN_SCREEN)) {
                         out.println("<td nowrap align=center>");
                         out.println("<a class='" + cssClass + "' href='./rmctrl-main-screen-ajax.jsp?lang=" + lang
                                 + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId() + "&screenId="
@@ -172,13 +162,9 @@ public class RCControllerScreenAjax extends AbstractServlet {
                 out.println("<table cellPadding=2 cellSpacing=2 align=center>");
 
                 int column = 0;
-                Screen currScreen = controller.getProgram().getScreenById(screenId);
-                Collection<Table> tables = currScreen.getTables();
 
-                if (tables.size() > 0) {
-                    for (Table table : tables) {
-                        Long tableId = table.getId();
-
+                if (currScreen.getTables().size() > 0) {
+                    for (Table table : currScreen.getTables()) {
                         if ((column % Screen.COLUMN_NUMBERS) == 0) {
                             out.println("<tr>");
                         }

@@ -1,7 +1,6 @@
 package com.agrologic.app.dao.mysql.impl;
 
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.ProgramRelayDao;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.ProgramRelay;
@@ -21,7 +20,6 @@ public class ProgramRelayDaoImpl implements ProgramRelayDao {
     protected final Logger logger = LoggerFactory.getLogger(ProgramRelayDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    protected DaoFactory dao;
 
     /**
      * {@inheritDoc}
@@ -148,8 +146,7 @@ public class ProgramRelayDaoImpl implements ProgramRelayDao {
     public List<ProgramRelay> getAllProgramRelays(Long programId, Long langId) throws SQLException {
         String sqlQuery = "select * from programrelays "
                 + "left join relaybylanguage on relaybylanguage.RelayID=programrelays.RelayTextID "
-                + "and relaybylanguage.langid=? "
-                + "where programrelays.programid=? "
+                + "and relaybylanguage.langid=? where programrelays.programid=? "
                 + "and programrelays.Text not Like '%None%' and  programrelays.Text not Like '%Damy%'";// order by DataID,BitNumber";
         logger.debug("Get all relays assigned to program without those None and Dummy in given language id");
         return jdbcTemplate.query(sqlQuery, new Object[]{langId, programId}, RowMappers.programRelay());

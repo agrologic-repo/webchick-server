@@ -35,9 +35,7 @@ public class KeepAliveMessage {
 
     public static KeepAliveMessage parseIncomingBytes(byte[] payload) throws WrongMessageFormatException,
             IllegalArgumentException {
-
         Validate.notNull(payload, BUFFER_MUST_NOT_BE_NULL);
-
         int stx = ByteUtil.indexOf(payload, Message.ProtocolBytes.STX.getValue());
         int etx = ByteUtil.indexOf(payload, Message.ProtocolBytes.ETX.getValue());
         if (stx < 0 || etx < 0) {
@@ -49,7 +47,6 @@ public class KeepAliveMessage {
         if (dataList.size() < 2) {
             throw new WrongMessageFormatException(MESSAGE_DOES_NOT_MATCH_THE_REQUIRED_FORMAT);
         }
-
         int PASS_INDEX = 0;
         int NAME_INDEX = 1;
         int VERS_INDEX = 2;

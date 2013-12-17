@@ -4,17 +4,19 @@
  */
 package com.agrologic.app.dao.derby;
 
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.CreatebleDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.DistribDao;
 import com.agrologic.app.dao.derby.impl.DerbyDistribDaoImpl;
 import com.agrologic.app.model.Distrib;
-import java.sql.SQLException;
-
 import org.junit.*;
+
+import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -40,7 +42,7 @@ public class DerbyDistribDaoTest {
         dao = DbImplDecider.use(DaoType.MYSQL).getDao(DistribDao.class);
     }
 
-//    @Test
+    //    @Test
     public void testCreateTable() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -48,7 +50,7 @@ public class DerbyDistribDaoTest {
         assertTrue(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testDropTable() throws SQLException {
         ((DerbyDistribDaoImpl) dao).dropTable();
         assertFalse(((CreatebleDao) dao).tableExist());
@@ -88,7 +90,7 @@ public class DerbyDistribDaoTest {
 
     }
 
-//    @Test
+    //    @Test
     public void testRemove() throws SQLException {
         dao.remove(Long.valueOf(3));
         distrib = dao.getById(flockId);

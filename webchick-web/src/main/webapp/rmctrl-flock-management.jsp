@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
+<%@ include file="language.jsp" %>
+
 <%@ page import="com.agrologic.app.model.Controller" %>
 <%@ page import="com.agrologic.app.model.Flock" %>
 <%@ page import="java.util.Collection" %>
@@ -22,11 +24,12 @@
 }
 %>
 <!DOCTYPE html>
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=session.getAttribute("flock.page.title")%>
     </title>
-    <link rel="stylesheet" href="resources/style/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
     <script src="resources/javascript/jquery.js"></script>
     <script src="resources/javascript/jquery-ui.js"></script>
     <script>
@@ -48,7 +51,6 @@
             });
         });
     </script>
-
 </head>
 <body>
 
@@ -84,15 +86,22 @@
         <td align="center" width="85%">
             <div id="tabs">
                 <ul>
-                    <li><a href="#tabs-1">Houses</a></li>
-                    <li><a href="#tabs-2">Begin</a></li>
-                    <li><a href="#tabs-3">Expanses</a></li>
-                    <li><a href="#tabs-4">Distribute</a></li>
+                    <li><a href="#tabs-1"><%=session.getAttribute("manage.page.tab.houses")%>
+                    </a></li>
+                    <li><a href="#tabs-2"><%=session.getAttribute("manage.page.tab.begin")%>
+                    </a></li>
+                    <li><a href="#tabs-3"><%=session.getAttribute("manage.page.tab.expenses")%>
+                    </a></li>
+                    <li><a href="#tabs-4"><%=session.getAttribute("manage.page.tab.distribute")%>
+                    </a></li>
                     <%if (editController.getHouseType().equals("Layer")) {%>
-                    <li><a href="#tabs-5">Eggs Manager</a></li>
-                    <li><a href="#tabs-6">Summary</a></li>
+                    <li><a href="#tabs-5"><%=session.getAttribute("manage.page.tab.eggmanager")%>
+                    </a></li>
+                    <li><a href="#tabs-6"><%=session.getAttribute("manage.page.tab.summary")%>
+                    </a></li>
                     <%} else {%>
-                    <li><a href="#tabs-5">Summary</a></li>
+                    <li><a href="#tabs-5"><%=session.getAttribute("manage.page.tab.summary")%>
+                    </a></li>
                     <%}%>
                 </ul>
                 <div id="tabs-1">

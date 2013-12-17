@@ -2,29 +2,41 @@ package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.DaoFactory;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class DerbyDaoFactory extends DaoFactory {
 
-    public static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-    public static final String SCHEMA = "AGRODB";
-    public static final String URL = "jdbc:derby:agrodb;create=true";
+    protected static final String PROP_FILENAME = "derby.properties";
+    protected static Properties props = null;
+
+    public static final String DRIVER = "jdbc.driver";
+    public static final String URL = "jdbc.url";
+    public static final String USER = "jdbc.user";
+    public static final String PASSWORD = "jdbc.password";
     private static DerbyDaoFactory instanceObject = null;
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     /**
      * This static block causes the class loader to load the jdbcDriver.
      */
     static {
         try {
+            ClassLoader loader = DerbyDaoFactory.class.getClassLoader();
+            InputStream is = loader.getResourceAsStream(PROP_FILENAME);
+            props = new Properties();
+            props.load(is);
             if (DEBUG) {
                 System.out.println("Starting JDBC driver...");
             }
-            Class.forName(DRIVER).newInstance();
+
+
+            Class.forName(props.getProperty(DRIVER)).newInstance();
         } catch (Exception ex) {
             if (DEBUG) {
                 System.out.println("jdbc : Driver Class not found, " + ex.getMessage());
@@ -184,12 +196,13 @@ public class DerbyDaoFactory extends DaoFactory {
                 }
 
                 try {
-                    con = DriverManager.getConnection(URL);
+                    con = DriverManager.getConnection(props.getProperty(URL));
                     currentConnectionsInSystem++;
                     return con;
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    System.out.println("pool : Cannot establish a connection to the DB. DB URL = " + URL);
+                    System.out.println("pool : Cannot establish a connection to the DB. DB URL = "
+                            + props.getProperty(URL));
                     return null;
                 }
             } else if (pool.isEmpty()) {

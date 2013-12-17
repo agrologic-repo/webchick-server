@@ -146,7 +146,6 @@ public class Graph24IOH extends AbstractGraph {
             tempAxis.setUpperBound(maxY + 10);
         } else {
             final XYPlot xyplot = new XYPlot();
-
             xyplot.setNoDataMessage("No data available!");
             xyplot.setNoDataMessageFont(new Font("Serif", 2, 15));
             xyplot.setNoDataMessagePaint(Color.red);

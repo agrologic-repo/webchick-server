@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class LocaleManagerTest {
     private static final int COUNT_LANGUAGES = 6;
-    private static final int COUNT_GRAPH_LABELS = 13;
+    private static final int COUNT_GRAPH_LABELS = 17;
     private static final int COUNT_UI_LABELS = 5;
     private LocaleManager localeManager;
 

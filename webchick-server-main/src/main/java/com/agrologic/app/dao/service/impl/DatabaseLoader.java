@@ -1,24 +1,19 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.dao.service.impl;
 
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.dao.service.DatabaseLoadAccessor;
 import com.agrologic.app.dao.service.DatabaseLoadable;
+import com.agrologic.app.exception.DatabaseNotFound;
+import com.agrologic.app.exception.WrongDatabaseException;
 import com.agrologic.app.model.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
 
-public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, ThreadCompleteListener {
+public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor {
 
-    private static volatile Integer threadCount = 0;
     private static final long DEFAULT_LANG_ID = 1;
     private Long langId = DEFAULT_LANG_ID;
     private Logger logger;
@@ -34,31 +29,45 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
     public DatabaseLoader(DatabaseAccessor dba) {
         setDatabaseAccessor(dba);
         programs = new HashSet<Program>();
-        logger = Logger.getLogger(DatabaseLoader.class.getName());
-    }
-
-    public synchronized boolean isLoading() {
-        return threadCount <= 0 ? true : false;
+        logger = LoggerFactory.getLogger(DatabaseLoader.class);
     }
 
     public void setDatabaseAccessor(DatabaseAccessor dba) {
         this.dba = dba;
     }
 
-    public void pullDataFromConstantTables() throws SQLException {
-        languages = dba.getLanguageDao().geAll();
-        dataTable = dba.getDataDao().getAllWithTranslation();
-        alarms = dba.getAlarmDao().getAllWithTranslation();
-        relays = dba.getRelayDao().getAllWithTranslation();
-        systemStates = dba.getSystemStateDao().getAllWithTranslation();
-    }
-
     @Override
-    public void loadAllDataByUserAndCellink(Long userId, Long cellinkId) throws SQLException {
+    public void loadControllersAndProgramsByUserAndCellink(Long userId, Long cellinkId) throws WrongDatabaseException,
+            DatabaseNotFound {
         try {
+
+            user = dba.getUserDao().getById(userId);
+            if (user.getValidate() == false) {
+                Collection<User> users = dba.getUserDao().getAll();
+                if (users.size() > 0) {
+                    User u = users.iterator().next();
+                    logger.info("The User ID in current database is {} ", u.getId());
+                }
+                logger.error("Wrong database User ID not found .");
+                throw new WrongDatabaseException();
+            }
+        } catch (WrongDatabaseException e) {
+            logger.error(e.getMessage(), e);
+            throw new WrongDatabaseException();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new DatabaseNotFound();
+        }
+
+        try {
+            // load common data that not depend on user id and cellink id .
+            languages = dba.getLanguageDao().geAll();
+            dataTable = dba.getDataDao().getAllWithTranslation();
+            alarms = dba.getAlarmDao().getAllWithTranslation();
+            relays = dba.getRelayDao().getAllWithTranslation();
+            systemStates = dba.getSystemStateDao().getAllWithTranslation();
+
             Configuration config = new Configuration();
-            // load constant table data
-            pullDataFromConstantTables();
             String language = config.getLanguage();
             for (Language lang : languages) {
                 if (lang.getLanguage().equals(language)) {
@@ -67,9 +76,8 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
                 }
             }
 
-            user = dba.getUserDao().getById(userId);
             if (cellinkId == -1) {
-                // get cellinks and add to user cellink list
+                // get cellink and add to user cellink list
                 Collection<Cellink> cellinks = dba.getCellinkDao().getAllUserCellinks(user.getId());
                 user.setCellinks(cellinks);
             } else {
@@ -85,9 +93,8 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
                 for (Controller controller : controllers) {
                     // get controller program and add to controller object
                     Program program = dba.getProgramDao().getById(controller.getProgramId());
-                    if(!programs.contains(program)) {
-                        logger.info("program not exist in set of programs ");
-
+                    if (!programs.contains(program)) {
+                        logger.info("program {} not exist in set of programs ", program.getName());
                         controller.setProgram(program);
                         // get program relays and add to program object
                         program.setProgramRelays((List) dba.getProgramRelayDao()
@@ -107,7 +114,6 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
                                     .getScreenTables(screen.getProgramId(), screen.getId(), langId, false);
                             for (Table table : tableList) {
                                 // get table data and add to table object
-                                Thread.sleep(1);
                                 List<Data> dataList = (List<Data>) dba.getDataDao()
                                         .getOnScreenDataList(
                                                 table.getProgramId(),
@@ -126,8 +132,8 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
                         programs.add(program);
                     } else {
                         logger.info("program is exist in set of programs ");
-                        for(Program p:programs) {
-                            if(p.getId().equals(controller.getProgramId())) {
+                        for (Program p : programs) {
+                            if (p.getId().equals(controller.getProgramId())) {
                                 controller.setProgram(p);
                             }
                         }
@@ -142,44 +148,9 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
                 }
             }
             logger.info(" Controller data was successfully loaded .");
-        } catch (SQLException e) {
-            // show error message
-            logger.info("Error during creation dao objects and/or loading data from database .\n", e);
-            throw new SQLException("Error during creation dao objects and/or loading data from database .\n", e);
         } catch (Exception e) {
-            logger.info("Error during creation dao objects and/or loading data from database .\n", e);
-            throw new SQLException("Error during creation dao objects and/or loading data from database .\n", e);
-        }
-    }
-
-    private boolean skipScreen(Screen screen) {
-        if (screen.getTitle().equals("Main")
-                // || screen.getTitle().equals("Graphs")
-                || screen.getTitle().equals("Action Buttons")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public void loadControllersByUserAndCellink(long userId, long cellinkId) {
-        try {
-            user = dba.getUserDao().getById(userId);
-            Cellink cellink = dba.getCellinkDao().getById(cellinkId);
-            Collection<Controller> controllers = dba.getControllerDao().getActiveCellinkControllers(cellink.getId());
-            for (Controller controller : controllers) {
-                Collection<Data> dataList = dba.getDataDao().getControllerDataValues(controller.getId());
-                Map<Long, Data> dataValues = new HashMap<Long, Data>();
-                for (Data d : dataList) {
-                    dataValues.put(d.getId(), d);
-                }
-                controller.initOnlineData(dataValues);
-                cellink.addController(controller);
-            }
-            user.addCellink(cellink);
-        } catch (SQLException ex) {
-            logger.error(ex);
+            logger.info(e.getMessage(), e);
+            throw new WrongDatabaseException();
         }
     }
 
@@ -221,49 +192,5 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor, T
     @Override
     public Long getLangId() {
         return langId;
-    }
-
-    public void setLangId(Long langId) {
-        this.langId = langId;
-    }
-
-    @Override
-    public void notifyOfThreadComplete(Thread thread) {
-        threadCount--;
-    }
-
-    abstract class NotifyingThread extends Thread {
-
-        private final Set<ThreadCompleteListener> listeners = new CopyOnWriteArraySet<ThreadCompleteListener>();
-
-        NotifyingThread(final ThreadCompleteListener listener) {
-            this.listeners.add(listener);
-        }
-
-        public final void addListener(final ThreadCompleteListener listener) {
-            listeners.add(listener);
-        }
-
-        public final void removeListener(final ThreadCompleteListener listener) {
-            listeners.remove(listener);
-        }
-
-        private final void notifyListeners() {
-            for (ThreadCompleteListener listener : listeners) {
-                listener.notifyOfThreadComplete(this);
-            }
-        }
-
-        @Override
-        public final void run() {
-            try {
-                threadCount++;
-                doRun();
-            } finally {
-                notifyListeners();
-            }
-        }
-
-        public abstract void doRun();
     }
 }

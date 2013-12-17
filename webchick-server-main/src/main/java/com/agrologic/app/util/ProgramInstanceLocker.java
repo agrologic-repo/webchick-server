@@ -1,24 +1,8 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.util;
 
-
-
-/**
- * Title: ProgramInstanceLocker.java <br>
- * Description: <br>
- * Copyright:   Copyright © 2010 <br>
- * Company:     Agro Logic Ltd. ®<br>
- * @author      Valery Manakhimov <br>
- * @version     0.1.1 <br>
- */
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
@@ -35,6 +19,7 @@ public class ProgramInstanceLocker {
 
     /**
      * Create and lock file .
+     *
      * @throws RuntimeException
      */
     public static void lockFile() {
@@ -50,7 +35,7 @@ public class ProgramInstanceLocker {
 
             // Try to get the lock
             channel = new RandomAccessFile(file, "rw").getChannel();
-            lock    = channel.tryLock();
+            lock = channel.tryLock();
 
             if (lock == null) {
 

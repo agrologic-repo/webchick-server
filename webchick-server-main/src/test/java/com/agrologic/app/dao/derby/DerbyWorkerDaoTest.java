@@ -10,15 +10,13 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.WorkerDao;
 import com.agrologic.app.dao.derby.impl.DerbyWorkerDaoImpl;
 import com.agrologic.app.model.Worker;
-import java.sql.SQLException;
-import java.util.List;
-
 import org.junit.*;
+
+import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -53,7 +51,7 @@ public class DerbyWorkerDaoTest {
         assertTrue(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testDropTable() throws SQLException {
         ((DerbyWorkerDaoImpl) dao).dropTable();
         assertFalse(((CreatebleDao) dao).tableExist());

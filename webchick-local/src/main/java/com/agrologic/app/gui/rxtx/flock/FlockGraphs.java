@@ -22,21 +22,17 @@ import java.awt.*;
 import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Administrator
  */
 public class FlockGraphs extends JFrame implements ChangeListener, ChartProgressListener {
 
+    private int currFlockGrowDay = 1;
     private static final String TITLE = "Flock graphs";
     private static final int ONE_CLICK = 1;
     private static final int DOUBLE_CLICK = 2;
-    private int currFlockGrowDay = 1;
     private JSlider slider;
-    private Map<Integer, String> currFlockHistory;
-    private List<String> currFlockHistoryList;
-    private Flock currFlock;
     private FlockEntry currFlockEntry;
     private List<Flock> flocks;
     private FlockEntry[] flockEntries;
@@ -482,7 +478,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
                 // moving window will
                 Rectangle rect = pnlGraph.getBounds();
                 rect.setLocation(0, 0);
-                cp.setBounds(rect);
+                cp.setBounds(pnlGraph.getBounds());
                 Rectangle rect2 = slider.getBounds();
                 slider.setBounds(rect.x, rect.y, rect.width, rect2.height);
                 // call this event
@@ -533,13 +529,16 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
             slider.setMaximum(24);
             slider.setValue(24 / 2);
             int i = lstHistoryList.getSelectedIndex();
-            HistoryEntry entry = (HistoryEntry) lstHistoryList.getModel().getElementAt(i);
-            Integer growDay = (Integer) spnGrowday.getModel().getValue();
-            entry.getValues24ByGrowDay(growDay);
-            //entry.setValues24(generateHistory24Values());
-            GraphFactory.setRangeAxis(entry.getTitle(), plot);
-            XYSeries xySeries = GraphFactory.createXYDataset(entry.getTitle(), entry.getValues24ByGrowDay(growDay));
-            xyseries.addSeries(xySeries);
+            ListModel model = lstHistoryList.getModel();
+            if (model.getSize() >= i) {
+                HistoryEntry entry = (HistoryEntry) lstHistoryList.getModel().getElementAt(i);
+                Integer growDay = (Integer) spnGrowday.getModel().getValue();
+                entry.getValues24ByGrowDay(growDay);
+
+                GraphFactory.setRangeAxis(entry.getTitle(), plot);
+                XYSeries xySeries = GraphFactory.createXYDataset(entry.getTitle(), entry.getValues24ByGrowDay(growDay));
+                xyseries.addSeries(xySeries);
+            }
         }
     }//GEN-LAST:event_spnGrowdayStateChanged
 
@@ -662,6 +661,9 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         }
     }
 
+    /**
+     * Help class to show flock names and id
+     */
     class FlockEntry {
 
         private Long id;

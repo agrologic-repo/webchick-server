@@ -21,11 +21,11 @@ import java.util.Map.Entry;
 public class DataGraphCreator {
 
     /**
-     * Create management data by grow day.
+     * Create history data by grow day.
      *
-     * @param history the management map per grow day.
+     * @param history the history map per grow day.
      * @param data    the searching data .
-     * @return histDataByGrowDay the map with searched management data per grow day
+     * @return histDataByGrowDay the map with searched history data per grow day
      */
     public static Map<Integer, Data> createHistoryDataByGrowDay(final Map<Integer, String> history,
                                                                 final Data data) {
@@ -47,14 +47,14 @@ public class DataGraphCreator {
     }
 
     /**
-     * Return data object with value from management string.
+     * Return data object with value from history string.
      *
      * @param searchData the data that encapsulate all field exception value.
-     * @param histString the string which all management pairs data and value .
-     * @return foundData the data object with value from management string, or
-     *         null.
+     * @param histString the string which all history pairs data and value .
+     * @return foundData the data object with value from history string, or
+     * null.
      */
-    private static Data getDataFromHistory(Data searchData, String histString) {
+    public static Data getDataFromHistory(Data searchData, String histString) {
         StringTokenizer token = new StringTokenizer(histString, " ");
 
         while (token.hasMoreElements()) {
@@ -72,10 +72,44 @@ public class DataGraphCreator {
                     return foundData;
                 }
             } catch (NoSuchElementException e) {
-                //System.err.println(e.getMessages());
+                e.printStackTrace();
             }
         }
         return null;
+    }
+
+    /**
+     * Return data object with value from history string.
+     *
+     * @param histString the string which all history pairs data and value .
+     * @return foundData the data object with value from history string, or
+     * null.
+     */
+    public static Long getValueByDataIdFromHistory(Long dataId, String histString) {
+        Long returnVal = 0L;
+        if (histString.startsWith("-1") || histString.endsWith("-1")) {
+            return returnVal;
+        }
+
+        StringTokenizer token = new StringTokenizer(histString, " ");
+
+        while (token.hasMoreElements()) {
+            try {
+                String dataElem = (String) token.nextElement();
+                String valElem = (String) token.nextElement();
+                if (isNegative(valElem)) {
+                    valElem = valElem.replace("-", "");
+                }
+                String dataType = dataId.toString();
+                if (dataElem.equals(dataType)) {
+                    returnVal = Long.parseLong(valElem);
+                    break;
+                }
+            } catch (NoSuchElementException e) {
+                break;
+            }
+        }
+        return returnVal;
     }
 
     /**

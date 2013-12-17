@@ -357,16 +357,21 @@ public class WebchickDBCreator extends javax.swing.JFrame {
                 try {
                     Configuration configuration = new Configuration();
                     configuration.setLanguage(((LanguageEntry) cmbLanguages.getSelectedItem()).getLang());
+
                     String path = txtDatabaseDir.getText();
                     delete(new File(path + "\\agrodb"));
                     System.setProperty("derby.system.home", path);
+
                     DatabaseManager dbMgr = new DatabaseManager(DaoType.MYSQL);
                     String userId = txtUserId.getText();
                     String cellinkId = ((CellinkEntry) cmbFarms.getSelectedItem()).getId().toString();
+                    configuration.setUserId(userId);
+                    configuration.setCellinkId(cellinkId);
+                    configuration.saveUpdatePreferences();
                     prgBarCreateStatus.setIndeterminate(true);
                     btnCreate.setEnabled(false);
                     lblCreatingStatus.setText(CONNECTING_TO_SERVER);
-                    dbMgr.doLoadTableData(userId, cellinkId);
+                    dbMgr.doLoadTableData();
                     lblCreatingStatus.setText(CREATING_EMBEDDED_DATABASE);
                     dbMgr.runCreateTablesTask();
                     lblCreatingStatus.setText(START_INSERT_DATA_TO_THE_EMBEDDED_DATABASE);

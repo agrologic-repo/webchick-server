@@ -5,6 +5,7 @@ import com.agrologic.app.model.*;
 import com.agrologic.app.util.Base64;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,6 +20,7 @@ import java.sql.Timestamp;
 @ContextConfiguration({"/common-dao-context.xml", "/derby-dao-context.xml"})
 @TransactionConfiguration
 @Transactional
+@Ignore
 public abstract class AbstractDaoTest {
 
     @Autowired
@@ -93,6 +95,7 @@ public abstract class AbstractDaoTest {
         controller.setProgramId(1L);
         controller.setArea(100);
         controller.setActive(true);
+        controller.setHouseType("Broiler");
         return controller;
 
     }
@@ -110,7 +113,7 @@ public abstract class AbstractDaoTest {
 
     public final static Alarm alarm() {
         Alarm alarm = new Alarm();
-        alarm.setId(1L);
+        alarm.setId(1000L);
         alarm.setText("test");
         alarm.setUnicodeText("test");
         alarm.setLangId(1L);

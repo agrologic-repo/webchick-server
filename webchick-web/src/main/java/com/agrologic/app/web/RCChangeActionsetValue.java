@@ -35,13 +35,12 @@ public class RCChangeActionsetValue extends AbstractServlet {
         long controllerId = Long.parseLong(request.getParameter("controllerId"));
         long screenId = Long.parseLong(request.getParameter("screenId"));
 
+        String lang = (String) request.getSession().getAttribute("lang");
+        if ((lang == null) || lang.equals("")) {
+            lang = "en";
+        }
+
         try {
-            String info = request.getPathInfo();
-
-            logger.debug(info);
-            info = request.getRequestURI();
-
-            StringBuffer sb = request.getRequestURL();
             long dataId = Long.parseLong(request.getParameter("dataId"));
             String svalue = request.getParameter("Nvalue");
             Long value = null;
@@ -63,7 +62,6 @@ public class RCChangeActionsetValue extends AbstractServlet {
                         + "&controllerId=" + controllerId + "&screenId=" + screenId);
             }
         } catch (SQLException ex) {
-
             // error page
             logger.info("Error occurs while changing data", ex);
             response.sendRedirect("./rmtctrl-actionset.html?userId=" + userId + "&cellinkId=" + cellinkId

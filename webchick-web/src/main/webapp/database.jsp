@@ -15,7 +15,8 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("database.page.title")%></title>
+    <title><%=session.getAttribute("database.page.title")%>
+    </title>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
 </head>
@@ -49,17 +50,7 @@
             <td colspan="9"><br/>
             </td>
         </tr>
-
-
-        <%--<tr>--%>
-            <%--<td colspan="9">--%>
-                <%--<button id="btnBack" name="btnBack"--%>
-                        <%--onclick='return back("./main.jsp");'><%=session.getAttribute("button.back")%>--%>
-                <%--</button>--%>
-            <%--</td>--%>
-        <%--</tr>--%>
     </table>
 </div>
-
 </body>
 </html>

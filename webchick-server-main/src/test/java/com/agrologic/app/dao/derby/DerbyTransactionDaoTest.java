@@ -10,14 +10,13 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.TransactionDao;
 import com.agrologic.app.dao.derby.impl.DerbyTransactionDaoImpl;
 import com.agrologic.app.model.Transaction;
-import java.sql.SQLException;
-
 import org.junit.*;
+
+import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -51,13 +50,13 @@ public class DerbyTransactionDaoTest {
         assertTrue(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testDropTable() throws SQLException {
         ((DerbyTransactionDaoImpl) dao).dropTable();
         assertFalse(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testInsert() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -71,7 +70,7 @@ public class DerbyTransactionDaoTest {
         dao.insert(transaction);
     }
 
-//    @Test
+    //    @Test
     public void testRemove() throws SQLException {
         dao.remove(Long.valueOf(3));
         transaction = dao.getById(flockId);

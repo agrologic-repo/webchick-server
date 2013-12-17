@@ -1,7 +1,6 @@
 package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.dao.mappers.Util;
 import com.agrologic.app.model.Cellink;
@@ -48,17 +47,6 @@ public class CellinkDaoImpl implements CellinkDao {
         if (cellink.getId() != null) {
             valuesToInsert.put("cellinkid", cellink.getId());
         }
-//        valuesToInsert.put("name", cellink.getName());
-//        valuesToInsert.put("password", cellink.getPassword());
-//        valuesToInsert.put("userid", cellink.getUserId());
-//        valuesToInsert.put("sim", cellink.getSimNumber());
-//        valuesToInsert.put("type", cellink.getType());
-//        valuesToInsert.put("version", cellink.getVersion());
-//        valuesToInsert.put("state", cellink.getState());
-//        valuesToInsert.put("screenid", cellink.getScreenId());
-//        valuesToInsert.put("actual", cellink.isActual());
-//        valuesToInsert.put("cellinkid", cellink.getId());
-
         valuesToInsert.put("name", cellink.getName());
         valuesToInsert.put("password", cellink.getPassword());
         valuesToInsert.put("userid", cellink.getUserId());
@@ -182,7 +170,7 @@ public class CellinkDaoImpl implements CellinkDao {
 
     @Override
     public int count() throws SQLException {
-        return count(null);
+        return count(new CellinkCriteria());
     }
 
     @Override
@@ -191,6 +179,46 @@ public class CellinkDaoImpl implements CellinkDao {
         String sqlQuery = "select count(*) from cellinks where name like ? and (state = ? or ? is null)";
         Object[] objects = new Object[]{criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%",
                 criteria.getState(), criteria.getState()};
+//        String sqlQuery;
+//        Object[] objects;
+//
+//        if (criteria.getRole() != null) {
+//            UserRole userRole = UserRole.get(criteria.getRole());
+//            switch (userRole) {
+//                default:
+//                case USER:
+//                    sqlQuery = "select count(*) cellinks where userid=? ";
+//                    objects = new Object[]{criteria.getUserId()};
+//                    break;
+//                case ADMIN:
+//                    sqlQuery = "select count(*) from cellinks where "
+//                            + "(state = ? or ? is null) and "
+//                            + "type like ? and "
+//                            + "name like ?  "
+//                            + "limit ?  , 25 ";
+//
+//                    objects = new Object[]{
+//                            criteria.getState(), criteria.getState(),
+//                            criteria.getType() == null ? "%%" : "%" + criteria.getType() + "%",
+//                            criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%",
+//                            criteria.getIndex() == null ? 0 : criteria.getIndex()};
+//                    break;
+//                case DISTRIBUTOR:
+//                    sqlQuery = "select count(*) from cellinks where userid in (select userid from users where company=?) ";
+//                    objects = new Object[]{criteria.getCompany()};
+//                    break;
+//            }
+//        } else {
+//            sqlQuery = "select count(*) from cellinks where  "
+//                    + "(state = ? or ? is null) and "
+//                    + "type like ? and "
+//                    + "name like ? limit ?  , 25 ";
+//            objects = new Object[]{
+//                    criteria.getState(), criteria.getState(),
+//                    criteria.getType() == null ? "%%" : "%" + criteria.getType() + "%",
+//                    criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%",
+//                    criteria.getIndex() == null ? 0 : criteria.getIndex()};
+//        }
         return jdbcTemplate.queryForObject(sqlQuery, objects, Integer.class);
     }
 
@@ -222,8 +250,10 @@ public class CellinkDaoImpl implements CellinkDao {
                             criteria.getIndex() == null ? 0 : criteria.getIndex()};
                     break;
                 case DISTRIBUTOR:
-                    sqlQuery = "select * from cellinks where userid in (select userid from users where company=?) ";
-                    objects = new Object[]{criteria.getCompany()};
+                    sqlQuery = "select * from cellinks where userid in (select userid from users where company=?) and " +
+                            "name like ?  ";
+                    objects = new Object[]{criteria.getCompany(),
+                            criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%"};
                     break;
             }
         } else {

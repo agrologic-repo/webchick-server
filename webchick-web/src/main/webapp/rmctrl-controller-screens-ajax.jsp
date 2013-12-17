@@ -5,7 +5,7 @@
 <%@ page import="com.agrologic.app.model.Controller" %>
 <%@ page import="com.agrologic.app.model.User" %>
 
-<%  User user = (User) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -40,29 +40,6 @@
 <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
-<style type="text/css">
-    div.tableHolder {
-        OVERFLOW: auto;
-        WIDTH: 800px;
-        HEIGHT: 600px;
-        POSITION: relative;
-    }
-    thead td {
-        Z-INDEX: 20;
-        POSITION: relative;
-        TOP: expression(this.offsetParent.scrollTop-2);
-        HEIGHT: 20px;
-        TEXT-ALIGN: center
-    }
-    tfoot td {
-        Z-INDEX: 20;
-        POSITION: relative;
-        TOP: expression(this.offsetParent.clientHeight - this.offsetParent.scrollHeight + this.offsetParent.scrollTop);
-        HEIGHT: 20px;
-        TEXT-ALIGN: left;
-    }
-</style>
-
 <script type="text/javascript">
     var firstload = 1;
     var timeoutID;
@@ -543,7 +520,8 @@ function keyDown(val) {
     <table style="width: auto;height: 45px; border: 1px solid #6699FF; background: white;" align="center">
         <tr>
             <td>
-                <img src="resources/images/loader.gif" border="0" alt="" hspace="10"><%=session.getAttribute("page.loading")%>
+                <img src="resources/images/loader.gif" border="0" alt=""
+                     hspace="10"><%=session.getAttribute("page.loading")%>
             </td>
         </tr>
     </table>

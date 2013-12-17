@@ -3,7 +3,10 @@ package com.agrologic.app.dao.service.impl;
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.RemovebleDao;
-import org.apache.log4j.Logger;
+import com.agrologic.app.exception.DatabaseNotFound;
+import com.agrologic.app.exception.WrongDatabaseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
@@ -11,13 +14,11 @@ import java.util.concurrent.Executors;
 
 public class DatabaseManager {
 
-    private final Logger logger = Logger.getLogger(DatabaseManager.class);
+    private final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
     private DatabaseCreator databaseCreator;
     private DatabaseGeneralService databaseGeneralService;
     private DatabaseInsertion databaseInsertion;
     private DatabaseLoader databaseLoader;
-    private Long userId;
-    private Long cellinkId;
     private final ExecutorService executorService;
 
     /**
@@ -38,23 +39,16 @@ public class DatabaseManager {
         this.executorService = Executors.newSingleThreadExecutor();
     }
 
-    public synchronized void doLoadTableData() throws SQLException {
+    public synchronized void doLoadTableData() throws DatabaseNotFound, WrongDatabaseException {
         Configuration config = new Configuration();
-        doLoadTableData(config.getUserId(), config.getCellinkId());
-    }
-
-    public synchronized void doLoadTableData(String suserId, String scellinkId) throws SQLException {
-        userId = Long.parseLong(suserId);
-        cellinkId = Long.parseLong(scellinkId);
-        try {
-            if (userId.equals((long) -1) || cellinkId.equals((long) -1)) {
-                logger.trace("UserID or CellinkID argument error : userId= " + userId + "; cellinkId= " + cellinkId + ";");
-                throw new IllegalArgumentException();
-            }
-            databaseLoader.loadAllDataByUserAndCellink(userId, cellinkId);
-        } catch (Exception e) {
-            throw new SQLException(e.getMessage(), e);
+        Long userId = Long.parseLong(config.getUserId());
+        Long cellinkId = Long.parseLong(config.getCellinkId());
+        if (userId.equals((long) -1) || cellinkId.equals((long) -1)) {
+            logger.info("UserID or CellinkID argument error : User ID : {} and Cellink ID: {} "
+                    , new Object[]{userId, cellinkId});
+            throw new IllegalArgumentException();
         }
+        databaseLoader.loadControllersAndProgramsByUserAndCellink(userId, cellinkId);
     }
 
     public synchronized void runCreateTablesTask() {
@@ -90,9 +84,7 @@ public class DatabaseManager {
     }
 
     public void finish() {
-        userId = null;
-        cellinkId = null;
-        databaseGeneralService.closeAll();
+//        databaseGeneralService.closeAll();
         databaseGeneralService = null;
         databaseCreator = null;
         databaseInsertion = null;

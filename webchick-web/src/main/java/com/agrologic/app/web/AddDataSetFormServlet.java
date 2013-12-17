@@ -78,14 +78,16 @@ public class AddDataSetFormServlet extends AbstractServlet {
                         return;
                     }
 
-                    while (startDataId <= endDataId) {
+                    // stop counter to prevent add over data
+                    long stopCount = endDataId - startDataId;
+                    while ((startDataId <= endDataId) || (stopCount == 0)) {
                         try {
                             dataDao.insertDataToTable(programid, screenid, tableid, startDataId, show, pos);
                         } catch (SQLException ex) {
                             for (Throwable e : ex) {
                                 if (e instanceof SQLException) {
                                     e.printStackTrace(System.err);
-
+                                    logger.error("Error during inserting data : ", e);
                                     Throwable t = ex.getCause();
 
                                     while (t != null) {
@@ -97,8 +99,8 @@ public class AddDataSetFormServlet extends AbstractServlet {
 
                         if (data.isLongType()) {
                             startDataId++;
+                            stopCount--;
                         }
-
                         startDataId++;
                         pos++;
                     }

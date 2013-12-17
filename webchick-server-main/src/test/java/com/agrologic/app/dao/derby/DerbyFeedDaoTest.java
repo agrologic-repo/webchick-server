@@ -5,20 +5,18 @@
 package com.agrologic.app.dao.derby;
 
 import com.agrologic.app.dao.CreatebleDao;
-import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.FeedDao;
 import com.agrologic.app.dao.derby.impl.DerbyFeedDaoImpl;
 import com.agrologic.app.model.Feed;
-import java.sql.SQLException;
-import java.util.List;
-
 import org.junit.*;
+
+import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -45,7 +43,7 @@ public class DerbyFeedDaoTest {
         dao = DbImplDecider.use(DaoType.MYSQL).getDao(FeedDao.class);
     }
 
-//    @Test
+    //    @Test
     public void testCreateTable() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -53,7 +51,7 @@ public class DerbyFeedDaoTest {
         assertTrue(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testDropTable() throws SQLException {
         ((DerbyFeedDaoImpl) dao).dropTable();
         assertFalse(((CreatebleDao) dao).tableExist());
@@ -75,14 +73,14 @@ public class DerbyFeedDaoTest {
         dao.insert(feed);
     }
 
-//    @Test
+    //    @Test
     public void testRemove() throws SQLException {
         dao.remove(feed.getId());
         feed = dao.getById(flockId);
         assertNull(feed);
     }
 
-//    @Test
+    //    @Test
     public void testRemoveAll() throws SQLException {
 //        List<Feed> feedList = dao.getAllByCellinkId(flockId);
 //        for (Feed g : feedList) {

@@ -73,7 +73,7 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
      */
     public final void initDaoByType() {
         printLogbyDaoType("Initialize dao interface");
-        schemaDao = DbImplDecider.use(daoType).getDao(SchemaDao.class);
+//        schemaDao = DbImplDecider.use(daoType).getDao(SchemaDao.class);
         userDao = DbImplDecider.use(daoType).getDao(UserDao.class);
         cellinkDao = DbImplDecider.use(daoType).getDao(CellinkDao.class);
         controllerDao = DbImplDecider.use(daoType).getDao(ControllerDao.class);
@@ -101,9 +101,9 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
         workerDao = DbImplDecider.use(daoType).getDao(WorkerDao.class);
     }
 
-    public void closeAll() {
-        DbImplDecider.use(daoType).getDao(DaoFactory.class).closeAllConnection();
-    }
+//    public void closeAll() {
+//        DbImplDecider.use(daoType).getDao(DaoFactory.class).closeAllConnection();
+//    }
 
     /**
      * Set database directory folder to the system user home path folder collection.

@@ -51,7 +51,6 @@ public class RCActionSetServlet extends AbstractServlet {
                 Program program = programDao.getById(controller.getProgramId());
                 ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
                 Collection<Screen> screens = screenDao.getAllScreensByProgramAndLang(program.getId(), langId, false);
-
                 program.setScreens((List<Screen>) screens);
                 controller.setProgram(program);
 

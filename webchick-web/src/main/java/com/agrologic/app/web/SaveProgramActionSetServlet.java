@@ -87,13 +87,14 @@ public class SaveProgramActionSetServlet extends AbstractServlet {
                     programDao.update(program);
                     request.setAttribute("message", "Changes successfully saved !");
                     request.setAttribute("error", false);
-                    request.getRequestDispatcher("./all-actionset.jsp?screenId=" + screenId + "&translateLang="
-                            + translateLang).forward(request, response);
+                    request.getRequestDispatcher("./all-tables.html?programid=" + programId + "screenId=" + screenId +
+                            "&translateLang=" + translateLang).forward(request, response);
                 } catch (SQLException ex) {
                     logger.error("Error occurs while updating program !");
                     request.setAttribute("message", "Error occurs while saving changes !");
                     request.setAttribute("error", true);
-                    request.getRequestDispatcher("./all-actionset.html").forward(request, response);
+                    request.getRequestDispatcher("./all-tables.html?programid=" + programId + "screenId=" + screenId +
+                            "&translateLang=" + translateLang).forward(request, response);
                 }
             }
         } finally {

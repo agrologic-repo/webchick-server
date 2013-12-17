@@ -97,7 +97,7 @@
             $("#filter").click(function () {
                 var text = $('#searchText').val();
                 var state = $('#filterStatus :selected').val();
-                window.location.href = "./overview.html?state=" + state+"&searchText=" + text;
+                window.location.href = "./overview.html?state=" + state + "&searchText=" + text;
             });
         });//]]>
 
@@ -108,7 +108,7 @@
                 return false;
             },
             format: function (s) {
-                if(s == "") {
+                if (s == "") {
                     return 0;
                 } else {
                     var temp = s.split(' ');
@@ -130,14 +130,16 @@
 
         $(function () {
             $('#table-cellinks').tablesorter({
-                sortList: [[1, 0]],widgets: ["zebra"],
+                sortList: [
+                    [1, 0]
+                ], widgets: ["zebra"],
                 // These are detected by default,
                 // but you can change or disable them
                 headers: {
                     // Disable sorting on the first column
-                    0: { sorter:false },
+                    0: { sorter: false },
                     6: { sorter: "dateTimeFormat" },
-                    7: { sorter:false }
+                    7: { sorter: false }
                 }
             });
         });
@@ -200,22 +202,26 @@
         <td style="vertical-align: top" width="20%">
             <h1><%=session.getAttribute("overview.page.title")%>
             </h1>
+
             <h2><%=session.getAttribute("overview.page.header")%>
             </h2>
         </td>
         <td colspan="2" width="50%">
             <jsp:include page="messages.jsp"/>
         </td>
+        <% if (user.getRole() == UserRole.ADMIN) {%>
         <td>
             <fieldset>
-                <legend><b><%=session.getAttribute("cellink.states")%></b></legend>
+                <legend><b><%=session.getAttribute("cellink.states")%>
+                </b></legend>
                 <table class="table-list-small" width="200px">
                     <tr>
                         <td>
                             <table border="0" style="border-collapse: collapse;">
                                 <tr>
                                     <td style="padding: 1px 2px 1px 5px; vertical-align: middle">
-                                        <img class="images" src="resources/images/online.gif" style="vertical-align: middle"
+                                        <img class="images" src="resources/images/online.gif"
+                                             style="vertical-align: middle"
                                              hspace="5"/>
                                         <a href="overview.html?state=1"><%=session.getAttribute("cellink.state.online")%>
                                         </a>
@@ -243,9 +249,11 @@
                 </table>
             </fieldset>
         </td>
+
         <td>
             <img border="0" src="TotalCellinkStatePieChart" width="100" height="100"/>
         </td>
+        <%}%>
     </tr>
     <tr bgcolor="#D5EFFF">
         <td align="justify" colspan="6">
@@ -293,26 +301,32 @@
                             <input type="checkbox" id="selectall"/>
                         </th>
                         <th width="50px"><span><%=session.getAttribute("table.col.cellink.id")%></span></th>
-                        <th><%=session.getAttribute("table.col.cellink.name")%></th>
-                        <th><%=session.getAttribute("table.col.cellink.version")%></th>
-                        <th><%=session.getAttribute("table.col.cellink.user")%></th>
-                        <th><%=session.getAttribute("table.col.cellink.sim")%></th>
-                        <th><%=session.getAttribute("table.col.cellink.lastupdate")%></th>
-                        <th colspan="2"><%=session.getAttribute("table.col.cellink.action")%></th>
+                        <th><%=session.getAttribute("table.col.cellink.name")%>
+                        </th>
+                        <th><%=session.getAttribute("table.col.cellink.version")%>
+                        </th>
+                        <th><%=session.getAttribute("table.col.cellink.user")%>
+                        </th>
+                        <th><%=session.getAttribute("table.col.cellink.sim")%>
+                        </th>
+                        <th><%=session.getAttribute("table.col.cellink.lastupdate")%>
+                        </th>
+                        <th colspan="2"><%=session.getAttribute("table.col.cellink.action")%>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
                     <%if (cellinks.size() != 0) {%>
                     <%int rows = 0;%>
                     <%for (Cellink cellink : cellinks) {%>
-                        <% if ((rows % 2) == 0) {%>
-                            <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
-                        <%} else {%>
-                            <tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">
+                    <% if ((rows % 2) == 0) {%>
+                    <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
+                            <%} else {%>
+                    <tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">
                         <%}%>
                         <td>
                             <input type="checkbox" class="selectedId" name="selectedId" id="cb<%=cellink.getId()%>"
-                                   value="<%=cellink.getId()%>" />
+                                   value="<%=cellink.getId()%>"/>
                         </td>
                         <td>
                             <%=cellink.getId()%>
@@ -338,11 +352,11 @@
                                         || cellink.getCellinkState().getValue() == CellinkState.STATE_START
                                         || cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {
                             %>
-                                <a href="rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
-                                    <%=cellink.getName()%>
-                                </a>
-                            <%} else {%>
+                            <a href="rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
                                 <%=cellink.getName()%>
+                            </a>
+                            <%} else {%>
+                            <%=cellink.getName()%>
                             <%}%>
                         </td>
                         <td>
@@ -355,7 +369,8 @@
                         <td>
                             <%=cellink.getSimNumber()%>
                         </td>
-                        <td><%=cellink.getFormatedTime()%></td>
+                        <td><%=cellink.getFormatedTime()%>
+                        </td>
                         <%
                             if (cellink.getCellinkState().getValue() == CellinkState.STATE_ONLINE
                                     || cellink.getCellinkState().getValue() == CellinkState.STATE_START) {
@@ -403,7 +418,8 @@
 
 
 <script type="text/javascript" language="javascript">
-    var state =<%=request.getParameter("state")%>
+    var state =
+    <%=request.getParameter("state")%>
     var length = document.formFilter.filterStatus.options.length;
     for (var i = 0; i < length; i++) {
         if (document.formFilter.filterStatus.options[i].value == state) {

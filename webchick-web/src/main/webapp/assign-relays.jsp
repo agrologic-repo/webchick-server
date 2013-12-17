@@ -6,7 +6,7 @@
 <%@ page import="com.agrologic.app.model.*" %>
 <%@ page import="java.util.Collection" %>
 
-<%  User user = (User) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
 
     if (user == null) {
         response.sendRedirect("./index.htm");
@@ -107,7 +107,6 @@
                                         </td>
                                         <td align="left" width="80px">
                                             <select id="relaynames" name="relaynames" style="width:120px;">
-                                                <!--option value="0">None</option-->
                                                 <% for (Relay relayName : relayNames) {%>
                                                 <% if ((relay != null) && (relay.getText().equals(relayName.getText()))) {%>
                                                 <option value="<%=relayName.getId()%>" selected><%=relayName.getText()%>

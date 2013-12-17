@@ -21,6 +21,8 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @ContextConfiguration({"/common-dao-context.xml", "/derby-dao-context.xml"})
 @TransactionConfiguration
 @Transactional
+@Ignore
+
 public class DerbyControllerDaoImplTest extends AbstractDaoTest {
 
     @Before

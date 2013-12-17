@@ -26,8 +26,20 @@ public interface DataDao {
      */
     void insert(Data data) throws SQLException;
 
+    /**
+     * Updates an existing data row in table datatable
+     *
+     * @param data an object that encapsulates a data attributes
+     * @throws SQLException if failed to update the data in the database
+     */
     void update(Data data) throws SQLException;
 
+    /**
+     * Removes a data from the datatable database
+     *
+     * @param dataId the id of the data to be removed from the database
+     * @throws SQLException if failed to remove the data from the database
+     */
     void remove(Long dataId) throws SQLException;
 
     /**
@@ -63,23 +75,66 @@ public interface DataDao {
      */
     void insertTableData(Long tableId, Long screenId, Long programId, Collection<Data> dataList) throws SQLException;
 
+    /**
+     * Insert new data to table data
+     *
+     * @param programId the id of program
+     * @param screenId  the id of screen
+     * @param tableId   the id of table
+     * @param dataId    the id of data
+     * @param display   the string to display 'yes' or 'no'
+     * @param position  the number of position
+     * @throws java.sql.SQLException if failed to update the data in the table data
+     */
     void insertDataToTable(Long programId, Long screenId, Long tableId, Long dataId, String display,
                            Integer position) throws SQLException;
 
+    /**
+     * Insert data id , table id , and program id into association table datatable
+     *
+     * @param newProgramId the id of added program
+     * @param oldProgramId the id of selected program to get data data from it
+     * @throws java.sql.SQLException
+     */
     void insertDataList(Long newProgramId, Long oldProgramId) throws SQLException;
 
     void insertSpecialData(Long programId, Long dataId, Long langId, String label) throws SQLException;
 
     void insertDataTranslation(Long dataId, Long langId, String translate) throws SQLException;
 
+    /**
+     * Unchecked data on table that not used in given program id
+     *
+     * @param programId the program id
+     * @throws SQLException if failed to execute the query
+     */
     void uncheckNotUsedDataOnAllScreens(Long programId, Long controllerId) throws SQLException;
 
+    /**
+     * Remove all data in specified table from the database.
+     *
+     * @param programId the program id
+     * @throws SQLException if failed to remove the data from the tabledata
+     */
     void removeDataFromTable(Long programId) throws SQLException;
 
-    void removeDataFromTable(Long programId, Long screenId) throws SQLException;
-
+    /**
+     * Remove all data in specified table from the database.
+     *
+     * @param programId the program id
+     * @param screenId  the screen id
+     * @param tableId   the table id
+     * @throws SQLException if failed to remove the data from the tabledata
+     */
     void removeDataFromTable(Long programId, Long screenId, Long tableId) throws SQLException;
 
+    /**
+     * Removes a data from the datatable database
+     *
+     * @param tableId the id of the table
+     * @param dataId  the id of the data
+     * @throws SQLException if failed to remove the data from the tabledata
+     */
     void removeDataFromTable(Long programId, Long screenId, Long tableId, Long dataId) throws SQLException;
 
     void removeSpecialDataFromTable(Long programId, Long dataId) throws SQLException;
@@ -107,11 +162,31 @@ public interface DataDao {
 
     Collection<Data> getAll() throws SQLException;
 
+    /**
+     * Retrieves data relays from datatable
+     *
+     * @return a list of Data objects, each object reflects a row in table datatable
+     * @throws java.sql.SQLException if failed to retrieve data from the database
+     */
     Collection<Data> getRelays() throws SQLException;
 
+    /**
+     * Retrieves data alarms from datatable
+     *
+     * @return a list of Data objects, each object reflects a row in table datatable
+     * @throws java.sql.SQLException if failed to retrieve data from the database
+     */
     Collection<Data> getAlarms() throws SQLException;
 
+    /**
+     * Retrieves data system states from database
+     *
+     * @return a list of Data objects, each object reflects a row in table datatable
+     * @throws java.sql.SQLException if failed to retrieve data from the database
+     */
     Collection<Data> getSystemStates() throws SQLException;
+
+    Collection<Data> getSpecial(String string) throws SQLException;
 
     Collection<Data> getTableDataList(Long programId, Long screenId, Long tableId, String display) throws SQLException;
 
@@ -124,9 +199,9 @@ public interface DataDao {
 
     Collection<Data> getAllWithTranslation() throws SQLException;
 
-    Collection<Data> getControllerData(Long controllerId) throws SQLException;
-
     Collection<Data> getControllerDataValues(Long controllerId) throws SQLException;
+
+    Map<Long, Long> getUpdatedControllerDataValues(Long controllerId) throws SQLException;
 
     Collection<Data> getOnlineTableDataList(Long controllerId, Long programId, Long screenId, Long tableId, Long langId)
             throws SQLException;

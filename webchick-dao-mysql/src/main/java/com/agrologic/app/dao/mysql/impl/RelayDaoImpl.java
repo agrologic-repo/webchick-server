@@ -1,6 +1,5 @@
 package com.agrologic.app.dao.mysql.impl;
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.RelayDao;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.dao.mappers.Util;
@@ -18,7 +17,6 @@ public class RelayDaoImpl implements RelayDao {
     protected final Logger logger = LoggerFactory.getLogger(RelayDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-    protected DaoFactory dao;
 
     public RelayDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

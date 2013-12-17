@@ -1,6 +1,5 @@
 package com.agrologic.app.dao.mysql.impl;
 
-import com.agrologic.app.dao.DaoFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,7 +13,7 @@ public abstract class AbstractDaoImpl {
     protected final JdbcTemplate jdbcTemplate;
     protected final SimpleJdbcInsert jdbcInsert;
 
-    public AbstractDaoImpl(JdbcTemplate jdbcTemplate, DaoFactory dao, Class clazz) {
+    public AbstractDaoImpl(JdbcTemplate jdbcTemplate, Class clazz) {
         this.logger = LoggerFactory.getLogger(clazz);
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);

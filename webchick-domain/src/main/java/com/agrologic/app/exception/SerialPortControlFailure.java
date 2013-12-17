@@ -1,10 +1,8 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.exception;
 
+/**
+ * Throws if can not open serial port
+ */
 public class SerialPortControlFailure extends Exception {
 
     public SerialPortControlFailure(String message, Exception e) {

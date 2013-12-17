@@ -115,6 +115,11 @@ public class RowMappers {
         return new ActionSetMapper();
     }
 
+    public static EggsMapper eggs() {
+        return new EggsMapper();
+    }
+
+
     private static class LanguageMapper implements RowMapper<Language> {
 
         @Override
@@ -880,4 +885,23 @@ public class RowMappers {
             return actionSet;
         }
     }
+
+    private static class EggsMapper implements RowMapper<Eggs> {
+
+        @Override
+        public Eggs mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Eggs eggs = new Eggs();
+            eggs.setFlockId(rs.getLong("FlockId"));
+            eggs.setDay(rs.getInt("Day"));
+            eggs.setSoftShelled(rs.getInt("SoftShelled"));
+            eggs.setCracked(rs.getInt("Cracked"));
+            eggs.setNumOfBirds(rs.getInt("NumOfBirds"));
+            eggs.setEggQuantity(rs.getInt("EggsQuantity"));
+            eggs.setFeedConsump(rs.getLong("FeedConsump"));
+            eggs.setWaterConsump(rs.getLong("WaterConsump"));
+            eggs.setDailyMortal(rs.getLong("DailyMortal"));
+            return eggs;
+        }
+    }
+
 }

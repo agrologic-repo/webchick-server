@@ -10,16 +10,14 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.GasDao;
 import com.agrologic.app.dao.derby.impl.DerbyGasDaoImpl;
 import com.agrologic.app.model.Gas;
-import java.sql.SQLException;
-import java.util.List;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import static org.junit.Assert.*;
 import org.junit.*;
 
+import java.sql.SQLException;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
 /**
- *
  * @author Administrator
  */
 @Ignore
@@ -46,7 +44,7 @@ public class DerbyGasDaoTest {
         dao = DbImplDecider.use(DaoType.MYSQL).getDao(GasDao.class);
     }
 
-//    @Test
+    //    @Test
     public void testCreateTable() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -54,13 +52,13 @@ public class DerbyGasDaoTest {
         assertTrue(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testDropTable() throws SQLException {
         ((DerbyGasDaoImpl) dao).dropTable();
         assertFalse(((CreatebleDao) dao).tableExist());
     }
 
-//    @Test
+    //    @Test
     public void testInsert() throws SQLException {
         if (!((CreatebleDao) dao).tableExist()) {
             ((CreatebleDao) dao).createTable();
@@ -76,12 +74,12 @@ public class DerbyGasDaoTest {
         dao.insert(gas);
         assertEquals(5, dao.getAllByFlockId(flockId).size());
         List<Gas> gass = dao.getAllByFlockId(flockId);
-        for(Gas g:gass) {
+        for (Gas g : gass) {
             System.out.println(g);
         }
     }
 
-//    @Test
+    //    @Test
     public void testRemove() throws SQLException {
         dao.remove(gas.getId());
         gas = dao.getById(flockId);
@@ -91,10 +89,10 @@ public class DerbyGasDaoTest {
     @Test
     public void testRemoveAll() throws SQLException {
         List<Gas> gasList = dao.getAllByFlockId(flockId);
-        for(Gas g:gasList) {
+        for (Gas g : gasList) {
             dao.remove(g.getId());
         }
         gasList = dao.getAllByFlockId(flockId);
-        assertEquals(0,gasList.size());
+        assertEquals(0, gasList.size());
     }
 }

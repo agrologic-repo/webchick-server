@@ -54,9 +54,7 @@
     </style>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery.min.js">;</script>
-    <script type="text/javascript" src="resources/javascript/jquery-latest.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery.tablesorter.js">;</script>
-    <script type="text/javascript" src="resources/javascript/jquery.tablesorter.min.js">;</script>
     <script type='text/javascript'>
         //<![CDATA[
         /**
@@ -84,17 +82,17 @@
          */
         $(document).ready(function () {
             $("#table-users").tablesorter({
-                sortList: [[0, 0]], widgets: ['zebra'],
+                sortList: [
+                    [0, 0]
+                ], widgets: ['zebra'],
                 // These are detected by default,
                 // but you can change or disable them
                 headers: {
                     // Disable sorting on the first column
-                    5: { sorter:false },
-                    6: { sorter:false }
+                    5: { sorter: false },
+                    6: { sorter: false }
                 }
-
             });
-
         });
         //]]>
     </script>
@@ -219,13 +217,20 @@
                     <table id="table-users" class="tablesorter" border="1">
                         <thead>
                         <tr>
-                            <th><%=session.getAttribute("table.col.user.id")%></th>
-                            <th><%=session.getAttribute("table.col.user.login")%></th>
-                            <th><%=session.getAttribute("table.col.user.name")%></th>
-                            <th><%=session.getAttribute("table.col.user.phone")%></th>
-                            <th><%=session.getAttribute("table.col.user.company")%></th>
-                            <th><%=session.getAttribute("table.col.user.cellinks")%></th>
-                            <th colspan="3"><%=session.getAttribute("table.col.user.action")%></th>
+                            <th><%=session.getAttribute("table.col.user.id")%>
+                            </th>
+                            <th><%=session.getAttribute("table.col.user.login")%>
+                            </th>
+                            <th><%=session.getAttribute("table.col.user.name")%>
+                            </th>
+                            <th><%=session.getAttribute("table.col.user.phone")%>
+                            </th>
+                            <th><%=session.getAttribute("table.col.user.company")%>
+                            </th>
+                            <th><%=session.getAttribute("table.col.user.cellinks")%>
+                            </th>
+                            <th colspan="3"><%=session.getAttribute("table.col.user.action")%>
+                            </th>
                         </tr>
                         </thead>
                         <tbody>

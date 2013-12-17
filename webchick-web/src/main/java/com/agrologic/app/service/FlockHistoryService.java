@@ -100,13 +100,12 @@ public class FlockHistoryService {
      * @throws SQLException if failed to get management data from database
      */
     public Long getResetTime(long flockId, int growDay) throws SQLException {
-        Long resetTime = flockDao.getResetTime(flockId, growDay).longValue();
+        Integer resetTime = flockDao.getResetTime(flockId, growDay);
         if (resetTime != null) {
-            resetTime = DataFormat.convertToTimeFormat(resetTime);
+            return DataFormat.convertToTimeFormat(resetTime.longValue());
         } else {
-            resetTime = Long.valueOf("0");
+            return 0L;
         }
-        return resetTime;
     }
 
     /**

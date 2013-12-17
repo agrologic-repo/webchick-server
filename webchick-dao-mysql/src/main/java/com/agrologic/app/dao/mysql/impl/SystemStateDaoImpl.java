@@ -1,6 +1,5 @@
 package com.agrologic.app.dao.mysql.impl;
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.SystemStateDao;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.dao.mappers.Util;

@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
-public class RepresentInTableTheHistory24Data extends AbstractServlet {
+public class ViewTableHistory24Data extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

@@ -8,7 +8,6 @@ package com.agrologic.app.dao.service;
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
-import com.agrologic.app.exception.ObjectDoesNotExist;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
@@ -54,8 +53,9 @@ public class DatabaseManagerTest {
 
     @Test
     @Ignore
-    public void doLoadTableDataTest() throws SQLException, ObjectDoesNotExist {
-        dbManager.doLoadTableData(config.getUserId(), config.getCellinkId());
+    public void doLoadTableDataTest() throws Exception {
+
+        dbManager.doLoadTableData();
 
         User user = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class).getById(userId);
         Cellink cellink = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class).getById(cellinkId);
@@ -63,9 +63,6 @@ public class DatabaseManagerTest {
 
         Collection<Controller> controllers = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class).getActiveCellinkControllers(cellinkId);
         cellink.setControllers(controllers);
-
-//        assertEquals("getUser()", user, dbManager.getDatabaseLoader().getUser());
-//        assertEquals("getCellink()", cellink, dbManager.getDatabaseLoader().getUser().getCellinkById(cellinkId));
 
         DataDao ddi = dbManager.getDatabaseGeneralService().getDataDao();
         long pid = 33501;

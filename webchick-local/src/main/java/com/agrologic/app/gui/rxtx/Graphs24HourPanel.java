@@ -13,8 +13,6 @@ import com.agrologic.app.model.DataFormat;
 import org.jfree.chart.ChartPanel;
 
 import javax.swing.*;
-import javax.swing.plaf.DimensionUIResource;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -62,19 +60,25 @@ public class Graphs24HourPanel extends JPanel {
             Logger.getLogger(Graphs24HourPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        setSize(width, (height+10) * 2);
+        setSize(width, (height + 10) * 2);
     }
 
+    /**
+     * @param controllerId
+     * @throws SQLException
+     */
     public void createGraph(Long controllerId) throws SQLException {
         currControllerId = controllerId;
         String values = controllerDao.getControllerGraph(controllerId);
         Controller controller = controllerDao.getById(controllerId);
         Data setClock = dataDao.getSetClockByController(controllerId);
         if (controller.getName().contains("616")) {
-            AbstractGraph graph;
-            Locale locale = getCurrentLocale();
-            graph = new Graph24InputTemp(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
-            createAndAddChartPanel(graph);
+            if (values != null) {
+                AbstractGraph graph;
+                Locale locale = getCurrentLocale();
+                graph = new Graph24InputTemp(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
+                createAndAddChartPanel(graph);
+            }
         } else {
             if (values != null && values.length() >= AbstractGraph.LENGHT) {
                 AbstractGraph graph;
@@ -108,7 +112,7 @@ public class Graphs24HourPanel extends JPanel {
      * @param graph the created graph
      */
     private void createAndAddChartPanel(AbstractGraph graph) {
-        ChartPanel chartpanel = new  ChartPanel(graph.createChart(), width, height, width, height, width, height,
+        ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
                 false, true, true, true, true, true);
         chartpanel.setVisible(true);
         add(chartpanel);
@@ -168,6 +172,7 @@ public class Graphs24HourPanel extends JPanel {
                         createGraph(currControllerId);
                     }
                 } catch (SQLException ex) {
+
                 }
             }
         };

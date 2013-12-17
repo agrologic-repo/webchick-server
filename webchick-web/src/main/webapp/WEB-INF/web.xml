@@ -234,6 +234,18 @@
         <servlet-class>com.agrologic.app.web.AddGasFormServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>AddEggFormServlet</servlet-name>
+        <servlet-class>com.agrologic.app.web.AddEggFormServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditEggFormServlet</servlet-name>
+        <servlet-class>com.agrologic.app.web.EditEggFormServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RemoveEggServlet</servlet-name>
+        <servlet-class>com.agrologic.app.web.RemoveEggServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>AddFuelFormServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.AddFuelFormServlet</servlet-class>
     </servlet>
@@ -426,8 +438,8 @@
         <servlet-class>com.agrologic.app.web.ExportToExcelHistory</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>RepresentInTableTheHistoryData</servlet-name>
-        <servlet-class>com.agrologic.app.web.RepresentInTableTheHistoryData</servlet-class>
+        <servlet-name>ViewTableHistoryData</servlet-name>
+        <servlet-class>com.agrologic.app.web.ViewTableHistoryData</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>CellinkNameServlet</servlet-name>
@@ -438,8 +450,8 @@
         <servlet-class>com.agrologic.app.web.ExportToExcelHistory24</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>RepresentInTableTheHistory24Data</servlet-name>
-        <servlet-class>com.agrologic.app.web.RepresentInTableTheHistory24Data</servlet-class>
+        <servlet-name>ViewTableHistory24Data</servlet-name>
+        <servlet-class>com.agrologic.app.web.ViewTableHistory24Data</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>EditProfileFormServlet</servlet-name>
@@ -474,8 +486,8 @@
         <servlet-class>com.agrologic.app.web.TranslateData</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>RepresentInTableEggCountHistory</servlet-name>
-        <servlet-class>com.agrologic.app.web.RepresentInTableEggCountHistory</servlet-class>
+        <servlet-name>ViewTableEggCountHistory</servlet-name>
+        <servlet-class>com.agrologic.app.web.ViewTableEggCountHistory</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UncheckUnusedDataServlet</servlet-name>
@@ -911,6 +923,19 @@
         <url-pattern>/add-gaz.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>AddEggFormServlet</servlet-name>
+        <url-pattern>/add-egg.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditEggFormServlet</servlet-name>
+        <url-pattern>/edit-egg.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RemoveEggServlet</servlet-name>
+        <url-pattern>/remove-egg.html</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>AddFuelFormServlet</servlet-name>
         <url-pattern>/add-fuel.html</url-pattern>
     </servlet-mapping>
@@ -1147,8 +1172,8 @@
         <url-pattern>/exptoexcelhistory.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>RepresentInTableTheHistoryData</servlet-name>
-        <url-pattern>/represent-in-tablehistory.html</url-pattern>
+        <servlet-name>ViewTableHistoryData</servlet-name>
+        <url-pattern>/view-tablehistory.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CellinkNameServlet</servlet-name>
@@ -1159,8 +1184,8 @@
         <url-pattern>/exptoexcelhistory24.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>RepresentInTableTheHistory24Data</servlet-name>
-        <url-pattern>/represent-in-tablehistory24.html</url-pattern>
+        <servlet-name>ViewTableHistory24Data</servlet-name>
+        <url-pattern>/view-tablehistory24.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>EditProfileFormServlet</servlet-name>
@@ -1195,8 +1220,8 @@
         <url-pattern>/translate-data</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>RepresentInTableEggCountHistory</servlet-name>
-        <url-pattern>/represent-in-table-eggcounthistory.html</url-pattern>
+        <servlet-name>ViewTableEggCountHistory</servlet-name>
+        <url-pattern>/view-table-eggcounthistory.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UncheckUnusedDataServlet</servlet-name>

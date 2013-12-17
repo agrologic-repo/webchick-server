@@ -1,13 +1,11 @@
 package com.agrologic.app.dao.mysql.impl;
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.dao.mappers.Util;
 import com.agrologic.app.model.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -17,8 +15,6 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class DataDaoImpl implements DataDao {
-
-
     protected final Logger logger = LoggerFactory.getLogger(DataDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -342,6 +338,7 @@ public class DataDaoImpl implements DataDao {
                 + "(select ID from Special where Text=?)";
         return jdbcTemplate.query(sql, new Object[]{string}, RowMappers.data());
     }
+
     /**
      * {@inheritDoc}
      */
@@ -366,22 +363,17 @@ public class DataDaoImpl implements DataDao {
     public Collection<Data> getTableDataList(Long programId, Long screenId, Long tableId, Long langId, String display)
             throws SQLException {
         String sql = "select * from tabledata "
-                + "left join specialdatalabels "
-                + "on specialdatalabels.dataid=tabledata.dataid "
+                + "left join specialdatalabels on specialdatalabels.dataid=tabledata.dataid "
                 + "and specialdatalabels.programid=tabledata.programid "
                 + "and specialdatalabels.langid=? "
-                + "left join datatable "
-                + "on datatable.dataid=tabledata.dataid "
-                + "left join databylanguage "
-                + "on databylanguage.dataid=tabledata.dataid and databylanguage.langid=? "
+                + "left join datatable on datatable.dataid=tabledata.dataid "
+                + "left join databylanguage on databylanguage.dataid=tabledata.dataid and databylanguage.langid=? "
                 + "where tabledata.programid=? "
-                + "and tabledata.screenid=? "
-                + "and tableid=? "
-                + "order by position";
-
-        return jdbcTemplate.query(sql, new Object[]{langId, langId, programId, screenId, tableId},
-                RowMappers.data());
+                + "and tabledata.screenid=? and tabledata.displayontable  like ? and tableid=? order by position";
+        return jdbcTemplate.query(sql, new Object[]{langId, langId, programId, screenId,
+                (display == null) ? "%%" : "%" + display + "%", tableId}, RowMappers.data());
     }
+
     /**
      * {@inheritDoc}
      */
@@ -392,6 +384,7 @@ public class DataDaoImpl implements DataDao {
                 + " and databylanguage.LangID=1 and datatable.isspecial=5 order by datatable.DataID";
         return jdbcTemplate.query(sql, RowMappers.data());
     }
+
     /**
      * {@inheritDoc}
      */
@@ -416,19 +409,20 @@ public class DataDaoImpl implements DataDao {
      * {@inheritDoc}
      */
     @Override
-    public Map<Long,Long> getUpdatedControllerDataValues(Long controllerId) throws SQLException {
+    public Map<Long, Long> getUpdatedControllerDataValues(Long controllerId) throws SQLException {
         String sql = "select * from controllerdata where controllerid=?";
-        List<Map<String,Object>> results = jdbcTemplate.queryForList(sql, new Object[]{controllerId});
-        Map<Long,Long> resultMap = new HashMap<Long, Long>();
-        for (Map<String,Object> m : results){
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, new Object[]{controllerId});
+        Map<Long, Long> resultMap = new HashMap<Long, Long>();
+        for (Map<String, Object> m : results) {
             Object id = m.get("DATAID");
             Object val = m.get("VALUE");
             Long dataId = Long.parseLong(id.toString());
-            Long value  = Long.parseLong(val.toString());
+            Long value = Long.parseLong(val.toString());
             resultMap.put(dataId, value);
         }
         return resultMap;
     }
+
     /**
      * {@inheritDoc}
      */
@@ -450,6 +444,7 @@ public class DataDaoImpl implements DataDao {
         return jdbcTemplate.query(sql, new Object[]{programId, screenId, tableId, langId, programId, langId, controllerId},
                 RowMappers.data());
     }
+
     /**
      * {@inheritDoc}
      */
@@ -457,7 +452,7 @@ public class DataDaoImpl implements DataDao {
     public Collection<Data> getOnScreenDataList(Long programId, Long screenId, Long tableId, Long langId)
             throws SQLException {
         logger.debug("Get data by program with id [{}], screen id [{}] , table id [{}] and language id [{}] ",
-                new Object[]{programId, screenId, tableId, langId, });
+                new Object[]{programId, screenId, tableId, langId,});
         String sql = "select * from tabledata as td "
                 + "left join datatable on datatable.dataid=td.dataid "
                 + "left join databylanguage on datatable.dataid=databylanguage.dataid and databylanguage.langid=? "
@@ -470,6 +465,7 @@ public class DataDaoImpl implements DataDao {
                 + "order by td.position ";
         return jdbcTemplate.query(sql, new Object[]{langId, langId, programId, screenId, tableId}, RowMappers.data());
     }
+
     /**
      * {@inheritDoc}
      */
@@ -479,6 +475,7 @@ public class DataDaoImpl implements DataDao {
                 + " (select dataid from controllerdata where controllerid=?)";
         jdbcTemplate.update(sql, programId, controllerId);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -487,6 +484,7 @@ public class DataDaoImpl implements DataDao {
         String sql = "delete from tabledata where ProgramID=?";
         jdbcTemplate.update(sql, programId);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -495,6 +493,7 @@ public class DataDaoImpl implements DataDao {
         String sql = "delete from tabledata where ProgramID=? and ScreenID=? and TableID=?";
         jdbcTemplate.update(sql, programId, screenId, tableId);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -503,6 +502,7 @@ public class DataDaoImpl implements DataDao {
         String sql = "delete from tabledata where ProgramID=? and ScreenID=? and TableID=? and DataID=?";
         jdbcTemplate.update(sql, programId, screenId, tableId, dataId);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -511,6 +511,7 @@ public class DataDaoImpl implements DataDao {
         String sql = "delete from specialdatalabels where ProgramID=? and DataID=?";
         jdbcTemplate.update(sql, programId, dataId);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -547,6 +548,7 @@ public class DataDaoImpl implements DataDao {
             }
         });
     }
+
     /**
      * {@inheritDoc}
      */
@@ -557,6 +559,7 @@ public class DataDaoImpl implements DataDao {
 
         return jdbcTemplate.query(sql, new Object[]{programId}, RowMappers.data());
     }
+
     /**
      * {@inheritDoc}
      */
@@ -566,6 +569,7 @@ public class DataDaoImpl implements DataDao {
                 + "(select distinct DataID from programalarms where ProgramID=?)";
         return jdbcTemplate.query(sql, new Object[]{programId}, RowMappers.data());
     }
+
     /**
      * {@inheritDoc}
      */
@@ -575,6 +579,7 @@ public class DataDaoImpl implements DataDao {
                 + "(select distinct DataID  from programsysstates where ProgramID=?)";
         return jdbcTemplate.query(sql, new Object[]{programId}, RowMappers.data());
     }
+
     /**
      * {@inheritDoc}
      */
@@ -585,6 +590,7 @@ public class DataDaoImpl implements DataDao {
                 + "where programId=? and langId=? ";
         return jdbcTemplate.query(sql, new Object[]{programId, langId}, RowMappers.data());
     }
+
     /**
      * {@inheritDoc}
      */

@@ -2,6 +2,7 @@ package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.model.Alarm;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,11 +19,12 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @ContextConfiguration({"/common-dao-context.xml", "/derby-dao-context.xml"})
 @TransactionConfiguration
 @Transactional
+@Ignore
 public class DerbyAlarmDaoImplTest extends AbstractDaoTest {
 
     @Override
     public void setUp() throws SQLException {
-//        alarmDao.remove(alarm());
+        //alarmDao.remove(alarm());
     }
 
     @Override
@@ -41,7 +43,7 @@ public class DerbyAlarmDaoImplTest extends AbstractDaoTest {
     @Test
     public void createTableImplementsWithAOP() throws SQLException {
         try {
-            if(!((CreatebleDao) alarmDao).tableExist()) {
+            if (!((CreatebleDao) alarmDao).tableExist()) {
                 ((CreatebleDao) alarmDao).createTable();
             }
 

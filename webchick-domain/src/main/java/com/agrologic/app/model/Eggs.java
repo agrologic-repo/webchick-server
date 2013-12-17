@@ -7,6 +7,9 @@ public class Eggs {
     Integer eggQuantity;
     Integer softShelled;
     Integer cracked;
+    Long feedConsump;
+    Long waterConsump;
+    Long dailyMortal;
 
     public Eggs() {
     }
@@ -57,5 +60,29 @@ public class Eggs {
 
     public void setCracked(Integer cracked) {
         this.cracked = cracked;
+    }
+
+    public Long getFeedConsump() {
+        return feedConsump;
+    }
+
+    public void setFeedConsump(Long feedConsump) {
+        this.feedConsump = feedConsump;
+    }
+
+    public Long getWaterConsump() {
+        return waterConsump;
+    }
+
+    public void setWaterConsump(Long waterConsump) {
+        this.waterConsump = waterConsump;
+    }
+
+    public Long getDailyMortal() {
+        return dailyMortal;
+    }
+
+    public void setDailyMortal(Long dailyMortal) {
+        this.dailyMortal = dailyMortal;
     }
 }

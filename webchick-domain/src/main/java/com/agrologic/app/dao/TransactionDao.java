@@ -7,21 +7,18 @@ import java.util.List;
 
 public interface TransactionDao {
     /**
-     *
      * @param transaction
      * @throws SQLException
      */
     public void insert(Transaction transaction) throws SQLException;
 
     /**
-     *
      * @param id
      * @throws SQLException
      */
     public void remove(Long id) throws SQLException;
 
     /**
-     *
      * @param id
      * @return
      * @throws SQLException
@@ -29,14 +26,6 @@ public interface TransactionDao {
     public Transaction getById(Long id) throws SQLException;
 
     /**
-     *
-     * @return
-     * @throws SQLException
-     */
-    public List<Transaction> getAll() throws SQLException;
-
-    /**
-     *
      * @param flockId
      * @return
      * @throws SQLException
@@ -44,7 +33,6 @@ public interface TransactionDao {
     public List<Transaction> getAllByFlockId(Long flockId) throws SQLException;
 
     /**
-     *
      * @param id
      * @return
      * @throws SQLException

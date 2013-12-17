@@ -4,11 +4,20 @@ import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.ScreenDaoImpl;
+import com.agrologic.app.model.Screen;
+import com.google.common.collect.Lists;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DerbyScreenDaoImpl extends ScreenDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
@@ -78,81 +87,44 @@ public class DerbyScreenDaoImpl extends ScreenDaoImpl implements CreatebleDao, D
 //        }
 //    }
 
-//    @Override
-//    public void insertTranslation(Collection<Screen> screenList, Long langId) throws SQLException {
-//        String sqlSelectQuery = "SELECT COUNT(UNICODETITLE) AS EXIST FROM SCREENBYLANGUAGE WHERE SCREENID=? AND LANGID=?";
-//        String sqlInsertQuery = "INSERT INTO SCREENBYLANGUAGE (SCREENID, LANGID, UNICODETITLE) VALUES (?, ?, ?)";
-//        String sqlUpdateQuery = "UPDATE SCREENBYLANGUAGE SET UNICODETITLE=? WHERE SCREENID=? AND LANGID=?";
-//        PreparedStatement prepstmtSelect = null;
-//        PreparedStatement prepstmtInsert = null;
-//        PreparedStatement prepstmtUpdate = null;
-//        Connection con = null;
-//
-//        try {
-//            con = dao.getConnection();
-//            prepstmtSelect = con.prepareStatement(sqlSelectQuery);
-//            prepstmtInsert = con.prepareStatement(sqlInsertQuery);
-//            prepstmtUpdate = con.prepareStatement(sqlUpdateQuery);
-//            con.setAutoCommit(false);
-//            int i = 0;
-//            int u = 0;
-//            for (Screen screen : screenList) {
-//                prepstmtSelect.setLong(1, screen.getId());
-//                prepstmtSelect.setLong(2, langId);
-//
-//                ResultSet rs = prepstmtSelect.executeQuery();
-//
-//                if (rs.next()) {
-//
-//                    // turn off autocommit
-//                    int exist = rs.getInt("exist");
-//
-//                    if (exist == 1) {
-//                        prepstmtUpdate.setLong(2, screen.getId());
-//                        prepstmtUpdate.setLong(3, langId);
-//                        prepstmtUpdate.setString(1, (screen.getUnicodeTitle() == null)
-//                                ? ""
-//                                : screen.getUnicodeTitle());
-//                        prepstmtUpdate.addBatch();
-//                        u++;
-//                    } else {
-//                        prepstmtInsert.setLong(1, screen.getId());
-//                        prepstmtInsert.setLong(2, langId);
-//                        prepstmtInsert.setString(3, (screen.getUnicodeTitle() == null)
-//                                ? ""
-//                                : screen.getUnicodeTitle());
-//                        prepstmtInsert.addBatch();
-//                        i++;
-//                    }
-//                }
-//            }
-//            if (i > 0) {
-//                prepstmtInsert.executeBatch();
-//            }
-//            if (u > 0) {
-//                prepstmtUpdate.executeBatch();
-//            }
-//            con.commit();
-//            con.setAutoCommit(true);
-//        } catch (SQLException e) {
-//            dao.printSQLException(e);
-//
-//            if (con != null) {
-//                try {
-//                    con.rollback();
-//                } catch (SQLException ex) {
-//                    dao.printSQLException(ex);
-//
-//                    throw new SQLException(TRANSACTION_ROLLED_BACK, ex);
-//                }
-//            }
-//        } finally {
-//            prepstmtSelect.close();
-//            prepstmtInsert.close();
-//            prepstmtUpdate.close();
-//            dao.closeConnection(con);
-//        }
-//    }
+    @Override
+    public void insertTranslation(Collection<Screen> screenList, final Long langId) throws SQLException {
+        String sqlSelectQuery = "SELECT COUNT(UNICODETITLE) AS EXIST FROM SCREENBYLANGUAGE WHERE SCREENID=? AND LANGID=?";
+        String sqlUpdateQuery = "UPDATE SCREENBYLANGUAGE SET UNICODETITLE=? WHERE SCREENID=? AND LANGID=?";
+
+        final Collection<Screen> screensToUpdate = new ArrayList<Screen>();
+
+
+        for (Screen screen : screenList) {
+            int exist = jdbcTemplate.queryForInt(sqlSelectQuery, screen.getId(), langId);
+            if (exist == 1) {
+                screensToUpdate.add(screen);
+            } else {
+                SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+                simpleJdbcInsert.setTableName("SCREENBYLANGUAGE");
+                Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+                valuesToInsert.put("SCREENID", screen.getId());
+                valuesToInsert.put("LANGID", langId);
+                valuesToInsert.put("UNICODETITLE", screen.getUnicodeTitle());
+                simpleJdbcInsert.execute(valuesToInsert);
+            }
+        }
+
+        jdbcTemplate.batchUpdate(sqlUpdateQuery, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Screen screen = Lists.newArrayList(screensToUpdate).get(i);
+                ps.setString(1, screen.getUnicodeTitle());
+                ps.setLong(2, screen.getId());
+                ps.setLong(3, langId);
+            }
+
+            @Override
+            public int getBatchSize() {
+                return screensToUpdate.size();
+            }
+        });
+    }
 
     @Override
     public void dropTable() throws SQLException {

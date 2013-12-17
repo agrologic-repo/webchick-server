@@ -1,6 +1,5 @@
 package com.agrologic.app.dao.mysql.impl;
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.Flock;
@@ -45,7 +44,7 @@ public class FlockDaoImpl implements FlockDao {
         logger.debug("Update flock with id [{}]", flock.getFlockId());
         jdbcTemplate.update(sql,
                 new Object[]{flock.getControllerId(), flock.getFlockName(), flock.getStatus(), flock.getStartTime(),
-                        flock.getEndTime(),flock.getCurrency(), flock.getFlockId()});
+                        flock.getEndTime(), flock.getCurrency(), flock.getFlockId()});
     }
 
     @Override
@@ -118,7 +117,7 @@ public class FlockDaoImpl implements FlockDao {
         String sql = "update flocks set Status='Close' , EndDate=? where FlockID=? ";
         Validate.notNull(flockId, "Flock ID can not be null");
         logger.debug("Close flock with id [{}]", flockId);
-        jdbcTemplate.update(sql, new Object[]{endDate,flockId});
+        jdbcTemplate.update(sql, new Object[]{endDate, flockId});
     }
 
     @Override
@@ -204,7 +203,7 @@ public class FlockDaoImpl implements FlockDao {
     }
 
     @Override
-    public Integer getFlockTotalFeedConsumption(Long flockId)throws SQLException {
+    public Integer getFlockTotalFeedConsumption(Long flockId) throws SQLException {
         String sql = "select value, sum(value) as value from controllerdata value where dataid in (1301,1358)" +
                 " and controllerid in (select controllerid FROM flocks where flockid=?);";
         logger.debug("Get feed consumtpion in flock with id [{}]", flockId);

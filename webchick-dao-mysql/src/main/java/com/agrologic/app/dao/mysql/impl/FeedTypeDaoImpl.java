@@ -1,18 +1,13 @@
 package com.agrologic.app.dao.mysql.impl;
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.FeedTypeDao;
 import com.agrologic.app.dao.mappers.RowMappers;
-import com.agrologic.app.model.Feed;
 import com.agrologic.app.model.FeedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +56,6 @@ public class FeedTypeDaoImpl implements FeedTypeDao {
     public List<FeedType> getAllByCellinkId(Long cellinkId) throws SQLException {
         logger.debug("Get all feed type with cellink id {} ", cellinkId);
         String sql = "select * from feedtypes where CellinkID=?";
-        return jdbcTemplate.query(sql,new Object[]{cellinkId}, RowMappers.feedType());
+        return jdbcTemplate.query(sql, new Object[]{cellinkId}, RowMappers.feedType());
     }
 }

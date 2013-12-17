@@ -67,7 +67,7 @@
                         </tr>
                     </table>
                     <br/>
-                    <jsp:include page="represent-in-table-eggcounthistory.html"/>
+                    <jsp:include page="view-table-eggcounthistory.html"/>
                 </fieldset>
             </td>
         </tr>

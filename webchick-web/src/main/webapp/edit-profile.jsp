@@ -4,7 +4,7 @@
 <%@ include file="language.jsp" %>
 <%@ page import="com.agrologic.app.model.User" %>
 
-<%  User user = (User) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -156,7 +156,8 @@
                                     <tr>
                                         <td class="">Role *</td>
                                         <td>
-                                            <select id="Nrole" name="Nrole" class="dropDownList" disabled>
+                                            <input type="hidden" name="Nrole" value="<%=user.getRole()%>">
+                                            <select id="Nrolel" name="Nrolel" class="dropDownList" disabled>
                                                 <option value="0"></option>
                                                 <option value="1"><%=session.getAttribute("user.role.admin")%>
                                                 </option>
@@ -166,6 +167,7 @@
                                                 </option>
                                             </select>
                                         </td>
+
                                     </tr>
                                     <tr>
                                         <td class="">Company</td>
@@ -195,13 +197,12 @@
 </div>
 
 <script language="Javascript">
-    var length = document.editForm.Nrole.options.length;
+    var length = document.editForm.Nrolel.options.length;
     var role =
-    <%= user.getRole()%>
-
+    <%= user.getRole().getValue() %>
     for (var i = 0; i < length; i++) {
-        if (document.editForm.Nrole.options[i].value == role) {
-            document.editForm.Nrole.selectedIndex = i;
+        if (document.editForm.Nrolel.options[i].value == role) {
+            document.editForm.Nrolel.selectedIndex = i;
             break;
         }
     }

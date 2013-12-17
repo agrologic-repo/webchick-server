@@ -5,10 +5,13 @@ import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.FlockDaoImpl;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
@@ -141,7 +144,7 @@ public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, Dro
         sql = "DROP TABLE APP.FLOCKHISTORY24 ";
         jdbcTemplate.execute(sql);
     }
-//
+
 //    @Override
 //    public void insert(Flock flock) throws SQLException {
 //        logger.debug("Creating flock with id [{}]", flock.getFlockId());
@@ -155,52 +158,44 @@ public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, Dro
 //        jdbcInsert.execute(valuesToInsert);
 //    }
 
-//    @Override
-//    public void updateHistoryByGrowDay(Long flockId, Integer growDay, String values) throws SQLException {
-//        String sql = "INSERT INTO FLOCKHISTORY (FLOCKID, GROWDAY, HISTORYDATA) VALUES (?,?,?)";
-//        PreparedStatement prepstmt = null;
-//        Connection con = null;
-//
-//        try {
-//            con = dao.getConnection();
-//            prepstmt = con.prepareStatement(sql);
-//            prepstmt.setLong(1, flockId);
-//            prepstmt.setInt(2, growDay);
-//            prepstmt.setString(3, values);
-//            prepstmt.executeUpdate();
-//        } catch (SQLException e) {
-//            dao.printSQLException(e);
-//            throw new SQLException("Update flock management error ", e);
-//        } finally {
-//            prepstmt.close();
-//            dao.closeConnection(con);
-//        }
-//    }
+    @Override
+    public void updateHistoryByGrowDay(Long flockId, Integer growDay, String values) throws SQLException {
+        String sqlSelectQuery = "SELECT COUNT(HISTORYDATA) AS EXIST FROM FLOCKHISTORY WHERE FLOCKID=? AND GROWDAY=?";
+        String sqlUpdateQuery = "UPDATE FLOCKHISTORY SET HISTORYDATA=? WHERE FLOCKID=? AND GROWDAY=?";
+        int exist = jdbcTemplate.queryForInt(sqlSelectQuery, flockId, growDay);
+        if (exist == 1) {
+            jdbcTemplate.update(sqlUpdateQuery, values, flockId, growDay);
+        } else {
+            SimpleJdbcInsert jdbcControllerDataInsert = new SimpleJdbcInsert(jdbcTemplate);
+            jdbcControllerDataInsert.setTableName("FLOCKHISTORY");
+            Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+            valuesToInsert.put("FLOCKID", flockId);
+            valuesToInsert.put("GROWDAY", growDay);
+            valuesToInsert.put("HISTORYDATA", values);
+            jdbcControllerDataInsert.execute(valuesToInsert);
+        }
 
-//    @Override
-//    public void updateHistory24ByGrowDay(Long flockId, Integer growDay, String dnum, String values) throws SQLException {
-//        String sql = "INSERT INTO FLOCKHISTORY24 (FLOCKID, GROWDAY, DNUM, HISTORYDATA) VALUES (?,?,?,?)";
-//        PreparedStatement prepstmt = null;
-//        Connection con = null;
-//
-//        try {
-//            con = dao.getConnection();
-//            prepstmt = con.prepareStatement(sql);
-//            prepstmt.setLong(1, flockId);
-//            prepstmt.setInt(2, growDay);
-//            prepstmt.setString(3, dnum);
-//            prepstmt.setString(4, values);
-//            prepstmt.executeUpdate();
-//        } catch (SQLException e) {
-//            if (!e.getSQLState().equals("23505")) {//Found duplicate from database view
-//                dao.printSQLException(e);
-//                throw new SQLException("Update flock management 24 hours error.", e);
-//            }
-//        } finally {
-//            prepstmt.close();
-//            dao.closeConnection(con);
-//        }
-//    }
+    }
+
+    @Override
+    public void updateHistory24ByGrowDay(Long flockId, Integer growDay, String dnum, String values) throws SQLException {
+        String sqlSelectQuery = "SELECT COUNT(HISTORYDATA) AS EXIST FROM FLOCKHISTORY24 WHERE FLOCKID=? AND GROWDAY=?" +
+                " AND DNUM=? ";
+        String sqlUpdateQuery = "UPDATE FLOCKHISTORY24 SET HISTORYDATA=? WHERE FLOCKID=? AND GROWDAY=? AND DNUM=? ";
+        int exist = jdbcTemplate.queryForInt(sqlSelectQuery, flockId, growDay, dnum);
+        if (exist == 1) {
+            jdbcTemplate.update(sqlUpdateQuery, values, flockId, growDay, dnum);
+        } else {
+            SimpleJdbcInsert jdbcControllerDataInsert = new SimpleJdbcInsert(jdbcTemplate);
+            jdbcControllerDataInsert.setTableName("FLOCKHISTORY24");
+            Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+            valuesToInsert.put("FLOCKID", flockId);
+            valuesToInsert.put("GROWDAY", growDay);
+            valuesToInsert.put("DNUM", dnum);
+            valuesToInsert.put("HISTORYDATA", values);
+            jdbcControllerDataInsert.execute(valuesToInsert);
+        }
+    }
 
     @Override
     public void deleteFromTable() throws SQLException {

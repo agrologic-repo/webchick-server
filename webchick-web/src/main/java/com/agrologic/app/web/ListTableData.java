@@ -67,8 +67,8 @@ public class ListTableData extends AbstractServlet {
                         TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                         Table table = tableDao.getById(programId, screenId, tableId);
                         DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                        List<Data> dataList = (List<Data>) dataDao.getTableDataList(screen.getProgramId(), screen.getId(),
-                                table.getId(), translateLang, null);
+                        List<Data> dataList = (List<Data>) dataDao.getTableDataList(screen.getProgramId(),
+                                screen.getId(), table.getId(), translateLang, null);
                         table.setDataList(dataList);
 
                         List<Table> tables = new ArrayList<Table>();

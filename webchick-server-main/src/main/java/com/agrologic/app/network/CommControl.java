@@ -6,6 +6,7 @@ import com.agrologic.app.exception.TimeoutException;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.messaging.ResponseMessage;
 import com.agrologic.app.model.CellinkVersion;
+import com.agrologic.app.util.ApplicationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +90,7 @@ public class CommControl {
                     } else {
                         readBuffer.checkTimeout();
                     }
-                    Thread.sleep(10);
+                    ApplicationUtil.sleep(50);
                 }
             }
             logger.debug("End read from input stream");
@@ -106,10 +107,6 @@ public class CommControl {
             response.setErrorCodes(Message.ErrorCodes.EOT_ERROR);
             networkState = NetworkState.STATE_TIMEOUT;
         } catch (TimeoutException ex) {
-            logException(ex);
-            response.setErrorCodes(Message.ErrorCodes.TIME_OUT_ERROR);
-            networkState = NetworkState.STATE_TIMEOUT;
-        } catch (InterruptedException ex) {
             logException(ex);
             response.setErrorCodes(Message.ErrorCodes.TIME_OUT_ERROR);
             networkState = NetworkState.STATE_TIMEOUT;
@@ -152,7 +149,7 @@ public class CommControl {
         if (index != null && index.length() > 0) {
             //out.write(index.getBytes());
             byte[] sendBuffer = mergeIndexAndBuffer(index.getBytes(), msg.getBuffer());
-            logger.info("Sending :  [{}]" ,new String(sendBuffer, 0, sendBuffer.length));
+            logger.info("Sending :  [{}]", new String(sendBuffer, 0, sendBuffer.length));
             socket.setSendBufferSize(sendBuffer.length);
             out.write(sendBuffer, 0, sendBuffer.length);
         } else {
@@ -202,19 +199,12 @@ public class CommControl {
         final int DELAY_SILENCE_TIME = (int) TimeUnit.SECONDS.toMillis(5);// wait 5 second
         // wait for silence
         try {
-            try {
-                clearInputStream();
-                Thread.sleep(DELAY_SILENCE_TIME);
-            } catch (InterruptedException ex) {
-
-            }
+            clearInputStream();
+            ApplicationUtil.sleep(DELAY_SILENCE_TIME);
             while (availableData() > 0) {
                 synchronized (this) {
-                    try {
-                        clearInputStream();
-                        Thread.sleep(DELAY_SILENCE_TIME);
-                    } catch (InterruptedException ex) {
-                    }
+                    clearInputStream();
+                    ApplicationUtil.sleep(DELAY_SILENCE_TIME);
                 }
             }
         } catch (IOException ex) {
@@ -430,7 +420,7 @@ public class CommControl {
             try {
                 newBuffer = clearGarbage(newBuffer, newBufCnt);
             } catch (IllegalArgumentException e) {
-                logger.error(e.getMessage(),e);
+                logger.error(e.getMessage(), e);
             }
 
             return newBuffer;

@@ -1,6 +1,5 @@
 package com.agrologic.app.dao.mysql.impl;
 
-import com.agrologic.app.dao.DaoFactory;
 import com.agrologic.app.dao.DistribDao;
 import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.model.Distrib;
@@ -82,6 +81,6 @@ public class DistribDaoImpl implements DistribDao {
     public List<Distrib> getAllByFlockId(Long flockId) throws SQLException {
         logger.debug("Get all distribute data ");
         String sql = "select * from distribute where FlockID=?";
-        return jdbcTemplate.query(sql,new Object[]{flockId},  RowMappers.distrib());
+        return jdbcTemplate.query(sql, new Object[]{flockId}, RowMappers.distrib());
     }
 }

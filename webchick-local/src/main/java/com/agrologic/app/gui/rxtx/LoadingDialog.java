@@ -10,9 +10,9 @@ public class LoadingDialog extends JDialog {
     private JProgressBar progressBar = new JProgressBar(0, 500);
 
     public LoadingDialog(ApplicationLocal app) {
-        super(app,"Progress Dialog");
+        super(app, "Loading Progress Dialog");
         add(BorderLayout.CENTER, progressBar);
-        add(BorderLayout.NORTH, new JLabel("Progress..."));
+        add(BorderLayout.NORTH, new JLabel("Loading Progress..."));
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         setSize(300, 75);
         Windows.centerOnScreen(this);

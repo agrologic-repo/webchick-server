@@ -46,27 +46,12 @@ public class TotalCellinkStatePieChart extends AbstractServlet {
         CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         setValues(cellinkDao);
 
-        // jfc = ChartFactory.createPieChart("Cellinks Grouped By States", dataset, true, true, false);
         jfc = ChartFactory.createPieChart("", dataset, false, false, false);
-
-        // jfc = ChartFactory.createBarChart("", "", "", dataset, PlotOrientation.HORIZONTAL, false, false, false);//PieChart("", dataset, false, false, false);
-        // jfc.setTitle(new TextTitle("Cellinks Grouped By States", new Font("SansSerif", Font.PLAIN, 13)));
-//      CategoryPlot cp = jfc.getCategoryPlot();
-//      cp.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT);
-//      cp.setRangePannable(true);
-//      cp.setRangeZeroBaselineVisible(true);
-//      NumberAxis localNumberAxis = (NumberAxis)cp.getRangeAxis();
-//      localNumberAxis.setUpperMargin(0.25D);
-//      BarRenderer localBarRenderer = (BarRenderer)cp.getRenderer();
-//      localBarRenderer.setBaseItemLabelsVisible(true);
-//      localBarRenderer.setItemLabelAnchorOffset(7.0D);
 
         PiePlot pp = (PiePlot) jfc.getPlot();
 
         pp.setLabelGenerator(new StandardPieSectionLabelGenerator("{1}"));
         pp.setBackgroundPaint(Color.WHITE);
-
-//      pp.setSectionOutlinesVisible(true);
         pp.setLabelFont(new Font("SansSerif", Font.PLAIN, 10));
         pp.setNoDataMessage("No data");
         pp.setCircular(false);

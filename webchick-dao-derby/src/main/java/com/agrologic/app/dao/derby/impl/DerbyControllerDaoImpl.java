@@ -17,7 +17,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DerbyControllerDaoImpl extends ControllerDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
@@ -53,7 +56,8 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
         logger.info("create table controllers if not exist");
         String sql = "CREATE TABLE CONTROLLERS ( " + "CONTROLLERID INT NOT NULL,  " + "CELLINKID INT NOT NULL, "
                 + "TITLE VARCHAR(200) , " + "NETNAME VARCHAR(45) , " + "CONTROLLERNAME VARCHAR(45) , "
-                + "PROGRAMID INT NOT NULL, " + "AREA INT DEFAULT 0, " + "ACTIVE SMALLINT DEFAULT 0, "
+                + "PROGRAMID INT NOT NULL, " + "AREA INT DEFAULT 0, " + "ACTIVE SMALLINT DEFAULT 0,"
+                + " HOUSETYPE VARCHAR(45) ,  "
                 + "PRIMARY KEY (CONTROLLERID), " + " FOREIGN KEY (CELLINKID) REFERENCES CELLINKS(CELLINKID)) ";
         jdbcTemplate.execute(sql);
     }
@@ -98,24 +102,13 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
         valuesToInsert.put("PROGRAMID", controller.getProgramId());
         valuesToInsert.put("AREA", controller.getArea());
         valuesToInsert.put("ACTIVE", controller.isActive());
+        valuesToInsert.put("HOUSETYPE", controller.getHouseType());
         jdbcInsert.execute(valuesToInsert);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void insertControllerDataValues(Long controllerId, Iterator<Map.Entry<Long, Data>> dataValues)
-            throws SQLException {
-        logger.debug("Insert controllerdata values ");
-        String sql = "INSERT INTO CONTROLLERDATA (DATAID, CONTROLLERID, VALUE) VALUES(?,?,-1) ";
-        jdbcTemplate.execute(sql);
     }
 
     @Override
     public void updateControllerData(Long controllerId, Long dataId, Long value) throws SQLException {
         String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
-        String sqlInsertQuery = "INSERT INTO CONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
         String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
         int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId, dataId);
         if (exist == 1) {
@@ -134,9 +127,7 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
     @Override
     public void updateControllerData(final Long controllerId, final Collection<Data> onlineData) throws SQLException {
         final String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
-        final String sqlInsertQuery = "INSERT INTO CONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
         final String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
-        final Collection<Data> dataToInsert = new ArrayList<Data>();
         final Collection<Data> dataToUpdate = new ArrayList<Data>();
 
         for (Data data : onlineData) {
@@ -144,7 +135,13 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
             if (exist == 1) {
                 dataToUpdate.add(data);
             } else {
-                dataToInsert.add(data);
+                SimpleJdbcInsert jdbcControllerDataInsert = new SimpleJdbcInsert(jdbcTemplate);
+                jdbcControllerDataInsert.setTableName("CONTROLLERDATA");
+                Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+                valuesToInsert.put("CONTROLLERID", controllerId);
+                valuesToInsert.put("DATAID", data.getId());
+                valuesToInsert.put("VALUE", data.getValue());
+                jdbcControllerDataInsert.execute(valuesToInsert);
             }
         }
 
@@ -162,26 +159,10 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
                 return dataToUpdate.size();
             }
         });
-
-        jdbcTemplate.batchUpdate(sqlInsertQuery, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Data data = Lists.newArrayList(dataToInsert).get(i);
-                ps.setLong(1, data.getValue());
-                ps.setLong(2, controllerId);
-                ps.setLong(3, data.getId());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return dataToInsert.size();
-            }
-        });
     }
 
     public void updateControllerGraph(Long controllerId, String values, Timestamp updateTime) throws SQLException {
         final String sqlSelectQuery = "SELECT COUNT(DATASET) AS EXIST FROM GRAPH24HOURS WHERE CONTROLLERID=?";
-        final String sqlInsertQuery = "INSERT INTO GRAPH24HOURS (CONTROLLERID, DATASET, UPDATETIME) VALUES (?, ?, ?)";
         final String sqlUpdateQuery = "UPDATE GRAPH24HOURS SET DATASET=? ,UPDATETIME=? WHERE CONTROLLERID=?";
 
         int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId);
@@ -202,7 +183,6 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
     @Override
     public void sendNewDataValueToController(Long controllerId, Long dataId, Long value) throws SQLException {
         String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM NEWCONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
-        String sqlInsertQuery = "INSERT INTO NEWCONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
         String sqlUpdateQuery = "UPDATE NEWCONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
         int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId, dataId);
         if (exist == 1) {
@@ -222,12 +202,11 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
     @Override
     public void saveNewDataValueOnController(Long controllerId, Long dataId, Long value) throws SQLException {
         String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
-        String sqlInsertQuery = "INSERT INTO CONTROLLERDATA (CONTROLLERID, DATAID, VALUE) VALUES (?, ?, ?)";
         String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
 
         int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId, dataId);
         if (exist == 1) {
-            jdbcTemplate.update(sqlUpdateQuery, new Object[]{controllerId, dataId, value});
+            jdbcTemplate.update(sqlUpdateQuery, new Object[]{value, controllerId, dataId});
 
         } else {
             SimpleJdbcInsert jdbcControllerDataInsert = new SimpleJdbcInsert(jdbcTemplate);

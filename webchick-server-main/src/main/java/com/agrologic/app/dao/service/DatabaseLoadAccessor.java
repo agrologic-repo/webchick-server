@@ -6,25 +6,26 @@
 package com.agrologic.app.dao.service;
 
 import com.agrologic.app.model.*;
+
 import java.util.Collection;
 
 public interface DatabaseLoadAccessor {
 
-    Long getLangId();
+    public Long getLangId();
 
-    User getUser();
+    public User getUser();
 
-    Collection<Alarm> getAlarms();
+    public Collection<Alarm> getAlarms();
 
-    Collection<Data> getDataTable();
+    public Collection<Data> getDataTable();
 
-    Collection<Language> getLanguages();
+    public Collection<Language> getLanguages();
 
-    Collection<Relay> getRelays();
+    public Collection<Relay> getRelays();
 
-    Collection<SystemState> getSystemStates();
+    public Collection<SystemState> getSystemStates();
 
-    Collection<Program> getPrograms();
+    public Collection<Program> getPrograms();
 }
 
 

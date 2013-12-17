@@ -86,7 +86,6 @@ function GetWindowSize(getWidth) {
         myWidth = document.body.clientWidth;
         myHeight = document.body.clientHeight;
     }
-    //window.alert( 'Width = ' + myWidth + ', Height = ' + myHeight);
     if (getWidth)
         return myWidth
     else
