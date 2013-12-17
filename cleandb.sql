@@ -362,31 +362,6 @@ CREATE TABLE `controllers` (
 
 
 --
--- Definition of table `controllertypes`
---
-
-DROP TABLE IF EXISTS `controllertypes`;
-CREATE TABLE `controllertypes` (
-  `ControllerTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `Name` varchar(45) NOT NULL,
-  `ShortCommand` varchar(45) NOT NULL,
-  PRIMARY KEY (`ControllerTypeID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `controllertypes`
---
-
-/*!40000 ALTER TABLE `controllertypes` DISABLE KEYS */;
-INSERT INTO `controllertypes` (`ControllerTypeID`,`Name`,`ShortCommand`) VALUES 
- (1,'Vision 911','T9'),
- (2,'Temptron 607','PP'),
- (3,'Temptron 616','PP'),
- (4,'Chick Scale 205','C2');
-/*!40000 ALTER TABLE `controllertypes` ENABLE KEYS */;
-
-
---
 -- Definition of table `currency`
 --
 
@@ -6388,27 +6363,6 @@ CREATE TABLE `feed` (
 
 
 --
--- Definition of table `feedtype`
---
-
-DROP TABLE IF EXISTS `feedtype`;
-CREATE TABLE `feedtype` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `FeedType` varchar(45) NOT NULL,
-  `Price` double NOT NULL,
-  `Currency` varchar(10) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `feedtype`
---
-
-/*!40000 ALTER TABLE `feedtype` DISABLE KEYS */;
-/*!40000 ALTER TABLE `feedtype` ENABLE KEYS */;
-
-
---
 -- Definition of table `feedtypes`
 --
 
@@ -6671,7 +6625,7 @@ INSERT INTO `historyn` (`Dn`,`FullName`,`Format`,`Standard`,`Name`) VALUES
  ('D24','Heat 5 on time',0,1,''),
  ('D25','Heat 6 on time',0,1,''),
  ('D26','Average male weight plate 1',0,1,''),
- ('D27','Male birds weighed plate 1',0,1,''),
+ ('D27','Male numOfBirds weighed plate 1',0,1,''),
  ('D28','Daily Dead',0,1,''),
  ('D29','Daily Culls',0,1,''),
  ('D3','Heat 1 on time',5,1,''),
