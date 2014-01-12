@@ -1,26 +1,19 @@
-
-
 package com.agrologic.app.graph.daily;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.xy.DefaultXYDataset;
-import org.jfree.data.xy.XYDataset;
 
 import java.awt.*;
 
 public final class Graph24Empty {
     JFreeChart chart;
 
-    public Graph24Empty(GraphType type, String values) {
-        final XYDataset xydataset = new DefaultXYDataset();
-
-        createChart(xydataset);
+    public Graph24Empty() {
+        createChart();
     }
 
-    protected void createChart(XYDataset xydataset) {
+    protected void createChart() {
         final XYPlot xyplot = new XYPlot();
-
         xyplot.setNoDataMessage("No data available!");
         xyplot.setNoDataMessageFont(new Font("Serif", 2, 16));
         xyplot.setNoDataMessagePaint(Color.red);

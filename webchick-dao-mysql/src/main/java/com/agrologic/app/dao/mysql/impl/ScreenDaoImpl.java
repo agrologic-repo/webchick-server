@@ -16,8 +16,6 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class ScreenDaoImpl implements ScreenDao {
-
-
     protected final Logger logger = LoggerFactory.getLogger(ScreenDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;

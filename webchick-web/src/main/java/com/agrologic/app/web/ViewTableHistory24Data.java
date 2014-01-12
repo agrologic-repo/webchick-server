@@ -1,17 +1,24 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.excel.DataForExcelCreator;
-import com.agrologic.app.model.DataFormat;
-import com.agrologic.app.service.FlockHistoryService;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.LanguageDao;
+import com.agrologic.app.model.history.DayParam;
+import com.agrologic.app.service.table.HtmlTableService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
 
 public class ViewTableHistory24Data extends AbstractServlet {
+    private HtmlTableService tableService;
+
+    public ViewTableHistory24Data() {
+        super();
+        this.tableService = new HtmlTableService();
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -33,63 +40,16 @@ public class ViewTableHistory24Data extends AbstractServlet {
 
             try {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                GrowDayParam growDayParam = new GrowDayParam(request.getParameter("growDay"));
-                FlockHistoryService flockHistoryService = new FlockHistoryService();
-                List<String> historyValueList =
-                        flockHistoryService.getFlockHistory24Hour(flockId, growDayParam.getGrowDay());
-
-                StringBuilder chainedHistoryValues = new StringBuilder();
-                for (String historyValues : historyValueList) {
-                    chainedHistoryValues.append(historyValues);
+                DayParam growDayParam = new DayParam(request.getParameter("growDay"));
+                String lang = (String) request.getSession().getAttribute("lang");
+                if ((lang == null) || lang.equals("")) {
+                    lang = "en";
                 }
-                Long resetTime = flockHistoryService.getResetTime(flockId, growDayParam.getGrowDay());
-                Map<Integer, String> history24ByHour = parseHistory24(resetTime, historyValueList.get(0));
-                List<List<String>> history24Data = new ArrayList<List<String>>();
-                history24Data.add((DataForExcelCreator.createDataList(history24ByHour.keySet())));
-                history24ByHour = parseHistory24(resetTime, historyValueList.get(0));
-                history24Data.add(DataForExcelCreator.createDataHistory24List(history24ByHour, DataFormat.DEC_1));
-                history24ByHour = parseHistory24(resetTime, historyValueList.get(1));
-                history24Data.add(DataForExcelCreator.createDataHistory24List(history24ByHour, DataFormat.DEC_1));
-                history24ByHour = parseHistory24(resetTime, historyValueList.get(2));
-                history24Data.add(DataForExcelCreator.createDataHistory24List(history24ByHour, DataFormat.HUMIDITY));
-                history24ByHour = parseHistory24(resetTime, historyValueList.get(3));
-                history24Data.add(DataForExcelCreator.createDataHistory24List(history24ByHour, DataFormat.DEC_4));
-                history24ByHour = parseHistory24(resetTime, historyValueList.get(4));
-                history24Data.add(DataForExcelCreator.createDataHistory24List(history24ByHour, DataFormat.DEC_4));
+                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+                long langId = languageDao.getLanguageId(lang);    // get language id
 
-                List<String> perHourHistoryDataTitles =
-                        flockHistoryService.getPerHourHistoryDataTitles(growDayParam.getGrowDay());
-
-                out.println("<p>");
-                out.println("<table class=table-list cellpadding=1 cellspacing=1 border=1>");
-                out.println("<tr>");
-
-                for (String title : perHourHistoryDataTitles) {
-                    out.println("<th style=\"font-size: small\">" + title + "</th>");
-                }
-
-                out.println("</tr>");
-
-                Iterator hourIter = history24ByHour.keySet().iterator();
-
-                while (hourIter.hasNext()) {
-                    Integer hour = (Integer) hourIter.next();
-                    Iterator<List<String>> historyIter = history24Data.iterator();
-                    out.println("<tr>");
-                    while (historyIter.hasNext()) {
-                        try {
-                            List<String> interestData = historyIter.next();
-                            String data = interestData.get(hour);
-                            out.println("<td align=center>" + data + "</td>");
-                        } catch (Exception e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-
-                    out.println("</tr>");
-                }
-
-                out.println("</table>");
+                String htmlTable = tableService.toHtmlTableHistoryDataPerHour(flockId, growDayParam.getGrowDay(), langId);
+                out.println(htmlTable);
             } catch (Exception e) {
                 logger.error("Unknown error. ", e);
             }
@@ -135,22 +95,6 @@ public class ViewTableHistory24Data extends AbstractServlet {
     public String getServletInfo() {
         return "Short description";
     }    // </editor-fold>
-
-    private Map<Integer, String> parseHistory24(long resetTime, String values) {
-        String[] valueList = values.split(" ");
-        Map<Integer, String> valuesMap = new TreeMap<Integer, String>();
-        int j = (int) resetTime / 100;
-
-        for (int i = 0; i < 24; i++) {
-            if (j == 24) {
-                j = 0;
-            }
-
-            valuesMap.put(j++, valueList[i]);
-        }
-
-        return valuesMap;
-    }
 }
 
 

@@ -1,8 +1,3 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx;
 
 import com.agrologic.app.dao.mappers.DataFormatUtil;
@@ -26,13 +21,13 @@ public class DataTextField extends JTextField implements DataChangeListener {
 
     public DataTextField(String text, long cid, Data d, DatabaseAccessor dbaccess) {
         super(text);
-        setListneners();
+        setListeners();
         this.controllerId = cid;
         this.data = d;
         this.dbaccess = dbaccess;
     }
 
-    private void setListneners() {
+    private void setListeners() {
         super.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {

@@ -22,7 +22,7 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
      * Create real time data default request list
      */
     public final void onCreateQueue() {
-        requestList = new MessageFactory().createRealTimeRequests(netname);
+        requestList = MessageFactory.createRealTimeRequests(netname);
         initReaTimeRequest();
     }
 

@@ -6,7 +6,6 @@ import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.User;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,7 +21,6 @@ import static junit.framework.Assert.assertNotNull;
 @ContextConfiguration({"/common-dao-context.xml", "/derby-dao-context.xml"})
 @TransactionConfiguration
 @Transactional
-@Ignore
 public class DerbyFlockDaoImplTest extends AbstractDaoTest {
 
     @Before

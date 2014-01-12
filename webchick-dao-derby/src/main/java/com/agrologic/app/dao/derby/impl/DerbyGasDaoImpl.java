@@ -4,7 +4,6 @@ import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
 import com.agrologic.app.dao.mysql.impl.GasDaoImpl;
-import com.agrologic.app.model.Gas;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.DatabaseMetaData;
@@ -47,12 +46,12 @@ public class DerbyGasDaoImpl extends GasDaoImpl implements CreatebleDao, Dropabl
         jdbcTemplate.execute(sql);
     }
 
-    @Override
-    public void insert(Gas gas) throws SQLException {
-        String sql = "INSERT INTO GAS (FLOCKID, AMOUNT, DATE, NUMBERACCOUNT, PRICE, TOTAL) "
-                + "VALUES (?,?,?,?,?,?) ";
-        jdbcTemplate.execute(sql);
-    }
+//    @Override
+//    public void insert(Gas gas) throws SQLException {
+//        String sql = "INSERT INTO GAS (FLOCKID, AMOUNT, DATE, NUMBERACCOUNT, PRICE, TOTAL) "
+//                + "VALUES (?,?,?,?,?,?) ";
+//        jdbcTemplate.execute(sql);
+//    }
 
     @Override
     public void dropTable() throws SQLException {

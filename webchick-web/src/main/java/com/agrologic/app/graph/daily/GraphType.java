@@ -1,21 +1,9 @@
-
-
 package com.agrologic.app.graph.daily;
-
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * Title: GraphType <br>
- * Description: <br>
- * Copyright:   Copyright (c) 2009 <br>
- * Company:     Agro Logic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class GraphType {
     public static final int BLANK_GRAPH = 0;
     public static final int IN_FEED_WATER_GRAPH = 2;
@@ -105,7 +93,7 @@ public class GraphType {
     /**
      * Convert a int to a GraphType object.
      *
-     * @param str The String
+     * @param i index of graph type
      * @return The GraphType or null
      */
     public static GraphType intToGraphType(int i) {

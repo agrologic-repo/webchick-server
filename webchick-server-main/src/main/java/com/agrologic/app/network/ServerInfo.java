@@ -59,7 +59,6 @@ public class ServerInfo extends Observable implements Observer {
     public void update(Observable o, Object arg) {
         if (o instanceof Clock) {
             setTime(((Clock) o).getTime());
-
             synchronized (this) {
                 totalCellinks = serverFacade.getCellinkTable().totalCellinks();
                 onlineCellinks = serverFacade.getCellinkTable().onlineCellinks();

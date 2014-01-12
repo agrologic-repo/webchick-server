@@ -5,10 +5,11 @@ import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.graph.CombinedXYGraph;
 import com.agrologic.app.graph.daily.Graph24Empty;
-import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.management.PerGrowDayHistoryDataType;
 import com.agrologic.app.model.Data;
-import com.agrologic.app.service.FlockHistoryService;
+import com.agrologic.app.model.history.FromDayToDayParam;
+import com.agrologic.app.service.history.FlockHistoryService;
+import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
 import org.jfree.chart.ChartUtilities;
 
 import javax.servlet.ServletException;
@@ -25,7 +26,8 @@ public class GraphMinMaxHumidityServlet extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     *                                                               labels
+     * labels
+     *
      * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -43,11 +45,11 @@ public class GraphMinMaxHumidityServlet extends AbstractServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                GrowDayRangeParam growDayRangeParam
-                        = new GrowDayRangeParam(request.getParameter("fromDay"), request.getParameter("toDay"));
+                FromDayToDayParam growDayRangeParam
+                        = new FromDayToDayParam(request.getParameter("fromDay"), request.getParameter("toDay"));
                 try {
 
-                    FlockHistoryService flockHistoryService = new FlockHistoryService();
+                    FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
                     Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockHistoryWithinRange(flockId, growDayRangeParam);
 
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
@@ -65,11 +67,11 @@ public class GraphMinMaxHumidityServlet extends AbstractServlet {
                     Map<Integer, Data> interestData4 = createDataSet(historyByGrowDay, data);
                     CombinedXYGraph combGraph = new CombinedXYGraph();
                     combGraph.createFirstNextPlot("Maximum and Minimum Inside Temperature", "Grow Day[Day]",
-                            "Temperature[C�]", data, 0, interestData,
+                            "Temperature[C]", data, 0, interestData,
                             interestData2);
 
                     combGraph.createNextPlot("Maximum and Minimum Outside Temperature", "Grow Day[Day]",
-                            "Temperature[C�]", data, 0, interestData3, interestData4);
+                            "Temperature[C]", data, 0, interestData3, interestData4);
                     data = dataDao.getById(PerGrowDayHistoryDataType.MAX_HUMIDITY.getId());
 
                     Map<Integer, Data> interestData5 = createDataSet(historyByGrowDay, data);
@@ -86,7 +88,7 @@ public class GraphMinMaxHumidityServlet extends AbstractServlet {
                     out.close();
                 } catch (Exception ex) {
                     logger.error("Unknown error. ", ex);
-                    Graph24Empty graph = new Graph24Empty(GraphType.BLANK, "");
+                    Graph24Empty graph = new Graph24Empty();
                     ChartUtilities.writeChartAsPNG(out, graph.getChart(), 600, 300);
                     out.flush();
                     out.close();

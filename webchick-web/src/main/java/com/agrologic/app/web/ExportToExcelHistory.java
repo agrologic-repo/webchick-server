@@ -1,26 +1,25 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.excel.DataForExcelCreator;
-import com.agrologic.app.excel.WriteToExcel;
-import com.agrologic.app.management.PerGrowDayHistoryDataType;
-import com.agrologic.app.model.Data;
-import com.agrologic.app.model.Flock;
-import com.agrologic.app.service.FlockHistoryService;
+import com.agrologic.app.dao.LanguageDao;
+import com.agrologic.app.service.excel.ExcelService;
+import com.agrologic.app.service.excel.ExportToExcelException;
 import com.agrologic.app.utils.FileDownloadUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class ExportToExcelHistory extends AbstractServlet {
+    private ExcelService excelService;
+
+    public ExportToExcelHistory() {
+        super();
+        excelService = new ExcelService();
+    }
+
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -44,27 +43,23 @@ public class ExportToExcelHistory extends AbstractServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                FlockHistoryService flockHistoryService = new FlockHistoryService();
-                Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockHistory(flockId);
-                Flock flock = flockHistoryService.getFlock(flockId);
-                /**
-                 * management column titles for excel
-                 */
-                List<String> columnTitles = new ArrayList<String>();
-                /**
-                 * management data for excel
-                 */
-                List<List<String>> historyData = createHistoryDataForExcel(columnTitles, historyByGrowDay);
-                String outputFile = "C:/" + flock.getFlockName();
-                WriteToExcel excel = new WriteToExcel();
-                excel.setTitleList(columnTitles);
-                excel.setCellDataList(historyData);
-                excel.setOutputFile(outputFile);
-                excel.write();
+                String lang = (String) request.getSession().getAttribute("lang");
+                if ((lang == null) || lang.equals("")) {
+                    lang = "en";
+                }
+                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+                long langId = languageDao.getLanguageId(lang);    // get language id
+                String outputFile = excelService.writeHistoryPerDayToExcelFile(flockId, langId);
                 FileDownloadUtil.doDownload(response, outputFile, "xls");
             }
+        } catch (ExportToExcelException e) {
+            logger.error("Failed to export to excel file. ", e);
+            request.setAttribute("message", "Failed to export to excel file.");
+            request.setAttribute("error", true);
         } catch (Exception e) {
-            logger.error("Unknown error. ", e);
+            request.setAttribute("message", e.getMessage());
+            request.setAttribute("error", true);
+            logger.error(e.getMessage(), e);
         } finally {
             response.getOutputStream().close();
         }
@@ -111,34 +106,6 @@ public class ExportToExcelHistory extends AbstractServlet {
     public String getServletInfo() {
         return "Short description";
     }    // </editor-fold>
-
-    private List<List<String>> createHistoryDataForExcel(List<String> columnTitles,
-                                                         Map<Integer, String> historyByGrowDay)
-            throws UnsupportedOperationException {
-        long langId = 1;
-        List<String> tempList = new ArrayList<String>();
-        List<List<String>> historyDataForExcel = new ArrayList<List<String>>();
-        DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-
-        for (PerGrowDayHistoryDataType perGrowDayHistoryDataType : PerGrowDayHistoryDataType.values()) {
-            try {
-                Data data = dataDao.getById(perGrowDayHistoryDataType.getId(), langId);
-                if (data.getId() == 800) {
-                    columnTitles.add(data.getLabel());
-                    historyDataForExcel.add(DataForExcelCreator.createDataList(historyByGrowDay.keySet()));
-                } else {
-                    tempList = DataForExcelCreator.createDataHistoryList(historyByGrowDay, data);
-                }
-                if (!tempList.isEmpty()) {
-                    columnTitles.add(data.getLabel());
-                    historyDataForExcel.add(tempList);
-                }
-            } catch (SQLException ex) {
-                logger.error(ex.getMessage(), ex);
-            }
-        }
-        return historyDataForExcel;
-    }
 }
 
 

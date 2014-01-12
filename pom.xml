@@ -7,7 +7,8 @@
 
     <!-- The list of modules -->
     <modules>
-        <module>webchick-domain</module>
+        <module>webchick-common</module>
+        <module>webchick-service</module>
         <module>webchick-server-main</module>
         <module>webchick-dao-mysql</module>
         <module>webchick-dao-derby</module>
@@ -17,7 +18,7 @@
 
     <groupId>com.agrologic</groupId>
     <artifactId>webchick-server</artifactId>
-    <version>6.6.3-SNAPSHOT</version>
+    <version>6.6.4-SNAPSHOT</version>
 
     <scm>
         <connection>scm:git:git://github.com/val100/WebchickServer.git</connection>

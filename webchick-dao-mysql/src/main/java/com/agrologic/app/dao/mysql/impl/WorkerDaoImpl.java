@@ -24,6 +24,7 @@ public class WorkerDaoImpl implements WorkerDao {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("workers");
+        this.jdbcInsert.setGeneratedKeyName("ID");
     }
 
     @Override

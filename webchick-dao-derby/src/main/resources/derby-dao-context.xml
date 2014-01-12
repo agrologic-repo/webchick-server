@@ -29,7 +29,7 @@
     </bean>
 
     <bean id="programSystemStateDao" class="com.agrologic.app.dao.derby.impl.DerbyProgramSystemStateDaoImpl"
-         >
+            >
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
@@ -112,5 +112,5 @@
     <!--<bean id="schemaDao" class="com.agrologic.app.dao.derby.impl.DerbySchemaDaoImpl"/>-->
     <!--<bean id="versionDao" class="com.agrologic.app.dao.derby.impl.DerbyVersionDaoImpl"/>-->
 
-    <bean id="daoFactory" class="com.agrologic.app.dao.derby.impl.DerbyDaoFactory" factory-method="instance"/>
+    <!--<bean id="daoFactory" class="com.agrologic.app.dao.derby.impl.DerbyDaoFactory" factory-method="instance"/>-->
 </beans>

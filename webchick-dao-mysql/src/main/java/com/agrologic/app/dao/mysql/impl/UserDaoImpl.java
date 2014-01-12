@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class UserDaoImpl implements UserDao {
-
-
     protected final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
     protected final SimpleJdbcInsert jdbcInsert;

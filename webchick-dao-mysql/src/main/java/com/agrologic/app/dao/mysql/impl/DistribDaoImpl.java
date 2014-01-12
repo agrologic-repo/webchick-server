@@ -23,6 +23,7 @@ public class DistribDaoImpl implements DistribDao {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("distribute");
+        this.jdbcInsert.setGeneratedKeyName("ID");
     }
 
     /**

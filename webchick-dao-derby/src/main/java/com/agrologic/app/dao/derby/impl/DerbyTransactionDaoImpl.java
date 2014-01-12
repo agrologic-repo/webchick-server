@@ -28,7 +28,7 @@ public class DerbyTransactionDaoImpl extends TransactionDaoImpl implements Creat
             }
 
         } catch (SQLException e) {
-            throw new SQLException("Cannot get table TRANSACTION from DataBase", e);
+            throw new SQLException("Cannot get table TRANSACTIONS from DataBase", e);
         }
 
         return true;

@@ -23,6 +23,7 @@ public class MedicineDaoImpl implements MedicineDao {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("medicine");
+        this.jdbcInsert.setGeneratedKeyName("ID");
     }
 
     @Override

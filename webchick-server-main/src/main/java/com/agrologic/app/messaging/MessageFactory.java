@@ -13,7 +13,7 @@ public class MessageFactory {
      * @param netname the type of the controller and its network index
      * @return a set of messages to be used to get interactive controller state
      */
-    public List<RequestMessage> createRealTimeRequests(String netname) {
+    public static List<RequestMessage> createRealTimeRequests(String netname) {
         return Lists.newArrayList(new RequestMessage(MessageType.REQUEST_PANEL, netname),
                 new RequestMessage(MessageType.REQUEST_CONTROLLER, netname),
                 new RequestMessage(MessageType.REQUEST_CHICK_SCALE, netname),
@@ -30,7 +30,7 @@ public class MessageFactory {
      * @param growDay the age of birds we're going to get data for
      * @return a set of messages to be used to grab daily report
      */
-    public List<RequestMessage> createPerHourDailyReportRequests(String netname, int growDay) {
+    public static List<RequestMessage> createPerHourDailyReportRequests(String netname, int growDay) {
         return createPerHourReportRequests(netname, growDay, RequestMessageQueueHistory24.DataType.values());
     }
 
@@ -40,7 +40,7 @@ public class MessageFactory {
      * @param netname the type of the controller and its network index
      * @return the request message
      */
-    public RequestMessage createGraphRequest(String netname) {
+    public static RequestMessage createGraphRequest(String netname) {
         return new RequestMessage(MessageType.REQUEST_GRAPHS, netname);
     }
 
@@ -49,7 +49,7 @@ public class MessageFactory {
      *
      * @return the request message to notice client about the error
      */
-    public RequestMessage createErrorMessage() {
+    public static RequestMessage createErrorMessage() {
         return new RequestMessage(MessageType.ERROR);
     }
 
@@ -60,7 +60,7 @@ public class MessageFactory {
      * @param keepAliveTimeoutMinutes the timeout for next keep alive message from cellink
      * @return the request message with keep alive timeout in minutes
      */
-    public RequestMessage createKeepAlive(int keepAliveTimeoutMinutes) {
+    public static RequestMessage createKeepAlive(int keepAliveTimeoutMinutes) {
         return new RequestMessage(MessageType.KEEP_ALIVE, keepAliveTimeoutMinutes);
     }
 
@@ -72,7 +72,7 @@ public class MessageFactory {
      * @param propValue the new value to send
      * @return the write request message that was created
      */
-    public RequestMessage createWriteRequest(String netname, Long dataType, Long propValue) {
+    public static RequestMessage createWriteRequest(String netname, Long dataType, Long propValue) {
         return new RequestMessage(MessageType.REQUEST_TO_WRITE, netname, dataType, propValue);
     }
 
@@ -84,7 +84,7 @@ public class MessageFactory {
      * @param growDay the age of birds we're going to get data for
      * @return request message for daily to be used to grab daily report
      */
-    private RequestMessage createDailyReportRequests(String netname, int growDay) {
+    public static RequestMessage createDailyReportRequests(String netname, int growDay) {
         return new RequestMessage(MessageType.REQUEST_HISTORY, netname, growDay);
     }
 
@@ -97,7 +97,8 @@ public class MessageFactory {
      * @param dataTypes the list of data types that used for request reports
      * @return result a set of messages to be used to grab daily report
      */
-    private List<RequestMessage> createPerHourReportRequests(String netname, int growDay, RequestMessageQueueHistory24.DataType... dataTypes) {
+    public static List<RequestMessage> createPerHourReportRequests(String netname, int growDay,
+                                                                   RequestMessageQueueHistory24.DataType... dataTypes) {
         List<RequestMessage> result = new ArrayList<RequestMessage>(dataTypes.length);
         for (RequestMessageQueueHistory24.DataType dataType : dataTypes) {
             result.add(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, dataType.name));

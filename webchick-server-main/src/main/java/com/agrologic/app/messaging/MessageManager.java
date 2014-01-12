@@ -129,7 +129,7 @@ public class MessageManager implements Observer {
             }
 
         } catch (SQLException ex) {
-            logger.error("Error during access to the databse. ", ex);
+            logger.error("Error during access to the database. ", ex);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
@@ -144,7 +144,7 @@ public class MessageManager implements Observer {
         }
         if (graphsShouldBeRequested() && isSetClockInOnlineData()) {
             //2. create graph request hourly.
-            requestToSend = new MessageFactory().createGraphRequest(controller.getNetName());
+            requestToSend = MessageFactory.createGraphRequest(controller.getNetName());
             setRequestCreated(true);
         } else if (historyShouldBeRequested()) {
             //3.1. create management daily
@@ -350,7 +350,7 @@ public class MessageManager implements Observer {
         } else {
             growDay += 1;
         }
-        return new RequestMessage(MessageType.REQUEST_HISTORY, controller.getNetName(), growDay);
+        return MessageFactory.createDailyReportRequests(controller.getNetName(), growDay);
     }
 
     /**

@@ -10,19 +10,33 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ *
+ */
 public class CompanyService {
     private UserDao userDao;
 
+    /**
+     *
+     */
     public CompanyService() {
         this.userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
     }
 
+    /**
+     * @param request
+     * @return
+     */
     public boolean isCompaniesInSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Collection<String> companies = (Collection<String>) session.getAttribute("companies");
         return companies != null;
     }
 
+    /**
+     *
+     * @param request
+     */
     public void setCompaniesToSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
         try {

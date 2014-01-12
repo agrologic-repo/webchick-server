@@ -13,29 +13,23 @@ import com.agrologic.app.model.DataFormat;
 import org.jfree.chart.ChartPanel;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.NoSuchElementException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Graphs24HourPanel extends JPanel {
-
     private int width = 800;
     private int height = 550;
     private long currControllerId;
     private ControllerDao controllerDao;
     private DataDao dataDao;
     private List<ChartPanel> chartPanels;
-    private Timer timerDB;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     /**
      * Creates new form Graphs24HourPanel
@@ -48,16 +42,23 @@ public class Graphs24HourPanel extends JPanel {
             chartPanels = new ArrayList<ChartPanel>();
             createGraph(controllerId);
             repaint();
-            timerDB = new javax.swing.Timer(ScreenUI.REFRESH_RATE, new ActionListener() {
-
+            Runnable task = new Runnable() {
                 @Override
-                public void actionPerformed(ActionEvent e) {
-                    executeUpdate();
+                public void run() {
+                    try {
+                        if (graphShouldBeUpdated() == true) {
+                            removeAll();
+                            chartPanels.clear();
+                            createGraph(currControllerId);
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
                 }
-            });
-            timerDB.start();
+            };
+            executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
         } catch (SQLException ex) {
-            Logger.getLogger(Graphs24HourPanel.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
 
         setSize(width, (height + 10) * 2);
@@ -143,39 +144,4 @@ public class Graphs24HourPanel extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-
-    public synchronized void executeUpdate() {
-        Runnable task = new SwingWorker() {
-
-            String values;
-
-            @Override
-            protected Object doInBackground() throws Exception {
-                try {
-                    values = controllerDao.getControllerGraph(currControllerId);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (NoSuchElementException e) {
-                    e.printStackTrace();
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    if (graphShouldBeUpdated() == true) {
-                        removeAll();
-                        chartPanels.clear();
-                        createGraph(currControllerId);
-                    }
-                } catch (SQLException ex) {
-
-                }
-            }
-        };
-        executorService.execute(task);
-    }
 }

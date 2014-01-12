@@ -18,7 +18,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 public class MainScreenPanel extends JPanel implements ScreenUI {
 
     public static final int BUTTON_HEIGHT = 30;
-    public final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private Dimension thePanelHolderSize = new Dimension();
     private DataPanel dataPanel;
     private JPanel holderPanel;
@@ -40,7 +38,6 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
     private ScheduledExecutorService executor;
     private BufferedImage image;
     private static Logger logger = LoggerFactory.getLogger(MainScreenPanel.class);
-
 
     /**
      * Creates new form MainScreenPanel
@@ -102,15 +99,10 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                         e.printStackTrace();
                     }
 
-                    // this in the other hand will always be executed on the EDT.
-                    // This has to be done in the EDT because currently JTableBinding
-                    // is not smart enough to realize that the notification comes in another
-                    // thread and do a SwingUtilities.invokeLater. So we are force to execute this
-                    // in the EDT. See http://markmail.org/thread/6ehh76zt27qc5fis and
-                    // https://beansbinding.dev.java.net/issues/show_bug.cgi?id=60
                     if (dataList == null) {
                         return;
                     }
+
                     for (DataController df : dataControllerList) {
                         Set<Map.Entry<Long, Long>> entrySet = dataList.entrySet();
                         for (Map.Entry<Long, Long> entry : entrySet) {
@@ -220,10 +212,6 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
             otherMainScreens = new ArrayList<MainScreenPanel>();
         }
         otherMainScreens.add(msp);
-    }
-
-    @Override
-    public void executeUpdate() {
     }
 
     /**

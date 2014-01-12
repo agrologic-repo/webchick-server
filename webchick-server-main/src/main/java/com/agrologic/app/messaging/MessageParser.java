@@ -110,7 +110,8 @@ public class MessageParser {
     }
 
     /**
-     * Create fixed response string of history data in order to bug on Image II controller .
+     * Create fixed response string of history data in order to bug on Image II controller . The bug that the data is
+     * not sending in the correct format .
      *
      * @param response the response
      * @return fixed response string
@@ -127,7 +128,8 @@ public class MessageParser {
     }
 
     /**
-     * Create fixed response string of history 24 hour data in order to bug on Image II controller .
+     * Create fixed response string of history 24 hour data in order to bug on Image II controller . The bug that the
+     * data is not sending in the correct format .
      *
      * @param response the response
      * @return fixed response string
@@ -187,14 +189,14 @@ public class MessageParser {
         }
 
         public DataValueParser invoke() {
-            String dataIdString = token.nextToken();// get key data
-            String valueString = token.nextToken();// get value data
-            //count++;
+            String dataIdString = token.nextToken();               // get key data
+            String valueString = token.nextToken();                // get value data
+
             receivedDataId = Long.parseLong(dataIdString);
             receivedValue = Integer.parseInt(valueString);
 
             if (((int) receivedDataId & 0xC000) != 0xC000) {
-                receivedDataId = ((int) receivedDataId & 0xFFF); // remove type to get an index 4096&0xFFF -> 0
+                receivedDataId = ((int) receivedDataId & 0xFFF);   // remove type to get an index 4096&0xFFF -> 0
             } else {
                 receivedDataId = ((int) receivedDataId & 0xFFFF);
             }

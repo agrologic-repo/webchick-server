@@ -6,11 +6,12 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.LanguageDao;
 import com.agrologic.app.graph.DataGraphCreator;
 import com.agrologic.app.graph.daily.Graph24Empty;
-import com.agrologic.app.graph.daily.GraphType;
 import com.agrologic.app.graph.history.HistoryGraph;
 import com.agrologic.app.management.PerGrowDayHistoryDataType;
 import com.agrologic.app.model.Data;
-import com.agrologic.app.service.FlockHistoryService;
+import com.agrologic.app.model.history.FromDayToDayParam;
+import com.agrologic.app.service.history.FlockHistoryService;
+import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
 import org.jfree.chart.ChartUtilities;
 
 import javax.servlet.ServletException;
@@ -42,10 +43,10 @@ public class GraphMortalityServlet extends AbstractServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                GrowDayRangeParam growDayRangeParam
-                        = new GrowDayRangeParam(request.getParameter("fromDay"), request.getParameter("toDay"));
+                FromDayToDayParam growDayRangeParam
+                        = new FromDayToDayParam(request.getParameter("fromDay"), request.getParameter("toDay"));
                 try {
-                    FlockHistoryService flockHistoryService = new FlockHistoryService();
+                    FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
                     Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockHistoryWithinRange(flockId, growDayRangeParam);
 
                     List<Map<Integer, Data>> dataHistoryList = new ArrayList<Map<Integer, Data>>();
@@ -84,7 +85,7 @@ public class GraphMortalityServlet extends AbstractServlet {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     logger.error("Unknown error.", ex);
-                    Graph24Empty graph = new Graph24Empty(GraphType.BLANK, "");
+                    Graph24Empty graph = new Graph24Empty();
                     ChartUtilities.writeChartAsPNG(out, graph.getChart(), 600, 300);
                     out.flush();
                     out.close();

@@ -1,10 +1,7 @@
-
-
 package com.agrologic.app.graph.daily;
 
-
 import com.agrologic.app.model.DataFormat;
-import com.agrologic.app.utils.DateLocal;
+import com.agrologic.app.util.DateLocal;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.DateAxis;
@@ -30,13 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class Graph24FWI extends AbstractGraph {
-    private int resetTime;
-
     public Graph24FWI(GraphType type, String values, Long currentTime) {
         super(type, values);
         this.currentTime = currentTime;
-
-        // chart = createChart();
     }
 
     public Graph24FWI(GraphType type, String values, Long currentTime, Locale locale) {
@@ -76,8 +69,6 @@ public class Graph24FWI extends AbstractGraph {
             renderer.setShapesFilled(true);
             renderer.setBaseShapesVisible(true);
             renderer.setBaseShapesFilled(true);
-
-            // renderer.setSeriesPaint(0, Color.BLUE);
             renderer.setSeriesPaint(0, Color.RED);
 
             NumberAxis waterAxis = new NumberAxis(dictinary.get("graph.fw.axis.water"));
@@ -90,7 +81,6 @@ public class Graph24FWI extends AbstractGraph {
             waterAxis.setTickLabelPaint(Color.BLUE);
 
             XYPlot plot = new XYPlot(createFeedDataset(), dateaxis, numberaxis, renderer);
-
             plot.setDomainCrosshairVisible(true);
             plot.setRangeCrosshairVisible(true);
             plot.setDomainPannable(true);
@@ -151,22 +141,21 @@ public class Graph24FWI extends AbstractGraph {
         int day = now.getDate();
         int month = now.getMonth();
         int year = now.getYear();
-        int hour = now.getHours() - 1;
         Day today = new Day(SerialDate.createInstance(day, month, year));
         Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
         final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
         final TimeSeries feedSeries = new TimeSeries(dictinary.get("graph.fw.series.feed"));
-        int hr = (int) (currentTime / 100) - 1;
+        int hour = (int) (currentTime / 100) - 1;
 
-        for (int i = FEED_INDEX + DAY_HOURS - 1; i >= FEED_INDEX; i--, hr--) {
+        for (int i = FEED_INDEX + DAY_HOURS - 1; i >= FEED_INDEX; i--, hour--) {
             String value = DataFormat.formatToStringValue(DataFormat.DEC_0, Long.valueOf(datasetString[i]));
             int intValue = Integer.valueOf(value);
 
-            feedSeries.add(new Hour(hr, today), intValue);
+            feedSeries.add(new Hour(hour, today), intValue);
 
-            if (hr == 0) {
+            if (hour == 0) {
                 today = yesterday;
-                hr = DAY_HOURS;
+                hour = DAY_HOURS;
             }
 
             if (maxY < intValue) {

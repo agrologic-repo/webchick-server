@@ -334,10 +334,6 @@
         <servlet-class>com.agrologic.app.web.DisconnectCellinks</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>HeadlineStatistic</servlet-name>
-        <servlet-class>com.agrologic.app.web.HeadlineStatistic</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>CellinkSetting</servlet-name>
         <servlet-class>com.agrologic.app.web.CellinkSetting</servlet-class>
     </servlet>
@@ -1069,10 +1065,6 @@
     <servlet-mapping>
         <servlet-name>DisconnectCellinks</servlet-name>
         <url-pattern>/disconnect-cellinks.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>HeadlineStatistic</servlet-name>
-        <url-pattern>/headlinestatistic.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CellinkSetting</servlet-name>

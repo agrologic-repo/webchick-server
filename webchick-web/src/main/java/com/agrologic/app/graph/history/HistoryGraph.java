@@ -110,12 +110,12 @@ public class HistoryGraph {
     /**
      * Creates series collection of data management by grow day and add to plot.
      *
-     * @param dataHsitoryList the List of data management by grow day map.
+     * @param dataHsitoryList the list of data management by grow day map.
      * @param axisLabel       the label of series collection.
      */
-    public void createAndAddSeriesCollection(List<Map<Integer, Data>> dhl, String axisLabel) {
+    public void createAndAddSeriesCollection(List<Map<Integer, Data>> dataHsitoryList, String axisLabel) {
         initTopAndBottomCoords();
-        XYSeriesCollection seriesCollect = createSeriesCollection(dhl);
+        XYSeriesCollection seriesCollect = createSeriesCollection(dataHsitoryList);
         final XYPlot plot = chart.getXYPlot();
         int count = plot.getRangeAxisCount();
         plot.setDataset(count, seriesCollect);
@@ -143,7 +143,7 @@ public class HistoryGraph {
     /**
      * Creates series collection of data management by grow day.
      *
-     * @param dataHsitoryList the List of data management by grow day map.
+     * @param dhl the list of data management by grow day map.
      * @return seriesCollect the series collection object.
      */
     protected XYSeriesCollection createSeriesCollection(List<Map<Integer, Data>> dhl) {
@@ -160,7 +160,6 @@ public class HistoryGraph {
      * Return created series and set minimum maximum coordinates.
      *
      * @param coordinates the map with values by grow day.
-     * @param seriesLabel the label of series.
      * @return series the series
      */
     protected XYSeries createSeries(final Map<Integer, Data> coordinates) {

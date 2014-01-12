@@ -2,7 +2,7 @@ package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Program;
-import com.agrologic.app.utils.DateLocal;
+import com.agrologic.app.util.DateLocal;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

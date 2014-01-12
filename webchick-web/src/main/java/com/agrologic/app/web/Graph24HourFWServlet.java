@@ -1,10 +1,15 @@
 package com.agrologic.app.web;
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.LanguageDao;
 import com.agrologic.app.graph.daily.Graph;
 import com.agrologic.app.graph.daily.Graph24Empty;
 import com.agrologic.app.graph.daily.Graph24FWI;
 import com.agrologic.app.graph.daily.GraphType;
-import com.agrologic.app.service.FlockHistoryService;
+import com.agrologic.app.model.history.DayParam;
+import com.agrologic.app.service.history.FlockHistoryService;
+import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
 import org.jfree.chart.ChartUtilities;
 
 import javax.servlet.ServletException;
@@ -32,10 +37,19 @@ public class Graph24HourFWServlet extends AbstractServlet {
 
         OutputStream out = response.getOutputStream();
         long flockId = Long.parseLong(request.getParameter("flockId"));
-        GrowDayParam growDayParam = new GrowDayParam(request.getParameter("growDay"));
+        DayParam growDayParam = new DayParam(request.getParameter("growDay"));
+        String lang = (String) request.getSession().getAttribute("lang");
+        if ((lang == null) || lang.equals("")) {
+            lang = "en";
+        }
+
         try {
-            FlockHistoryService flockHistoryService = new FlockHistoryService();
-            List<String> historyValueList = flockHistoryService.getFlockHistory24Hour(flockId, growDayParam.getGrowDay());
+            LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+            long langId = languageDao.getLanguageId(lang);    // get language id
+
+            FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
+            List<String> historyValueList = flockHistoryService.getFlockHistory24Hour(flockId,
+                    growDayParam.getGrowDay(), langId);
             StringBuilder chainedHistoryValues = new StringBuilder();
             for (String historyValues : historyValueList) {
                 chainedHistoryValues.append(historyValues);
@@ -48,7 +62,7 @@ public class Graph24HourFWServlet extends AbstractServlet {
             out.close();
         } catch (Exception ex) {
             ex.printStackTrace(System.out);
-            Graph24Empty graph = new Graph24Empty(GraphType.BLANK, "");
+            Graph24Empty graph = new Graph24Empty();
 
             ChartUtilities.writeChartAsPNG(out, graph.getChart(), 600, 300);
             out.flush();

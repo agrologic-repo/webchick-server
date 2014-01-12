@@ -1,6 +1,5 @@
 package com.agrologic.app.util;
 
-
 import org.apache.commons.lang.Validate;
 
 import java.util.ArrayList;
@@ -8,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ByteUtil {
+
     public static int indexOf(byte[] buffer, byte input) {
         Validate.notNull(buffer, "buffer can not be null");
         int count = 0;
@@ -16,10 +16,8 @@ public class ByteUtil {
         for (byte b : buffer) {
             if (b == input) {
                 i = count;
-
                 break;
             }
-
             count++;
         }
 
@@ -37,7 +35,6 @@ public class ByteUtil {
             if (b == input) {
                 i = count;
             }
-
             count++;
         }
 

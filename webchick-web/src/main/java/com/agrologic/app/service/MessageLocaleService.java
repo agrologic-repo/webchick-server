@@ -10,6 +10,9 @@ public class MessageLocaleService {
     protected ResourceBundle messages;
     protected ResourceBundle defaultLocaleMessages;
 
+    /**
+     * @param locale the locale
+     */
     public MessageLocaleService(Locale locale) {
         this.messages = ResourceBundle.getBundle("messages", locale);
         this.defaultLocaleMessages = ResourceBundle.getBundle("messages");

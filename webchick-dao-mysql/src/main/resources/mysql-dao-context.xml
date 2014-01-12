@@ -28,7 +28,7 @@
     </bean>
 
     <bean id="programSystemStateDao" class="com.agrologic.app.dao.mysql.impl.ProgramSystemStateDaoImpl"
-         >
+            >
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
@@ -116,8 +116,11 @@
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
+    <bean id="eggDao" class="com.agrologic.app.dao.mysql.impl.EggDaoImpl">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
     <!--<bean id="versionDao" class="com.agrologic.app.dao.mysql.impl.VersionDaoImpl"/>-->
     <!--<bean id="schemaDao" class="com.agrologic.app.dao.mysql.impl.SchemaDaoImpl"/>-->
-
-    <bean id="daoFactory" class="com.agrologic.app.dao.mysql.impl.MySqlDaoFactory" factory-method="instance"/>
+    <!--<bean id="daoFactory" class="com.agrologic.app.dao.mysql.impl.MySqlDaoFactory" factory-method="instance"/>-->
 </beans>

@@ -3,6 +3,7 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.history.DayParam;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +36,7 @@ public class FlockGraphServlet extends AbstractServlet {
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 Controller controller = controllerDao.getById(flock.getControllerId());
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                GrowDayParam growDayParam = new GrowDayParam(request.getParameter("growDay"));
+                DayParam growDayParam = new DayParam(request.getParameter("growDay"));
 
                 request.setAttribute("flockName", flock.getFlockName());
                 request.setAttribute("houseName", controller.getTitle());

@@ -23,6 +23,7 @@ public class GasDaoImpl implements GasDao {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("gas");
+        this.jdbcInsert.setGeneratedKeyName("ID");
     }
 
     @Override
@@ -36,6 +37,7 @@ public class GasDaoImpl implements GasDao {
         valuesToInsert.put("Price", gas.getPrice());
         valuesToInsert.put("Total", gas.getTotal());
         jdbcInsert.execute(valuesToInsert);
+
     }
 
     @Override

@@ -1,8 +1,3 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx;
 
 import com.agrologic.app.dao.service.DatabaseAccessor;
@@ -192,7 +187,6 @@ public class DataComponent {
 
         if (data.getValue() != null) {
             formatedValue = DataFormat.formatToStringValue(data.getFormat(), data.getValueToUI());
-
             // dataText.setText(formatedValue);
         }
 

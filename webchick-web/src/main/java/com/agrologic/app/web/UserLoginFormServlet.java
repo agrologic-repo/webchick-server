@@ -4,7 +4,7 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.User;
-import com.agrologic.app.utils.Base64;
+import com.agrologic.app.util.Base64;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;

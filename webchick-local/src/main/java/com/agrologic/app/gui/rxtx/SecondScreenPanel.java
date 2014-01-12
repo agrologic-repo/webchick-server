@@ -41,7 +41,6 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         task = new Runnable() {
 
             DatabaseAccessor dbaccessor = dbManager.getDatabaseGeneralService();
-            ;
             private Map<Long, Long> dataList = null;
 
             @Override
@@ -367,7 +366,4 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
     private javax.swing.JLabel lblTitle;
     private javax.swing.JTabbedPane tabsPane;
     // End of variables declaration//GEN-END:variables
-
-    public synchronized void executeUpdate() {
-    }
 }

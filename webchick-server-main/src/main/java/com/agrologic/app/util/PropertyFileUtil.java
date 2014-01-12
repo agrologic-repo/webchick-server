@@ -6,7 +6,7 @@ import java.util.Properties;
 public class PropertyFileUtil {
 
     /**
-     * Ccreates a new, empty property file named by this filename if
+     * Creates a new, empty property file named by this filename if
      * and only if a file with this name does not yet exist.
      *
      * @param fileName the property file name

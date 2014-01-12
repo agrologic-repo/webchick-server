@@ -45,23 +45,6 @@ public class DerbyUserDaoImpl extends UserDaoImpl implements CreatebleDao, Dropa
         jdbcTemplate.execute(sql);
     }
 
-//    @Override
-//    public void insert(User user) throws SQLException {
-//        logger.debug("Creating user with id [{}]", user.getId());
-//        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
-//        valuesToInsert.put("userid", user.getId());
-//        valuesToInsert.put("name", user.getLogin());
-//        valuesToInsert.put("password", user.getPassword());
-//        valuesToInsert.put("firstname", user.getFirstName());
-//        valuesToInsert.put("lastname", user.getLastName());
-//        valuesToInsert.put("role", user.getRole().getValue());
-//        valuesToInsert.put("state", user.getState());
-//        valuesToInsert.put("phone", user.getPhone());
-//        valuesToInsert.put("email", user.getEmail());
-//        valuesToInsert.put("company", user.getCompany());
-//        jdbcInsert.execute(valuesToInsert);
-//    }
-
     @Override
     public void dropTable() throws SQLException {
         String sql = "DROP TABLE APP.USERS ";

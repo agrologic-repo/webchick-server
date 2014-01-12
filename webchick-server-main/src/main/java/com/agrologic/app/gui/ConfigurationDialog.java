@@ -1,8 +1,3 @@
-/*
- * SettingDialog.java
- *
- * Created on Jul 6, 2009, 1:20:58 PM
- */
 package com.agrologic.app.gui;
 
 import com.agrologic.app.config.Configuration;

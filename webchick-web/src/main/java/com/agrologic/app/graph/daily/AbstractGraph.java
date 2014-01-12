@@ -1,7 +1,4 @@
-
-
 package com.agrologic.app.graph.daily;
-
 
 import org.jfree.chart.JFreeChart;
 

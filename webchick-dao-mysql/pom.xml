@@ -7,7 +7,7 @@
     <parent>
         <artifactId>webchick-server</artifactId>
         <groupId>com.agrologic</groupId>
-        <version>6.6.3-SNAPSHOT</version>
+        <version>6.6.4-SNAPSHOT</version>
     </parent>
 
 
@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>webchick-domain</artifactId>
+            <artifactId>webchick-common</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

@@ -1,19 +1,12 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx.graph;
-
-
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 public class GraphType {
-    public static final int BLANK_GRAPH             = 0;
-    public static final int IN_FEED_WATER_GRAPH     = 2;
+    public static final int BLANK_GRAPH = 0;
+    public static final int IN_FEED_WATER_GRAPH = 2;
     public static final int IN_OUT_TEMP_HUMID_GRAPH = 1;
 
     /**

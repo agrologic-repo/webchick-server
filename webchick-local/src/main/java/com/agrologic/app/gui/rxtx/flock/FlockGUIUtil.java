@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.dao.mappers.DataFormatUtil;
@@ -11,14 +6,6 @@ import com.agrologic.app.model.DataFormat;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
 public class FlockGUIUtil {
 
     public static void keyPressedHandler(JTextField textField, KeyEvent event) {

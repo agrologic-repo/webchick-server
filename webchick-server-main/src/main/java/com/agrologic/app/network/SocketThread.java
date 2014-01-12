@@ -370,9 +370,9 @@ public class SocketThread implements Runnable {
     }
 
     /**
-     * When socket opened , we need to read and validate reading data.
+     * When socket opened , we need to read and validate reading data .
      *
-     * @return true if received message is valid. otherwise false
+     * @return true if received message is valid. otherwise false .
      */
     private boolean isAccessAllowed() {
         try {

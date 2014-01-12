@@ -86,8 +86,13 @@ public class FlockManager extends JFrame {
                     flock.setEndDate((String) tblFlocks.getModel().getValueAt(rowNumber, 5));
                     setSelectedFlock(flock);
                 }
+                if (e.getClickCount() == 2) {
+                    flockGraphs = new FlockGraphs();
+                    flockGraphs.showDialog(selectedFlock.getFlockId());
+                }
             }
         });
+
         flockService = new FlockManagerService();
         logger.info("Start load data");
         loadData();
@@ -131,7 +136,7 @@ public class FlockManager extends JFrame {
         }
     }
 
-    private void clearFeilds() {
+    private void clearFields() {
         txtID.setText("");
         txtName.setText("");
         cmbHouse.setSelectedIndex(0);
@@ -187,7 +192,7 @@ public class FlockManager extends JFrame {
             return;
         }
         selectedFlock = flock;
-        clearFeilds();
+        clearFields();
         prepareForEditing();
         try {
             txtID.setText("" + selectedFlock.getFlockId());
@@ -425,7 +430,7 @@ public class FlockManager extends JFrame {
         newFlock = true;
         setSelectedFlock(null);
         prepareForSaving();
-        clearFeilds();
+        clearFields();
         txtID.setText("" + flockService.generateFlockId());
     }//GEN-LAST:event_btnNewActionPerformed
 
@@ -474,10 +479,10 @@ public class FlockManager extends JFrame {
                 flockService.addFlock(flock);
             }
             newFlock = false;
-            clearFeilds();
+            clearFields();
         } else {
             flockService.saveFlock(flock);
-            clearFeilds();
+            clearFields();
         }
 
         //deletes ALL the rows
@@ -501,14 +506,12 @@ public class FlockManager extends JFrame {
         ((DefaultTableModel) tblFlocks.getModel()).fireTableDataChanged();
         cmbHouse.removeAllItems();
         loadData();
-        clearFeilds();
+        clearFields();
         disableEditing();
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void btnShowGraphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowGraphActionPerformed
-        if (flockGraphs == null) {
-            flockGraphs = new FlockGraphs();
-        }
+        flockGraphs = new FlockGraphs();
         flockGraphs.showDialog(selectedFlock.getFlockId());
     }//GEN-LAST:event_btnShowGraphActionPerformed
 

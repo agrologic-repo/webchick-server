@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- *
  * @author Administrator
  */
 public class AddGasDialog extends JDialog {
@@ -101,26 +100,26 @@ public class AddGasDialog extends JDialog {
         getContentPane().setLayout(null);
 
         tblDataTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][]{
 
-            },
-            new String [] {
-                "ID", "Amount", "Date", "Price", "Account Number", "Total"
-            }
+                },
+                new String[]{
+                        "ID", "Amount", "Date", "Price", "Account Number", "Total"
+                }
         ) {
-            Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.Integer.class, java.lang.String.class, java.lang.Float.class, java.lang.Integer.class, java.lang.Float.class
+            Class[] types = new Class[]{
+                    java.lang.Long.class, java.lang.Integer.class, java.lang.String.class, java.lang.Float.class, java.lang.Integer.class, java.lang.Float.class
             };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+            boolean[] canEdit = new boolean[]{
+                    false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+                return types[columnIndex];
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         jScrollPane1.setViewportView(tblDataTable);
@@ -157,6 +156,7 @@ public class AddGasDialog extends JDialog {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtAmountKeyReleased(evt);
             }
+
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtAmountKeyTyped(evt);
             }
@@ -168,6 +168,7 @@ public class AddGasDialog extends JDialog {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtPriceKeyReleased(evt);
             }
+
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtPriceKeyTyped(evt);
             }
@@ -179,6 +180,7 @@ public class AddGasDialog extends JDialog {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtAccountNumberKeyReleased(evt);
             }
+
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtAccountNumberKeyTyped(evt);
             }
@@ -220,15 +222,15 @@ public class AddGasDialog extends JDialog {
 
     private void calcTotal() {
         String samount = txtAmount.getText();
-        String sprice  = txtPrice.getText();
+        String sprice = txtPrice.getText();
         int amount = Integer.parseInt(samount);
         float price = Float.parseFloat(sprice);
-        float total = (float) (amount * price);
+        float total = (amount * price);
         txtTotal.setText("" + total);
     }
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        if(currGas == null) {
+        if (currGas == null) {
             return;
         }
         flockService.removeGas(currGas.getId());
@@ -249,7 +251,7 @@ public class AddGasDialog extends JDialog {
     }//GEN-LAST:event_txtAmountKeyReleased
 
     private void txtPriceKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPriceKeyTyped
-        FlockGUIUtil.keyTypedHandler(txtPrice, evt );
+        FlockGUIUtil.keyTypedHandler(txtPrice, evt);
     }//GEN-LAST:event_txtPriceKeyTyped
 
     private void txtPriceKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPriceKeyReleased
@@ -272,17 +274,17 @@ public class AddGasDialog extends JDialog {
         List<Gas> gasList = flockService.getAllGas(flockId);
         for (Gas g : gasList) {
             ((DefaultTableModel) tblDataTable.getModel()).insertRow(0, new Object[]{
-                        g.getId(),
-                        g.getAmount(),
-                        g.getDate(),
-                        g.getPrice(),
-                        g.getNumberAccount(),
-                        g.getTotal()});
+                    g.getId(),
+                    g.getAmount(),
+                    g.getDate(),
+                    g.getPrice(),
+                    g.getNumberAccount(),
+                    g.getTotal()});
         }
     }
 
     private Gas getFromFields() {
-        Long flockId = Long.valueOf(1);
+
         String amount = txtAmount.getText();
         String date = d1.getFormattedTextField().getText();
         String price = txtPrice.getText();
@@ -378,6 +380,7 @@ public class AddGasDialog extends JDialog {
             }
         });
     }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnRemove;

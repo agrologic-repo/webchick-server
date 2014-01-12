@@ -131,7 +131,6 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
                     openConfiguration();
                     System.exit(0);
                 } catch (WrongDatabaseException e) {
-
                     loadingDialog.setVisible(false);
                     logger.error(e);
                     showErrorMessage("Error", e.getMessage());

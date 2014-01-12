@@ -15,7 +15,6 @@ public interface Message {
         SPACE((byte) 32),
         RS((byte) 30);
 
-
         ProtocolBytes(byte value) {
             this.value = value;
         }

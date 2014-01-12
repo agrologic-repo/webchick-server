@@ -9,9 +9,13 @@ import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.Language;
 import com.agrologic.app.model.User;
 import com.agrologic.app.util.Windows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,9 +33,10 @@ public class WebchickDBCreator extends javax.swing.JFrame {
     private static final String DONE = "Done";
 
     private JFileChooser fileChooser;
+    private Logger logger = LoggerFactory.getLogger(WebchickDBCreator.class);
 
     /**
-     * Creates new form MySQL2DerbyMigrator
+     * Creates new form WebchickDBCreator
      */
     public WebchickDBCreator() {
         initComponents();
@@ -428,7 +433,7 @@ public class WebchickDBCreator extends javax.swing.JFrame {
                 cmbLanguages.addItem(le);
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            logger.error(getStackTrace(ex.getMessage()));
         }
     }
 
@@ -480,6 +485,18 @@ public class WebchickDBCreator extends javax.swing.JFrame {
         public String toString() {
             return cellink;
         }
+    }
+
+    /**
+     * Return stack trace with message,To format stack trace for logging, For easy viewing of text log
+     *
+     * @param message stack trace's message
+     * @return stack trace with message
+     */
+    private String getStackTrace(String message) {
+        StringWriter sw = new StringWriter();
+        new Throwable(message).printStackTrace(new PrintWriter(sw));
+        return sw.toString();
     }
 
     /**

@@ -48,9 +48,15 @@ public class FlockManagement extends AbstractServlet {
                 request.getRequestDispatcher("./rmctrl-flock-management.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
             } catch (SQLException ex) {
+                logger.error("SQL Error during flock management request ", ex);
+                request.getRequestDispatcher("./rmctrl-flock-management.jsp?celinkId=" + cellinkId + "&controllerId="
+                        + controllerId + "&flockId=" + flockId).forward(request, response);
+            } catch (Exception ex) {
+                logger.error("SQL Error during flock management request ", ex);
                 request.getRequestDispatcher("./rmctrl-flock-management.jsp?celinkId=" + cellinkId + "&controllerId="
                         + controllerId + "&flockId=" + flockId).forward(request, response);
             }
+
         } finally {
             out.close();
         }

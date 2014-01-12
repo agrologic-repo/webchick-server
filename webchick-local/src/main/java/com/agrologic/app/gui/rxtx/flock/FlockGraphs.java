@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.model.Flock;
@@ -72,7 +68,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         cmbFlockHouses.setSelectedItem(currFlockEntry);
 
         if (flockId != null) {
-            Integer growDays = flockService.getLastUdatedGrowDay(flockId);
+            Integer growDays = flockService.getLastUpdatedGrowDay(flockId);
             ((SpinnerNumberModel) spnGrowday.getModel()).setMinimum(1);
             ((SpinnerNumberModel) spnGrowday.getModel()).setMaximum(growDays);
         }
@@ -98,7 +94,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         pnlStandard = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         cmbFlockHouses = new javax.swing.JComboBox();
-        btnView = new javax.swing.JButton();
+        btnClear = new javax.swing.JButton();
         spnGrowday = new javax.swing.JSpinner();
         jLabel1 = new javax.swing.JLabel();
         rdoGrowDayHistory = new javax.swing.JRadioButton();
@@ -161,27 +157,6 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
 
         tabPaneHistory.addTab("Current", pnlCurrent);
 
-        jButton1.setText("Add Standard");
-
-        javax.swing.GroupLayout pnlStandardLayout = new javax.swing.GroupLayout(pnlStandard);
-        pnlStandard.setLayout(pnlStandardLayout);
-        pnlStandardLayout.setHorizontalGroup(
-                pnlStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(pnlStandardLayout.createSequentialGroup()
-                                .addGap(35, 35, 35)
-                                .addComponent(jButton1)
-                                .addContainerGap(52, Short.MAX_VALUE))
-        );
-        pnlStandardLayout.setVerticalGroup(
-                pnlStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(pnlStandardLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(290, Short.MAX_VALUE))
-        );
-
-        tabPaneHistory.addTab("Standard", pnlStandard);
-
         cmbFlockHouses.setFocusable(false);
         cmbFlockHouses.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -189,10 +164,10 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
             }
         });
 
-        btnView.setText("View");
-        btnView.addActionListener(new java.awt.event.ActionListener() {
+        btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewActionPerformed(evt);
+                btnClearActionPerformed(evt);
             }
         });
 
@@ -235,7 +210,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(spnGrowday)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(btnView))
+                                                .addComponent(btnClear))
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                                 .addComponent(rdoGrowDayHistory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(rdo24HourHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -249,7 +224,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
                                 .addComponent(cmbFlockHouses, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(btnView)
+                                        .addComponent(btnClear)
                                         .addComponent(spnGrowday, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel1))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -465,7 +440,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewActionPerformed
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
 
         final ChartPanel cp = GraphFactory.createXYChartPanel();
         Rectangle rect = pnlGraph.getBounds();
@@ -506,7 +481,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         pnlGraph.validate();
         repaint();
         textRect1.clearSet();
-    }//GEN-LAST:event_btnViewActionPerformed
+    }//GEN-LAST:event_btnClearActionPerformed
 
     private void spnGrowdayStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnGrowdayStateChanged
         if (evt.getSource() instanceof JSpinner) {
@@ -545,8 +520,11 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
     private void lstHistoryListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstHistoryListMouseClicked
         // if no graphs there does not do nothing
         if (pnlGraph.getComponents().length == 0) {
-            return;
+            btnClear.doClick();
+        } else if (pnlGraph.getComponents().length > 1) {
+            System.out.println();
         }
+
 
         if (evt.getClickCount() == ONE_CLICK && rdo24HourHistory.isSelected()) {
             ChartPanel cp = (ChartPanel) pnlGraph.getComponent(0);
@@ -579,10 +557,10 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
             GraphFactory.setNumberAxis("Grow Day", plot);
             GraphFactory.setRenderer(plot);
 
-            XYSeriesCollection xyseries = (XYSeriesCollection) plot.getDataset();
+            XYSeriesCollection seriesCollection = (XYSeriesCollection) plot.getDataset();
             boolean selected = chbPuton.getModel().isSelected();
             if (!selected) {
-                xyseries.removeAllSeries();
+                seriesCollection.removeAllSeries();
             }
 
             HistoryEntry historyEntry = (HistoryEntry) lstHistoryList.getModel().getElementAt(index);
@@ -593,7 +571,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
 
             GraphFactory.setRangeAxis(historyEntry.getTitle(), plot);
             XYSeries xySeries = GraphFactory.createXYDataset(historyEntry.getTitle(), historyEntry.getValues());
-            xyseries.addSeries(xySeries);
+            seriesCollection.addSeries(xySeries);
         }
     }//GEN-LAST:event_lstHistoryListMouseClicked
 
@@ -645,17 +623,19 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         XYPlot plot = (XYPlot) cp.getChart().getPlot();
         double d1 = plot.getDomainCrosshairValue();
         int l1 = (int) d1;
-        XYDataset dataset = plot.getDataset();
-        if (dataset.getSeriesCount() > 0) {
+        XYDataset dataSet = plot.getDataset();
+        if (dataSet.getSeriesCount() > 0) {
             XYSeriesCollection xyseries = (XYSeriesCollection) plot.getDataset();
             XYItemRenderer xyir = plot.getRenderer();
-            int size = dataset.getSeriesCount();
+            int size = dataSet.getSeriesCount();
             for (int i = 0; i < size; i++) {
-                XYSeries series = (XYSeries) xyseries.getSeries(i);
+                XYSeries series = xyseries.getSeries(i);
                 Color color = (Color) xyir.getSeriesPaint(i);
-                Number num = series.getY(l1 - 1);
-                if (color != null) {
-                    textRect1.set(color, num);
+                if (series.getItemCount() > l1) {
+                    Number num = series.getY(l1 - 1);
+                    if (color != null) {
+                        textRect1.set(color, num);
+                    }
                 }
             }
         }
@@ -751,7 +731,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnView;
+    private javax.swing.JButton btnClear;
     private javax.swing.JCheckBox chbPuton;
     private javax.swing.JComboBox cmbFlockHouses;
     private javax.swing.ButtonGroup historyGroup;

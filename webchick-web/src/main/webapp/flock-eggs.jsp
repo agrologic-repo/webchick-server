@@ -7,7 +7,8 @@
 <%@ page import="com.agrologic.app.graph.DataGraphCreator" %>
 <%@ page import="com.agrologic.app.management.PerGrowDayHistoryDataType" %>
 <%@ page import="com.agrologic.app.model.Eggs" %>
-<%@ page import="com.agrologic.app.service.FlockHistoryService" %>
+<%@ page import="com.agrologic.app.service.history.FlockHistoryService" %>
+<%@ page import="com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Map" %>
 <!DOCTYPE html>
@@ -54,7 +55,7 @@
 
 <%!
     ArrayList<Eggs> getEggsList(Long flockId) {
-        FlockHistoryService flockHistoryService = new FlockHistoryService();
+        FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
         try {
             Map<Integer, String> histList = flockHistoryService.getFlockHistory(flockId);
             ArrayList<Eggs> eggsList = new ArrayList<Eggs>();

@@ -389,6 +389,17 @@ public class DataDaoImpl implements DataDao {
      * {@inheritDoc}
      */
     @Override
+    public Collection<Data> getHistoryDataListByCriteria(String criteria, Long langId) throws SQLException {
+        String sql = "select * from datatable  as dt " +
+                "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? " +
+                "where historyopt like ?";
+        return jdbcTemplate.query(sql, new Object[]{langId, "%" + criteria + "%"}, RowMappers.data());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Collection<Data> getAllWithTranslation() throws SQLException {
         String sql = " select * from datatable left join databylanguage on datatable.dataid=databylanguage.dataid "
                 + "order by datatable.dataid ";

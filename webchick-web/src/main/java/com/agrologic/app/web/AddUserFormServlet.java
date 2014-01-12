@@ -5,6 +5,7 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.User;
 import com.agrologic.app.model.UserRole;
+import com.agrologic.app.util.Base64;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +49,7 @@ public class AddUserFormServlet extends AbstractServlet {
 
         user.setLogin(login);
 
-        String encpsswd = com.agrologic.app.utils.Base64.encode(password);
+        String encpsswd = Base64.encode(password);
 
         user.setPassword(encpsswd);
         user.setFirstName(firstName);
@@ -72,9 +73,8 @@ public class AddUserFormServlet extends AbstractServlet {
             request.setAttribute("error", false);
             request.getRequestDispatcher("./all-users.html").forward(request, response);
         } catch (SQLException ex) {
-
             // error page
-            logger.error("Error occurs while adding user.");
+            logger.error("Error occurs while adding user.", ex);
             request.setAttribute("message", "Error occurs while adding user.");
             request.setAttribute("error", true);
             request.getRequestDispatcher("./all-users.html").forward(request, response);

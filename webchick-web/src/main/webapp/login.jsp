@@ -2,7 +2,7 @@
 
 <%@ include file="language.jsp" %>
 <%@ page errorPage="errorPage.jsp" %>
-<%@ page import="com.agrologic.app.utils.Base64" %>
+<%@ page import="com.agrologic.app.util.Base64" %>
 <%@ page import="org.apache.log4j.Logger" %>
 <%@ page import="javax.servlet.http.Cookie" %>
 
@@ -100,7 +100,8 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("login.page.title")%></title>
+    <title><%=session.getAttribute("login.page.title")%>
+    </title>
     <meta name="Author" content="Valery Manakhimov">
     <link rel="shortcut icon" href="resources/images/favicon5.ico">
     <script language="javascript" src="resources/javascript/menu.js">;</script>
@@ -115,47 +116,52 @@
                        width="400px">
                     <th colspan="2"
                         style="border : 1px solid blue; ;border-collapse:collapse;background:#283d9a; color: #FFFFFF;">
-                        <h3><img src="resources/images/key.png"><%=session.getAttribute("login.page.header")%></h3>
+                        <h3><img src="resources/images/key.png"><%=session.getAttribute("login.page.header")%>
+                        </h3>
                     </th>
-                    <%  String errormessage = (String) request.getAttribute("errormessage");
+                    <% String errormessage = (String) request.getAttribute("errormessage");
                         if (errormessage != null) {%>
-                        <tr style="border : 1px solid blue;border-collapse:collapse;background:#FF0000">
-                            <td nowrap colspan="3">
+                    <tr style="border : 1px solid blue;border-collapse:collapse;background:#FF0000">
+                        <td nowrap colspan="3">
                                 <span style="font-color:FFFFFF; font-weight: bold;"><%=session.getAttribute("user.password.incorrect")%>
                             </span></td>
-                        </tr>
-                        <%}%>
+                    </tr>
+                    <%}%>
                     <tr>
-                        <td width="30%" colspan="2" color="white"><br><%=session.getAttribute("user.login.info")%></td>
+                        <td width="30%" colspan="2" color="white"><br><%=session.getAttribute("user.login.info")%>
+                        </td>
                     </tr>
                     <tr>
                         <td width="70%" colspan="2"><br></td>
                     </tr>
                     <tr>
-                        <td width="30%"><%=session.getAttribute("label.login")%></td>
+                        <td width="30%"><%=session.getAttribute("label.login")%>
+                        </td>
                         <td width="70%"><input type="text" size="20" name="name" maxlength="30" value="<%=user%>"></td>
                     </tr>
                     <tr>
-                        <td width="30%"><%=session.getAttribute("label.password")%></td>
+                        <td width="30%"><%=session.getAttribute("label.password")%>
+                        </td>
                         <td width="70%">
-                            <input type="password" size="20" name="password" maxlength="30"value="<%=pass%>"></td>
+                            <input type="password" size="20" name="password" maxlength="30" value="<%=pass%>"></td>
                     </tr>
                     <tr>
-                        <td width="30%"><%=session.getAttribute("user.interface.language")%></td>
+                        <td width="30%"><%=session.getAttribute("user.interface.language")%>
+                        </td>
                         <td width="70%" valign="bottom">
                             <select name="selectLang" onchange="doSubmit();">
                                 <option value="en">English</option>
                                 <option value="ru">Russian</option>
-                                <%  if (domain.equalsIgnoreCase("agrologic")
-                                            || domain.equalsIgnoreCase("localhost")
-                                            || domain.equalsIgnoreCase("lab")
-                                            || domain.equalsIgnoreCase("192.168.1.101")) {
+                                <% if (domain.equalsIgnoreCase("agrologic")
+                                        || domain.equalsIgnoreCase("localhost")
+                                        || domain.equalsIgnoreCase("lab")
+                                        || domain.equalsIgnoreCase("192.168.1.101")) {
                                 %>
-                                    <option value="iw">Hebrew</option>
+                                <option value="iw">Hebrew</option>
                                 <%}%>
-                                    <option value="zh">Chinese</option>
-                                    <option value="fr">French</option>
-                                    <option value="de">German</option>
+                                <option value="zh">Chinese</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
                             </select>
                         </td>
                     </tr>

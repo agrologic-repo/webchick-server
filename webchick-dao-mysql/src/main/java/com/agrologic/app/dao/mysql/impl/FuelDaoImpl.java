@@ -23,6 +23,7 @@ public class FuelDaoImpl implements FuelDao {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("fuel");
+        this.jdbcInsert.setGeneratedKeyName("ID");
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.agrologic.app.dao.mysql.impl;
 
 import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.dao.mappers.RowMappers;
+import com.agrologic.app.model.Data;
 import com.agrologic.app.model.Flock;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
@@ -322,5 +323,22 @@ public class FlockDaoImpl implements FlockDao {
         logger.debug("Get all flocks that belongs to controller with id [{}]", controllerId);
         String sql = "select * from flocks where ControllerID=?";
         return jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.flock());
+    }
+
+    @Override
+    public Collection<Data> getFlockPerDayHistoryData(Long flockId, Long langId) throws SQLException {
+        String sql = "select * from flockhistory as fh " +
+                "left join datatable as dt on dt.dataid=fh.dataid where fh.flockid=? " +
+                "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? ";
+        return jdbcTemplate.query(sql, new Object[]{flockId, langId}, RowMappers.data());
+    }
+
+    @Override
+    public Collection<Data> getFlockPerHourHistoryData(Long flockId, Integer growDay, Long langId) throws SQLException {
+        String sql = "select * from flockhistory24 as f24 " +
+                "left join datatable as dt on dt.historydnum like concat('%',f24.dnum,'%') " +
+                "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? " +
+                "where flockid=? and growday=? and historyopt like '%HOUR%' group by dnum order by dt.type";
+        return jdbcTemplate.query(sql, new Object[]{langId, flockId, growDay}, RowMappers.data());
     }
 }

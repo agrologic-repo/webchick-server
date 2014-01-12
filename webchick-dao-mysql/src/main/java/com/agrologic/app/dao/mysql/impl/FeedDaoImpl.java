@@ -23,6 +23,7 @@ public class FeedDaoImpl implements FeedDao {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("feed");
+        this.jdbcInsert.setGeneratedKeyName("ID");
     }
 
     /**

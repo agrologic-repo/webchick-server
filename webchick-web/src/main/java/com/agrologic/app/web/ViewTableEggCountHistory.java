@@ -7,10 +7,12 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.management.DataForTableCreator;
+import com.agrologic.app.management.TableContentCreator;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
-import com.agrologic.app.service.FlockHistoryService;
+import com.agrologic.app.model.history.FromDayToDayParam;
+import com.agrologic.app.service.history.FlockHistoryService;
+import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -44,10 +46,10 @@ public class ViewTableEggCountHistory extends AbstractServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                GrowDayRangeParam growDayRangeParam
-                        = new GrowDayRangeParam(request.getParameter("fromDay"), request.getParameter("toDay"));
+                FromDayToDayParam growDayRangeParam
+                        = new FromDayToDayParam(request.getParameter("fromDay"), request.getParameter("toDay"));
                 try {
-                    FlockHistoryService flockHistoryService = new FlockHistoryService();
+                    FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
                     Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockHistoryWithinRange(flockId, growDayRangeParam);
 
                     List<String> columnTitles = new ArrayList<String>();
@@ -122,11 +124,11 @@ public class ViewTableEggCountHistory extends AbstractServlet {
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             Data data = dataDao.getById(Long.valueOf(800), (long) 1);
             columnTitles.add(data.getLabel());
-            tempList = DataForTableCreator.createGrowDayList(historyByGrowDay, data);
+            tempList = TableContentCreator.createGrowDayList(historyByGrowDay, data);
             historyDataForTable.add(tempList);
             for (Long dataId : choosedList) {
                 data = dataDao.getById(dataId, (long) 1);
-                tempList = DataForTableCreator.createEggCountHistDataByGrowDay(historyByGrowDay, data);
+                tempList = TableContentCreator.createEggCountHistDataByGrowDay(historyByGrowDay, data);
                 if (!tempList.isEmpty()) {
                     columnTitles.add(data.getLabel());
                     historyDataForTable.add(tempList);

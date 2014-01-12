@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.model.DataFormat;
@@ -15,7 +11,6 @@ public class HistoryEntry {
     private String title;
     private Map<Integer, Double> values;
     private Map<Integer, String> values24Map;
-
 
     public HistoryEntry(Object id, String title) {
         this(id, title, DataFormat.DEC_1);

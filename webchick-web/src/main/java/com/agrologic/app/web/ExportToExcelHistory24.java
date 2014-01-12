@@ -1,24 +1,25 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.excel.DataForExcelCreator;
-import com.agrologic.app.excel.WriteToExcel;
-import com.agrologic.app.model.DataFormat;
-import com.agrologic.app.model.Flock;
-import com.agrologic.app.service.FlockHistoryService;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.LanguageDao;
+import com.agrologic.app.model.history.DayParam;
+import com.agrologic.app.service.excel.ExcelService;
 import com.agrologic.app.utils.FileDownloadUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 
 public class ExportToExcelHistory24 extends AbstractServlet {
+    private ExcelService excelService;
+
+    public ExportToExcelHistory24() {
+        super();
+        excelService = new ExcelService();
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -33,60 +34,23 @@ public class ExportToExcelHistory24 extends AbstractServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         long flockId = Long.parseLong(request.getParameter("flockId"));
-        GrowDayParam growDayParam = new GrowDayParam(request.getParameter("growDay"));
+        DayParam growDayParam = new DayParam(request.getParameter("growDay"));
+        String lang = (String) request.getSession().getAttribute("lang");
+        if ((lang == null) || lang.equals("")) {
+            lang = "en";
+        }
 
         try {
-            FlockHistoryService flockHistoryService = new FlockHistoryService();
-            List<String> historyValueList = flockHistoryService.getFlockHistory24Hour(flockId, growDayParam.getGrowDay());
-            StringBuilder chainedHistoryValues = new StringBuilder();
-            for (String historyValues : historyValueList) {
-                chainedHistoryValues.append(historyValues);
-            }
-            Flock flock = flockHistoryService.getFlock(flockId);
-
-            List<List<String>> allHistory24DataForExcel =
-                    getHistory24DataForExcel(flockId, growDayParam, flockHistoryService, historyValueList);
-
-            List<String> perHourHistoryDataTitles = flockHistoryService
-                    .getPerHourHistoryDataTitles(growDayParam.getGrowDay());
-
-            String outputFile = "C:/" + flock.getFlockName();
-            WriteToExcel excel = new WriteToExcel();
-            excel.setTitleList(perHourHistoryDataTitles);
-            excel.setCellDataList(allHistory24DataForExcel);
-            excel.setOutputFile(outputFile);
-            excel.write();
+            LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+            long langId = languageDao.getLanguageId(lang);    // get language id
+            String outputFile = excelService.writeHistoryPerHourToExcelFile(flockId, growDayParam.getGrowDay(), langId);
             FileDownloadUtil.doDownload(response, outputFile, "xls");
         } catch (Exception e) {
             logger.error("Unknown error. ", e);
         } finally {
             response.getOutputStream().close();
         }
-    }
 
-    private List<List<String>> getHistory24DataForExcel(long flockId, GrowDayParam growDayParam, FlockHistoryService flockHistoryService, List<String> historyValueList) throws SQLException {
-        Long resetTime = flockHistoryService.getResetTime(flockId, growDayParam.getGrowDay());
-
-        Map<Integer, String> history24ByHour = parseHistory24(resetTime, historyValueList.get(0));
-        List<List<String>> allHistory24DataForExcel = new ArrayList<List<String>>();
-
-        allHistory24DataForExcel.add((DataForExcelCreator.createDataList(history24ByHour.keySet())));
-        history24ByHour = parseHistory24(resetTime, historyValueList.get(0));
-        allHistory24DataForExcel.add(DataForExcelCreator.createDataHistory24List(history24ByHour,
-                DataFormat.DEC_1));
-        history24ByHour = parseHistory24(resetTime, historyValueList.get(1));
-        allHistory24DataForExcel.add(DataForExcelCreator.createDataHistory24List(history24ByHour,
-                DataFormat.DEC_1));
-        history24ByHour = parseHistory24(resetTime, historyValueList.get(2));
-        allHistory24DataForExcel.add(DataForExcelCreator.createDataHistory24List(history24ByHour,
-                DataFormat.HUMIDITY));
-        history24ByHour = parseHistory24(resetTime, historyValueList.get(3));
-        allHistory24DataForExcel.add(DataForExcelCreator.createDataHistory24List(history24ByHour,
-                DataFormat.DEC_4));
-        history24ByHour = parseHistory24(resetTime, historyValueList.get(4));
-        allHistory24DataForExcel.add(DataForExcelCreator.createDataHistory24List(history24ByHour,
-                DataFormat.DEC_4));
-        return allHistory24DataForExcel;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -128,19 +92,6 @@ public class ExportToExcelHistory24 extends AbstractServlet {
     public String getServletInfo() {
         return "Short description";
     }    // </editor-fold>
-
-    private Map<Integer, String> parseHistory24(long resetTime, String values) {
-        String[] valueList = values.split(" ");
-        Map<Integer, String> valuesMap = new TreeMap<Integer, String>();
-        int j = (int) resetTime / 100;
-        for (int i = 0; i < 24; i++) {
-            if (j == 24) {
-                j = 0;
-            }
-            valuesMap.put(j++, valueList[i]);
-        }
-        return valuesMap;
-    }
 }
 
 

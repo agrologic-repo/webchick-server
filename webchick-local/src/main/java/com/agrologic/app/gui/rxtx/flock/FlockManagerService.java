@@ -1,6 +1,3 @@
-/**
- * To change this template, choose Tools | Templates and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.config.Configuration;
@@ -14,14 +11,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * {Insert class description here}
- *
- * @author Valery Manakhimov
- * @author $Author: nbweb $, (this version)
- * @version $Revision: 1.1.1.1 $
- * @since Build {insert version here} (MM YYYY)
- */
 public class FlockManagerService {
 
     private Long cellinkId;
@@ -38,6 +27,7 @@ public class FlockManagerService {
     private DataDao dataDao;
     private FlockDao flockDao;
     private ControllerDao controllerDao;
+
     private List<Flock> flocks = new ArrayList<Flock>();
     private Collection<Controller> controllers = new ArrayList<Controller>();
 
@@ -113,12 +103,12 @@ public class FlockManagerService {
             }
             return id;
         } catch (SQLException ex) {
-            ;
+            ex.printStackTrace();
         }
         return id;
     }
 
-    public Integer getLastUdatedGrowDay(Long flockId) {
+    public Integer getLastUpdatedGrowDay(Long flockId) {
         try {
             return flockDao.getUpdatedGrowDayHistory(flockId);
         } catch (SQLException ex) {
@@ -130,7 +120,7 @@ public class FlockManagerService {
         try {
             flocks = (List<Flock>) flockDao.getAll();
         } catch (SQLException ex) {
-            Logger.getLogger(FlockManagerService.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         return flocks;
     }
@@ -145,7 +135,7 @@ public class FlockManagerService {
                     flocks.add(flock);
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(FlockManagerService.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }
         }
         return flocks;
@@ -157,7 +147,7 @@ public class FlockManagerService {
                 controllers = controllerDao.getAllByCellink(cellinkId);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(FlockManagerService.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         return controllers;
     }
@@ -214,7 +204,7 @@ public class FlockManagerService {
                 allHistoryEntryList.add(new HistoryEntry(d.getType(), d.getLabel(), d.getFormat()));
             }
         } catch (SQLException ex) {
-
+            ex.printStackTrace();
         }
 
         Map<Integer, String> flockHistory = getFlockHistoryTable(currFlockId);
@@ -276,7 +266,7 @@ public class FlockManagerService {
         Integer firstElement = -1;
         for (Entry<Integer, String> entry : entries) {
             if (!entry.getValue().equals("-1")) {
-                firstElement = (Integer) entry.getKey();
+                firstElement = entry.getKey();
                 break;
             }
         }
@@ -284,7 +274,6 @@ public class FlockManagerService {
     }
 
     public List<HistoryEntry> createHistoryEntry24List(Long currFlockId) {
-        List<HistoryEntry> historyList = new ArrayList<HistoryEntry>();
         List<HistoryEntry> allHistoryEntryList = new ArrayList<HistoryEntry>();
         Map<String, String> map = flockDao.getHistoryN();
         Set<Entry<String, String>> entries = map.entrySet();
@@ -348,7 +337,7 @@ public class FlockManagerService {
         try {
             fuelDao.insert(fuel);
         } catch (SQLException ex) {
-            Logger.getLogger(FlockManagerService.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
@@ -364,7 +353,7 @@ public class FlockManagerService {
         try {
             return fuelDao.getAllByFlockId(flockId);
         } catch (SQLException ex) {
-            Logger.getLogger(FlockManagerService.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         return new ArrayList<Fuel>();
     }
@@ -389,7 +378,7 @@ public class FlockManagerService {
         try {
             return spreadDao.getAllByFlockId(flockId);
         } catch (SQLException ex) {
-            Logger.getLogger(FlockManagerService.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         return new ArrayList<Spread>();
     }
@@ -423,7 +412,7 @@ public class FlockManagerService {
         try {
             return feedDao.getAllByFlockId(flockId);
         } catch (SQLException ex) {
-            Logger.getLogger(FlockManagerService.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         return new ArrayList<Feed>();
     }

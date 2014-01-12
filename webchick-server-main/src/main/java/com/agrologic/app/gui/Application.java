@@ -1,14 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
- * ServerWindow.java
- *
- * Created on Jun 10, 2009, 8:52:36 AM
- * @version V0.0.12 <br> version pattern <release.database.core_code>
- */
 package com.agrologic.app.gui;
 
 import com.agrologic.app.config.Configuration;
@@ -120,8 +109,10 @@ public class Application extends JFrame implements Observer, ServerUI {
 
         this.configuration = new Configuration();
         this.setTitle(this.getTitle() + " " + configuration.getVersion());
+
         this.serverInfo = new ServerInfo(this);
         this.serverInfo.addObserver(this);
+
         this.clock = new Clock();
         this.clock.addObserver(serverInfo);
 

@@ -73,7 +73,6 @@
     </script>
 </head>
 <body>
-<%--<%@include file="loading.jsp" %>--%>
 <div>
     <input id="cellinkId" type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
     <input id="flockId" type="hidden" name="flockId" value="<%=flockId%>"/>
@@ -160,12 +159,6 @@
                                                     <img src="resources/images/table.gif" style="cursor: pointer"
                                                          hspace="5"
                                                          border="0"/><%=session.getAttribute("button.table")%>
-                                                </a>
-                                                <a title="Table" style="cursor: pointer"
-                                                   onclick="window.open('./rmctrl-eggcnt-flockhistory-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
-                                                    <img src="resources/images/table.gif" style="cursor: pointer"
-                                                         hspace="5"
-                                                         border="0"/><%=session.getAttribute("button.eggcount.table")%>
                                                 </a>
                                             </td>
                                         </tr>

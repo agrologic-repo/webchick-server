@@ -31,14 +31,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-
-/**
- * Title: Graph24HumidTemp <br> Description: <br> Copyright: Copyright (c) 2009
- * <br> Company: Agro Logic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.1 <br>
- */
 public class Graph24InputTemp extends AbstractGraph {
 
     public Graph24InputTemp(GraphType type, String values, Long currnetTime, Locale locale) {

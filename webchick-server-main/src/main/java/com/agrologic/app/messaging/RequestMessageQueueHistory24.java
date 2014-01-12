@@ -11,8 +11,6 @@ public class RequestMessageQueueHistory24 {
      *
      */
     public enum DataType {
-
-        OVERALL_WATER_CONSUMPTION("D1", 1302), FEED_CONSUMPTION("D2", 1301),
         INSIDE_TEMPERATURE("D18", 3122), OUTSIDE_TEMPERATURE("D19", 3107), PER_HOUR_HUMIDITY("D20", 3142),
         PER_HOUR_WATER_CONSUMPTION("D21", 1302), WATER_2_CONSUMPTION("D42", 1329), FEED_2_CONSUMPTION("D43", 1328),
         RESET_TIME("D70", 3009), PER_HOUR_WATER_2_CONSUMPTION("D71", 1329), PER_HOUR_FEED_CONSUMPTION("D72", 1301),
@@ -60,7 +58,7 @@ public class RequestMessageQueueHistory24 {
     }
 
     private void initDefaultList() {
-        for (RequestMessage request : new MessageFactory().createPerHourDailyReportRequests(netname, growDay)) {
+        for (RequestMessage request : MessageFactory.createPerHourDailyReportRequests(netname, growDay)) {
             requestMessageBooleanHashMap.put(request, true);
         }
     }
@@ -103,9 +101,9 @@ public class RequestMessageQueueHistory24 {
     }
 
     /**
-     * Creating management requests with new grow day parameter.
+     * Creating management requests with new grow day parameter .
      *
-     * @param newGrowDay the grow day.
+     * @param newGrowDay the grow day .
      */
     public void recreateHistory24Requests(final Integer newGrowDay) {
         growDay = newGrowDay;
@@ -118,9 +116,9 @@ public class RequestMessageQueueHistory24 {
     }
 
     /**
-     * Returns the next element in the list.
+     * Returns the next element in the list .
      *
-     * @return the nextElem element in the list.
+     * @return the nextElem element in the list .
      * @throws NoSuchElementException if the iteration has no nextElem element.
      */
     public final RequestMessage next() throws IllegalAccessException {

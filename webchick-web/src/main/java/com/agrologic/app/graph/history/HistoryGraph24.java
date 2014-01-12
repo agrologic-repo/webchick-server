@@ -118,10 +118,10 @@ public class HistoryGraph24 {
      * @param dataHsitoryList the List of data management by grow day map.
      * @param axisLabel       the label of series collection.
      */
-    public void createAndAddSeriesCollection(List<Map<Integer, Data>> dhl, String axisLabel) {
+    public void createAndAddSeriesCollection(List<Map<Integer, Data>> dataHsitoryList, String axisLabel) {
         initTopAndBottomCoords();
 
-        XYSeriesCollection seriesCollect = createSeriesCollection(dhl);
+        XYSeriesCollection seriesCollect = createSeriesCollection(dataHsitoryList);
         final XYPlot plot = chart.getXYPlot();
         int count = plot.getRangeAxisCount();
 
@@ -149,12 +149,12 @@ public class HistoryGraph24 {
      * @param dataHsitoryList the List of data management by grow day map.
      * @return seriesCollect the series collection object.
      */
-    protected XYSeriesCollection createSeriesCollection(List<Map<Integer, Data>> dhl) {
+    protected XYSeriesCollection createSeriesCollection(List<Map<Integer, Data>> dataHsitoryList) {
         initTopAndBottomCoords();
 
         XYSeriesCollection seriesCollect = new XYSeriesCollection();
 
-        for (Map<Integer, Data> coordinate : dhl) {
+        for (Map<Integer, Data> coordinate : dataHsitoryList) {
             XYSeries xyseries = createSeries(coordinate);
 
             seriesCollect.addSeries(xyseries);
@@ -167,7 +167,6 @@ public class HistoryGraph24 {
      * Return created series and set minimum maximum coordinates.
      *
      * @param coordinates the map with values by grow day.
-     * @param seriesLabel the label of series.
      * @return series the series
      */
     protected XYSeries createSeries(final Map<Integer, Data> coordinates) {
@@ -233,15 +232,8 @@ public class HistoryGraph24 {
                         new SimpleDateFormat("DD"), NumberFormat.getInstance());
         TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series", "hitDate");
 
-//
-        StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg,
-                urlg);
+        StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg, urlg);
 
-//      renderer.setShapesFilled(true);
-//      renderer.setBaseShapesVisible(true);
-//      renderer.setBaseShapesFilled(true);
-//      renderer.setSeriesPaint(0, new Color(33, 94, 33));
-//      final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg, urlg);
         renderer.setBaseShapesVisible(true);
         renderer.setBaseShapesFilled(true);
         plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_LEFT);
@@ -257,14 +249,12 @@ public class HistoryGraph24 {
      */
     protected NumberAxis createNumberAxis(final String axisLabel, Color color) {
         NumberAxis numberAxis = new NumberAxis(axisLabel);
-
         setAxisParameters(numberAxis, axisLabel, color);
-
         return numberAxis;
     }
 
     /**
-     * Set parameters of axis.
+     * Set parameters of axis .
      *
      * @param numberAxis the axis to set.
      * @param axisLabel  the label of axis to set.

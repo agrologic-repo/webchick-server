@@ -23,6 +23,7 @@ public class LaborDaoImpl implements LaborDao {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("labor");
+        this.jdbcInsert.setGeneratedKeyName("ID");
     }
 
     @Override

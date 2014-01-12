@@ -1,12 +1,7 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.graph.daily;
 
 import com.agrologic.app.model.DataFormat;
-import com.agrologic.app.utils.DateLocal;
+import com.agrologic.app.util.DateLocal;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.DateAxis;
@@ -36,7 +31,6 @@ import java.awt.*;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
 
 /**
  * Title: Graph24HumidTemp <br> Description: <br> Copyright: Copyright (c) 2009
@@ -221,9 +215,7 @@ public class Graph24IOH extends AbstractGraph {
                     String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
                     float floatValue = Float.valueOf(value);
 
-                    insideseries.add(new Hour( /*
-                             * hour
-                             */hour, today), floatValue);
+                    insideseries.add(new Hour(hour, today), floatValue);
 
                     if (hour == 0) {
                         today = yesterday;
@@ -250,9 +242,7 @@ public class Graph24IOH extends AbstractGraph {
                     String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
                     float floatValue = Float.valueOf(value);
 
-                    outsideseries.add(new Hour( /*
-                             * hour
-                             */hour, today), floatValue);
+                    outsideseries.add(new Hour(hour, today), floatValue);
 
                     if (hour == 0) {
                         today = yesterday;
@@ -295,20 +285,18 @@ public class Graph24IOH extends AbstractGraph {
             Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
 
             // testing
-            int hr = (int) (currentTime / 100) - 1;
+            int hour = (int) (currentTime / 100) - 1;
             final TimeSeries humidityseries = new TimeSeries(dictinary.get("graph.ioh.series.humidity"));
 
-            for (int i = HUMIDITY_INDEX + DAY_HOURS - 1; i >= HUMIDITY_INDEX; i--, hr--) {
+            for (int i = HUMIDITY_INDEX + DAY_HOURS - 1; i >= HUMIDITY_INDEX; i--, hour--) {
                 String value = DataFormat.formatToStringValue(DataFormat.HUMIDITY, Long.valueOf(datasetString[i]));
                 int intValue = Integer.valueOf(value);
 
-                humidityseries.add(new Hour( /*
-                         * hour
-                         */hr, today), intValue);
+                humidityseries.add(new Hour(hour, today), intValue);
 
-                if (hr == 0) {
+                if (hour == 0) {
                     today = yesterday;
-                    hr = DAY_HOURS;
+                    hour = DAY_HOURS;
                 }
 
                 if (maxY < intValue) {

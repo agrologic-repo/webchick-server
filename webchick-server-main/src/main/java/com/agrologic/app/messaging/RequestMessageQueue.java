@@ -1,8 +1,3 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.messaging;
 
 import com.agrologic.app.network.CommandType;
@@ -11,7 +6,6 @@ import java.util.Observable;
 import java.util.PriorityQueue;
 
 public class RequestMessageQueue extends Observable {
-    private CommandType commandType;
     /**
      * true if request must send again
      */
@@ -27,14 +21,10 @@ public class RequestMessageQueue extends Observable {
      */
     private final PriorityQueue<RequestMessage> queue = new PriorityQueue<RequestMessage>();
 
-    public CommandType getCommandType() {
-        return commandType;
-    }
-
     /**
-     * Add request to queue . The request message
+     * Add request to queue . The request message that controller prepared .
      *
-     * @param requestMessage
+     * @param requestMessage next request message
      */
     public void addRequest(RequestMessage requestMessage) {
         queue.add(requestMessage);
@@ -44,9 +34,8 @@ public class RequestMessageQueue extends Observable {
      * Notify observers to create request real time request.
      */
     public void notifyToPrepareRequests() {
-        commandType = CommandType.CREATE_REQUEST;
         setChanged();
-        notifyObservers(commandType);
+        notifyObservers(CommandType.CREATE_REQUEST);
     }
 
     /**
@@ -70,9 +59,8 @@ public class RequestMessageQueue extends Observable {
             setReplyForPreviousRequestPending(false);
         } else {
             if (queue.isEmpty()) {
-                commandType = CommandType.CREATE_REQUEST;
                 setChanged();
-                notifyObservers(commandType);
+                notifyObservers(CommandType.CREATE_REQUEST);
             }
             requestToSend = queue.poll();
         }
@@ -84,9 +72,8 @@ public class RequestMessageQueue extends Observable {
      * requests , therefore request to write will send before other requests .
      */
     public void notifyToCreateRequestToChange() {
-        commandType = CommandType.CREATE_REQUEST_TO_WRITE;
         setChanged();
-        notifyObservers(commandType);
+        notifyObservers(CommandType.CREATE_REQUEST_TO_WRITE);
     }
 }
 

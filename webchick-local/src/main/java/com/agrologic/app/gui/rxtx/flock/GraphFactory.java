@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.model.DataFormat;
@@ -36,7 +32,7 @@ public class GraphFactory {
 
     public static XYSeries createXYDataset(String seriesTitle, String values) {
         XYSeries series = new XYSeries(seriesTitle);
-        if(values == null) {
+        if (values == null) {
             return series;
         }
         String[] vals = values.split(" ");
@@ -52,20 +48,12 @@ public class GraphFactory {
     public static XYSeries createXYDataset(String seriesTitle, Map<Integer, Double> table) {
         XYSeries series = new XYSeries(seriesTitle);
         Iterator<Entry<Integer, Double>> iter = table.entrySet().iterator();
-
         while (iter.hasNext()) {
             Entry<Integer, Double> entry = iter.next();
             series.add(entry.getKey(), entry.getValue());
         }
 
         return series;
-    }
-
-    public static XYSeriesCollection createSeriesCollection(XYPlot plot, String seriesTitle, Map<Integer, Double> table) {
-        int count = plot.getSeriesCount();
-        XYSeriesCollection xydataset = (XYSeriesCollection) createSeriesCollection();
-        xydataset.addSeries(createXYDataset(seriesTitle, table));
-        return xydataset;
     }
 
     private static JFreeChart createXYChart(XYDataset xyDataset) {
@@ -113,7 +101,7 @@ public class GraphFactory {
     }
 
     public static void setRangeAxis(String title, XYPlot plot) {
-        ValueAxis valueAxis = (NumberAxis) plot.getRangeAxis();
+        ValueAxis valueAxis = plot.getRangeAxis();
         valueAxis.setLabel(title);
         valueAxis.setStandardTickUnits(NumberAxis.createStandardTickUnits());
         valueAxis.setLabelFont(new Font("Dialog", Font.BOLD, 16));
@@ -121,16 +109,12 @@ public class GraphFactory {
         valueAxis.setStandardTickUnits(NumberAxis.createStandardTickUnits());
     }
 
-    public static void setTopAndBottom(XYPlot plot) {
-    }
-
     public static void setRenderer(XYPlot plot) {
         XYItemRenderer renderer = plot.getRenderer();
         renderer.setBaseSeriesVisible(true);
         if (renderer instanceof XYLineAndShapeRenderer) {
-            Object localObject = (XYLineAndShapeRenderer) renderer;
-            ((XYLineAndShapeRenderer) localObject).setBaseShapesVisible(true);
-            ((XYLineAndShapeRenderer) localObject).setBaseShapesFilled(true);
+            ((XYLineAndShapeRenderer) renderer).setBaseShapesVisible(true);
+            ((XYLineAndShapeRenderer) renderer).setBaseShapesFilled(true);
         }
     }
 }

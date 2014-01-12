@@ -40,14 +40,18 @@ public class Manager extends JFrame {
     }
 
     public void viewFlock() {
-        sumAddGas();
-        sumAddFuel();
-        sumAddFeed();
-        sumAddSpread();
-        sumAddMedicine();
-        sumAddLabor();
-        sumAddTransaction();
-        sumAddDistribute();
+        try {
+            sumAddGas();
+            sumAddFuel();
+            sumAddFeed();
+            sumAddSpread();
+            sumAddMedicine();
+            sumAddLabor();
+            sumAddTransaction();
+            sumAddDistribute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Controller controller = flockService.getControllerById(currFlock.getControllerId());
         txtArea.setText("" + controller.getArea());

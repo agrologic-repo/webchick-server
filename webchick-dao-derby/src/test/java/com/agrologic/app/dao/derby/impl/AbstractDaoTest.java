@@ -5,7 +5,6 @@ import com.agrologic.app.model.*;
 import com.agrologic.app.util.Base64;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,7 +19,6 @@ import java.sql.Timestamp;
 @ContextConfiguration({"/common-dao-context.xml", "/derby-dao-context.xml"})
 @TransactionConfiguration
 @Transactional
-@Ignore
 public abstract class AbstractDaoTest {
 
     @Autowired
@@ -37,6 +35,10 @@ public abstract class AbstractDaoTest {
 
     @Autowired
     protected AlarmDao alarmDao;
+
+    @Autowired
+    protected TransactionDao transactionDao;
+
 
     @Autowired
     protected ProgramAlarmDao programAlarmDao;

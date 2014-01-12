@@ -23,6 +23,7 @@ public class FeedTypeDaoImpl implements FeedTypeDao {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("feedtypes");
+        this.jdbcInsert.setGeneratedKeyName("ID");
     }
 
     @Override

@@ -89,10 +89,6 @@ public class DataController extends Data implements Serializable {
                             fireDataChanges(dce);
                         }
                     }
-                    // 17000-11878
-                    // 16000-11378
-                    // 15000-10835
-                    // 10600-7326(6500)
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

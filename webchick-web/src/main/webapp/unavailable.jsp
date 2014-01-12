@@ -30,7 +30,7 @@
 <div class="errmsg">
     <b>Service Temporarily Unavailable</b>
 
-    <p>The server is temporarily unable to service your
+    <p>The server is temporarily unable to com.agrologic.app.service your
         request due to maintenance downtime or capacity
         problems. Please try again later.</p>
 </div>

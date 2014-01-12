@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +24,8 @@ public class TransactionDaoImpl implements TransactionDao {
     public TransactionDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        this.jdbcInsert.setTableName("transaction");
+        this.jdbcInsert.setTableName("transactions");
+        this.jdbcInsert.setGeneratedKeyName("ID");
     }
 
     @Override
@@ -33,20 +36,21 @@ public class TransactionDaoImpl implements TransactionDao {
         valuesToInsert.put("Name", transaction.getName());
         valuesToInsert.put("Expenses", transaction.getExpenses());
         valuesToInsert.put("Revenues", transaction.getRevenues());
+        jdbcInsert.setGeneratedKeyName("ID");
         jdbcInsert.execute(valuesToInsert);
     }
 
     @Override
     public void remove(Long id) throws SQLException {
         logger.debug("Remove transaction with id [{}]", id);
-        String sql = "delete from transaction where ID=?";
+        String sql = "delete from transactions where ID=?";
         jdbcTemplate.update(sql, id);
     }
 
     @Override
     public Transaction getById(Long id) throws SQLException {
-        logger.debug("Get transaction with id [{}]", id);
-        String sql = "select * from transaction where ID=?";
+        logger.debug("Get transactions with id [{}]", id);
+        String sql = "select * from transactions where ID=?";
         List<Transaction> transactionList = jdbcTemplate.query(sql, new Object[]{id}, RowMappers.transaction());
         if (transactionList.isEmpty()) {
             return null;
@@ -67,8 +71,15 @@ public class TransactionDaoImpl implements TransactionDao {
 
     @Override
     public List<Transaction> getAllByFlockId(Long flockId) throws SQLException {
-        logger.debug("Get all transaction data with flock id {} ", flockId);
-        String sql = "select * from transaction where FlockID=?";
+        logger.debug("Get all transactions data with flock id {} ", flockId);
+        String sql = "select * from transactions where FlockID=?";
+
+        DatabaseMetaData dbmd = jdbcTemplate.getDataSource().getConnection().getMetaData();
+        ResultSet rs = dbmd.getTables(null, "APP", "TRANSACTION", null);
+        if (!rs.next()) {
+            System.out.println("not exist");
+        }
+
         return jdbcTemplate.query(sql, new Object[]{flockId}, RowMappers.transaction());
     }
 }

@@ -4,8 +4,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Timestamp;
 
+/**
+ *
+ */
 public class FileDownloadUtil {
     public static void doDownload(HttpServletResponse response, String outfile)
             throws IOException {
@@ -36,7 +38,6 @@ public class FileDownloadUtil {
         String filename = outfile;
         File fileToDownload = new File(filename);
         FileInputStream fileInputStream = new FileInputStream(fileToDownload);
-        Timestamp dateTimestamp = new Timestamp(System.currentTimeMillis());
 
         response.setContentType("application/octet-stream");
         response.setHeader("Content-disposition",

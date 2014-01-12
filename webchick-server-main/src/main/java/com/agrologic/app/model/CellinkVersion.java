@@ -1,10 +1,4 @@
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.model;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +10,7 @@ public class CellinkVersion {
 
     static {
         VERSIONS_MAP.put("N/A", DEFAULT_HEAD_BYTES - 1);
-        VERSIONS_MAP.put("1",   DEFAULT_HEAD_BYTES - 1);
+        VERSIONS_MAP.put("1", DEFAULT_HEAD_BYTES - 1);
     }
 
     public static int headerBytesByVersion(String version) {

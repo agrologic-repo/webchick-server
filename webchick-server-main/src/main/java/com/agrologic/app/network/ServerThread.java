@@ -40,7 +40,7 @@ public class ServerThread extends Observable implements Runnable {
     }
 
     /**
-     * Opening ServerSocket listener.
+     * Opening ServerSocket listener
      *
      * @return true if opened successful, false otherwise
      */
@@ -93,7 +93,8 @@ public class ServerThread extends Observable implements Runnable {
 
                 case RUNNING:
                     try {
-                        Socket socket = server.accept();//start client session
+                        //start client session
+                        Socket socket = server.accept();
                         SocketThread newThread = clientSessions.createSessionWithClient(socket);
                         setChanged();
                         notifyObservers(newThread);
@@ -134,12 +135,11 @@ public class ServerThread extends Observable implements Runnable {
                     logger.info("Shutdown program");
                     shutdownServer();
                     running = false;
+
                     break;
             }
 
             if (!running) {
-//                monitor.interrupt();
-
                 break LOOP;
             }
         }
