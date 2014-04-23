@@ -10,13 +10,15 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class ProgramAlarmPopup extends JDialog {
-    private JPanel alarmsPanel;
     private JButton button;
-    private JPanel buttonPanel;
     private JPanel contentPanel;
     private Point location;
     private List<ProgramAlarm> programAlarms;
 
+    /**
+     * @param location
+     * @param pa
+     */
     public ProgramAlarmPopup(Point location, List<ProgramAlarm> pa) {
         super();
         this.location = location;
@@ -27,8 +29,20 @@ public class ProgramAlarmPopup extends JDialog {
     private void initComponents() {
         setUndecorated(true);
         setLayout(new BorderLayout());
-        contentPanel = new JPanel(new BorderLayout());
+
+        contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setBorder(new LineBorder(Color.blue, 1));
+
+        GridBagConstraints c = new GridBagConstraints();
+        int x = 0;
+        int y = 0;
+        JLabel alarm = new JLabel("Alarms", JLabel.CENTER);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = x++;
+        c.gridy = 0;
+        c.weightx = 0.5;
+        contentPanel.add(alarm, c);
+
         button = createCloseButton();
         button.addActionListener(new ActionListener() {
             @Override
@@ -36,30 +50,39 @@ public class ProgramAlarmPopup extends JDialog {
                 dispose();
             }
         });
-        buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(button);
+        c.gridx = x++;
+        c.gridy = y++;
+        c.weightx = 0.0;
+        contentPanel.add(button, c);
 
-        alarmsPanel = new JPanel(new GridLayout(programAlarms.size() + 1, 1));
-        alarmsPanel.add(new JLabel("<html><p></p></html>"));
-
+        JLabel label;
         for (ProgramAlarm pa : programAlarms) {
-            JLabel label = new JLabel("<html>    " + pa.getDigitNumber() + " - " + pa.getText() + "</html>");
-            alarmsPanel.add(label);
+            label = new JLabel("<html>" + pa.getDigitNumber() + " - " + pa.getText() + "</html>");
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.weightx = 1.0;
+            c.gridx = 0;
+            c.gridy = y++;
+            c.insets = new Insets(1, 2, 2, 1);  // padding
+            c.gridwidth = 2;
+            contentPanel.add(label, c);
         }
 
         int width = 50;
         int height = (programAlarms.size() + 1) * 20;
         if (location == null) {
-            setBounds(40, 80, width * 5, height);
+            contentPanel.setBounds(40, 80, width * 5, height);
         } else {
-            setBounds(location.x, location.y, width * 5, height);
+            contentPanel.setBounds(location.x, location.y, width * 5, height);
         }
-
-        contentPanel.add(buttonPanel, BorderLayout.PAGE_START);
-        contentPanel.add(alarmsPanel, BorderLayout.PAGE_END);
+        setBounds(contentPanel.getBounds());
         add(contentPanel);
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     private static JButton createCloseButton() {
         final JButton button = new JButton();
         button.setIcon(new javax.swing.ImageIcon(button.getClass().getResource("/images/close.png")));
