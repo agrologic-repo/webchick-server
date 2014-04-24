@@ -1526,7 +1526,7 @@ public class Manager extends JFrame {
     }//GEN-LAST:event_txtMaleQuantKeyTyped
 
     private void txtMaleQuantKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMaleQuantKeyReleased
-        FlockGUIUtil.keyPressedHandler(txtMaleQuant, evt);
+        FlockGUIUtil.keyPressedHandler(txtMaleQuant, evt, DataFormat.DEC_4);
     }//GEN-LAST:event_txtMaleQuantKeyReleased
 
     private void txtFemaleQuantKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFemaleQuantKeyTyped
@@ -1534,7 +1534,7 @@ public class Manager extends JFrame {
     }//GEN-LAST:event_txtFemaleQuantKeyTyped
 
     private void txtFemaleQuantKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFemaleQuantKeyReleased
-        FlockGUIUtil.keyPressedHandler(txtFemaleQuant, evt);
+        FlockGUIUtil.keyPressedHandler(txtFemaleQuant, evt, DataFormat.DEC_4);
     }//GEN-LAST:event_txtFemaleQuantKeyReleased
 
     private void txtGasStartAmountKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtGasStartAmountKeyTyped
