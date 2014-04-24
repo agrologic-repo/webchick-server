@@ -1,6 +1,10 @@
 package com.agrologic.app.gui.rxtx.flock;
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.gui.rxtx.FileChooser;
 import com.agrologic.app.model.Flock;
+import com.agrologic.app.service.excel.ExcelService;
+import com.agrologic.app.service.excel.ExportToExcelException;
 import com.agrologic.app.util.Windows;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.event.ChartProgressEvent;
@@ -15,8 +19,11 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -33,6 +40,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
     private List<Flock> flocks;
     private FlockEntry[] flockEntries;
     private FlockManagerService flockService;
+    private ExcelService excelService;
 
     /**
      * Creates new form FlockGraphs
@@ -43,7 +51,40 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         Windows.setWindowsLAF(this);
         setTitle(TITLE);
         flockService = new FlockManagerService();
+        excelService = new ExcelService(DaoType.DERBY);
         loadFlocks(null);
+        excel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FileChooser fileChooser = new FileChooser();
+                // Now open chooser
+                // Show dialog; this method does not return until dialog is closed
+                File filePath = new File(".");
+                int result = fileChooser.showSaveDialog(FlockGraphs.this);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    filePath = fileChooser.getSelectedFile();
+                    if (filePath.exists()) {
+                        int response = JOptionPane.showConfirmDialog(null, "Override existing file ?", "",
+                                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                        if (response == JOptionPane.CANCEL_OPTION) {
+                            return;
+                        }
+                    }
+                    try {
+                        if (rdo24HourHistory.isSelected()) {
+                            Integer growDay = (Integer) spnGrowday.getModel().getValue();
+                            excelService.writeHistoryPerHourToExcelFile(filePath.getAbsolutePath(),
+                                    currFlockEntry.getId(), growDay, 1L);
+                        } else {
+                            excelService.writeHistoryPerDayToExcelFile(filePath.getAbsolutePath(), currFlockEntry.getId(), 1L);
+                        }
+                    } catch (ExportToExcelException e1) {
+                        JOptionPane.showMessageDialog(FlockGraphs.this, e1.getMessage());
+                    }
+                }
+            }
+        });
+
 
     }
 
@@ -111,7 +152,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         jCheckBox2 = new javax.swing.JCheckBox();
         jPanel8 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        excel = new javax.swing.JButton();
         pnlGraph = new javax.swing.JPanel();
         pnlSlider = new javax.swing.JPanel();
         textRect1 = new com.agrologic.app.gui.rxtx.flock.TextRect();
@@ -327,7 +368,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
 
         jButton2.setText("Print");
 
-        jButton3.setText("Excel");
+        excel.setText("Excel");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -337,7 +378,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
                                 .addContainerGap()
                                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE))
+                                        .addComponent(excel, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE))
                                 .addContainerGap(84, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
@@ -346,7 +387,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
                                 .addContainerGap()
                                 .addComponent(jButton2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton3)
+                                .addComponent(excel)
                                 .addContainerGap())
         );
 
@@ -737,7 +778,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
     private javax.swing.ButtonGroup historyGroup;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton excel;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
