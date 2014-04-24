@@ -184,14 +184,11 @@ public class DataComponent {
 
     private JComponent createReadWriteComponent() {
         String formatedValue = "-1";
-
         if (data.getValue() != null) {
             formatedValue = DataFormat.formatToStringValue(data.getFormat(), data.getValueToUI());
-            // dataText.setText(formatedValue);
         }
 
         final DataTextField dataText = new DataTextField(formatedValue, controller.getId(), data, dbaccess);
-
         data.addDataChangeListener(dataText);
         dataText.setPreferredSize(new java.awt.Dimension(10, 20));
 

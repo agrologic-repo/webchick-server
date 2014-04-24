@@ -18,6 +18,7 @@ public class DataTextField extends JTextField implements DataChangeListener {
     private long controllerId;
     private Data data;
     private DatabaseAccessor dbaccess;
+    private DataTextField nextTextField;
 
     public DataTextField(String text, long cid, Data d, DatabaseAccessor dbaccess) {
         super(text);
@@ -25,6 +26,14 @@ public class DataTextField extends JTextField implements DataChangeListener {
         this.controllerId = cid;
         this.data = d;
         this.dbaccess = dbaccess;
+    }
+
+    public DataTextField getNextTextField() {
+        return nextTextField;
+    }
+
+    public void setNextTextField(DataTextField nextTextField) {
+        this.nextTextField = nextTextField;
     }
 
     private void setListeners() {
@@ -54,7 +63,6 @@ public class DataTextField extends JTextField implements DataChangeListener {
                 char c = e.getKeyChar();        // Get the typed character
                 // Don't ignore backspace or delete
                 if ((c != KeyEvent.VK_BACK_SPACE) && (c != KeyEvent.VK_DELETE)) {
-
                     // If the key was not a number then discard it
                     // (this is a sloppy way to check)
                     if (!(Character.isDigit(c))) {
@@ -90,10 +98,12 @@ public class DataTextField extends JTextField implements DataChangeListener {
                         value = data.getValue();
                         dbaccess.getControllerDao().sendNewDataValueToController(controllerId, data.getId(), value);
                         dbaccess.getControllerDao().saveNewDataValueOnController(controllerId, data.getId(), value);
+                        if (getNextTextField() != null) {
+                            getNextTextField().requestFocus();
+                        }
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
-                    txt.getParent().requestFocus();
                 }
             }
         });

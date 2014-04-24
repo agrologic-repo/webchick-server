@@ -16,6 +16,7 @@ public class DataPanel extends JPanel {
     private List<ProgramAlarm> programAlarms;
     private List<ProgramRelay> programRelays;
     private List<ProgramSystemState> programSystemStates;
+    private DataComponent prevComponent;
 
     public DataPanel(List<DataController> dataList, Controller controller, DatabaseAccessor dbaccess) {
         super(null);
@@ -47,6 +48,18 @@ public class DataPanel extends JPanel {
                         dbaccess);
                 add(dataComponent.getLabel());
                 add(dataComponent.getComponent());
+                if (prevComponent == null) {
+                    prevComponent = dataComponent;
+                } else {
+                    if (dataComponent.getComponent() instanceof DataTextField) {
+                        if (prevComponent.getComponent() instanceof DataTextField) {
+                            ((DataTextField) prevComponent.getComponent()).setNextTextField((DataTextField) dataComponent.getComponent());
+                            prevComponent = dataComponent;
+                        } else {
+                            prevComponent = dataComponent;
+                        }
+                    }
+                }
             }
         }
 
