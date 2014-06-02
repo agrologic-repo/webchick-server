@@ -134,6 +134,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         responseMessage = (ResponseMessage) com.read();
                         logger.info(responseMessage);
                         statusPanel.setReceiveMsg(responseMessage.getIndex() + " " + responseMessage);
+
                         if (responseMessage.getMessageType() == MessageType.ERROR) {
                             MessageType sendMessageType = sendMessage.getMessageType();
                             if (sendMessageType == MessageType.REQUEST_TO_WRITE) {
@@ -154,7 +155,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                                     || sendMessage.getIndex().equals("100")) {
                                 errCount = 0;
                                 if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY
-                                        || sendMessage.getMessageType() == MessageType.REQUEST_HISTORY_24_HOUR) {
+                                        || sendMessage.getMessageType() == MessageType.REQUEST_PER_HOUR_REPORTS) {
                                     responseMessage.setMessageType(MessageType.RESPONSE_DATA);
                                 }
                                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);

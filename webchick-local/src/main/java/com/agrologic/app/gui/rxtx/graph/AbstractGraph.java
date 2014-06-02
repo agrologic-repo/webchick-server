@@ -7,12 +7,11 @@ import java.util.Locale;
 import java.util.Map;
 
 public abstract class AbstractGraph implements Graph {
-
     public static final int DAY_HOURS = 24;
-    public static final int FEED_INDEX = 72;
-    public static final int HUMIDITY_INDEX = 48;
     public static final int IN_TEMP_INDEX = 0;
     public static final int OUT_TEMP_INDEX = 24;
+    public static final int HUMIDITY_INDEX = 48;
+    public static final int FEED_INDEX = 72;
     public static final int WATER_INDEX = 96;
     public static final int LENGHT = 240;
     protected JFreeChart chart;

@@ -4,7 +4,6 @@ import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.model.*;
 import com.agrologic.app.model.rxtx.DataController;
-import com.agrologic.app.util.Windows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +25,6 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
     private Controller controller;
     private Runnable task;
     private ScheduledExecutorService executor;
-    private Dimension dim;
     private TreeMap<Screen, TreeMap<Table, List<DataController>>> screenTableDataMap;
     private static Logger logger = LoggerFactory.getLogger(SecondScreenPanel.class);
 
@@ -36,10 +34,8 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         this.dbManager = dbManager;
         this.controller = controller;
         this.lblTitle.setText("<html>" + controller.getTitle() + "</html>");
-        this.dim = Windows.screenResolution();
 
         task = new Runnable() {
-
             DatabaseAccessor dbaccessor = dbManager.getDatabaseGeneralService();
             private Map<Long, Long> dataList = null;
 
@@ -79,8 +75,6 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                 }
             }
         };
-
-
     }
 
     public void startTimerThread() {
@@ -99,14 +93,14 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         Program program = controller.getProgram();
         for (Screen screen : program.getScreens()) {
             if (!skipScreen(screen)) {
+
                 Collection<Table> tableList = screen.getTables();
                 if (tableList != null) {
                     TreeMap<Table, List<DataController>> tableDataMap = new TreeMap<Table, List<DataController>>();
                     try {
                         for (Table table : tableList) {
                             List<DataController> dataControllerList = new ArrayList<DataController>();
-                            initDataComponents(dbManager.getDatabaseGeneralService(), program, dataControllerList,
-                                    table.getDataList());
+                            initDataComponents(dbManager.getDatabaseGeneralService(), program, dataControllerList, table.getDataList());
                             tableDataMap.put(table, dataControllerList);
                         }
                     } catch (NullPointerException e) {
@@ -209,7 +203,6 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                 }
             }
         }
-        setSize(dim.width, dim.height - 110);
     }
 
     /**
@@ -224,7 +217,6 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.getVerticalScrollBar().setUnitIncrement(SCROLL_UNIT_INCREMENT);
         tabsPane.add("<html>" + screen.getUnicodeTitle() + "</html>", scrollPane);
-        tabsPane.setSize(dim.width - 10, dim.height - 160);
     }
 
     private JPanel initTablePanel(final Table table, List<DataController> dataList, int x, int y) {
