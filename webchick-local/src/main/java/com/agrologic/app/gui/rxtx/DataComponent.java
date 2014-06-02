@@ -6,30 +6,30 @@ import com.agrologic.app.model.rxtx.DataController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataComponent {
-
-    public static final int HEIGHT = 25;
-    public static final int WIDTH = 150;
-    public static final int X_OFFSET = 2;
-    public static final int Y_OFFSET = 2;
-    private Rectangle boundsComponent;
-    private Rectangle boundsLabel;
     private JComponent component;
     private Controller controller;
     private DataController data;
     private DatabaseAccessor dbaccess;
     private JLabel label;
-    private Point location;
     private List<ProgramAlarm> programAlarms;
     private ProgramRelay relay;
+    private ComponentOrientation componentOrientation;
 
-    public DataComponent(DataController d, int xCordL, int yCordL, int xCordC, int yCordC, List<ProgramAlarm> pas) {
-        data = d;
+    /**
+     * Constructor to create alarm component
+     *
+     * @param dataController
+     * @param pas
+     */
+    public DataComponent(DataController dataController, List<ProgramAlarm> pas, ComponentOrientation componentOrientation) {
+        this.componentOrientation = componentOrientation;
+        data = dataController;
         programAlarms = new ArrayList<ProgramAlarm>();
 
         for (ProgramAlarm pa : pas) {
@@ -37,40 +37,70 @@ public class DataComponent {
                 programAlarms.add(pa);
             }
         }
-
-        boundsLabel = new Rectangle(xCordL, yCordL, xCordC - 10, HEIGHT);
-        boundsComponent = new Rectangle(xCordC, yCordC, 60, HEIGHT);
         label = new JLabel("<html>" + data.getUnicodeLabel() + "</html>");
-        label.setBounds(boundsLabel);
         label.setOpaque(true);
         component = createComponent();
-        component.setBounds(boundsComponent);
     }
 
-    public DataComponent(DataController d, int xCordL, int yCordL, int xCordC, int yCordC, ProgramRelay r) {
-        data = d;
-        relay = r;
-        boundsLabel = new Rectangle(xCordL, yCordL, xCordC - 10, HEIGHT);
-        boundsComponent = new Rectangle(xCordC, yCordC, 50, HEIGHT);
+    /**
+     * Constructor to create system state component
+     * s
+     *
+     * @param dataController
+     * @param psss
+     * @param defaultText
+     */
+    public DataComponent(DataController dataController, List<ProgramSystemState> psss, String defaultText, ComponentOrientation componentOrientation) {
+        this.componentOrientation = componentOrientation;
+        data = dataController;
+        if (data.getValue() == null) {
+            data.setValue((long) 0);
+        }
+
+        String text = defaultText;
+        for (ProgramSystemState pss : psss) {
+            long v = data.getValue();
+            long n = pss.getSystemStateNumber();
+            if (v == n) {
+                text = pss.getText();
+            }
+        }
+        label = new JLabel("<html>" + data.getUnicodeLabel() + "</html>");
+        label.setOpaque(true);
+        component = createComponent();
+        ((DataLabel) component).setText(text);
+    }
+
+    /**
+     * Constructor to create relay component
+     *
+     * @param dataController
+     * @param programRelay
+     */
+    public DataComponent(DataController dataController, ProgramRelay programRelay, ComponentOrientation componentOrientation) {
+        this.componentOrientation = componentOrientation;
+        data = dataController;
+        relay = programRelay;
         label = new JLabel("<html>" + relay.getUnicodeText() + "</html>");
-        label.setBounds(boundsLabel);
         label.setOpaque(true);
         component = createComponent();
-        component.setBounds(boundsComponent);
     }
 
-    public DataComponent(DataController d, int xCordL, int yCordL, int xCordC, int yCordC, Controller c,
-                         DatabaseAccessor dba) {
+    /**
+     * Constructor to create data component
+     *
+     * @param d
+     * @param c
+     * @param dba
+     */
+    public DataComponent(DataController d, Controller c, DatabaseAccessor dba, ComponentOrientation componentOrientation) {
+        this.componentOrientation = componentOrientation;
         controller = c;
         dbaccess = dba;
         data = d;
-        boundsLabel = new Rectangle(xCordL, yCordL, xCordC - 10, HEIGHT);
-        boundsComponent = new Rectangle(xCordC, yCordC, 50, HEIGHT);
         label = new JLabel("<html>" + data.getUnicodeLabel() + "</html>");
-        label.setBounds(boundsLabel);
         label.setOpaque(true);
         component = createComponent();
-        component.setBounds(boundsComponent);
         component.setForeground(new Color(0, 100, 0));
         Font font = component.getFont();
         component.setFont(new Font(font.getFontName(), Font.BOLD, font.getSize()));
@@ -119,8 +149,13 @@ public class DataComponent {
 
         if (!data.isStatus()) {
             if (!data.getReadonly()) {
-                returnCompon = createReadWriteComponent();
-                data.addDataChangeListener((DataTextField) returnCompon);
+                if (data.isPassword()) {
+                    returnCompon = createPasswordReadWriteComponent();
+                    data.addDataChangeListener((DataPasswordField) returnCompon);
+                } else {
+                    returnCompon = createReadWriteComponent();
+                    data.addDataChangeListener((DataTextField) returnCompon);
+                }
             } else {
                 returnCompon = createReadOnlyComponent();
                 data.addDataChangeListener((DataLabel) returnCompon);
@@ -137,13 +172,6 @@ public class DataComponent {
                 case Data.ALARM:
                     returnCompon = createAlarmComponent();
                     data.addDataChangeListener((DataLabel) returnCompon);
-
-                    JButton button = createShowAlramDialogButton(returnCompon.getLocation());
-                    JComponent contentPanel = new JPanel(new FlowLayout());
-
-                    contentPanel.add(returnCompon);
-                    contentPanel.add(button);
-                    returnCompon = contentPanel;
 
                     break;
 
@@ -162,7 +190,6 @@ public class DataComponent {
                 default:
                     returnCompon = createReadOnlyComponent();
                     data.addDataChangeListener((DataLabel) returnCompon);
-
                     break;
             }
         }
@@ -178,6 +205,8 @@ public class DataComponent {
         }
 
         final DataLabel dataLabel = new DataLabel(formatedValue);
+        dataLabel.setPreferredSize(new Dimension(50, 20));
+        dataLabel.setComponentOrientation(componentOrientation);
         data.addDataChangeListener(dataLabel);
         return dataLabel;
     }
@@ -190,9 +219,22 @@ public class DataComponent {
 
         final DataTextField dataText = new DataTextField(formatedValue, controller.getId(), data, dbaccess);
         data.addDataChangeListener(dataText);
-        dataText.setPreferredSize(new java.awt.Dimension(10, 20));
-
+        dataText.setPreferredSize(new Dimension(50, 20));
+        dataText.setComponentOrientation(componentOrientation);
         return dataText;
+    }
+
+    private JComponent createPasswordReadWriteComponent() {
+        String formatedValue = "-1";
+        if (data.getValue() != null) {
+            formatedValue = DataFormat.formatToStringValue(data.getFormat(), data.getValueToUI());
+        }
+
+        final DataPasswordField dataPasswordField = new DataPasswordField(formatedValue, controller.getId(), data, dbaccess);
+        data.addDataChangeListener(dataPasswordField);
+        dataPasswordField.setPreferredSize(new Dimension(50, 20));
+        dataPasswordField.setComponentOrientation(componentOrientation);
+        return dataPasswordField;
     }
 
     private JComponent createRelayComponent() {
@@ -270,62 +312,37 @@ public class DataComponent {
     }
 
     private JComponent createAlarmComponent() {
-        JComponent jComponent = null;
-        jComponent = createReadOnlyComponent();
-
-        StringBuilder toolTipBuffer = new StringBuilder();
-        toolTipBuffer.append("<html>");
-        toolTipBuffer.append("<center>");
-        toolTipBuffer.append("<font style='color: blue;'>");
-        toolTipBuffer.append(data.getLabel());
-        toolTipBuffer.append("</font><br />");
-        toolTipBuffer.append("<font style='color: red;'>");
-        for (ProgramAlarm pa : programAlarms) {
-            toolTipBuffer.append(pa.getDigitNumber()).append(" - ").append(pa.getText()).append("<br />");
-        }
-        toolTipBuffer.append("</font>");
-        toolTipBuffer.append("</center>");
-        toolTipBuffer.append("</html>");
-        jComponent.setToolTipText(toolTipBuffer.toString());
+        final JComponent jComponent = createReadOnlyComponent();
         jComponent.setForeground(Color.blue);
+        ((JLabel) jComponent).setIcon(new ImageIcon(jComponent.getClass().getResource("/images/help.gif")));
+        jComponent.addMouseListener(new MouseListener() {
+            public void mouseClicked(MouseEvent arg0) {
+                AlarmPopup popup = new AlarmPopup(componentOrientation, programAlarms);
+                Dimension size = popup.getPreferredSize();
+                int x = (jComponent.getWidth() - size.width) / 2;
+                int y = jComponent.getHeight();
+                popup.show(jComponent, x, y);
+            }
+
+            public void mouseEntered(MouseEvent arg0) {
+
+            }
+
+            public void mouseExited(MouseEvent arg0) {
+
+            }
+
+            public void mousePressed(MouseEvent arg0) {
+            }
+
+            public void mouseReleased(MouseEvent arg0) {
+
+            }
+        });
+
+
         Font font = jComponent.getFont();
         jComponent.setFont(new Font(font.getFontName(), Font.BOLD, font.getSize()));
         return jComponent;
-    }
-
-    private JButton createShowAlramDialogButton(Point p) {
-        final JButton button = createHelpButton();
-
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-
-            @Override
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                int xPos = evt.getXOnScreen();
-                int yPos = evt.getYOnScreen();
-
-                location = new Point(xPos, yPos);
-            }
-        });
-        button.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ProgramAlarmPopup dialog = new ProgramAlarmPopup(location, programAlarms);
-                dialog.setVisible(true);
-            }
-        });
-
-        return button;
-    }
-
-    private static JButton createHelpButton() {
-        final JButton button = new JButton();
-
-        button.setIcon(new javax.swing.ImageIcon(button.getClass().getResource("/images/help.gif")));
-        button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button.setOpaque(true);
-        button.setBorder(null);
-
-        return button;
     }
 }

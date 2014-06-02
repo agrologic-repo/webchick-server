@@ -7,7 +7,7 @@ import com.agrologic.app.dao.service.DatabaseLoadAccessor;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.exception.SerialPortControlFailure;
 import com.agrologic.app.gui.rxtx.ApplicationLocal;
-import com.agrologic.app.gui.rxtx.StatusPanel;
+import com.agrologic.app.gui.rxtx.StatusBar;
 import com.agrologic.app.messaging.*;
 import com.agrologic.app.model.Controller;
 import com.agrologic.app.util.ApplicationUtil;
@@ -39,7 +39,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
     private ResponseMessageMap responseMessageMap;
     private Message sendMessage;
     private ApplicationLocal app;
-    private StatusPanel statusPanel;
+    private StatusBar statusBar;
     private boolean DEBUG = false;
     private Logger logger = Logger.getLogger(SocketThread.class);
 
@@ -117,8 +117,8 @@ public final class SocketThread extends Observable implements Runnable, Network 
 
                     case STATE_BUSY:
                         ApplicationUtil.sleep(100);
-                        statusPanel.setProgress("" + StatusChar.getChar());
-                        statusPanel.setControllerStatus(getControllersStatus());
+                        statusBar.setProgress("" + StatusChar.getChar());
+                        statusBar.setControllerStatus(getControllersStatus());
                         break;
 
                     case STATE_DELAY:
@@ -133,7 +133,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         // check if there is a data to change
                         responseMessage = (ResponseMessage) com.read();
                         logger.info(responseMessage);
-                        statusPanel.setReceiveMsg(responseMessage.getIndex() + " " + responseMessage);
+                        statusBar.setReceiveMsg(responseMessage.getIndex() + " " + responseMessage);
 
                         if (responseMessage.getMessageType() == MessageType.ERROR) {
                             MessageType sendMessageType = sendMessage.getMessageType();
@@ -176,12 +176,12 @@ public final class SocketThread extends Observable implements Runnable, Network 
                             requestQueue.setReplyForPreviousRequestPending(true);
                             logger.info("Error count : " + errCount);
                             logger.info("Error [" + responseMessage + "]");
-                            statusPanel.setReceiveMsg("" + responseMessage + " " + errCount);
+                            statusBar.setReceiveMsg("" + responseMessage + " " + errCount);
                         } else {
                             responseMessage = new ResponseMessage(null);
                             logger.info("Error count : " + errCount);
                             logger.info("Error [" + responseMessage + "]");
-                            statusPanel.setReceiveMsg("" + responseMessage + " " + errCount);
+                            statusBar.setReceiveMsg("" + responseMessage + " " + errCount);
                             errCount = 0;
                             responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
 
@@ -200,11 +200,11 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         if (errCount < maxError) {
                             requestQueue.setReplyForPreviousRequestPending(true);
                             logger.info(responseMessage + " Error count : " + errCount);
-                            statusPanel.setReceiveMsg("" + responseMessage + " " + errCount);
+                            statusBar.setReceiveMsg("" + responseMessage + " " + errCount);
                         } else {
                             logger.info("Error count : " + errCount);
                             logger.info("Error count " + errCount + " : SOT Error");
-                            statusPanel.setReceiveMsg("" + responseMessage + " " + errCount);
+                            statusBar.setReceiveMsg("" + responseMessage + " " + errCount);
                             errCount = 0;
                             responseMessageMap.put((RequestMessage) sendMessage, new ResponseMessage(null));
                             // we need at least one controller in on state
@@ -256,7 +256,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
             com.write("V" + reqIndex.getIndex(), sendMessage, sotDelay, eotDelay);
             logger.info("Sent [" + sendMessage + "]");
             logger.info("Wait for data...");
-            statusPanel.setSendMsg("V" + reqIndex.getIndex() + sendMessage);
+            statusBar.setSendMsg("V" + reqIndex.getIndex() + sendMessage);
             // check if there is a data to change
             reqIndex.nextIndex();
         }
@@ -299,8 +299,8 @@ public final class SocketThread extends Observable implements Runnable, Network 
      *
      * @param sp the status panel
      */
-    public void setStatusPanel(StatusPanel sp) {
-        statusPanel = sp;
+    public void setStatusBar(StatusBar sp) {
+        statusBar = sp;
     }
 
     /**

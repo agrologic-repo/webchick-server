@@ -7,7 +7,7 @@
     <parent>
         <artifactId>webchick-server</artifactId>
         <groupId>com.agrologic</groupId>
-        <version>6.6.8-SNAPSHOT</version>
+        <version>6.6.4-SNAPSHOT</version>
     </parent>
 
     <packaging>jar</packaging>
@@ -73,11 +73,6 @@
     </build>
     <artifactId>webchick-local</artifactId>
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>webchick-service</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>webchick-server-main</artifactId>

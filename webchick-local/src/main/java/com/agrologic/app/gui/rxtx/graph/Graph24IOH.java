@@ -33,12 +33,16 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class Graph24IOH extends AbstractGraph {
+    private XYDataset inputOutputDataSet;
+    private XYDataset humidityDataset;
 
     public Graph24IOH(GraphType type, String values, Long currentTime, Locale locale) {
         super(type, values);
         this.currentTime = currentTime;
         this.locale = locale;
         initLanguage();
+        inputOutputDataSet = createTemperatureDataset();
+        humidityDataset = createHumidityDataset();
     }
 
     @Override
@@ -86,8 +90,7 @@ public class Graph24IOH extends AbstractGraph {
             humidityAxis.setUpperBound(101);
             humidityAxis.setTickUnit(new NumberTickUnit(5.0D));
 
-            XYPlot plot = new XYPlot(createTempDataset(), dateaxis, tempAxis, renderer);
-
+            final XYPlot plot = new XYPlot(inputOutputDataSet, dateaxis, tempAxis, renderer);
             plot.setDomainCrosshairVisible(true);
             plot.setRangeCrosshairVisible(true);
             plot.setDomainPannable(true);
@@ -97,8 +100,7 @@ public class Graph24IOH extends AbstractGraph {
             tempAxis.setLowerBound(minY - 1);
             tempAxis.setUpperBound(maxY + 1);
 
-            XYDataset humDataset = createHumDataset();
-            plot.setDataset(1, humDataset);
+            plot.setDataset(1, humidityDataset);
             plot.mapDatasetToRangeAxis(1, 1);
 
             StandardXYItemRenderer renderer2 =
@@ -132,9 +134,137 @@ public class Graph24IOH extends AbstractGraph {
             xyplot.setRangePannable(true);
             chart = new JFreeChart(dictionary.get("graph.ioh.title"), JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
         }
-
-        // hideSeries(1, 0);
         return chart;
+    }
+
+    /**
+     * Creates a sample dataset.
+     *
+     * @return the dataset.
+     */
+    private XYDataset createTemperatureDataset() {
+        resetMinMaxY();
+
+        final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+
+        try {
+            if (isEmpty()) {
+                return timeSeriesCollection;
+            } else {
+                final TimeSeries insideTempSeries = new TimeSeriesCreator(dictionary.get("graph.ioh.series.inside"),
+                        IN_TEMP_INDEX, -1, -1).invoke();
+                timeSeriesCollection.addSeries(insideTempSeries);
+
+                final TimeSeries outsideTempSeries = new TimeSeriesCreator(dictionary.get("graph.ioh.series.outside"),
+                        OUT_TEMP_INDEX, -1, -1).invoke();
+
+                timeSeriesCollection.addSeries(outsideTempSeries);
+                return timeSeriesCollection;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return timeSeriesCollection;
+        }
+    }
+
+    /**
+     * Create #XYDataset with humidity per hour data series
+     *
+     * @return TimeSeriesCollection with humidity per hour history data series
+     */
+    private XYDataset createHumidityDataset() {
+        final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
+        try {
+            if (isEmpty()) {
+                return timeSeriesCollection;
+            } else {
+                final TimeSeries humiditySeries = new TimeSeriesCreator(dictionary.get("graph.ioh.series.humidity"),
+                        HUMIDITY_INDEX, 100, 0).invoke();
+
+                timeSeriesCollection.addSeries(humiditySeries);
+
+                return timeSeriesCollection;
+            }
+        } catch (Exception e) {
+            return timeSeriesCollection;
+        }
+    }
+
+    /**
+     * Inner class that help to create TimeSeries object for chart .
+     */
+    private class TimeSeriesCreator {
+        private String name;
+        private int startIndex;
+        private int maxYValue;
+        private int minYValue;
+
+        public TimeSeriesCreator(String name, int startIndex, int maxYValue, int minYValue) {
+            this.name = name;
+            this.startIndex = startIndex;
+            this.maxYValue = maxYValue;
+            this.minYValue = minYValue;
+        }
+
+        public TimeSeries invoke() {
+            DateLocal now = DateLocal.now();
+            DateLocal yday = now.addDays(-1);
+            int day = now.getDate();
+            int month = now.getMonth();
+            int year = now.getYear();
+            Day today = new Day(SerialDate.createInstance(day, month, year));
+            Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
+
+            // testing
+            int hour = getHour();
+
+            final TimeSeries series = new TimeSeries(name);
+
+
+            for (int i = startIndex + DAY_HOURS - 1; i >= startIndex; i--, hour--) {
+                String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
+                float floatValue = Float.valueOf(value);
+                series.add(new Hour(hour, today), floatValue);
+
+                if (hour == 0) {
+                    today = yesterday;
+                    hour = DAY_HOURS;        // testing
+                }
+
+                if (maxY < floatValue) {
+                    if (maxYValue == -1) {
+                        maxY = (int) floatValue;
+                    } else {
+                        maxY = maxYValue;
+                    }
+                }
+
+                if (minY > floatValue) {
+                    if (minYValue == -1) {
+                        minY = (int) floatValue;
+                    } else {
+                        minY = minYValue;
+                    }
+                }
+            }
+            return series;
+        }
+
+        private int getHour() {
+            return (int) (currentTime / 100) - 1;
+        }
+    }
+
+    /**
+     * Hide series of given rend index and series index .
+     *
+     * @param rendIndex renderer index
+     * @param serIndex  series index
+     */
+    public void hideSeries(int rendIndex, int serIndex) {
+//      XYItemRenderer rend = chart.getXYPlot().getRenderer(rendIndex);
+//      boolean bool = rend.getItemVisible(serIndex, 0);
+//      rend.setSeriesVisible(serIndex, false);
     }
 
     /**
@@ -166,144 +296,6 @@ public class Graph24IOH extends AbstractGraph {
                         + chart + "': " + e);
             }
         }
-    }
-
-    /**
-     * Creates a sample dataset.
-     *
-     * @return the dataset.
-     */
-    private XYDataset createTempDataset() {
-        resetMinMaxY();
-
-        final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
-
-        try {
-            if (isEmpty()) {
-                return timeSeriesCollection;
-            } else {
-                DateLocal now = DateLocal.now();
-                DateLocal yday = now.addDays(-1);
-                Day today = new Day(SerialDate.createInstance(now.getDate(), now.getMonth(), now.getYear()));
-                Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
-                int hour = getHour();
-                final TimeSeries insideseries = new TimeSeries(dictionary.get("graph.ioh.series.inside"));
-
-                for (int i = IN_TEMP_INDEX + DAY_HOURS - 1; i >= IN_TEMP_INDEX; i--, hour--) {
-                    String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
-                    float floatValue = Float.valueOf(value);
-
-                    insideseries.add(new Hour( //hour
-                            hour, today), floatValue);
-
-                    if (hour == 0) {
-                        today = yesterday;
-                        hour = DAY_HOURS;        // testing
-                    }
-
-                    if (maxY < floatValue) {
-                        maxY = (int) floatValue;
-                    }
-
-                    if (minY > floatValue) {
-                        minY = (int) floatValue;
-                    }
-                }
-
-                today = new Day(SerialDate.createInstance(now.getDate(), now.getMonth(), now.getYear()));
-                timeSeriesCollection.addSeries(insideseries);
-                // testing
-                hour = getHour();
-
-                final TimeSeries outsideseries = new TimeSeries(dictionary.get("graph.ioh.series.outside"));
-                for (int i = OUT_TEMP_INDEX + DAY_HOURS - 1; i >= OUT_TEMP_INDEX; i--, hour--) {
-                    String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
-                    float floatValue = Float.valueOf(value);
-
-                    outsideseries.add(new Hour( //hour
-                            hour, today), floatValue);
-                    if (hour == 0) {
-                        today = yesterday;
-                        hour = DAY_HOURS;         // testing
-                    }
-
-                    if (maxY < floatValue) {
-                        maxY = (int) floatValue;
-                    }
-
-                    if (minY > floatValue) {
-                        minY = (int) floatValue;
-                    }
-                }
-                timeSeriesCollection.addSeries(outsideseries);
-
-
-                return timeSeriesCollection;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return timeSeriesCollection;
-        }
-    }
-
-    private XYDataset createHumDataset() {
-        final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
-        try {
-            if (isEmpty()) {
-                return timeSeriesCollection;
-            } else {
-                DateLocal now = DateLocal.now();
-                DateLocal yday = now.addDays(-1);
-                int day = now.getDate();
-                int month = now.getMonth();
-                int year = now.getYear();
-                Day today = new Day(SerialDate.createInstance(day, month, year));
-                Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
-
-                // testing
-                int hr = (int) (currentTime / 100) - 1;
-                final TimeSeries humidityseries = new TimeSeries(dictionary.get("graph.ioh.series.humidity"));
-
-                for (int i = HUMIDITY_INDEX + DAY_HOURS - 1; i >= HUMIDITY_INDEX; i--, hr--) {
-                    String value = DataFormat.formatToStringValue(DataFormat.HUMIDITY, Long.valueOf(datasetString[i]));
-                    int intValue = Integer.valueOf(value);
-
-                    humidityseries.add(new Hour( /*
-                         * hour
-                         */
-                            hr, today), intValue);
-
-                    if (hr == 0) {
-                        today = yesterday;
-                        hr = DAY_HOURS;
-                    }
-
-                    if (maxY < intValue) {
-                        maxY = 100;
-                    }
-
-                    if (minY > intValue) {
-                        minY = 0;
-                    }
-                }
-
-                timeSeriesCollection.addSeries(humidityseries);
-
-                return timeSeriesCollection;
-            }
-        } catch (Exception e) {
-            return timeSeriesCollection;
-        }
-    }
-
-    private int getHour() {
-        return (int) (currentTime / 100) - 1;
-    }
-
-    public void hideSeries(int rendIndex, int serIndex) {
-//      XYItemRenderer rend = chart.getXYPlot().getRenderer(rendIndex);
-//      boolean bool = rend.getItemVisible(serIndex, 0);
-//      rend.setSeriesVisible(serIndex, false);
     }
 }
 

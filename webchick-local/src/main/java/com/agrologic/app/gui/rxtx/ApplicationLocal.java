@@ -45,18 +45,47 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
     private Task task;
     private ProgressMonitor progressMonitor;
     private SocketThread networkThread;
+    private JScrollPane scrollPaneMain;
+    private JPanel mainPanel;
+    private StatusBar statusBar;
     private MainScreenPanel[] mainScreenPanels;
     private ExecutorService threadPool = Executors.newFixedThreadPool(1);
     public static Logger logger = Logger.getLogger(ApplicationLocal.class);
+
+    private ResourceBundle bundle; // NOI18N
+    private ComponentOrientation currentOrientation = orientationRTL;
+    public static final ComponentOrientation orientationLTR = ComponentOrientation.LEFT_TO_RIGHT;
+    public static final ComponentOrientation orientationRTL = ComponentOrientation.RIGHT_TO_LEFT;
 
     /**
      * Creates a new {@link ApplicationLocal}.
      */
     public ApplicationLocal() {
+        configuration = new Configuration();
+        LocaleManager localeManager = new LocaleManager();
+        localeManager.setCurrentLanguage(configuration.getLanguage());
+        Locale.setDefault(localeManager.getCurrentLocale());
+
+        if (localeManager.getCurrentLanguage().equals(LocaleManager.Language.HEBREW)) {
+            currentOrientation = orientationRTL;
+        } else {
+            currentOrientation = orientationLTR;
+        }
+
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // NOI18N
         initComponents();
-        Windows.setWindowsLAF(this);
-        Windows.centerOnScreen(this);
-        Locale.setDefault(Locale.ENGLISH);
+        if (localeManager.getCurrentLanguage() == LocaleManager.Language.HEBREW) {
+            jMenuBar1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+            mnuFile.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+            mnuExit.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+            mnuFlock.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+            mnuManage.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+            mnuTools.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+            mnuConfig1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+            mnuSetupDriver.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+            mnuDesign.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        }
+
         final WindowListener closeWindow = new WindowAdapter() {
 
             @Override
@@ -65,10 +94,11 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
             }
         };
 
-        configuration = new Configuration();
         setTitle("WebchickLocal " + configuration.getVersion());
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(closeWindow);
+        Windows.setWindowsLAF(this);
+        Windows.centerOnScreen(this);
     }
 
     enum LoadState {
@@ -144,6 +174,7 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
                     showErrorMessage("Error", e.getMessage());
                     System.exit(0);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     loadingDialog.setVisible(false);
                     logger.error(e);
                     showErrorMessage("Error", "");
@@ -152,47 +183,6 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
             }
         });
         loadingThread.start();
-    }
-
-    /**
-     * Calculate maximum dimension
-     *
-     * @param size the size
-     * @return dimension the calculated dimension
-     */
-    public Dimension calcMaximumDimension(int size) {
-        Dimension dimension = new Dimension(0, 0);
-        for (int i = 0; i < size; i++) {
-            if (size == 1) {
-                dimension.width = mainScreenPanels[i].getBounds().width;
-                dimension.height = mainScreenPanels[i].getBounds().height;
-            }
-
-            if (dimension.width < mainScreenPanels[i].getBounds().width) {
-                dimension.width = mainScreenPanels[i].getBounds().width;
-            }
-            if (dimension.height < mainScreenPanels[i].getBounds().height) {
-                dimension.height = mainScreenPanels[i].getBounds().height;
-            }
-        }
-        return dimension;
-    }
-
-    /**
-     * Set main screen panel location according to dimension
-     *
-     * @param dimension    the dimension
-     * @param size         the size
-     * @param colsOnScreen the number of main screen panel column
-     */
-    public void setMainScreenLocation(Dimension dimension, int size, int colsOnScreen) {
-        for (int i = 0; i < size; i++) {
-            int difX = i % colsOnScreen;
-            int difY = i / colsOnScreen;
-            int x = dimension.width * difX;
-            int y = dimension.height * difY;
-            mainScreenPanels[i].setLocation(x, y);
-        }
     }
 
     /**
@@ -205,72 +195,47 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
 
         int size = controllers.size();
         logger.info("Start creating  main screens ");
-        JPanel mainScreenPanelHolder = new JPanel(null);
+        mainPanel = new JPanel(new ModifiedFlowLayout(FlowLayout.CENTER));
+        mainPanel.setComponentOrientation(currentOrientation);
+        scrollPaneMain = new JScrollPane(mainPanel);
+        scrollPaneMain.setAutoscrolls(true);
+        scrollPaneMain.getVerticalScrollBar().setUnitIncrement(32);
+
         mainScreenPanels = new MainScreenPanel[size];
         for (int i = 0; i < size; i++) {
-            mainScreenPanels[i] = new MainScreenPanel(dbManager, Lists.newArrayList(controllers).get(i));
-            mainScreenPanelHolder.add(mainScreenPanels[i]);
+            mainScreenPanels[i] = new MainScreenPanel(dbManager, Lists.newArrayList(controllers).get(i), currentOrientation);
+            mainScreenPanels[i].setFirstScrollPane(scrollPaneMain);
+            mainScreenPanels[i].setParent(this);
+            mainPanel.add(mainScreenPanels[i]);
         }
 
-        int colsOnScreen = ScreenUI.MAIN_SCREEN_COL_NUMBERS;
-        Dimension dimension = calcMaximumDimension(size);
-        setMainScreenLocation(dimension, size, colsOnScreen);
         for (int i = 0; i < mainScreenPanels.length; i++) {
             for (int j = 0; j < mainScreenPanels.length; j++) {
                 if (i != j) {
-                    mainScreenPanels[i].addMainScreen(mainScreenPanels[j]);
+                    mainScreenPanels[i].fillEmptyComponents();
                 }
             }
         }
 
-        dimension.width *= ((size / colsOnScreen) > 0 ? 1 : 0)
-                * colsOnScreen + ((size / colsOnScreen) > 0 ? 0 : (size % colsOnScreen));
-        dimension.height *= ((size / colsOnScreen) + ((size % colsOnScreen) > 0 ? 1 : 0));
-        mainScreenPanelHolder.setPreferredSize(dimension);
-        mainScreenPanelHolder.setSize(dimension);
-
-        logger.info("Start creating  second screen panel ");
-        SecondScreenPanel[] secondScreenPanels = new SecondScreenPanel[controllers.size()];
-
-        for (int i = 0; i < controllers.size(); i++) {
-            secondScreenPanels[i] = new SecondScreenPanel(dbManager, Lists.newArrayList(controllers).get(i));
-            mainScreenPanels[i].addSecondPanel(secondScreenPanels[i]);
-            mainScreenPanelHolder.add(secondScreenPanels[i]);
-            secondScreenPanels[i].setMainScreenPanel(mainScreenPanels[i]);
-        }
-        logger.info("Finished creating  second screen panel ");
-
-        JScrollPane scrollPane = new JScrollPane(mainScreenPanelHolder);
-        scrollPane.setBorder(null);
-        scrollPane.setAutoscrolls(true);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(32);
-
-        logger.info("Set main screen to other main screens ");
-        for (MainScreenPanel mainScreenPanel : mainScreenPanels) {
-            mainScreenPanel.setScrollPane(scrollPane);
-            mainScreenPanel.setHolderPanel(mainScreenPanelHolder);
-            mainScreenPanel.setHolderPanelSize(mainScreenPanelHolder.getPreferredSize());
-            mainScreenPanel.setBounds();
-        }
-        setLayout(null);
-        getContentPane().add(scrollPane);
-
-        Dimension screenResolution = Windows.screenResolution();
-        StatusPanel statusPanel = new StatusPanel();
-        statusPanel.setBounds(0, screenResolution.height - 105, screenResolution.width, 30);
-
-        networkThread.setStatusPanel(statusPanel);
-        getContentPane().add(statusPanel);// put at bottom of UI
-        setSize(screenResolution.width, screenResolution.height);
-        Windows.centerOnScreen(this);
+        statusBar = new StatusBar(currentOrientation);
+        getContentPane().add(scrollPaneMain, BorderLayout.CENTER);
+        getContentPane().add(statusBar, BorderLayout.PAGE_END);
+        setComponentOrientation(currentOrientation);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension newDimension = new Dimension(dimension.width, (dimension.height - 35));
+        setSize(newDimension);
+        Windows.setWindowsLAF(this);
+        Windows.centerOnTopScreen(this);
+        networkThread.setStatusBar(statusBar);
     }
 
     /**
      * Stop running program with conformation dialog.
      */
     public void exit() {
-        String title = "Close Program Confirmation";
-        String message = "Do you really want to close program ?";
+        setUILanguage();
+        String title = bundle.getString("message.dialog.title");
+        String message = bundle.getString("message.dialog.text");
         int result = JOptionPane.showConfirmDialog(ApplicationLocal.this, message, title, JOptionPane.YES_NO_OPTION);
         if (result == JOptionPane.YES_OPTION) {
             if ((networkThread != null) && (networkThread.getNetworkState() != NetworkState.STATE_STOP)) {
@@ -278,6 +243,11 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
             }
             System.exit(0);
         }
+    }
+
+    public void setUILanguage() {
+        UIManager.put("OptionPane.yesButtonText", bundle.getString("button.yes"));
+        UIManager.put("OptionPane.noButtonText", bundle.getString("button.no"));
     }
 
     /**
@@ -313,7 +283,6 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        ResourceBundle bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // NOI18N
         mnuFile.setText(bundle.getString("menu.file")); // NOI18N
 
         mnuExit.setText(bundle.getString("menu.file.exit")); // NOI18N
@@ -326,9 +295,9 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
 
         jMenuBar1.add(mnuFile);
 
-        mnuFlock.setText("Flock");
+        mnuFlock.setText(bundle.getString("menu.flock"));
 
-        mnuManage.setText("Manage");
+        mnuManage.setText(bundle.getString("menu.flock.manage"));
         mnuManage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuManageActionPerformed(evt);
@@ -356,7 +325,7 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
         });
         mnuTools.add(mnuSetupDriver);
 
-        mnuDesign.setText("Design");
+        mnuDesign.setText(bundle.getString("menu.tools.design"));
         mnuDesign.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuDesignActionPerformed(evt);
@@ -367,23 +336,11 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
         jMenuBar1.add(mnuTools);
 
         setJMenuBar(jMenuBar1);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 757, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 544, Short.MAX_VALUE)
-        );
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void mnuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExitActionPerformed
-        System.exit(0);
+        exit();
     }//GEN-LAST:event_mnuExitActionPerformed
 
     private void mnuConfig1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuConfig1ActionPerformed

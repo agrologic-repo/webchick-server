@@ -7,7 +7,7 @@ public interface ScreenUI {
     public static final int OTHER_SCREEN_COL_NUMBERS = 4;
     public static final int REFRESH_RATE = ONE_SECOND;
 
-    public void initLoadedControllerData();
+    public void loadAndInitControllerData();
 
     public void initScreenComponents();
 }

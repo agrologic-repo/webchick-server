@@ -13,6 +13,7 @@ import com.agrologic.app.model.DataFormat;
 import org.jfree.chart.ChartPanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -23,33 +24,47 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Graphs24HourPanel extends JPanel {
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private Locale locale;
     private int width = 800;
     private int height = 550;
+    private String datasetString;
+    private Controller controller;
     private long currControllerId;
     private ControllerDao controllerDao;
     private DataDao dataDao;
     private List<ChartPanel> chartPanels;
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private AbstractGraph graph;
 
     /**
      * Creates new form Graphs24HourPanel
      */
     public Graphs24HourPanel(Long controllerId) {
+        super(new BorderLayout(5, 5));
         try {
             initComponents();
+            locale = getCurrentLocale();
             controllerDao = DbImplDecider.use(DaoType.DERBY).getDao(ControllerDao.class);
             dataDao = DbImplDecider.use(DaoType.DERBY).getDao(DataDao.class);
             chartPanels = new ArrayList<ChartPanel>();
-            createGraph(controllerId);
+            currControllerId = controllerId;
+            loadDatasetString();
+            createGraph();
             repaint();
+
             Runnable task = new Runnable() {
                 @Override
                 public void run() {
                     try {
                         if (graphShouldBeUpdated() == true) {
-                            removeAll();
-                            chartPanels.clear();
-                            createGraph(currControllerId);
+                            loadDatasetString();
+                            Data setClock = dataDao.getSetClockByController(currControllerId);
+                            long value = DataFormat.convertToTimeFormat(setClock.getValue());
+                            graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, datasetString, value, locale);
+                            ((ChartPanel) chartPanels.get(0)).setChart(graph.createChart());
+                            graph = new Graph24FWI(GraphType.IN_FEED_WATER, datasetString, value, locale);
+                            ((ChartPanel) chartPanels.get(1)).setChart(graph.createChart());
+
                         }
                     } catch (SQLException ex) {
                         ex.printStackTrace();
@@ -60,46 +75,68 @@ public class Graphs24HourPanel extends JPanel {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
         setSize(width, (height + 10) * 2);
     }
 
-    /**
-     * @param controllerId
-     * @throws SQLException
-     */
-    public void createGraph(Long controllerId) throws SQLException {
-        currControllerId = controllerId;
-        String values = controllerDao.getControllerGraph(controllerId);
-        Controller controller = controllerDao.getById(controllerId);
-        Data setClock = dataDao.getSetClockByController(controllerId);
+    private void loadDatasetString() throws SQLException {
+        datasetString = controllerDao.getControllerGraph(currControllerId);
+        controller = controllerDao.getById(currControllerId);
+        if (datasetString == null) {
+            datasetString = "";
+        }
+    }
+
+    public void createGraph() throws SQLException {
+        Data setClock = dataDao.getSetClockByController(currControllerId);
+
         if (controller.getName().contains("616")) {
-            if (values != null) {
-                AbstractGraph graph;
-                Locale locale = getCurrentLocale();
-                graph = new Graph24InputTemp(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
-                createAndAddChartPanel(graph);
+            if (datasetString != null) {
+                graph = new Graph24InputTemp(GraphType.IN_OUT_TEMP_HUMID, datasetString, Long.valueOf("0"), locale);
+                ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
+                        false, true, true, true, true, true);
+                chartpanel.setVisible(true);
+                add(chartpanel, BorderLayout.PAGE_START);
+                chartPanels.add(chartpanel);
             }
         } else {
-            if (values != null && values.length() >= AbstractGraph.LENGHT) {
-                AbstractGraph graph;
-                Locale locale = getCurrentLocale();
+            if (datasetString != null && datasetString.length() >= AbstractGraph.LENGHT) {
                 if (setClock == null || setClock.getValue() == null) {
-                    graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, values, Long.valueOf("0"), locale);
-                    createAndAddChartPanel(graph);
-                    graph = new Graph24FWI(GraphType.IN_FEED_WATER, values, Long.valueOf("0"), locale);
-                    createAndAddChartPanel(graph);
+                    graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, datasetString, Long.valueOf("0"), locale);
+                    ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
+                            false, true, true, true, true, true);
+                    chartpanel.setVisible(true);
+                    add(chartpanel, BorderLayout.PAGE_START);
+                    chartPanels.add(chartpanel);
+                    graph = new Graph24FWI(GraphType.IN_FEED_WATER, datasetString, Long.valueOf("0"), locale);
+                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
+                            false, true, true, true, true, true);
+                    chartpanel.setVisible(true);
+                    add(chartpanel, BorderLayout.PAGE_END);
+                    chartPanels.add(chartpanel);
                 } else {
                     long value = DataFormat.convertToTimeFormat(setClock.getValue());
-                    graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, values, value, locale);
-                    createAndAddChartPanel(graph);
-                    graph = new Graph24FWI(GraphType.IN_FEED_WATER, values, value, locale);
-                    createAndAddChartPanel(graph);
+                    graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, datasetString, value, locale);
+                    ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
+                            false, true, true, true, true, true);
+                    chartpanel.setVisible(true);
+                    add(chartpanel, BorderLayout.PAGE_START);
+                    chartPanels.add(chartpanel);
+                    graph = new Graph24FWI(GraphType.IN_FEED_WATER, datasetString, value, locale);
+                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
+                            false, true, true, true, true, true);
+                    chartpanel.setVisible(true);
+                    add(chartpanel, BorderLayout.PAGE_END);
+                    chartPanels.add(chartpanel);
                 }
             }
         }
     }
 
+    /**
+     * Return current locale
+     *
+     * @return
+     */
     public Locale getCurrentLocale() {
         Configuration configuration = new Configuration();
         LocaleManager localeManager = new LocaleManager();
@@ -116,7 +153,7 @@ public class Graphs24HourPanel extends JPanel {
         ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
                 false, true, true, true, true, true);
         chartpanel.setVisible(true);
-        add(chartpanel);
+        chartpanel.getComponent(0);
         chartPanels.add(chartpanel);
     }
 

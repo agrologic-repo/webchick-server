@@ -20,11 +20,11 @@ public class DataTextField extends JTextField implements DataChangeListener {
     private DatabaseAccessor dbaccess;
     private DataTextField nextTextField;
 
-    public DataTextField(String text, long cid, Data d, DatabaseAccessor dbaccess) {
+    public DataTextField(String text, long cid, Data data, DatabaseAccessor dbaccess) {
         super(text);
         setListeners();
         this.controllerId = cid;
-        this.data = d;
+        this.data = data;
         this.dbaccess = dbaccess;
     }
 
