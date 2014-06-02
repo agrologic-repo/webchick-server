@@ -77,7 +77,6 @@ public class DataPanel extends JPanel {
 
         for (ProgramRelay programRelay : programRelays) {
             if (programRelay.getDataId().equals(data.getId())) {
-
                 if (programRelay.getRelayNumber() == 0) {
                     if (controller.getName().equals("WOD")) {
                         if (data.getValue() == null || data.getValue() == -1) {

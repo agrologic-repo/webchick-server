@@ -28,6 +28,7 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
@@ -55,6 +56,7 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
         initComponents();
         Windows.setWindowsLAF(this);
         Windows.centerOnScreen(this);
+        Locale.setDefault(Locale.ENGLISH);
         final WindowListener closeWindow = new WindowAdapter() {
 
             @Override

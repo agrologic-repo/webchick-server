@@ -61,7 +61,6 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                 secondScreenPanel.initLoadedControllerData();
                 secondScreenPanel.initScreenComponents();
                 secondScreenPanel.startTimerThread();
-
                 Rectangle rect = secondScreenPanel.getBounds();
                 scrollPane.setBounds(rect.x, rect.y, rect.width, rect.height);
                 holderPanel.setBounds(rect.x, rect.y, rect.width, rect.height);

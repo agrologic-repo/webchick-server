@@ -167,7 +167,7 @@ public class FlockManagerService {
             return updatedMap;
         }
         try {
-            updatedMap = flockDao.getAllHistoryByFlock(flockId);
+            updatedMap = flockDao.getFlockPerDayNotParsedReports(flockId);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
