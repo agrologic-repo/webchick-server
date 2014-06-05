@@ -161,8 +161,13 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                 secondScreenPanel.setSecondScrollPane(secondScrollPane);
                 secondScrollPane.setAutoscrolls(true);
                 secondScrollPane.getVerticalScrollBar().setUnitIncrement(32);
-                int max = secondScrollPane.getHorizontalScrollBar().getMaximum();
-                secondScrollPane.getHorizontalScrollBar().setValue(max);
+                int scrollBarPosition = 0;
+                if (currentOrientation == ApplicationLocal.orientationLTR) {
+                    scrollBarPosition = secondScrollPane.getHorizontalScrollBar().getMinimum();
+                } else {
+                    scrollBarPosition = secondScrollPane.getHorizontalScrollBar().getMaximum();
+                }
+                secondScrollPane.getHorizontalScrollBar().setValue(scrollBarPosition);
                 secondScreenPanel.startTimerThread();
                 parent.getContentPane().add(secondScrollPane);
                 parent.validate();
