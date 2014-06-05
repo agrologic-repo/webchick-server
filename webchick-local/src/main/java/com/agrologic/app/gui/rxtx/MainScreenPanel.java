@@ -152,7 +152,6 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
             public void actionPerformed(ActionEvent e) {
                 firstScrollPane.setVisible(false);
                 secondMainPanel = new JPanel(new BorderLayout());
-//                if (secondScreenPanel == null) {
                 secondScreenPanel = new SecondScreenPanel(dbManager, controller, getComponentOrientation());
                 secondScreenPanel.setFirstScrollPane(firstScrollPane);
                 secondScreenPanel.setParent(parent);
@@ -162,11 +161,10 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                 secondScreenPanel.setSecondScrollPane(secondScrollPane);
                 secondScrollPane.setAutoscrolls(true);
                 secondScrollPane.getVerticalScrollBar().setUnitIncrement(32);
+                int max = secondScrollPane.getHorizontalScrollBar().getMaximum();
+                secondScrollPane.getHorizontalScrollBar().setValue(max);
+                secondScreenPanel.startTimerThread();
                 parent.getContentPane().add(secondScrollPane);
-//                } else {
-//                    secondScreenPanel.startTimerThread();
-//                    secondScreenPanel.getSecondScrollPane().setVisible(true);
-//                }
                 parent.validate();
                 parent.repaint();
             }
