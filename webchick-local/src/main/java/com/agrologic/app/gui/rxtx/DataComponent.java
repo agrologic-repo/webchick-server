@@ -220,7 +220,11 @@ public class DataComponent {
         final DataTextField dataText = new DataTextField(formatedValue, controller.getId(), data, dbaccess);
         data.addDataChangeListener(dataText);
         dataText.setPreferredSize(new Dimension(50, 20));
-        dataText.setComponentOrientation(componentOrientation);
+        if (componentOrientation == ApplicationLocal.orientationLTR) {
+            dataText.setHorizontalAlignment(JTextField.LEFT);
+        } else {
+            dataText.setHorizontalAlignment(JTextField.RIGHT);
+        }
         return dataText;
     }
 
