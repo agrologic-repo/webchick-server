@@ -15,6 +15,7 @@ import java.sql.SQLException;
 
 public class DataTextField extends JTextField implements DataChangeListener {
     private volatile boolean locked = false;
+    private long lockedTime;
     private long controllerId;
     private Data data;
     private DatabaseAccessor dbaccess;
@@ -42,6 +43,7 @@ public class DataTextField extends JTextField implements DataChangeListener {
             public void focusGained(FocusEvent e) {
                 if (e.getSource() instanceof DataTextField) {
                     locked = true;
+                    lockedTime = System.currentTimeMillis();
                     DataTextField textField = (DataTextField) e.getSource();
                     textField.selectAll();
                 }
@@ -100,6 +102,8 @@ public class DataTextField extends JTextField implements DataChangeListener {
                         dbaccess.getControllerDao().saveNewDataValueOnController(controllerId, data.getId(), value);
                         if (getNextTextField() != null) {
                             getNextTextField().requestFocus();
+                        } else {
+                            txt.getParent().requestFocus();
                         }
                     } catch (SQLException ex) {
                         ex.printStackTrace();
@@ -109,6 +113,7 @@ public class DataTextField extends JTextField implements DataChangeListener {
         });
     }
 
+
     @Override
     public void dataChanged(DataChangeEvent event) {
         if (!locked) {
@@ -116,6 +121,21 @@ public class DataTextField extends JTextField implements DataChangeListener {
             super.revalidate();
             super.repaint();
             super.invalidate();
+        } else {
+            unlockIfTimedOut();
+        }
+    }
+
+    /**
+     *
+     */
+    public void unlockIfTimedOut() {
+        long HALF_MINUTE = 1000 * 30;
+        long currentTime = System.currentTimeMillis();
+        if ((currentTime - lockedTime) > HALF_MINUTE) {
+            lockedTime = 0;
+            locked = false;
+            this.getParent().requestFocus();
         }
     }
 }
