@@ -117,6 +117,14 @@ public interface TableDao {
     void insertTranslation(Collection<Table> tableList) throws SQLException;
 
     /**
+     * Unchecked table on screen that not used in given program id
+     *
+     * @param programId the program id
+     * @throws java.sql.SQLException if failed to execute the query
+     */
+    void uncheckNotUsedTableOnAllScreens(Long programId) throws SQLException;
+
+    /**
      * Get table by specified programId, screenId, tableId .
      *
      * @param programId the program id

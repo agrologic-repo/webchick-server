@@ -82,6 +82,14 @@ public interface ScreenDao {
     void insertExistScreen(Screen screen) throws SQLException;
 
     /**
+     * Unchecked screens that not used in given program id
+     *
+     * @param programId the program id
+     * @throws java.sql.SQLException if failed to execute the query
+     */
+    void uncheckNotUsedScreenInProgram(Long programId) throws SQLException;
+
+    /**
      * Save the changed position order of screen in design screens page.
      *
      * @param showMap     the map of screen ids and text yes\no for showing screen on page

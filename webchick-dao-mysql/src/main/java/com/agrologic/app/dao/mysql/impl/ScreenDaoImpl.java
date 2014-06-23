@@ -198,6 +198,13 @@ public class ScreenDaoImpl implements ScreenDao {
     }
 
     @Override
+    public void uncheckNotUsedScreenInProgram(Long programId) throws SQLException {
+        String sql = "update screens set displayonpage='no' where programid=? and Title<>'Graphs' and screenid not in\n" +
+                "(select distinct(screenid) from screentable as st where programid=? and displayonscreen='yes' );";
+        jdbcTemplate.update(sql, programId, programId);
+    }
+
+    @Override
     public void saveChanges(final Map<Long, String> showMap, final Map<Long, Integer> positionMap, final Long programId) throws SQLException {
         logger.debug("Save changes of screen position and show ");
         final String sql = "update screens set DisplayOnPage=?, Position=? where ScreenID=? and ProgramID=?";
