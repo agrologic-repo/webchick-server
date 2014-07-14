@@ -127,7 +127,8 @@ public class DataTextField extends JTextField implements DataChangeListener {
     }
 
     /**
-     *
+     * Whenever text component is in focus the method call focusGain() method of component parent
+     * after 30 seconds .
      */
     public void unlockIfTimedOut() {
         long HALF_MINUTE = 1000 * 30;
