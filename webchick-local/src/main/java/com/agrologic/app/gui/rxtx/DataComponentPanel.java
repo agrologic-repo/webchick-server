@@ -22,6 +22,7 @@ public class DataComponentPanel extends JPanel {
     private Table table;
     private List<DataController> dataControllerList;
     private DatabaseAccessor dbaccess;
+    private DataComponent prevComponent;
     private GridBagConstraints gridBagConstraints;
 
     /**
@@ -32,8 +33,23 @@ public class DataComponentPanel extends JPanel {
                               List<ProgramRelay> programRelays, List<ProgramSystemState> programSystemStates,
                               DatabaseAccessor dbaccess, ComponentOrientation componentOrientation,
                               Table table, List<DataController> dataControllerList) {
+        this(controller, program, programAlarms,
+                programRelays, programSystemStates,
+                dbaccess, componentOrientation,
+                table, dataControllerList, null);
+    }
+
+    /**
+     * @param table
+     * @param dataControllerList
+     */
+    public DataComponentPanel(Controller controller, Program program, List<ProgramAlarm> programAlarms,
+                              List<ProgramRelay> programRelays, List<ProgramSystemState> programSystemStates,
+                              DatabaseAccessor dbaccess, ComponentOrientation componentOrientation,
+                              Table table, List<DataController> dataControllerList, DataComponent prevComponent) {
         super(new GridBagLayout());
         this.setComponentOrientation(componentOrientation);
+        this.prevComponent = prevComponent;
         this.controller = controller;
         this.dbaccess = dbaccess;
         this.program = program;
@@ -105,6 +121,34 @@ public class DataComponentPanel extends JPanel {
                     gridBagConstraints.ipadx = 2;
                     add(dataComponent.getComponent(), gridBagConstraints);
                     componentCounter++;
+
+                    if (prevComponent == null) {
+                        prevComponent = dataComponent;
+                    } else {
+                        if (dataComponent.getComponent() instanceof DataTextField) {
+                            if (prevComponent.getComponent() instanceof DataTextField) {
+                                ((DataTextField) prevComponent.getComponent()).setNextTextField((DataTextField) dataComponent.getComponent());
+                                prevComponent = dataComponent;
+                            } else if (prevComponent.getComponent() instanceof DataPasswordField) {
+                                ((DataPasswordField) prevComponent.getComponent()).setNextTextField((DataPasswordField) dataComponent.getComponent());
+                                prevComponent = dataComponent;
+                            } else {
+                                prevComponent = dataComponent;
+                            }
+                        }
+                        if (dataComponent.getComponent() instanceof DataPasswordField) {
+                            if (prevComponent.getComponent() instanceof DataPasswordField) {
+                                ((DataPasswordField) prevComponent.getComponent()).setNextTextField((DataPasswordField) dataComponent.getComponent());
+                                prevComponent = dataComponent;
+                            } else if (prevComponent.getComponent() instanceof DataTextField) {
+                                ((DataTextField) prevComponent.getComponent()).setNextTextField((DataTextField) dataComponent.getComponent());
+                                prevComponent = dataComponent;
+                            } else {
+                                prevComponent = dataComponent;
+                            }
+                        }
+                    }
+
                 }
             }
             calculateMaxComponentCounter(componentCounter);
@@ -127,8 +171,8 @@ public class DataComponentPanel extends JPanel {
     public void fillEmptyComponents() {
         while (componentCounter < maxComponentCounter) {
             JTextField text = new JTextField("");
-            text.setBackground(new java.awt.Color(240, 240, 240));
-            text.setBorder(BorderFactory.createLineBorder(new java.awt.Color(240, 240, 240), 3));
+            text.setOpaque(false);
+            text.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
             text.setEditable(false);
             text.setComponentOrientation(getComponentOrientation());
             gridBagConstraints.gridy++;
@@ -148,5 +192,10 @@ public class DataComponentPanel extends JPanel {
         if (maxComponentCounter < componentCounter) {
             maxComponentCounter = componentCounter;
         }
+    }
+
+
+    public DataComponent getPrevComponent() {
+        return prevComponent;
     }
 }
