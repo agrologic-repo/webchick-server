@@ -129,6 +129,14 @@ public interface ControllerDao {
     void removeChangedValue(Long controllerId, Long dataId) throws SQLException;
 
     /**
+     * Remove all value that has to be changed on the controller .
+     *
+     * @param controllerId the controller id .
+     * @throws java.sql.SQLException if failed to remove data value .
+     */
+    void removeAllChangedValue(Long controllerId) throws SQLException;
+
+    /**
      * Insert new data value into #newcontrollerdata table .
      * <p/>
      * This data value have to be sent to controller during communication .

@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -87,6 +88,15 @@ public final class SocketThread extends Observable implements Runnable, Network 
         }
     }
 
+    private void clearAllChangedDataInControllers() throws SQLException {
+        DatabaseLoadAccessor dla = dbManager.getDatabaseLoader();
+        Collection<Controller> controllers = dla.getUser().getCellinks().iterator().next().getControllers();
+        DatabaseAccessor dbaccessor = dbManager.getDatabaseGeneralService();
+        for (Controller c : controllers) {
+            dbaccessor.getControllerDao().removeAllChangedValue(c.getId());
+        }
+    }
+
     @Override
     public void run() {
         int errCount = 0;
@@ -106,6 +116,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                         break;
 
                     case STATE_STARTING:
+                        clearAllChangedDataInControllers();
                         startingCommunication();
 
                         break;

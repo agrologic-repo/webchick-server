@@ -197,6 +197,13 @@ public class ControllerDaoImpl implements ControllerDao {
         jdbcTemplate.update(sql, new Object[]{id, dataId});
     }
 
+    @Override
+    public void removeAllChangedValue(Long id) throws SQLException {
+        logger.debug("Delete controller data that was sent to change to controller with id [{}]", id);
+        String sql = "delete from newcontrollerdata where ControllerID=?";
+        jdbcTemplate.update(sql, new Object[]{id});
+    }
+
     /**
      * {@inheritDoc}
      */
