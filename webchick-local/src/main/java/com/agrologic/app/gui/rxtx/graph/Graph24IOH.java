@@ -152,11 +152,11 @@ public class Graph24IOH extends AbstractGraph {
                 return timeSeriesCollection;
             } else {
                 final TimeSeries insideTempSeries = new TimeSeriesCreator(dictionary.get("graph.ioh.series.inside"),
-                        IN_TEMP_INDEX, -1, -1).invoke();
+                        IN_TEMP_INDEX, -1, -1, DataFormat.DEC_1).invoke();
                 timeSeriesCollection.addSeries(insideTempSeries);
 
                 final TimeSeries outsideTempSeries = new TimeSeriesCreator(dictionary.get("graph.ioh.series.outside"),
-                        OUT_TEMP_INDEX, -1, -1).invoke();
+                        OUT_TEMP_INDEX, -1, -1, DataFormat.DEC_1).invoke();
 
                 timeSeriesCollection.addSeries(outsideTempSeries);
                 return timeSeriesCollection;
@@ -179,7 +179,7 @@ public class Graph24IOH extends AbstractGraph {
                 return timeSeriesCollection;
             } else {
                 final TimeSeries humiditySeries = new TimeSeriesCreator(dictionary.get("graph.ioh.series.humidity"),
-                        HUMIDITY_INDEX, 100, 0).invoke();
+                        HUMIDITY_INDEX, 100, 0, DataFormat.DEC_0).invoke();
 
                 timeSeriesCollection.addSeries(humiditySeries);
 
@@ -198,12 +198,15 @@ public class Graph24IOH extends AbstractGraph {
         private int startIndex;
         private int maxYValue;
         private int minYValue;
+        private int format;
 
-        public TimeSeriesCreator(String name, int startIndex, int maxYValue, int minYValue) {
+        public TimeSeriesCreator(String name, int startIndex, int maxYValue, int minYValue, int format) {
             this.name = name;
             this.startIndex = startIndex;
             this.maxYValue = maxYValue;
             this.minYValue = minYValue;
+            this.format = format;
+
         }
 
         public TimeSeries invoke() {
@@ -222,7 +225,7 @@ public class Graph24IOH extends AbstractGraph {
 
 
             for (int i = startIndex + DAY_HOURS - 1; i >= startIndex; i--, hour--) {
-                String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
+                String value = DataFormat.formatToStringValue(format, Long.valueOf(datasetString[i]));
                 float floatValue = Float.valueOf(value);
                 series.add(new Hour(hour, today), floatValue);
 
