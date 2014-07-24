@@ -12,14 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataComponent {
+    private JLabel label;
     private JComponent component;
+    private ComponentOrientation componentOrientation;
+
     private Controller controller;
     private DataController data;
     private DatabaseAccessor dbaccess;
-    private JLabel label;
     private List<ProgramAlarm> programAlarms;
     private ProgramRelay relay;
-    private ComponentOrientation componentOrientation;
+    private ProgramActionSet programActionSet;
 
     /**
      * Constructor to create alarm component
@@ -27,7 +29,8 @@ public class DataComponent {
      * @param dataController
      * @param pas
      */
-    public DataComponent(DataController dataController, List<ProgramAlarm> pas, ComponentOrientation componentOrientation) {
+    public DataComponent(DataController dataController, ComponentOrientation componentOrientation,
+                         List<ProgramAlarm> pas) {
         this.componentOrientation = componentOrientation;
         data = dataController;
         programAlarms = new ArrayList<ProgramAlarm>();
@@ -50,7 +53,8 @@ public class DataComponent {
      * @param psss
      * @param defaultText
      */
-    public DataComponent(DataController dataController, List<ProgramSystemState> psss, String defaultText, ComponentOrientation componentOrientation) {
+    public DataComponent(DataController dataController, ComponentOrientation componentOrientation,
+                         List<ProgramSystemState> psss, String defaultText) {
         this.componentOrientation = componentOrientation;
         data = dataController;
         if (data.getValue() == null) {
@@ -77,7 +81,8 @@ public class DataComponent {
      * @param dataController
      * @param programRelay
      */
-    public DataComponent(DataController dataController, ProgramRelay programRelay, ComponentOrientation componentOrientation) {
+    public DataComponent(DataController dataController, ComponentOrientation componentOrientation,
+                         ProgramRelay programRelay) {
         this.componentOrientation = componentOrientation;
         data = dataController;
         relay = programRelay;
@@ -89,18 +94,32 @@ public class DataComponent {
     /**
      * Constructor to create data component
      *
-     * @param d
+     * @param dataController
      * @param c
      * @param dba
      */
-    public DataComponent(DataController d, Controller c, DatabaseAccessor dba, ComponentOrientation componentOrientation) {
+    public DataComponent(DataController dataController, ComponentOrientation componentOrientation, Controller c,
+                         DatabaseAccessor dba) {
         this.componentOrientation = componentOrientation;
         controller = c;
         dbaccess = dba;
-        data = d;
+        data = dataController;
         label = new JLabel("<html>" + data.getUnicodeLabel() + "</html>");
         label.setOpaque(true);
         component = createComponent();
+        component.setForeground(new Color(0, 100, 0));
+        Font font = component.getFont();
+        component.setFont(new Font(font.getFontName(), Font.BOLD, font.getSize()));
+    }
+
+    public DataComponent(ProgramActionSet pas, ComponentOrientation componentOrientation, Controller c, DatabaseAccessor dba) {
+        this.componentOrientation = componentOrientation;
+        controller = c;
+        dbaccess = dba;
+        programActionSet = pas;
+        label = new JLabel("<html></html>");
+        label.setOpaque(true);
+        component = createActionButtonComponent();
         component.setForeground(new Color(0, 100, 0));
         Font font = component.getFont();
         component.setFont(new Font(font.getFontName(), Font.BOLD, font.getSize()));
@@ -212,12 +231,12 @@ public class DataComponent {
     }
 
     private JComponent createReadWriteComponent() {
-        String formatedValue = "-1";
+        String formattedValue = "-1";
         if (data.getValue() != null) {
-            formatedValue = DataFormat.formatToStringValue(data.getFormat(), data.getValueToUI());
+            formattedValue = DataFormat.formatToStringValue(data.getFormat(), data.getValueToUI());
         }
 
-        final DataTextField dataText = new DataTextField(formatedValue, controller.getId(), data, dbaccess);
+        final DataTextField dataText = new DataTextField(formattedValue, controller.getId(), data, dbaccess);
         data.addDataChangeListener(dataText);
         dataText.setPreferredSize(new Dimension(50, 20));
         if (componentOrientation == ApplicationLocal.orientationLTR) {
@@ -226,6 +245,11 @@ public class DataComponent {
             dataText.setHorizontalAlignment(JTextField.RIGHT);
         }
         return dataText;
+    }
+
+    private JComponent createActionButtonComponent() {
+        JComponent returnCompon = new ActionButton(programActionSet.getUnicodeLabel(), controller.getId(), programActionSet, dbaccess);
+        return returnCompon;
     }
 
     private JComponent createPasswordReadWriteComponent() {
@@ -343,7 +367,6 @@ public class DataComponent {
 
             }
         });
-
 
         Font font = jComponent.getFont();
         jComponent.setFont(new Font(font.getFontName(), Font.BOLD, font.getSize()));

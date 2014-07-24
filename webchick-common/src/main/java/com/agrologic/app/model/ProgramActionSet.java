@@ -1,21 +1,36 @@
-
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.model;
 
 import java.io.Serializable;
 
-public class ActionSet implements Serializable {
+public class ProgramActionSet implements Serializable {
     private static final long serialVersionUID = 2L;
     private Long dataId;
+    private String displayOnPage;
     private String label;
-    private Long valueId;
-    private Long langId;
+    private Integer position;
+    private Long programId;
+    private Long screenId;
     private String unicodeLabel;
+    private Long valueId;
 
-    public ActionSet() {
+    public ProgramActionSet() {
+        position = 0;
+    }
+
+    public Long getProgramId() {
+        return programId;
+    }
+
+    public void setProgramId(Long programId) {
+        this.programId = programId;
+    }
+
+    public Long getScreenId() {
+        return screenId;
+    }
+
+    public void setScreenId(Long screenId) {
+        this.screenId = screenId;
     }
 
     public Long getDataId() {
@@ -32,6 +47,14 @@ public class ActionSet implements Serializable {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public Long getValueId() {
+        return valueId;
+    }
+
+    public void setValueId(Long valueId) {
+        this.valueId = valueId;
     }
 
     /**
@@ -54,20 +77,30 @@ public class ActionSet implements Serializable {
         this.unicodeLabel = unicodeLabel;
     }
 
-    public Long getValueId() {
-        return valueId;
+    public String isDisplayOnPage() {
+        return displayOnPage;
     }
 
-    public void setValueId(Long valueId) {
-        this.valueId = valueId;
+    public void setDisplayOnPage(String displayOnPage) {
+        this.displayOnPage = displayOnPage;
     }
 
-    public Long getLangId() {
-        return langId;
+    public String isChecked() {
+        if (displayOnPage == null) {
+            return "";
+        }
+
+        return (displayOnPage.equals("yes") == true)
+                ? "checked"
+                : "";
     }
 
-    public void setLangId(Long langId) {
-        this.langId = langId;
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 
     @Override
@@ -80,7 +113,7 @@ public class ActionSet implements Serializable {
             return false;
         }
 
-        final ActionSet other = (ActionSet) obj;
+        final ProgramActionSet other = (ProgramActionSet) obj;
 
         if ((this.valueId != other.valueId) && ((this.valueId == null) || !this.valueId.equals(other.valueId))) {
             return false;
@@ -100,3 +133,6 @@ public class ActionSet implements Serializable {
         return hash;
     }
 }
+
+
+

@@ -27,8 +27,11 @@
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
-    <bean id="programSystemStateDao" class="com.agrologic.app.dao.mysql.impl.ProgramSystemStateDaoImpl"
-            >
+    <bean id="programSystemStateDao" class="com.agrologic.app.dao.mysql.impl.ProgramSystemStateDaoImpl">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="programActionSetDao" class="com.agrologic.app.dao.mysql.impl.ProgramActionSetDaoImpl">
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
@@ -45,6 +48,10 @@
     </bean>
 
     <bean id="dataDao" class="com.agrologic.app.dao.mysql.impl.DataDaoImpl">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="actionSetDao" class="com.agrologic.app.dao.mysql.impl.ActionSetDaoImpl">
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
@@ -109,10 +116,6 @@
     </bean>
 
     <bean id="domainDao" class="com.agrologic.app.dao.mysql.impl.DomainDaoImpl">
-        <constructor-arg index="0" ref="jdbcTemplate"/>
-    </bean>
-
-    <bean id="actionDao" class="com.agrologic.app.dao.mysql.impl.ActionSetDaoImpl">
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 

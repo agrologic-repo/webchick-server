@@ -8,9 +8,9 @@
         <constructor-arg index="0" ref="dataSource"/>
     </bean>
 
-    <bean id="daoParent" abstract="true">
-        <constructor-arg type="com.agrologic.app.dao.DaoFactory" ref="daoFactory"/>
-    </bean>
+    <!--<bean id="daoParent" abstract="true">-->
+    <!--<constructor-arg type="com.agrologic.app.dao.DaoFactory" ref="daoFactory"/>-->
+    <!--</bean>-->
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
@@ -55,6 +55,12 @@
     </aop:config>
 
     <aop:config>
+        <aop:pointcut id="programActionSetTxPointcut"
+                      expression="within(com.agrologic.app.dao.ProgramActionSetDao+)"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="programActionSetTxPointcut"/>
+    </aop:config>
+
+    <aop:config>
         <aop:pointcut id="programTxPointcut" expression="within(com.agrologic.app.dao.ProgramDao+)"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="programTxPointcut"/>
     </aop:config>
@@ -72,6 +78,11 @@
     <aop:config>
         <aop:pointcut id="dataTxPointcut" expression="within(com.agrologic.app.dao.DataDao+)"/>
         <aop:advisor advice-ref="txAdvice" pointcut-ref="dataTxPointcut"/>
+    </aop:config>
+
+    <aop:config>
+        <aop:pointcut id="actionSetTxPointcut" expression="within(com.agrologic.app.dao.ActionSetDao+)"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="actionSetTxPointcut"/>
     </aop:config>
 
     <aop:config>
@@ -188,7 +199,7 @@
                 <property name="idleConnectionTestPeriod" value="3600"/>
                 <!--This option is useful if threads are waiting for the connection from pool. Without this threads would wait
                 forever and you're risking to get your app down if all the threads stuck.-->
-                <property name="maxPoolSize" value="100"/>
+                <property name="maxPoolSize" value="500"/>
                 <!--<property name="checkoutTimeout" value="0"/>-->
                 <!--<property name="testConnectionOnCheckin" value="true"/>-->
                 <!--<property name="acquireIncrement" value="3"/>-->

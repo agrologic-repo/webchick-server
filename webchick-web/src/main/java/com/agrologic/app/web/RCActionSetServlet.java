@@ -32,8 +32,7 @@ public class RCActionSetServlet extends AbstractServlet {
             long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             long controllerId = Long.parseLong(request.getParameter("controllerId"));
             long screenId = Long.parseLong(request.getParameter("screenId"));
-            String lang = (String) request.getAttribute("lang");
-
+            String lang = request.getParameter("lang");
             if ((lang == null) || lang.equals("")) {
                 lang = "en";
             }
@@ -54,12 +53,12 @@ public class RCActionSetServlet extends AbstractServlet {
                 program.setScreens((List<Screen>) screens);
                 controller.setProgram(program);
 
-                ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDao.class);
-                List<ActionSet> actionset = actionsetDao.getAllOnScreen(program.getId(), langId);
+                ProgramActionSetDao programActionSetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramActionSetDao.class);
+                List<ProgramActionSet> programActionSets = programActionSetDao.getAllOnScreen(program.getId(), langId);
 
                 logger.info("retrieve program action set!");
                 request.setAttribute("controller", controller);
-                request.setAttribute("actionset", actionset);
+                request.setAttribute("programactionset", programActionSets);
                 request.getRequestDispatcher("./rmctrl-controller-actionset.jsp?userId" + userId + "&cellinkId="
                         + cellinkId + "&screenId=" + screenId).forward(request, response);
             } catch (SQLException ex) {

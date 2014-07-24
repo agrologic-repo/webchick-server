@@ -21,7 +21,7 @@
         ptl = "1";
     }
     Long translateLang = Long.parseLong(ptl);
-    Collection<ActionSet> actionsets = (Collection<ActionSet>) request.getAttribute("actionset");
+    Collection<ProgramActionSet> programactionsets = (Collection<ProgramActionSet>) request.getAttribute("programactionsets");
 %>
 
 
@@ -151,7 +151,7 @@
                     <tr>
                         <td colSpan=3>
                             <p>
-                                <b><%=actionsets.size()  %>
+                                <b><%=programactionsets.size()  %>
                                 </b> <%=session.getAttribute("label.records")%>
                             </p>
 
@@ -175,28 +175,28 @@
                                     <th align="center" width="100px">Position</th>
                                     </thead>
                                     <% int cnt = 0;%>
-                                    <%for (ActionSet asd : actionsets) {%>
+                                    <%for (ProgramActionSet pasd : programactionsets) {%>
                                     <% if ((cnt % 2) == 0) {%>
                                     <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
                                             <%} else {%>
                                     <tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">
                                         <%}%>
                                         <td>
-                                            <%=asd.getValueId() %>
+                                            <%=pasd.getValueId() %>
                                         </td>
                                         <td>
-                                            <%=asd.getLabel()%>
+                                            <%=pasd.getLabel()%>
                                         </td>
-                                        <td ondblclick="window.open('add-actionsettranslate.jsp?valueId=<%=asd.getValueId()%>&langId=<%=translateLang%>&actionsetLabel=<%=asd.getLabel()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');">
-                                            <%=asd.getUnicodeLabel() %>
+                                        <td ondblclick="window.open('add-actionsettranslate.jsp?valueId=<%=pasd.getValueId()%>&langId=<%=translateLang%>&actionsetLabel=<%=pasd.getLabel()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');">
+                                            <%=pasd.getUnicodeLabel() %>
                                         </td>
                                         </td>
                                         <td align="center" width="100px">
-                                            <input type="checkbox" id="list" name="list" <%=asd.isChecked()%>
-                                                   value="<%=asd.getValueId()%>"
-                                                   onclick="check(<%=asd.getValueId()%>);"/></td>
+                                            <input type="checkbox" id="list" name="list" <%=pasd.isChecked()%>
+                                                   value="<%=pasd.getValueId()%>"
+                                                   onclick="check(<%=pasd.getValueId()%>);"/></td>
                                         <td align="center" width="100px">
-                                            <input type="text" name="position" value="<%=asd.getPosition()%>" size="5">
+                                            <input type="text" name="position" value="<%=pasd.getPosition()%>" size="5">
                                         </td>
                                     </tr>
                                     <%cnt++;%>

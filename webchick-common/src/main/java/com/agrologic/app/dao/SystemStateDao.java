@@ -77,7 +77,7 @@ public interface SystemStateDao {
     /**
      * Retrieves all systemStates
      *
-     * @return systemStates a vector of SystemState objects, each object reflects a row in table systemState
+     * @return Collection of SystemState objects, each object reflects a row in table systemState
      * @throws java.sql.SQLException if failed to retrieve all systemState from the database
      */
     Collection<SystemState> getAll() throws SQLException;
@@ -85,7 +85,7 @@ public interface SystemStateDao {
     /**
      * Retrieves all systemStates by language
      *
-     * @return systemStates a vector of SystemState objects, each object reflects a row in table systemState
+     * @return Collection of SystemState objects, each object reflects a row in table systemState
      * @throws java.sql.SQLException if failed to retrieve all systemState from the database
      */
     Collection<SystemState> getAll(Long langId) throws SQLException;
@@ -93,7 +93,7 @@ public interface SystemStateDao {
     /**
      * Retrieves all system states with translation
      *
-     * @return relays a Collection of SystemState objects, each object reflects a row in table system state
+     * @return Collection of SystemState objects, each object reflects a row in table system state
      * @throws java.sql.SQLException if failed to retrieve all system state from the database
      */
     Collection<SystemState> getAllWithTranslation() throws SQLException;

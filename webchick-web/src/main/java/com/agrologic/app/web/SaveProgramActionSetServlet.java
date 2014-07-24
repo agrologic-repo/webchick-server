@@ -1,11 +1,11 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.ActionSetDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.ProgramActionSetDao;
 import com.agrologic.app.dao.ProgramDao;
-import com.agrologic.app.model.ActionSet;
 import com.agrologic.app.model.Program;
+import com.agrologic.app.model.ProgramActionSet;
 import com.agrologic.app.util.DateLocal;
 
 import javax.servlet.ServletException;
@@ -74,11 +74,11 @@ public class SaveProgramActionSetServlet extends AbstractServlet {
                 }
 
                 try {
-                    ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDao.class);
-                    actionsetDao.saveChanges(programId, screenId, showTableMap, posDataMap);
-                    Collection<ActionSet> actionset = actionsetDao.getAll(programId);
+                    ProgramActionSetDao programActionSetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramActionSetDao.class);
+                    programActionSetDao.saveChanges(programId, screenId, showTableMap, posDataMap);
+                    Collection<ProgramActionSet> programActionSets = programActionSetDao.getAllOnScreen(programId);
 
-                    request.setAttribute("actionset", actionset);
+                    request.setAttribute("programactionset", programActionSets);
 
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     Program program = programDao.getById(programId);

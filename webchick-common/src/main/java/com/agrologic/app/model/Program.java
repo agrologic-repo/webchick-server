@@ -6,6 +6,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Program implements Serializable, Comparable<Program> {
@@ -19,6 +20,7 @@ public class Program implements Serializable, Comparable<Program> {
     private List<ProgramSystemState> programSystemStates;
     private List<Screen> screens;
     private List<Data> specialList;
+    private List<ProgramActionSet> programActionSet;
 
     public Long getId() {
         return id;
@@ -194,6 +196,15 @@ public class Program implements Serializable, Comparable<Program> {
     public void setSpecialList(List<Data> sl) {
         this.specialList = sl;
     }
+
+    public Collection<ProgramActionSet> getProgramActionSet() {
+        return programActionSet;
+    }
+
+    public void setProgramActionSet(List<ProgramActionSet> programActionSet) {
+        this.programActionSet = programActionSet;
+    }
 }
+
 
 

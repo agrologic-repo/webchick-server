@@ -3,41 +3,90 @@ package com.agrologic.app.dao;
 import com.agrologic.app.model.ActionSet;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
+/**
+ * DAO for the {@link  com.agrologic.app.model.ActionSet}. It provides all CRUD operations to work with
+ * {@link com.agrologic.app.model.ActionSet} objects.
+ *
+ * @author Valery Manakhimov
+ */
 public interface ActionSetDao {
+    /**
+     * Insert a new action set row to table action set .
+     *
+     * @param actionSet an objects that encapsulates an action set attributes .
+     * @throws java.sql.SQLException if failed to insert new alarm to the database .
+     */
+    void insert(ActionSet actionSet) throws SQLException;
 
-    public ActionSet getById(Long valueId) throws SQLException;
+    /**
+     * Updates an existing action set row in table action set
+     *
+     * @param actionSet an object that encapsulates an action set attributes
+     * @throws java.sql.SQLException if failed to update the action set in the database
+     */
+    void update(ActionSet actionSet) throws SQLException;
 
-    public void insert(ActionSet ActionSet) throws SQLException;
+    /**
+     * Removes an actionSet from the database
+     *
+     * @param valueId the id of the actionSet to be removed from the database
+     * @throws java.sql.SQLException if failed to remove the action set from the database
+     */
+    void remove(Long valueId) throws SQLException;
 
-    public void update(ActionSet ActionSet) throws SQLException;
+    /**
+     * Add translation to action set button in specified language
+     *
+     * @param valueId   the value id
+     * @param langId    the language id
+     * @param translate the translation text
+     * @throws SQLException if failed to insert to the action set by language table
+     */
+    void insertActionSetTranslation(Long valueId, Long langId, String translate) throws SQLException;
 
-    public void remove(Long ActionSetId) throws SQLException;
+    /**
+     * Insert the list of system state names
+     *
+     * @param actionSetsList the action set list
+     * @throws java.sql.SQLException if failed to insert to the action set table
+     */
+    void insert(Collection<ActionSet> actionSetsList) throws SQLException;
 
-    public void insertProgramActionSet(ActionSet actionSet) throws SQLException;
+    /**
+     * Insert the list of action set with translation to action set by language table.
+     * This is a dictionary of action set types .
+     *
+     * @param actionSetsList the action set list with translation to all languages that exist in system
+     * @throws java.sql.SQLException if failed to insert to the action set by language table
+     */
+    void insertTranslation(Collection<ActionSet> actionSetsList) throws SQLException;
 
-    public List<ActionSet> getAll() throws SQLException;
+    /**
+     * Get the action set by value id
+     *
+     * @param valueId the id of action set object
+     * @return ActionSet an objects that encapsulates an action set attributes
+     * @throws java.sql.SQLException if failed to get to the action set by value
+     */
+    ActionSet getById(Long valueId) throws SQLException;
 
-    public List<ActionSet> getAll(Long programId) throws SQLException;
+    /**
+     * Retrieves all action set
+     *
+     * @return Collection of ActionSet objects, each object reflects a row in table action set
+     * @throws java.sql.SQLException if failed to retrieve all action set from the database
+     */
+    Collection<ActionSet> getAll() throws SQLException;
 
-    public List<ActionSet> getAll(Long programId, Long langId) throws SQLException;
-
-    public List<ActionSet> getAllOnScreen(Long programid) throws SQLException;
-
-    public List<ActionSet> getAllOnScreen(Long programId, Long langId) throws SQLException;
-
-    public void insertActionSetList(List<ActionSet> actionsetList, Long programId) throws SQLException;
-
-    public void saveChanges(Map<Long, String> showMap, Map<Long, Integer> positionMap, Long programId)
-            throws SQLException;
-
-    public void saveChanges(Long programId, Long screenId, Map<Long, String> showTableMap,
-                            Map<Long, Integer> posDataMap)
-            throws SQLException;
-
-    public void insertActionSetTranslation(Long actionsetId, Long langId, String translate) throws SQLException;
+    /**
+     * Retrieves all action set with translation
+     *
+     * @return Collection of action set objects, each object reflects a row in table action set
+     * @throws java.sql.SQLException if failed to retrieve all action set from the database
+     */
+    Collection<ActionSet> getAllWithTranslation() throws SQLException;
 }
 
 

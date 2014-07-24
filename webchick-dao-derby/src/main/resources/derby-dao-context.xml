@@ -28,8 +28,11 @@
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
-    <bean id="programSystemStateDao" class="com.agrologic.app.dao.derby.impl.DerbyProgramSystemStateDaoImpl"
-            >
+    <bean id="programSystemStateDao" class="com.agrologic.app.dao.derby.impl.DerbyProgramSystemStateDaoImpl">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="programActionSetDao" class="com.agrologic.app.dao.derby.impl.DerbyProgramActionSetDaoImpl">
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 
@@ -46,6 +49,10 @@
     </bean>
 
     <bean id="dataDao" class="com.agrologic.app.dao.derby.impl.DerbyDataDaoImpl">
+        <constructor-arg index="0" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="actionSetDao" class="com.agrologic.app.dao.derby.impl.DerbyActionSetDaoImpl">
         <constructor-arg index="0" ref="jdbcTemplate"/>
     </bean>
 

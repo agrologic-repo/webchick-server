@@ -18,17 +18,14 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class SecondScreenPanel extends JPanel implements ScreenUI {
-    private static final int SCROLL_UNIT_INCREMENT = 32;
+public class SecondScreenPanel extends JPanel implements ScreenPanelUI {
     private static Logger logger = LoggerFactory.getLogger(SecondScreenPanel.class);
-    private static int maxComponentCounter = 0;
     private final DatabaseManager dbManager;
-    private int componentCounter = 0;
     private ApplicationLocal parent;
     private JLabel lblTitle;
-    private GridBagConstraints gridBagConstraints;
     private JButton button;
     private JPanel topPanel;
     private JPanel mainContentPanel;
@@ -43,9 +40,11 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
     private List<ProgramSystemState> programSystemStates;
     private Runnable task;
     private ScheduledExecutorService executor;
+    private ScheduledFuture<?> future;
     private TreeMap<Screen, TreeMap<Table, List<DataController>>> screenTableDataMap;
 
-    public SecondScreenPanel(final DatabaseManager dbManager, final Controller controller, final ComponentOrientation componentOrientation) {
+    public SecondScreenPanel(final DatabaseManager dbManager, final Controller controller,
+                             final ComponentOrientation componentOrientation) {
         super(new BorderLayout());
         this.dbManager = dbManager;
         this.controller = controller;
@@ -96,6 +95,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                 showFirstScrollPane();
                 stopTimerThread();
                 mainScreenPanel.destroySecondScreen();
+
                 repaint();
                 invalidate();
             }
@@ -104,6 +104,9 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         return buttonTemp;
     }
 
+    /**
+     * @return
+     */
     private JLabel createHouseNameLabel() {
         JLabel label = new JLabel("<html>" + controller.getTitle() + "</html>");
         label.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -123,11 +126,11 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
         secondScrollPane = null;
         firstScrollPane.setVisible(true);
 
-        for (Component c : parent.getContentPane().getComponents()) {
-            if (c instanceof SecondScreenPanel) {
-
-            }
-        }
+//        for (Component c : parent.getContentPane().getComponents()) {
+//            if (c instanceof SecondScreenPanel) {
+//
+//            }
+//        }
         parent.getContentPane().add(firstScrollPane);
         parent.validate();
         parent.repaint();
@@ -162,18 +165,21 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
     }
 
     /**
-     * Start data updator task
+     * Start data updater task
      */
     public void startTimerThread() {
         executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
+        future = executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
     }
 
     /**
-     * Stop data updator
+     * Stop data updater task
      */
     public void stopTimerThread() {
-        executor.shutdown();
+        future.cancel(true);
+        while (!executor.isShutdown()) {
+            executor.shutdown();
+        }
     }
 
     /**
@@ -189,6 +195,8 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
             programAlarms = dbaccess.getProgramAlarmDao().getAllProgramAlarms(program.getId(), dbManager.getDatabaseLoader().getLangId());
             program.setProgramAlarms(programAlarms);
             programSystemStates = dbaccess.getProgramSystemStateDao().getAllProgramSystemStates(program.getId(), dbManager.getDatabaseLoader().getLangId());
+
+
         } catch (SQLException ex) {
             logger.debug("Loading data error .", ex);
         }
@@ -199,6 +207,7 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
 
         for (Screen screen : program.getScreens()) {
             if (!skipScreen(screen)) {
+                logger.debug("screen title : {} ", screen);
                 Collection<Table> tableList = screen.getTables();
                 if (tableList != null) {
                     TreeMap<Table, List<DataController>> tableDataMap = new TreeMap<Table, List<DataController>>();
@@ -251,13 +260,25 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
 
         while (listIterator.hasNext()) {
             Screen screen = listIterator.next();
-            JPanel screenPanel = new JPanel();
+            JPanel screenPanel = new JPanel(new ModifiedFlowLayout(FlowLayout.CENTER));
             screenPanel.setComponentOrientation(getComponentOrientation());
             if (screen.getTitle().equals("Graphs")) {
                 logger.info("Initialization screen with graphs {} ", screen);
                 JPanel graphPanel = new JPanel(new FlowLayout());
                 graphPanel.add(new Graphs24HourPanel(controller.getId()));
                 screenPanel.add(graphPanel);
+                tabsPane.add("<html>" + screen.getUnicodeTitle() + "</html>", screenPanel);
+            } else if (screen.getTitle().equals("Action Set Buttons")) {
+                logger.info("Initialization screen with graphs {} ", screen);
+                JPanel tableContentPanel = new JPanel(new FlowLayout());
+                List<ProgramActionSet> programActionSets = (List<ProgramActionSet>) program.getProgramActionSet();
+                for (ProgramActionSet pas : programActionSets) {
+                    DataComponent component = ComponentFactory.createActionButtonComponent(pas, getComponentOrientation(), controller,
+                            dbManager.getDatabaseGeneralService());
+                    tableContentPanel.add(component.getComponent());
+                }
+                tableContentPanel.setComponentOrientation(getComponentOrientation());
+                screenPanel.add(tableContentPanel);
                 tabsPane.add("<html>" + screen.getUnicodeTitle() + "</html>", screenPanel);
             } else {
                 logger.info("Initialization screen without graphs {} ", screen);
@@ -274,9 +295,17 @@ public class SecondScreenPanel extends JPanel implements ScreenUI {
                     while (iterator.hasNext()) {
                         Table table = iterator.next();
                         List<DataController> dataControllerList = tableDataMap.get(table);
-                        dataComponentPanels[counter] = new DataComponentPanel(controller, program, programAlarms,
-                                programRelays, programSystemStates, dbManager.getDatabaseGeneralService(),
-                                getComponentOrientation(), table, dataControllerList);
+                        if (counter == 0) {
+                            dataComponentPanels[counter] = new DataComponentPanel(controller, program, programAlarms,
+                                    programRelays, programSystemStates, dbManager.getDatabaseGeneralService(),
+                                    getComponentOrientation(), table, dataControllerList);
+                        } else {
+                            dataComponentPanels[counter] = new DataComponentPanel(controller, program, programAlarms,
+                                    programRelays, programSystemStates, dbManager.getDatabaseGeneralService(),
+                                    getComponentOrientation(), table, dataControllerList,
+                                    dataComponentPanels[counter - 1].getPrevComponent());
+                        }
+
                         dataComponentPanels[counter].setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
                         tableContentPanel.add(dataComponentPanels[counter]);
                         counter++;

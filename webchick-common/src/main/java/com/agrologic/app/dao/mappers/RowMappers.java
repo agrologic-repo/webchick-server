@@ -2,14 +2,20 @@ package com.agrologic.app.dao.mappers;
 
 import com.agrologic.app.model.*;
 import com.agrologic.app.util.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class RowMappers {
+
+    protected final static Logger logger = LoggerFactory.getLogger(RowMappers.class);
+
 
     public static LanguageMapper language() {
         return new LanguageMapper();
@@ -115,10 +121,13 @@ public class RowMappers {
         return new ActionSetMapper();
     }
 
+    public static ProgramActionSetMapper programAcctionSet() {
+        return new ProgramActionSetMapper();
+    }
+
     public static EggsMapper eggs() {
         return new EggsMapper();
     }
-
 
     private static class LanguageMapper implements RowMapper<Language> {
 
@@ -344,16 +353,11 @@ public class RowMappers {
 
         @Override
         public Data mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Locale locale = Locale.getDefault();
+            Locale.setDefault(Locale.ENGLISH);
+
             Data data = new Data();
-            data.setId(rs.getLong("DataID".toUpperCase()));
-            data.setType(rs.getLong("Type".toUpperCase()));
-            data.setStatus(rs.getBoolean("Status".toUpperCase()));
-            data.setReadonly(rs.getBoolean("ReadOnly".toUpperCase()));
-            data.setTitle(rs.getString("Title".toUpperCase()));
-            data.setFormat(rs.getInt("Format".toUpperCase()));
-            data.setLabel(rs.getString("Label".toUpperCase()));
-            data.setSpecial(rs.getInt("IsSpecial".toUpperCase()));
-            data.setIsRelay(rs.getBoolean("IsRelay".toUpperCase()));
+
 
             HashMap dataMap = new HashMap();
             ResultSetMetaData metaData = rs.getMetaData();
@@ -363,6 +367,15 @@ public class RowMappers {
                 dataMap.put(metaData.getColumnName(i).toUpperCase(), rs.getObject(metaData.getColumnName(i)));
             }
 
+            data.setId(rs.getLong("DataID".toUpperCase()));
+            data.setType(rs.getLong("Type".toUpperCase()));
+            data.setStatus(rs.getBoolean("Status".toUpperCase()));
+            data.setReadonly(rs.getBoolean("ReadOnly".toUpperCase()));
+            data.setTitle(rs.getString("Title".toUpperCase()));
+            data.setFormat(rs.getInt("Format".toUpperCase()));
+            data.setLabel(rs.getString("Label".toUpperCase()));
+            data.setSpecial(rs.getInt("IsSpecial".toUpperCase()));
+            data.setIsRelay(rs.getBoolean("IsRelay".toUpperCase()));
 
             // if position doesn't occur in result set ignore
             if (dataMap.get("Position".toUpperCase()) != null) {
@@ -405,6 +418,9 @@ public class RowMappers {
             if (dataMap.get("HistoryData".toUpperCase()) != null) {
                 data.setHistoryData(rs.getString("HistoryData"));
             }
+
+            Locale.setDefault(locale);
+
             return data;
         }
     }
@@ -422,7 +438,15 @@ public class RowMappers {
             controller.setCellinkId(rs.getLong("CellinkId"));
             controller.setProgramId(rs.getLong("ProgramId"));
             controller.setActive(rs.getBoolean("Active"));
-            controller.setHouseType(rs.getString("HouseType"));
+
+            try {
+                //Compatibility to previous version 6.6.3
+                controller.setHouseType(rs.getString("HouseType"));
+            } catch (SQLException ex) {
+                //
+                controller.setHouseType("");
+            }
+
             return controller;
         }
     }
@@ -868,33 +892,57 @@ public class RowMappers {
             }
 
             try {
-                actionSet.setScreenId(rs.getLong("ScreenId"));
+                actionSet.setLangId(rs.getLong("LangId"));
             } catch (SQLException e) {
-
-                // ignore
+                actionSet.setLangId(1L);
             }
 
-            try {
-                actionSet.setProgramId(rs.getLong("ProgramId"));
-            } catch (SQLException e) {
-
-                // ignore
-            }
-
-            try {
-                actionSet.setPosition(rs.getInt("Position"));
-            } catch (SQLException e) {
-
-                // ignore
-            }
-
-            try {
-                actionSet.setDisplayOnPage(rs.getString("DisplayOnPage"));
-            } catch (SQLException e) {
-
-                // ignore
-            }
             return actionSet;
+        }
+    }
+
+    private static class ProgramActionSetMapper implements RowMapper<ProgramActionSet> {
+
+        @Override
+        public ProgramActionSet mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ProgramActionSet programActionSet = new ProgramActionSet();
+            programActionSet.setValueId(rs.getLong("ValueID"));
+            programActionSet.setDataId(rs.getLong("DataID"));
+            programActionSet.setLabel(rs.getString("Label"));
+
+            try {
+                programActionSet.setUnicodeText(rs.getString("UnicodeText"));
+            } catch (SQLException e) {
+                programActionSet.setUnicodeText(rs.getString("Label"));
+            }
+
+            try {
+                programActionSet.setScreenId(rs.getLong("ScreenId"));
+            } catch (SQLException e) {
+                // ignore
+            }
+
+            try {
+                programActionSet.setProgramId(rs.getLong("ProgramId"));
+            } catch (SQLException e) {
+
+                // ignore
+            }
+
+            try {
+                programActionSet.setPosition(rs.getInt("Position"));
+            } catch (SQLException e) {
+
+                // ignore
+            }
+
+            try {
+                programActionSet.setDisplayOnPage(rs.getString("DisplayOnPage"));
+            } catch (SQLException e) {
+
+                // ignore
+            }
+            return programActionSet;
         }
     }
 
@@ -915,5 +963,5 @@ public class RowMappers {
             return eggs;
         }
     }
-
 }
+
