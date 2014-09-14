@@ -31,6 +31,7 @@
     <servlet-mapping>
         <servlet-name>spring-dispatcher</servlet-name>
         <url-pattern>/rmctrl-main-screen.html</url-pattern>
+        <url-pattern>/overview.html</url-pattern>
     </servlet-mapping>
 
 
@@ -117,10 +118,6 @@
     <servlet>
         <servlet-name>RCGraphServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.RCGraphServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>OverviewServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.OverviewServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>PropertySummaryServlet</servlet-name>
@@ -585,10 +582,6 @@
     <servlet-mapping>
         <servlet-name>RCGraphServlet</servlet-name>
         <url-pattern>/rmtctrl-graph.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>OverviewServlet</servlet-name>
-        <url-pattern>/overview.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>PropertySummaryServlet</servlet-name>

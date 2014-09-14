@@ -1,33 +1,32 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page errorPage="anerrorpage.jsp" %>
+<%@ page errorPage="../../anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.Cellink" %>
 <%@ page import="com.agrologic.app.model.CellinkState" %>
 <%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Set" %>
 
-<%@ include file="language.jsp" %>
+<%@ include file="../../language.jsp" %>
+
+<jsp:useBean id="userId" scope="request" type="java.lang.Long"/>
+<jsp:useBean id="of" scope="request" type="java.lang.Integer"/>
+<jsp:useBean id="from" scope="request" type="java.lang.Integer"/>
+<jsp:useBean id="to" scope="request" type="java.lang.Integer"/>
+<jsp:useBean id="searchText" scope="request" type="java.lang.String"/>
+<jsp:useBean id="cellinks" scope="request" type="java.util.Collection"/>
+
+<c:set var="STATE_OFFLINE" value="<%=com.agrologic.app.model.CellinkState.STATE_OFFLINE%>"/>
+<c:set var="STATE_STOP" value="<%=com.agrologic.app.model.CellinkState.STATE_STOP%>"/>
+<c:set var="STATE_RUNNING" value="<%=com.agrologic.app.model.CellinkState.STATE_RUNNING%>"/>
+<c:set var="STATE_START" value="<%=com.agrologic.app.model.CellinkState.STATE_START%>"/>
+<c:set var="STATE_ONLINE" value="<%=com.agrologic.app.model.CellinkState.STATE_ONLINE%>"/>
 
 <% User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./logout.html");
         return;
     }
-
-    int state;
-    try {
-        state = Integer.parseInt(request.getParameter("state"));
-    } catch (Exception e) {
-        state = -1;
-    }
-    request.setAttribute("state", state);
-
-    Collection<Cellink> cellinks = (Collection<Cellink>) request.getAttribute("cellinks");
-    String searchText = request.getParameter("searchText");
-    if (searchText == null || searchText.equals("null")) {
-        searchText = "";
-    }
-    request.setAttribute("searchText", searchText);
 %>
 
 <%! int countCellinksByState(Collection<Cellink> cellinks, int state) {
@@ -77,7 +76,7 @@
 </head>
 <body>
 <div id="header">
-    <%@include file="usermenuontop.jsp" %>
+    <%@include file="../../usermenuontop.jsp" %>
 </div>
 <div id="main-shell">
 <table border="0" cellPadding=1 cellSpacing=1 width="100%">
@@ -92,7 +91,7 @@
             </h2>
         </td>
         <td colspan="2" width="50%">
-            <jsp:include page="messages.jsp"/>
+            <jsp:include page="../../messages.jsp"/>
         </td>
         <% if (user.getRole() == UserRole.ADMIN) {%>
         <td>
@@ -142,7 +141,7 @@
     </tr>
     <tr bgcolor="#D5EFFF">
         <td align="justify" colspan="6">
-            <input type="text" name="searchText" id="searchText" value="<%=searchText%>"/>
+            <input type="text" name="searchText" id="searchText" value="${searchText}"/>
             <img id="search" src="resources/images/search.png" border="0" redirectUrl="./overview.html"/>
             <img id="refresh" src="resources/images/refresh.png" border="0" onclick="redirect('./overview.html')"/>
 
@@ -170,12 +169,12 @@
     </tr>
     <tr>
         <td colspan="5">
-            <jsp:include page="paging.jsp"/>
+            <jsp:include page="../../paging.jsp"/>
         </td>
     </tr>
 </table>
 <table border="0" cellPadding=1 cellSpacing=1 width="100%">
-    <%cellinks = getCellinksByState(cellinks, state);%>
+    <%--<%cellinks = getCellinksByState(cellinks, state);%>--%>
     <tr>
         <td colspan="4" width="100%">
             <form id="formFarms" name="formFarms" style="display:inline">
@@ -201,98 +200,96 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <%if (cellinks.size() != 0) {%>
-                    <%int rows = 0;%>
-                    <%for (Cellink cellink : cellinks) {%>
-                    <% if ((rows % 2) == 0) {%>
-                    <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
-                            <%} else {%>
-                    <tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">
-                        <%}%>
-                        <td>
-                            <input type="checkbox" class="selectedId" name="selectedId" id="cb<%=cellink.getId()%>"
-                                   value="<%=cellink.getId()%>"/>
-                        </td>
-                        <td>
-                            <%=cellink.getId()%>
-                        </td>
-                        <td>
-                            <%if (cellink.getCellinkState().getValue() == CellinkState.STATE_ONLINE || cellink.getCellinkState().getValue() == CellinkState.STATE_START) {%>
-                            <img src="resources/images/online.gif" onmouseover="this.src='resources/images/honline.gif'"
-                                 onmouseout="this.src='resources/images/online.gif'"
-                                 title="<%=cellink.getName()%> (<%=session.getAttribute("cellink.state.online")%>)"
-                                 onclick="redirect('./rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>&screenId=1&')"/>
-                            <%} else if (cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {%>
-                            <img src="resources/images/running.gif"
-                                 onmouseover="this.src='resources/images/hrunning.gif'"
-                                 onmouseout="this.src='resources/images/running.gif'"
-                                 title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.running")%>)"
-                                 onclick="window.location.href = 'rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>'"/>
-                            <%} else {%>
-                            <img src="resources/images/offline.gif"
-                                 title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.offline")%>)"/>
-                            <%}%>
-                            <%
-                                if (cellink.getCellinkState().getValue() == CellinkState.STATE_ONLINE
-                                        || cellink.getCellinkState().getValue() == CellinkState.STATE_START
-                                        || cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {
-                            %>
-                            <a href="rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
-                                <%=cellink.getName()%>
-                            </a>
-                            <%} else {%>
-                            <%=cellink.getName()%>
-                            <%}%>
-                        </td>
-                        <td>
-                            <%=cellink.getVersion() %>
-                        </td>
-                        <td>
-                            <a href="./userinfo.html?userId=<%=cellink.getUserId()%>"><%=cellink.getUserId()%>
-                            </a>
-                        </td>
-                        <td>
-                            <%=cellink.getSimNumber()%>
-                        </td>
-                        <td><%=cellink.getFormatedTime()%>
-                        </td>
-                        <%
-                            if (cellink.getCellinkState().getValue() == CellinkState.STATE_ONLINE
-                                    || cellink.getCellinkState().getValue() == CellinkState.STATE_START) {
-                        %>
-                        <td align="center" valign="middle">
-                            <a href="rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
-                                <img src="resources/images/display.png" style="cursor: pointer"
-                                     title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
-                                     hspace="5"/><%=session.getAttribute("button.connect.cellink")%>
-                            </a>
-                        </td>
-                        <%} else if (cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {%>
-                        <td align="center" valign="middle">
-                            <a href="rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
-                                <img src="resources/images/display.png" style="cursor: pointer"
-                                     title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
-                                     hspace="5"/><%=session.getAttribute("button.chicken.coop")%>
-                            </a>
-                        </td>
-                        <%} else {%>
-                        <td align="center">
-                            <img src="resources/images/not-available.gif" hspace="5"
-                                 title="(<%=session.getAttribute("cellink.state.offline")%>)"/>
-                            <%=session.getAttribute("button.noaction.cellink")%>
-                        </td>
-                        <%}%>
-                        <td align="center" valign="middle">
-                            <a href="./cellink-setting.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
-                                <img src="resources/images/setting.png" style="cursor: pointer"
-                                     title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
-                                     hspace="5"/><%=session.getAttribute("button.setting")%>
-                            </a>
-                        </td>
-                    </tr>
-                    <% rows++;%>
-                    <%}%>
-                    <%}%>
+                    <c:forEach items="${cellinks}" var="cellink" varStatus="status">
+                        <c:set var="cssClass" value="odd"/>
+                        <c:set var="onMouseOver" value="changeOdd(this)"/>
+                        <c:set var="onmouseout" value="changeOdd(this)"/>
+                        <c:if test="${status.index % 2 == 0}">
+                            <c:set var="class" value="even"/>
+                            <c:set var="onMouseOver" value="changeEven(this)"/>
+                            <c:set var="onmouseout" value="changeEven(this)"/>
+                        </c:if>
+
+                        <tr class="${cssClass}" onMouseOver="${onMouseOver}" onmouseout="${onmouseout}">
+                            <td>
+                                <input type="checkbox" class="selectedId" name="selectedId" id="cb${cellink.id}"
+                                       value="${cellink.id}"/>
+                            </td>
+                            <td>${cellink.id}</td>
+                            <td>
+                                <c:set var="statusImg" value="online"/>
+                                <c:set var="onmouseover" value="honline"/>
+                                <c:set var="label" value="${session.getAttribute('cellink.state.online')}"/>
+                                <c:choose>
+                                    <c:when test="${cellink.cellinkState.value == STATE_RUNNING}">
+                                        <c:set var="statusImg" value="running"/>
+                                        <c:set var="onmouseover" value="hrunning"/>
+                                        <c:set var="label" value="${session.getAttribute('cellink.state.running')}"/>
+                                    </c:when>
+                                    <c:when test="${cellink.cellinkState.value == STATE_OFFLINE || cellink.cellinkState.value == STATE_STOP}">
+                                        <c:set var="statusImg" value="offline"/>
+                                        <c:set var="onmouseover" value="offline"/>
+                                        <c:set var="label" value="${session.getAttribute('cellink.state.offline')}"/>
+                                    </c:when>
+                                </c:choose>
+                                <img src="resources/images/${statusImg}.gif"
+                                     onmouseover="this.src='resources/images/${onmouseover}.gif'"
+                                     onmouseout="this.src='resources/images/${statusImg}.gif'"
+                                     title="${cellink.name} (${label})"
+                                     onclick="redirect('./rmctrl-main-screen.html?userId=${cellink.userId}&cellinkId=${cellink.id}&screenId=1&')"/>
+                                <c:choose>
+                                    <c:when test="${cellink.cellinkState.value == STATE_ONLINE
+                                       || cellink.cellinkState.value == STATE_RUNNING || cellink.cellinkState.value == STATE_START}">
+                                        <a href="rmctrl-main-screen.html?userId=${cellink.userId}&cellinkId=${cellink.id}"> ${cellink.name}</a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${cellink.name}
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td> ${cellink.version} </td>
+                            <td><a href="./userinfo.html?userId=${cellink.userId}">${cellink.userId} </a></td>
+                            <td> ${cellink.simNumber} </td>
+                            <td>${cellink.formatedTime}</td>
+                            <c:choose>
+                                <c:when test="${cellink.cellinkState.value == STATE_ONLINE || cellink.cellinkState.value == STATE_START}">
+
+                                    <td align="center" valign="middle">
+                                        <a href="rmctrl-main-screen.html?userId=${cellink.userId}&cellinkId=${cellink.id}">
+                                            <img src="resources/images/display.png" style="cursor: pointer"
+                                                 title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
+                                                 hspace="5"/><%=session.getAttribute("button.connect.cellink")%>
+                                        </a>
+                                    </td>
+
+                                </c:when>
+                                <c:when test="${cellink.cellinkState.value == STATE_RUNNING}">
+                                    <td align="center" valign="middle">
+                                        <a href="rmctrl-main-screen.html?userId=${cellink.userId}&cellinkId=${cellink.id}">
+                                            <img src="resources/images/display.png" style="cursor: pointer"
+                                                 title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
+                                                 hspace="5"/><%=session.getAttribute("button.chicken.coop")%>
+                                        </a>
+                                    </td>
+                                </c:when>
+                                <c:otherwise>
+                                    <td align="center">
+                                        <img src="resources/images/not-available.gif" hspace="5"
+                                             title="(<%=session.getAttribute("cellink.state.offline")%>)"/>
+                                        <%=session.getAttribute("button.noaction.cellink")%>
+                                    </td>
+
+                                </c:otherwise>
+                            </c:choose>
+                            <td align="center" valign="middle">
+                                <a href="./cellink-setting.html?userId=${cellink.userId}&cellinkId=${cellink.id}">
+                                    <img src="resources/images/setting.png" style="cursor: pointer"
+                                         title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
+                                         hspace="5"/><%=session.getAttribute("button.setting")%>
+                                </a>
+                            </td>
+                        </tr>
+                    </c:forEach>
                     </tbody>
                 </table>
             </form>
@@ -409,15 +406,14 @@
             }
         }
         result = result.substring(0, result.length - 3);
-        document.mainForm.action = "./disconnect-cellinks.html?userId=<%=user.getId()%>" + result;
+        document.mainForm.action = "./disconnect-cellinks.html?userId=${userId}" + result;
         document.mainForm.method = "POST";
         document.mainForm.submit();
     }
 </script>
 
 <script type="text/javascript" language="javascript">
-    var state =
-    <%=request.getParameter("state")%>
+    var state = <%=request.getParameter("state")%>;
     var length = document.formFilter.filterStatus.options.length;
     for (var i = 0; i < length; i++) {
         if (document.formFilter.filterStatus.options[i].value == state) {
