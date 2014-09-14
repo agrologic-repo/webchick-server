@@ -13,14 +13,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-
---
--- Create schema agrodb_for_tests
---
-
-CREATE DATABASE IF NOT EXISTS agrodb_for_tests;
-USE agrodb_for_tests;
-
 --
 -- Definition of table `actionset`
 --
@@ -10369,7 +10361,6 @@ CREATE TABLE `users` (
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
-
 --
 -- Definition of table `workers`
 --
@@ -10404,3 +10395,6 @@ CREATE TABLE `workers` (
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+
+insert into users values(1, 'admin', TO_BASE64('admin'), 'admin', 'admin', 1, 0, 'admin phone', 'admin@admin.com', 'admin');
+insert into cellinks values(1, 'demo1', 'demo', 1, '2013-10-27 11:14:20', 29405, '37.26.147.157', 0, 1, '0587804312', 0, '', ' 2.15Gh*');
