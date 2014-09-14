@@ -11,6 +11,19 @@
     </resource-ref>
 
     <display-name>webchick</display-name>
+
+    <servlet>
+        <!--Defining Front Controller - it will handle all its HTTP requests and invoke controllers-->
+        <servlet-name>spring-dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>spring-dispatcher</servlet-name>
+        <url-pattern>/cellinkname.html</url-pattern>
+    </servlet-mapping>
+
+
     <servlet>
         <servlet-name>LoginNameServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.LoginNameServlet</servlet-class>
@@ -430,10 +443,6 @@
     <servlet>
         <servlet-name>ViewTableHistoryData</servlet-name>
         <servlet-class>com.agrologic.app.web.ViewTableHistoryData</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>CellinkNameServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.CellinkNameServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ExpHistory24ToExcel</servlet-name>
@@ -1148,10 +1157,6 @@
     <servlet-mapping>
         <servlet-name>ViewTableHistoryData</servlet-name>
         <url-pattern>/view-tablehistory.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CellinkNameServlet</servlet-name>
-        <url-pattern>/cellinkname.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ExpHistory24ToExcel</servlet-name>
