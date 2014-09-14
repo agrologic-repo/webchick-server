@@ -19,3 +19,5 @@ log
 
 *.log
 nbactions.xml
+
+dependency-reduced-pom.xml
