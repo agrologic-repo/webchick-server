@@ -10,10 +10,11 @@ public class LocaleManager {
     public static final String UI_RESOURCE = "com/agrologic/app/i18n/UI";
     public static final String GRAPH_RESOURCE = "com/agrologic/app/i18n/GraphLabel";
 
-    enum Language {
+    public enum Language {
 
         ENGLISH("English"), HEBREW("Hebrew", "il", "IW"), FRENCH("French", "fr", "FR"),
-        CHINESE("Chinese", "cn", "ZH"), RUSSIAN("Russian", "ru", "RU"), GERMAN("German", "de", "DE");
+        CHINESE("Chinese", "cn", "ZH"), RUSSIAN("Russian", "ru", "RU"), GERMAN("German", "de", "DE"),
+        TURKISH("Turkish", "tr", "TR");
 
         Language(String language) {
             this(language, DEFAULT_LOCALE_COUNTRY, DEFAULT_LOCALE_LANGUAGE);

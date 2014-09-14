@@ -36,7 +36,6 @@ public class ExcelFileWriter {
         createTitles(excelSheet);
         createContent(excelSheet);
         workbook.write();
-
         workbook.close();
     }
 

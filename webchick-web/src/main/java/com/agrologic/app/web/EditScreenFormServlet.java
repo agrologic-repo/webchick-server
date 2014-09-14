@@ -44,7 +44,6 @@ public class EditScreenFormServlet extends AbstractServlet {
 
                 try {
                     ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                    ;
                     Screen screen = screenDao.getById(programId, screenId);
 
                     screen.setTitle(newTitle);

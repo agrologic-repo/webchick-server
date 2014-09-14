@@ -1,8 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.Cellink" %>
+<%@ page import="com.agrologic.app.model.CellinkState" %>
 <%@ page import="com.agrologic.app.model.User" %>
-<%@ page import="com.agrologic.app.web.CellinkState" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Set" %>
 
@@ -54,8 +54,7 @@
 }
 %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
@@ -75,120 +74,6 @@
             cursor: pointer;
         }
     </style>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
-    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
-    <script type="text/javascript" src="resources/javascript/jquery.tablesorter.js"></script>
-    <script type="text/javascript">
-        //<![CDATA[
-        /**
-         * search function
-         */
-        $(window).load(function () {
-            $("#search").click(function () {
-                var text = $('#searchText').val();
-                var redirectUrl = $(this).attr('redirectUrl');
-                window.location.href = redirectUrl + "?searchText=" + text;
-            });
-        });
-        /**
-         * filter function
-         */
-        $(window).load(function () {
-            $("#filter").click(function () {
-                var text = $('#searchText').val();
-                var state = $('#filterStatus :selected').val();
-                window.location.href = "./overview.html?state=" + state + "&searchText=" + text;
-            });
-        });//]]>
-
-        $.tablesorter.addParser({
-            // set a unique id
-            id: 'dateTimeFormat',
-            is: function (s) {
-                return false;
-            },
-            format: function (s) {
-                if (s == "") {
-                    return 0;
-                } else {
-                    var temp = s.split(' ');
-                    var date = temp[1].split('/');
-                    var time = temp[0].split(':');
-
-                    var day = date[0] * 60 * 24;
-                    var month = date[1] * 60 * 24 * 31;
-                    var year = date[2] * 60 * 24 * 366;
-                    var hour = time[0] * 60;
-                    var minutes = time[1];
-                    var seconds = time[2];
-                    var result = day + month + year + hour + minutes + seconds;
-                    return result;
-                }
-            },
-            type: 'numeric'
-        });
-
-        $(function () {
-            $('#table-cellinks').tablesorter({
-                sortList: [
-                    [1, 0]
-                ], widgets: ["zebra"],
-                // These are detected by default,
-                // but you can change or disable them
-                headers: {
-                    // Disable sorting on the first column
-                    0: { sorter: false },
-                    6: { sorter: "dateTimeFormat" },
-                    7: { sorter: false }
-                }
-            });
-        });
-        $(document).ready(function () {
-            $('#selectall').click(function () {
-                $('.selectedId').prop('checked', this.checked);
-            });
-
-            $('.selectedId').change(function () {
-                var check = ($('.selectedId').filter(":checked").length == $('.selectedId').length);
-                $('#selectall').prop("checked", check);
-            });
-        });
-        /**
-         *
-         */
-        function disconnect() {
-            var count = 0;
-            var formElems = document.getElementsByTagName('INPUT');
-            for (var i = 0; i < formElems.length; i++) {
-                if (formElems[i] != null && formElems[i].id.indexOf("cb") == 0) {
-                    if (formElems[i].checked == true) {
-                        count = count + 1;
-                    }
-                }
-            }
-            if (count == 0) {
-                alert("No cellinks selected");
-                return;
-            }
-
-            if (!confirm("Are you sure ?")) {
-                return;
-            }
-
-            var result = "&cellinkIds=";
-            for (var i = 0; i < formElems.length; i++) {
-                if (formElems[i].id != null && formElems[i].id.indexOf("cb") == 0) {
-                    if (formElems[i].checked == true) {
-                        result += formElems[i].id.substring(2) + "and";
-                    }
-                }
-            }
-            result = result.substring(0, result.length - 3);
-            document.mainForm.action = "./disconnect-cellinks.html?userId=<%=user.getId()%>" + result;
-            document.mainForm.method = "POST";
-            document.mainForm.submit();
-        }
-    </script>
 </head>
 <body>
 <div id="header">
@@ -342,7 +227,7 @@
                                  onmouseover="this.src='resources/images/hrunning.gif'"
                                  onmouseout="this.src='resources/images/running.gif'"
                                  title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.running")%>)"
-                                 onclick="window.location.href = './all-cellinks.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>&screenId=1&'"/>
+                                 onclick="window.location.href = 'rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>'"/>
                             <%} else {%>
                             <img src="resources/images/offline.gif"
                                  title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.offline")%>)"/>
@@ -415,7 +300,120 @@
     </tr>
 </table>
 </div>
+<script type="text/javascript" src="resources/javascript/general.js">;</script>
+<script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+<script type="text/javascript" src="resources/javascript/jquery.tablesorter.js"></script>
+<script type="text/javascript">
+    //<![CDATA[
+    /**
+     * search function
+     */
+    $(window).load(function () {
+        $("#search").click(function () {
+            var text = $('#searchText').val();
+            var redirectUrl = $(this).attr('redirectUrl');
+            window.location.href = redirectUrl + "?searchText=" + text;
+        });
+    });
+    /**
+     * filter function
+     */
+    $(window).load(function () {
+        $("#filter").click(function () {
+            var text = $('#searchText').val();
+            var state = $('#filterStatus :selected').val();
+            window.location.href = "./overview.html?state=" + state + "&searchText=" + text;
+        });
+    });//]]>
 
+    $.tablesorter.addParser({
+        // set a unique id
+        id: 'dateTimeFormat',
+        is: function (s) {
+            return false;
+        },
+        format: function (s) {
+            if (s == "") {
+                return 0;
+            } else {
+                var temp = s.split(' ');
+                var date = temp[1].split('/');
+                var time = temp[0].split(':');
+
+                var day = date[0] * 60 * 24;
+                var month = date[1] * 60 * 24 * 31;
+                var year = date[2] * 60 * 24 * 366;
+                var hour = time[0] * 60;
+                var minutes = time[1];
+                var seconds = time[2];
+                var result = day + month + year + hour + minutes + seconds;
+                return result;
+            }
+        },
+        type: 'numeric'
+    });
+
+    $(function () {
+        $('#table-cellinks').tablesorter({
+            sortList: [
+                [1, 0]
+            ], widgets: ["zebra"],
+            // These are detected by default,
+            // but you can change or disable them
+            headers: {
+                // Disable sorting on the first column
+                0: { sorter: false },
+                6: { sorter: "dateTimeFormat" },
+                7: { sorter: false }
+            }
+        });
+    });
+    $(document).ready(function () {
+        $('#selectall').click(function () {
+            $('.selectedId').prop('checked', this.checked);
+        });
+
+        $('.selectedId').change(function () {
+            var check = ($('.selectedId').filter(":checked").length == $('.selectedId').length);
+            $('#selectall').prop("checked", check);
+        });
+    });
+    /**
+     *
+     */
+    function disconnect() {
+        var count = 0;
+        var formElems = document.getElementsByTagName('INPUT');
+        for (var i = 0; i < formElems.length; i++) {
+            if (formElems[i] != null && formElems[i].id.indexOf("cb") == 0) {
+                if (formElems[i].checked == true) {
+                    count = count + 1;
+                }
+            }
+        }
+        if (count == 0) {
+            alert("No cellinks selected");
+            return;
+        }
+
+        if (!confirm("Are you sure ?")) {
+            return;
+        }
+
+        var result = "&cellinkIds=";
+        for (var i = 0; i < formElems.length; i++) {
+            if (formElems[i].id != null && formElems[i].id.indexOf("cb") == 0) {
+                if (formElems[i].checked == true) {
+                    result += formElems[i].id.substring(2) + "and";
+                }
+            }
+        }
+        result = result.substring(0, result.length - 3);
+        document.mainForm.action = "./disconnect-cellinks.html?userId=<%=user.getId()%>" + result;
+        document.mainForm.method = "POST";
+        document.mainForm.submit();
+    }
+</script>
 
 <script type="text/javascript" language="javascript">
     var state =

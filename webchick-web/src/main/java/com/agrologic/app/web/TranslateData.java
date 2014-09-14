@@ -26,8 +26,9 @@ public class TranslateData extends AbstractServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Expires", "-1");
         PrintWriter out = response.getWriter();
-
         try {
             Long langId = Long.parseLong(request.getParameter("langId"));
             Long dataId = Long.parseLong(request.getParameter("dataId"));
@@ -40,17 +41,15 @@ public class TranslateData extends AbstractServlet {
 
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             Data translate = dataDao.getById(dataId, langId);
-
-            response.setHeader("Cache-control", "no-cache, no-store");
-            response.setHeader("Pragma", "no-cache");
-            response.setHeader("Expires", "-1");
+            out.print("<html>");
             out.print("<message>");
             if (translate.getId() != null) {
                 out.print(translate.getUnicodeLabel());
             } else {
-                out.print("Tranlstation  does not exist");
+                out.print("Translation does not exist");
             }
             out.println("</message>");
+            out.print("</html>");
         } catch (Exception ex) {
             out.print("<message>");
             out.print("Error occur during execution the query. \n" +

@@ -3,6 +3,7 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.model.CellinkState;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

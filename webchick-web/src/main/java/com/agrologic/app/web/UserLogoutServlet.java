@@ -4,6 +4,7 @@ import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Cellink;
+import com.agrologic.app.model.CellinkState;
 import com.agrologic.app.model.User;
 
 import javax.servlet.ServletException;

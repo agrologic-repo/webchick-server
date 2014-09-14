@@ -170,7 +170,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
                 messageString.append("%").append(getNetName()).append("h").append(getGrowDay()).append(" ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");
                 setBuffer(messageString.toString().getBytes());
                 break;
-            case REQUEST_HISTORY_24_HOUR:
+            case REQUEST_PER_HOUR_REPORTS:
                 messageString.append("%").append(getNetName()).append(getDnum()).append(" ").append(getGrowDay()).append(" ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");
                 setBuffer(messageString.toString().getBytes());
                 break;
@@ -367,6 +367,19 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
         return false;
     }
 
+    public boolean isUnusedType(String controllerType) {
+        if (controllerType.equals("Image2") || controllerType.equals("Image II")) {
+            return false;
+        } else {
+            if (getMessageType() == MessageType.REQUEST_EGG_COUNT
+                    || getMessageType() == MessageType.REQUEST_CHICK_SCALE
+                    || getMessageType() == MessageType.REQUEST_CHANGED) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Priority getPriority() {
         return priority;
     }
@@ -428,7 +441,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
             case REQUEST_GRAPHS:
             case REQUEST_HISTORY:
             case REQUEST_HISTOGRAM:
-            case REQUEST_HISTORY_24_HOUR:
+            case REQUEST_PER_HOUR_REPORTS:
                 str = new String(buffer, 0, buffer.length);
                 break;
             case ACK:

@@ -10,9 +10,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class LocaleManagerTest {
-    private static final int COUNT_LANGUAGES = 6;
+    private static final int COUNT_LANGUAGES = 7;
     private static final int COUNT_GRAPH_LABELS = 17;
-    private static final int COUNT_UI_LABELS = 5;
+    private static final int COUNT_UI_LABELS = 17;
     private LocaleManager localeManager;
 
     @Before
@@ -69,10 +69,12 @@ public class LocaleManagerTest {
     public void isResourceBundleGetCorrectPropertiesFile() {
         for (Language language : Language.values()) {
             Locale expectedLocale = new Locale(language.getLocaleLanguage(), language.getLocaleCountry());
+
             // test ui resource
             String resourcePath = LocaleManager.UI_RESOURCE;
             Locale actualLocale = ResourceBundle.getBundle(resourcePath, expectedLocale).getLocale();
             assertEquals(expectedLocale, actualLocale);
+
             // test graph resource
             resourcePath = LocaleManager.GRAPH_RESOURCE;
             actualLocale = ResourceBundle.getBundle(resourcePath, expectedLocale).getLocale();

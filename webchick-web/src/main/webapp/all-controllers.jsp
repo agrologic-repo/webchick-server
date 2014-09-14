@@ -13,11 +13,17 @@
     }
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Cellink editCellink = (Cellink) request.getAttribute("editCellink");
+    String encoding = request.getCharacterEncoding();
+    if (!encoding.equals("UTF-8")) {
+        request.setCharacterEncoding("UTF-8");
+    }
 %>
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("label.cellink.setting.title")%></title>
+    <title><%=session.getAttribute("label.cellink.setting.title")%>
+    </title>
+    <meta http-equiv="Content-type" value="text/html; charset=utf-8">
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
@@ -149,7 +155,7 @@
                                             <b><%=editCellink.getControllers().size()%>
                                             </b>&nbsp;<%=session.getAttribute("label.records")%>
                                             <table class="table-list" border=1
-                                                   >
+                                                    >
                                                 <thead>
                                                 <tr>
                                                     <th align="center"
@@ -208,7 +214,8 @@
                                                         <%}%>
                                                     </td>
                                                     <td align="center">
-                                                        <img src="resources/images/edit.gif" style="cursor: pointer" border="0"
+                                                        <img src="resources/images/edit.gif" style="cursor: pointer"
+                                                             border="0"
                                                              hspace="5"/>
                                                         <a href="./editcontrollerrequest.html?userId=<%=editCellink.getUserId() %>&cellinkId=<%=controller.getCellinkId() %>&controllerId=<%=controller.getId()%>">
                                                             <%=session.getAttribute("button.edit")%>
@@ -216,7 +223,8 @@
                                                     </td>
                                                     <% if (user.getRole() != UserRole.USER) {%>
                                                     <td align="center">
-                                                        <img src="resources/images/close.png" style="cursor: pointer" border="0"
+                                                        <img src="resources/images/close.png" style="cursor: pointer"
+                                                             border="0"
                                                              hspace="5"/>
                                                         <a href="javascript:removeController('<%=editCellink.getUserId()%>','<%=cellinkId%>','<%=controller.getId()%>');">
                                                             <%=session.getAttribute("button.delete")%>

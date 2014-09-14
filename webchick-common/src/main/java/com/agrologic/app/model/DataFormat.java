@@ -1,6 +1,7 @@
 package com.agrologic.app.model;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class DataFormat {
@@ -201,8 +202,7 @@ public class DataFormat {
                 default:
                     break;
             }
-
-            return sb.toString();
+            return String.format(Locale.ENGLISH, sb.toString());
         } catch (RuntimeException ex) {
             return "";
         }

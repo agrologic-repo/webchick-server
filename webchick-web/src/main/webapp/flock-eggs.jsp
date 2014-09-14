@@ -52,12 +52,11 @@
     }
     request.setAttribute("list", currentList);
 %>
-
 <%!
     ArrayList<Eggs> getEggsList(Long flockId) {
         FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
         try {
-            Map<Integer, String> histList = flockHistoryService.getFlockHistory(flockId);
+            Map<Integer, String> histList = flockHistoryService.getFlockPerDayNotParsedReports(flockId);
             ArrayList<Eggs> eggsList = new ArrayList<Eggs>();
             for (Map.Entry<Integer, String> entry : histList.entrySet()) {
                 Integer day = entry.getKey();

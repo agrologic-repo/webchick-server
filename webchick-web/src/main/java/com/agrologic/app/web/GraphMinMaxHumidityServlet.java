@@ -4,10 +4,10 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.graph.CombinedXYGraph;
-import com.agrologic.app.graph.daily.Graph24Empty;
+import com.agrologic.app.graph.daily.EmptyGraph;
 import com.agrologic.app.management.PerGrowDayHistoryDataType;
 import com.agrologic.app.model.Data;
-import com.agrologic.app.model.history.FromDayToDayParam;
+import com.agrologic.app.model.history.FromDayToDay;
 import com.agrologic.app.service.history.FlockHistoryService;
 import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
 import org.jfree.chart.ChartUtilities;
@@ -45,12 +45,12 @@ public class GraphMinMaxHumidityServlet extends AbstractServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                FromDayToDayParam growDayRangeParam
-                        = new FromDayToDayParam(request.getParameter("fromDay"), request.getParameter("toDay"));
+                FromDayToDay growDayRangeParam
+                        = new FromDayToDay(request.getParameter("fromDay"), request.getParameter("toDay"));
                 try {
 
                     FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
-                    Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockHistoryWithinRange(flockId, growDayRangeParam);
+                    Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId, growDayRangeParam);
 
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     Data data = dataDao.getById(PerGrowDayHistoryDataType.MAX_TEMP_IN.getId());
@@ -67,8 +67,7 @@ public class GraphMinMaxHumidityServlet extends AbstractServlet {
                     Map<Integer, Data> interestData4 = createDataSet(historyByGrowDay, data);
                     CombinedXYGraph combGraph = new CombinedXYGraph();
                     combGraph.createFirstNextPlot("Maximum and Minimum Inside Temperature", "Grow Day[Day]",
-                            "Temperature[C]", data, 0, interestData,
-                            interestData2);
+                            "Temperature[C]", data, 0, interestData, interestData2);
 
                     combGraph.createNextPlot("Maximum and Minimum Outside Temperature", "Grow Day[Day]",
                             "Temperature[C]", data, 0, interestData3, interestData4);
@@ -88,7 +87,7 @@ public class GraphMinMaxHumidityServlet extends AbstractServlet {
                     out.close();
                 } catch (Exception ex) {
                     logger.error("Unknown error. ", ex);
-                    Graph24Empty graph = new Graph24Empty();
+                    EmptyGraph graph = new EmptyGraph();
                     ChartUtilities.writeChartAsPNG(out, graph.getChart(), 600, 300);
                     out.flush();
                     out.close();

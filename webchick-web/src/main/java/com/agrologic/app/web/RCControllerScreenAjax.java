@@ -37,11 +37,7 @@ public class RCControllerScreenAjax extends AbstractServlet {
             long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             long controllerId = Long.parseLong(request.getParameter("controllerId"));
             long screenId = Long.parseLong(request.getParameter("screenId"));
-
-            String lang = (String) request.getSession().getAttribute("lang");
-            if ((lang == null) || lang.equals("")) {
-                lang = "en";
-            }
+            long langId = getInSessionLanguageId(request);
 
             try {
                 CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
@@ -53,9 +49,6 @@ public class RCControllerScreenAjax extends AbstractServlet {
                 }
 
                 cellinkDao.update(cellink);
-
-                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
-                long langId = languageDao.getLanguageId(lang);
 
                 final ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 final Controller controller = controllerDao.getById(controllerId);
@@ -114,40 +107,61 @@ public class RCControllerScreenAjax extends AbstractServlet {
 
                     if (screen.getId().equals(MAIN_SCREEN)) {
                         out.println("<td nowrap align=center>");
-                        out.println("<a class='" + cssClass + "' href='./rmctrl-main-screen-ajax.jsp?lang=" + lang
-                                + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId() + "&screenId="
+                        out.println("<a class='" + cssClass + "' href='./rmctrl-main-screen-ajax.jsp?userId=" + userId
+                                + "&cellinkId=" + controller.getCellinkId() + "&screenId="
                                 + MAIN_SCREEN + "' id=" + screen.getId() + " >");
+//                        out.println("<a class='" + cssClass + "' href='./rmctrl-main-screen-ajax.jsp?lang=" + lang
+//                                + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId() + "&screenId="
+//                                + MAIN_SCREEN + "' id=" + screen.getId() + " >");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
                         out.println("</td>");
                     } else if (screen.getTitle().equals("Graphs")) {
                         out.println("<td nowrap align=center>");
-                        out.println("<a class='" + cssClass + "' href='./rmtctrl-graph.html?lang=" + lang + "&userId="
+                        out.println("<a class='" + cssClass + "' href='./rmtctrl-graph.html?userId="
                                 + userId + "&cellinkId=" + controller.getCellinkId() + "&controllerId="
                                 + controller.getId() + "&programId=" + controller.getProgram().getId()
                                 + "&screenId=" + screen.getId() + "' id=" + screen.getId()
                                 + " onclick='document.body.style.cursor=wait'>");
+
+//                        out.println("<a class='" + cssClass + "' href='./rmtctrl-graph.html?lang=" + lang + "&userId="
+//                                + userId + "&cellinkId=" + controller.getCellinkId() + "&controllerId="
+//                                + controller.getId() + "&programId=" + controller.getProgram().getId()
+//                                + "&screenId=" + screen.getId() + "' id=" + screen.getId()
+//                                + " onclick='document.body.style.cursor=wait'>");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
                         out.println("</td>");
                     } else if (screen.getTitle().equals("Action Set Buttons")) {
                         out.println("<td nowrap>");
-                        out.println("<a class='" + cssClass + "' href='./rmtctrl-actionset.html?lang=" + lang
-                                + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId()
+                        out.println("<a class='" + cssClass + "' href='./rmtctrl-actionset.html?userId=" + userId
+                                + "&cellinkId=" + controller.getCellinkId()
                                 + "&controllerId=" + controller.getId() + "&programId="
                                 + controller.getProgram().getId() + "&screenId=" + screen.getId()
                                 + "' id=" + screen.getId()
                                 + " onclick='document.body.style.cursor=wait'>");
+
+//                        out.println("<a class='" + cssClass + "' href='./rmtctrl-actionset.html?lang=" + lang
+//                                + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId()
+//                                + "&controllerId=" + controller.getId() + "&programId="
+//                                + controller.getProgram().getId() + "&screenId=" + screen.getId()
+//                                + "' id=" + screen.getId()
+//                                + " onclick='document.body.style.cursor=wait'>");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
                         out.println("</td>");
                     } else {
                         out.println("<td nowrap align=\"center\">");
-                        out.println("<a class='" + cssClass + "' href='./rmctrl-controller-screens-ajax.jsp?lang="
-                                + lang + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId()
+                        out.println("<a class='" + cssClass + "' href='./rmctrl-controller-screens-ajax.jsp?userId="
+                                + userId + "&cellinkId=" + controller.getCellinkId()
                                 + "&controllerId=" + controller.getId() + "&programId="
                                 + controller.getProgram().getId() + "&screenId=" + screen.getId()
                                 + "' onclick='document.body.style.cursor=wait'>");
+//                        out.println("<a class='" + cssClass + "' href='./rmctrl-controller-screens-ajax.jsp?lang="
+//                                + lang + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId()
+//                                + "&controllerId=" + controller.getId() + "&programId="
+//                                + controller.getProgram().getId() + "&screenId=" + screen.getId()
+//                                + "' onclick='document.body.style.cursor=wait'>");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
                         out.println("</td>");

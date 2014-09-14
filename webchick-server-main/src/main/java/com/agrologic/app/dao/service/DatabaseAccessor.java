@@ -25,6 +25,10 @@ public interface DatabaseAccessor {
 
     void setProgramSystemStateDao(ProgramSystemStateDao programSystemStateDao);
 
+    ProgramActionSetDao getProgramActionSetDao();
+
+    void setActionSetDao(ProgramActionSetDao programActionSetDao);
+
     CellinkDao getCellinkDao();
 
     void setCellinkDao(CellinkDao cellinkDao);
@@ -36,6 +40,10 @@ public interface DatabaseAccessor {
     DataDao getDataDao();
 
     void setDataDao(DataDao dataDao);
+
+    ActionSetDao getActionSetDao();
+
+    void setActionSetDao(ActionSetDao actionSetDao);
 
     LanguageDao getLanguageDao();
 

@@ -42,10 +42,19 @@ public class DerbyDataDaoImpl extends DataDaoImpl implements CreatebleDao, Dropa
 
     public void createDataTable() throws SQLException {
         logger.debug("Create DATATABLE table");
-        String sql = "CREATE TABLE DATATABLE " + "(DATAID INT NOT NULL , " + "TYPE INT NOT NULL , "
-                + "STATUS SMALLINT NOT NULL, " + "READONLY SMALLINT NOT NULL, "
-                + "TITLE VARCHAR(100) NOT NULL, " + "FORMAT INT NOT NULL, " + "LABEL VARCHAR(100) NOT NULL, "
-                + "ISRELAY SMALLINT NOT NULL, " + "ISSPECIAL INT NOT NULL, " + "PRIMARY KEY (DATAID))";
+        String sql = "CREATE TABLE DATATABLE " +
+                "(DATAID INT NOT NULL , " +
+                "TYPE INT NOT NULL , " +
+                "STATUS SMALLINT NOT NULL, " +
+                "READONLY SMALLINT NOT NULL, " +
+                "TITLE VARCHAR(100) NOT NULL, " +
+                "FORMAT INT NOT NULL, " +
+                "LABEL VARCHAR(100) NOT NULL, " +
+                "ISRELAY SMALLINT NOT NULL, " +
+                "ISSPECIAL INT NOT NULL, " +
+                "HISTORYOPT VARCHAR(10) NOT NULL, " +
+                "HISTORYDNUM VARCHAR(12) NOT NULL, " +
+                "PRIMARY KEY (DATAID))";
         jdbcTemplate.execute(sql);
     }
 

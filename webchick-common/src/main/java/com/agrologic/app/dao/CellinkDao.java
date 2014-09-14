@@ -16,7 +16,6 @@ import java.util.Collection;
  */
 
 public interface CellinkDao {
-
     /**
      * Insert new cellink data to the database.
      *
@@ -119,8 +118,6 @@ public interface CellinkDao {
      * @throws java.sql.SQLException if failed to execute statement.
      */
     Collection<Cellink> getAllUserCellinks(Long userId) throws SQLException;
-
-//    Collection<Cellink> getAll(int role, String company, Integer state, String type, String name, String index) throws SQLException;
 
     Collection<Cellink> getAll(CellinkCriteria criteria) throws SQLException;
 }

@@ -4,6 +4,7 @@ import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.CellinkCriteria;
+import com.agrologic.app.model.CellinkState;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;

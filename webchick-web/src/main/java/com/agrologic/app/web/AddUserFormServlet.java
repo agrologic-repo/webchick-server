@@ -5,6 +5,8 @@ import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.User;
 import com.agrologic.app.model.UserRole;
+import com.agrologic.app.service.UserManagerService;
+import com.agrologic.app.service.impl.UserManagerServiceImpl;
 import com.agrologic.app.util.Base64;
 
 import javax.servlet.ServletException;
@@ -15,6 +17,12 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 public class AddUserFormServlet extends AbstractServlet {
+    private UserManagerService userManagerService;
+
+    public AddUserFormServlet() {
+        super();
+        this.userManagerService = new UserManagerServiceImpl(DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class));
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -45,8 +53,8 @@ public class AddUserFormServlet extends AbstractServlet {
         String newCompanyList = request.getParameter("Ncompanylist");
         String newCompany = request.getParameter("Ncompany");
         String newCompanyCheckBox = request.getParameter("newCompany");
-        User user = new User();
 
+        User user = new User();
         user.setLogin(login);
 
         String encpsswd = Base64.encode(password);
@@ -65,9 +73,7 @@ public class AddUserFormServlet extends AbstractServlet {
         }
 
         try {
-            UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
-
-            userDao.insert(user);
+            userManagerService.insert(user);
             logger.info("user " + user + " successfully added !");
             request.setAttribute("message", "User successfully added !");
             request.setAttribute("error", false);

@@ -46,8 +46,8 @@
                         url: "./autocomplete-program",
                         dataType: "json",
                         data: request,
-                        success: function( data) {
-                            response( $.map( data.programsMap, function( item ) {
+                        success: function (data) {
+                            response($.map(data.programsMap, function (item) {
                                 return {
                                     label: item.key,
                                     value: item.key + ":" + item.value
@@ -56,13 +56,15 @@
                         }
                     });
                 },
-                select: function( event, ui ) {
+                select: function (event, ui) {
                     var arr = ui.item.value.split(':');
-                    $( "input#program" ).val( arr[0] );
-                    $( "input#Selectedprogramid" ).val( arr[1] );
+                    $("input#program").val(arr[0]);
+                    $("input#Selectedprogramid").val(arr[1]);
                     return false;
                 }
-            }).focus(function () {$(this).autocomplete("search","")});
+            }).focus(function () {
+                $(this).autocomplete("search", "")
+            });
         });
         function reset() {
             document.getElementById("msgProgramId").innerHTML = "";
@@ -163,17 +165,9 @@
                                     <tr>
                                         <td align="left">Select Program *</td>
                                         <td colspan="2">
-                                            <%--<select id="Selectedprogramid" name="Selectedprogramid"--%>
-                                                    <%--style="width:120px;">--%>
-                                                <%--<%for (Program program : programs) { %>--%>
-                                                <%--<option value="<%=program.getId()%>"><%=program.getName()%>--%>
-                                                <%--</option>--%>
-                                                <%--<%}%>--%>
-                                            <%--</select>--%>
-
                                             <input id="program" name="program" style="width:100px"/>
-                                            <input id="Selectedprogramid" type="hidden"  name="Selectedprogramid" style="width:100px"/>
-
+                                            <input id="Selectedprogramid" type="hidden" name="Selectedprogramid"
+                                                   style="width:100px"/>
                                         </td>
                                     </tr>
                                     <tr>

@@ -33,7 +33,6 @@ public class PropertyFileUtil {
      */
     public static boolean setProperty(String fileName, String comments, String key, String value) {
         try {
-
             Properties props = new Properties();
             props.load(new FileInputStream(fileName));
             props.put(key, value);

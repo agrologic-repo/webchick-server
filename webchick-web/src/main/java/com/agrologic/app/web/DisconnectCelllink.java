@@ -3,6 +3,8 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.service.CellinkManagerService;
+import com.agrologic.app.service.impl.CellinkManagerServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +14,12 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 public class DisconnectCelllink extends AbstractServlet {
+    private CellinkManagerService cellinkManagerService;
+
+    public DisconnectCelllink() {
+        this.cellinkManagerService =
+                new CellinkManagerServiceImpl(DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class));
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -27,13 +35,11 @@ public class DisconnectCelllink extends AbstractServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
             Long userId = Long.parseLong(request.getParameter("userId"));
             Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
 
             try {
-                cellinkDao.changeState(cellinkId, CellinkState.STATE_START, CellinkState.STATE_STOP);
-                cellinkDao.changeState(cellinkId, CellinkState.STATE_RUNNING, CellinkState.STATE_STOP);
+                cellinkManagerService.disconnect(cellinkId);
             } catch (SQLException ex) {
                 logger.error(ex.getMessage(), ex);
             }

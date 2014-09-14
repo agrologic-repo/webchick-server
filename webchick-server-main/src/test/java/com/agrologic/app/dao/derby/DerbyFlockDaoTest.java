@@ -131,7 +131,7 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
     //    @Test
     public void testGetAllHistoryByFlock() throws SQLException {
 
-        Map<Integer, String> map = dao.getAllHistoryByFlock(flockId);
+        Map<Integer, String> map = dao.getFlockPerDayNotParsedReports(flockId);
         System.out.println(map);
 
 //        Set<Entry<Integer, String>> entries = map.entrySet();
@@ -147,10 +147,10 @@ public class DerbyFlockDaoTest extends BaseDaoTestCase {
         long flockIdMySql = 137;
         long flockIdDerby = 1;
         dao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-        Map<Integer, String> historyByFlockMySQL = dao.getAllHistoryByFlock(flockIdMySql);
+        Map<Integer, String> historyByFlockMySQL = dao.getFlockPerDayNotParsedReports(flockIdMySql);
 
         dao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-        Map<Integer, String> historyByFlockDerby = dao.getAllHistoryByFlock(flockIdDerby);
+        Map<Integer, String> historyByFlockDerby = dao.getFlockPerDayNotParsedReports(flockIdDerby);
 
         Set<Entry<Integer, String>> entries = historyByFlockDerby.entrySet();
         for (Entry<Integer, String> entry : entries) {

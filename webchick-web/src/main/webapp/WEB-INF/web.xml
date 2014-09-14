@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
     <resource-ref>
         <description>DB Connection</description>
         <res-ref-name>jdbc/AgroDB</res-ref-name>
@@ -8,6 +9,7 @@
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
+
     <display-name>webchick</display-name>
     <servlet>
         <servlet-name>LoginNameServlet</servlet-name>
@@ -90,16 +92,8 @@
         <servlet-class>com.agrologic.app.web.RCDataValueChangeServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Graph24HumidTempServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.Graph24HumidTempServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>RCGraphServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.RCGraphServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Graph24WaterConsumpTempServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.Graph24WaterConsumpTempServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>OverviewServlet</servlet-name>
@@ -431,7 +425,7 @@
     </servlet>
     <servlet>
         <servlet-name>ExpHistoryToExcel</servlet-name>
-        <servlet-class>com.agrologic.app.web.ExportToExcelHistory</servlet-class>
+        <servlet-class>com.agrologic.app.web.ExportToExcelPerDayReport</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ViewTableHistoryData</servlet-name>
@@ -443,7 +437,7 @@
     </servlet>
     <servlet>
         <servlet-name>ExpHistory24ToExcel</servlet-name>
-        <servlet-class>com.agrologic.app.web.ExportToExcelHistory24</servlet-class>
+        <servlet-class>com.agrologic.app.web.ExportToExcelPerHourReport</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ViewTableHistory24Data</servlet-name>
@@ -480,10 +474,6 @@
     <servlet>
         <servlet-name>TranslateData</servlet-name>
         <servlet-class>com.agrologic.app.web.TranslateData</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ViewTableEggCountHistory</servlet-name>
-        <servlet-class>com.agrologic.app.web.ViewTableEggCountHistory</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UncheckUnusedDataServlet</servlet-name>
@@ -574,16 +564,8 @@
         <url-pattern>/rmtctrl-changevalue.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Graph24HumidTempServlet</servlet-name>
-        <url-pattern>/graph24humidtemp.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>RCGraphServlet</servlet-name>
         <url-pattern>/rmtctrl-graph.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Graph24WaterConsumpTempServlet</servlet-name>
-        <url-pattern>/graph24waterconsumptemp.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>OverviewServlet</servlet-name>
@@ -1210,10 +1192,6 @@
     <servlet-mapping>
         <servlet-name>TranslateData</servlet-name>
         <url-pattern>/translate-data</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ViewTableEggCountHistory</servlet-name>
-        <url-pattern>/view-table-eggcounthistory.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UncheckUnusedDataServlet</servlet-name>

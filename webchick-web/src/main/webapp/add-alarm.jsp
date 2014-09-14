@@ -18,35 +18,15 @@
 <head>
     <title>Add Alarm</title>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <script type="text/javascript">
-        function reset() {
-            document.getElementById("msgAlarmText").innerHTML = "";
-        }
-        function validate() {
-            var valid = true;
-            reset();
-            if (document.addForm.NalarmText.value == "") {
-                document.getElementById("msgAlarmText").innerHTML = "&nbsp;Alarm text can't be empty";
-                document.getElementById("msgAlarmText").style.color = "RED";
-                document.addForm.NalarmText.focus();
-                valid = false;
-            }
-            if (!valid) {
-                return false;
-            }
-        }
-        function closeWindow() {
-            self.close();
-            window.opener.location.replace("./all-alarms.html?translateLang=<%=translateLang%>");
-        }
-    </script>
 </head>
 <body onunload="closeWindow();">
 <table cellpadding="1" cellspacing="1" border="0" width="100%">
     <tr>
         <td>
             <h1>Add Alarm</h1>
+
             <h2>add alarm</h2>
+
             <form id="addForm" name="addForm" action="./addalarm.html" method="post" onsubmit="return validate();">
                 <table border="0">
                     <input type="hidden" id="translateLang" name="translateLang" value="<%=translateLang%>">
@@ -75,4 +55,26 @@
     </tr>
 </table>
 </body>
+<script type="text/javascript">
+    function reset() {
+        document.getElementById("msgAlarmText").innerHTML = "";
+    }
+    function validate() {
+        var valid = true;
+        reset();
+        if (document.addForm.NalarmText.value == "") {
+            document.getElementById("msgAlarmText").innerHTML = "&nbsp;Alarm text can't be empty";
+            document.getElementById("msgAlarmText").style.color = "RED";
+            document.addForm.NalarmText.focus();
+            valid = false;
+        }
+        if (!valid) {
+            return false;
+        }
+    }
+    function closeWindow() {
+        self.close();
+        window.opener.location.replace("./all-alarms.html?translateLang=<%=translateLang%>");
+    }
+</script>
 </html>

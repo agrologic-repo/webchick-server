@@ -18,7 +18,7 @@ public interface DistribDao {
      * @param distrib an objects that encapsulates an alarm attributes .
      * @throws java.sql.SQLException if failed to insert new distrib to the database .
      */
-    public void insert(Distrib distrib) throws SQLException;
+    void insert(Distrib distrib) throws SQLException;
 
     /**
      * Remove distrib form database
@@ -26,7 +26,7 @@ public interface DistribDao {
      * @param id the distrib id
      * @throws java.sql.SQLException
      */
-    public void remove(Long id) throws SQLException;
+    void remove(Long id) throws SQLException;
 
     /**
      * Retrieve distrib by given id
@@ -35,7 +35,7 @@ public interface DistribDao {
      * @return Distrib
      * @throws java.sql.SQLException
      */
-    public Distrib getById(Long id) throws SQLException;
+    Distrib getById(Long id) throws SQLException;
 
     /**
      * Retrieve distrib with given flock id
@@ -44,7 +44,7 @@ public interface DistribDao {
      * @return List of distrib
      * @throws java.sql.SQLException
      */
-    public List<Distrib> getAllByFlockId(Long flockId) throws SQLException;
+    List<Distrib> getAllByFlockId(Long flockId) throws SQLException;
 }
 
 

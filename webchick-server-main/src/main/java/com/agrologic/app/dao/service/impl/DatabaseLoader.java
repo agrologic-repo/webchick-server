@@ -25,6 +25,7 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor {
     private Collection<Program> programs;
     private Collection<Relay> relays;
     private Collection<SystemState> systemStates;
+    private Collection<ActionSet> actionSets;
 
     public DatabaseLoader(DatabaseAccessor dba) {
         setDatabaseAccessor(dba);
@@ -40,8 +41,8 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor {
     public void loadControllersAndProgramsByUserAndCellink(Long userId, Long cellinkId) throws WrongDatabaseException,
             DatabaseNotFound {
         try {
-
             user = dba.getUserDao().getById(userId);
+            logger.info("User exist : ", user);
             if (user.getValidate() == false) {
                 Collection<User> users = dba.getUserDao().getAll();
                 if (users.size() > 0) {
@@ -66,6 +67,14 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor {
             alarms = dba.getAlarmDao().getAllWithTranslation();
             relays = dba.getRelayDao().getAllWithTranslation();
             systemStates = dba.getSystemStateDao().getAllWithTranslation();
+            // it should run also with old version of database
+            // that for this try and catch used for
+            try {
+                actionSets = dba.getActionSetDao().getAllWithTranslation();
+            } catch (Exception e) {
+                logger.error("Error during loading action set data . This is the old version of database ");
+            }
+
 
             Configuration config = new Configuration();
             String language = config.getLanguage();
@@ -105,6 +114,15 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor {
                         // get program system states and add to program object
                         program.setProgramSystemStates((List) dba.getProgramSystemStateDao()
                                 .getAllProgramSystemStates(controller.getProgramId(), langId));
+
+                        try {
+
+                            program.setProgramActionSet((List) dba.getProgramActionSetDao()
+                                    .getAllOnScreen(controller.getProgramId(), langId));
+                        } catch (Exception e) {
+                            logger.error("Error during loading program action set data . This is the old version of database ");
+                        }
+
                         // get program screens and add to program object
                         Collection<Screen> screenList = dba.getScreenDao().getAllProgramScreens(program.getId(), langId);
                         program.setScreens((List<Screen>) screenList);
@@ -125,9 +143,9 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor {
                             screen.setTables(tableList);
                         }
 
-                        List<Data> specialData = (List<Data>) dba.getDataDao()
-                                .getSpecialData(controller.getProgramId(), langId);
+                        List<Data> specialData = (List<Data>) dba.getDataDao().getSpecialData(controller.getProgramId(), langId);
                         program.setSpecialList(specialData);
+
                         controller.setProgram(program);
                         programs.add(program);
                     } else {
@@ -172,6 +190,11 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor {
     @Override
     public Collection<Program> getPrograms() {
         return programs;
+    }
+
+    @Override
+    public Collection<ActionSet> getActionSets() {
+        return actionSets;
     }
 
     @Override

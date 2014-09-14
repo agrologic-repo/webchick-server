@@ -3,8 +3,6 @@
 <%@ include file="language.jsp" %>
 <%@ page import="com.agrologic.app.model.Controller" %>
 <%@ page import="com.agrologic.app.model.User" %>
-
-
 <% User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
@@ -14,12 +12,12 @@
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Controller editController = (Controller) request.getAttribute("editcontroller");
 %>
-
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=session.getAttribute("controller.page.edit.title")%>
     </title>
+    <meta http-equiv="Content-type" value="text/html; charset=utf-8">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/jquery-ui.css"/>
@@ -34,20 +32,6 @@
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
     <script type="text/javascript" language="javascript">
-        //        $(document).ready(function () {
-        //            var availableHouseType = [
-        //                "Broiler",
-        //                "Layers"
-        //            ];
-        //            $( "#houseType" ).autocomplete({
-        //                delay: 0,
-        //                minLength: 0,
-        //                autoFocus: false,
-        //                cacheLength: 0,
-        //                source: availableHouseType
-        //            });
-        //        }).focus(function () {$(this).autocomplete("search","")});
-
         $(document).ready(function () {
             $("input#controllerType").autocomplete({
                 width: 300,
@@ -80,8 +64,8 @@
                     return false;
                 }
             }).focus(function () {
-                        $(this).autocomplete("search", "")
-                    });
+                $(this).autocomplete("search", "")
+            });
         });
         /**
          * spin for net name {0-99}
@@ -148,8 +132,8 @@
                     return false;
                 }
             }).focus(function () {
-                        $(this).autocomplete("search", "")
-                    });
+                $(this).autocomplete("search", "")
+            });
         });
 
         function reset() {
@@ -167,8 +151,6 @@
                 event.returnValue = false;
                 document.editForm.title.focus();
                 valid = false;
-            } else {
-                document.editForm.title.value = encode(document.editForm.title);
             }
 
             if (document.editForm.spinner.value == "") {
@@ -240,6 +222,8 @@
                     </h2>
 
                     <div><p style="color:red">Boxes with an asterisk next to them are required</p></div>
+
+
                     <p>
 
                     <table>

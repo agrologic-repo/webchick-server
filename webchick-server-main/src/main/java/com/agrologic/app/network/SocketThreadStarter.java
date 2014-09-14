@@ -45,7 +45,7 @@ public class SocketThreadStarter implements Runnable {
         for (Cellink cellink : cellinks) {
 
             int state = cellink.getState();
-            if (state == CellinkState.STATE_START || state == CellinkState.STATE_RESTART) {
+            if (state == CellinkState.STATE_START) {
                 SocketThread socketThread = clientSessions.getSessions().get(cellink.getId());
                 if (socketThread != null) {
                     socketThread.setThreadState(NetworkState.STATE_STARTING);

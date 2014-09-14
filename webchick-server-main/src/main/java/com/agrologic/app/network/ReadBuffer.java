@@ -2,7 +2,6 @@ package com.agrologic.app.network;
 
 import com.agrologic.app.exception.EOTException;
 import com.agrologic.app.exception.SOTException;
-import com.agrologic.app.exception.TimeoutException;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.model.CellinkVersion;
 
@@ -53,12 +52,16 @@ public class ReadBuffer {
 
     /**
      * Read available data and save into ByteBuffer ordering by index and amount of data .
-     *
-     * @param in the InputStream
-     * @throws IOException
-     * @throws TimeoutException
      */
-    public synchronized void readData(InputStream in) throws IOException, SOTException, EOTException, TimeoutException {
+    /**
+     * Read available data and save into ByteBuffer ordering by index and amount of data .
+     *
+     * @param in
+     * @throws IOException
+     * @throws SOTException
+     * @throws EOTException
+     */
+    public synchronized void readData(InputStream in) throws IOException, SOTException, EOTException {
         startTime = System.currentTimeMillis();
         byteCounter = 0;
         CommControl.logger.debug("+++++++++++++++++++++++++++++++++++++");
@@ -71,7 +74,6 @@ public class ReadBuffer {
                 try {
                     inputBuffer.put(data);
                 } catch (BufferOverflowException e) {
-
                     CommControl.logger.debug("Buffer overflow exception . Received {} bytes ", inputBuffer.position());
                 }
                 startTime = System.currentTimeMillis();
@@ -81,6 +83,7 @@ public class ReadBuffer {
                 try {
                     wait(1);
                 } catch (InterruptedException ex) {
+
                 }
             }
             checkTimeout();
@@ -107,7 +110,7 @@ public class ReadBuffer {
      *
      * @return true if time out occurred .
      */
-    public synchronized void checkTimeout() throws SOTException, EOTException, TimeoutException {
+    public synchronized void checkTimeout() throws SOTException, EOTException {
         long currTime = System.currentTimeMillis();
         Timestamp currT = new Timestamp(currTime);
         Timestamp sotT = new Timestamp(startTime);

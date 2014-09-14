@@ -29,6 +29,7 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
+<meta http-equiv="Content-type" value="text/html; charset=utf-8">
 <title>Add New Data</title>
 <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
@@ -85,7 +86,6 @@
 
         });
     });
-
 </script>
 <script type="text/javascript">
     var actionName = ''
@@ -249,7 +249,8 @@
             <br>
 
             <div id="addOne" style="display:block;">
-                <form id="addForm" name="addForm" action="./addtabledata.html" method="post" onsubmit="return validate();">
+                <form id="addForm" name="addForm" action="./addtabledata.html" method="post"
+                      onsubmit="return validate();">
                     <table width="100%" align="left" border="0">
                         <input type="hidden" id="programId" name="programId" value="<%=programId%>"/>
                         <input type="hidden" id="screenId" name="screenId" value="<%=screenId%>"/>

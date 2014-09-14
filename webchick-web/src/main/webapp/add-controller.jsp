@@ -82,8 +82,8 @@
                     return false;
                 }
             }).focus(function () {
-                        $(this).autocomplete("search", "")
-                    });
+                $(this).autocomplete("search", "")
+            });
         });
         /**
          * spin for net name {0-99}
@@ -150,8 +150,8 @@
                     return false;
                 }
             }).focus(function () {
-                        $(this).autocomplete("search", "")
-                    });
+                $(this).autocomplete("search", "")
+            });
         });
 
         function reset() {
@@ -275,6 +275,8 @@
                                                 <option value=""></option>
                                                 <option value="Broiler">Broiler</option>
                                                 <option value="Layer">Layer</option>
+                                                <option value="Breeder">Breeder</option>
+                                                <option value="Pullets">Pullets</option>
                                             </select>
                                         </td>
                                         <td id="msgHouseType"></td>

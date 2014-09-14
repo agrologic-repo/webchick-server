@@ -1,12 +1,8 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.LanguageDao;
-import com.agrologic.app.graph.daily.Graph;
-import com.agrologic.app.graph.daily.Graph24Empty;
-import com.agrologic.app.graph.daily.Graph24IOH;
-import com.agrologic.app.graph.daily.GraphType;
+import com.agrologic.app.graph.daily.EmptyGraph;
+import com.agrologic.app.graph.daily.InsideOutsideHumidityGraph;
+import com.agrologic.app.graph.daily.PerHourReportGraph;
 import com.agrologic.app.model.history.DayParam;
 import com.agrologic.app.service.history.FlockHistoryService;
 import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
@@ -17,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
+import java.util.Collection;
 import java.util.Locale;
 
 public class Graph24HourIOHServlet extends AbstractServlet {
@@ -35,20 +31,12 @@ public class Graph24HourIOHServlet extends AbstractServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         OutputStream out = response.getOutputStream();
-
         long flockId = Long.parseLong(request.getParameter("flockId"));
+        long langId = getInSessionLanguageId(request);
         DayParam growDayParam = new DayParam(request.getParameter("growDay"));
-        String lang = (String) request.getSession().getAttribute("lang");
-        if ((lang == null) || lang.equals("")) {
-            lang = "en";
-        }
-
         try {
-            LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
-            long langId = languageDao.getLanguageId(lang);    // get language id
-
             FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
-            List<String> historyValueList = flockHistoryService.getFlockHistory24Hour(flockId,
+            Collection<String> historyValueList = flockHistoryService.getFlockPerHourReportsTitlesUsingGraphObjects(flockId,
                     growDayParam.getGrowDay(), langId);
 
             StringBuilder chainedHistoryValues = new StringBuilder();
@@ -57,13 +45,13 @@ public class Graph24HourIOHServlet extends AbstractServlet {
             }
             Long resetTime = flockHistoryService.getResetTime(flockId, growDayParam.getGrowDay());
 
-            Graph graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, chainedHistoryValues.toString(), resetTime, locale);
+            PerHourReportGraph perHourReportGraph = new InsideOutsideHumidityGraph(chainedHistoryValues.toString(), resetTime, locale);
 
-            ChartUtilities.writeChartAsPNG(out, graph.createChart(), 800, 600);
+            ChartUtilities.writeChartAsPNG(out, perHourReportGraph.createChart(), 800, 600);
             out.flush();
             out.close();
         } catch (Exception ex) {
-            Graph24Empty graph = new Graph24Empty();
+            EmptyGraph graph = new EmptyGraph();
             ChartUtilities.writeChartAsPNG(out, graph.getChart(), 600, 300);
             out.flush();
             out.close();

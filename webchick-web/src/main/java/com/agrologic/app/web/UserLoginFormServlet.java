@@ -4,6 +4,8 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.User;
+import com.agrologic.app.service.UserManagerService;
+import com.agrologic.app.service.impl.UserManagerServiceImpl;
 import com.agrologic.app.util.Base64;
 
 import javax.servlet.ServletException;
@@ -18,6 +20,12 @@ import java.sql.SQLException;
 public class UserLoginFormServlet extends AbstractServlet {
     public static final String MY_FARMS_URL = "/my-farms.html";
     public static final String OVERVIEW_URL = "/overview.html";
+    private UserManagerService userManagerService;
+
+    public UserLoginFormServlet() {
+        super();
+        userManagerService = new UserManagerServiceImpl(DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class));
+    }
 
     public static String getURLWithContextPath(HttpServletRequest request) {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -43,11 +51,10 @@ public class UserLoginFormServlet extends AbstractServlet {
         String reme = request.getParameter("remember");
 
         PrintWriter out = response.getWriter();
-        UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
 
         try {
             String encpsswd = Base64.encode(pass);
-            User user = userDao.validate(name, encpsswd);
+            User user = userManagerService.validate(name, encpsswd);
 
             user.setPassword(pass);
             logger.info("login user : " + name);

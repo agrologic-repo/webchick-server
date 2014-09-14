@@ -18,8 +18,13 @@ public class HistoryServiceImpl implements HistoryService {
 
     private DataDao dataDao;
 
+
     public HistoryServiceImpl() {
-        this.dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+        this(DaoType.MYSQL);
+    }
+
+    public HistoryServiceImpl(DaoType daoType) {
+        this.dataDao = DbImplDecider.use(daoType).getDao(DataDao.class);
     }
 
     /**

@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * History com.agrologic.app.service.history.HistoryService interface. This class contains method needed to manipulate with
- * history data.
+ * History com.agrologic.app.service.history.HistoryService interface. This class contains method needed to manipulate
+ * with history data.
  *
  * @author Valery Manakhimov
  */

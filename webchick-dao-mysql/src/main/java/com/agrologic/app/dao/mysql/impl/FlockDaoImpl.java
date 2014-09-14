@@ -182,10 +182,9 @@ public class FlockDaoImpl implements FlockDao {
 
     @Override
     public Integer getUpdatedGrowDayHistory24(Long flockId) throws SQLException {
-        String sql = "select max(growday) as growday from flockhistory24  where flockid=? and DNum ="
-                + " (select max(DNum) from flockhistory24 where FlockID=?)";
+        String sql = "select max(growday) as growday from flockhistory24  where flockid=?";
         logger.debug("Get last updated management of 24 hours grow day in flock with id [{}]", flockId);
-        List<Integer> result = jdbcTemplate.queryForList(sql, new Object[]{flockId, flockId}, Integer.class);
+        List<Integer> result = jdbcTemplate.queryForList(sql, new Object[]{flockId}, Integer.class);
         if (result.isEmpty()) {
             return null;
         }
@@ -228,7 +227,7 @@ public class FlockDaoImpl implements FlockDao {
     }
 
     @Override
-    public Map<Integer, String> getAllHistoryByFlock(Long flockId) throws SQLException {
+    public Map<Integer, String> getFlockPerDayNotParsedReports(Long flockId) throws SQLException {
         String sql = "select * from flockhistory where flockid=?";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, new Object[]{flockId});
         Map<Integer, String> historyByGrowDay = new TreeMap<Integer, String>();
@@ -241,7 +240,7 @@ public class FlockDaoImpl implements FlockDao {
     }
 
     @Override
-    public Map<Integer, String> getAllHistoryByFlock(Long flockId, int fromDay, int toDay) throws SQLException {
+    public Map<Integer, String> getFlockPerDayNotParsedReports(Long flockId, int fromDay, int toDay) throws SQLException {
         String sql = "select * from flockhistory where flockid=? and growday between ? and ?";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, new Object[]{flockId, fromDay, toDay});
         Map<Integer, String> historyByGrowDay = new TreeMap<Integer, String>();
@@ -270,13 +269,6 @@ public class FlockDaoImpl implements FlockDao {
         String sql = "select distinct growday from flockhistory24 where flockid=?";
         List<Integer> resultsList = jdbcTemplate.queryForList(sql, new Object[]{flockId}, Integer.class);
         return resultsList;
-    }
-
-    @Override
-    public String getDNHistory24(String dn) throws SQLException {
-        String sql = "select name from historyn where dn=?";
-        String result = jdbcTemplate.queryForObject(sql, new Object[]{dn}, String.class);
-        return result;
     }
 
     @Override
@@ -326,11 +318,9 @@ public class FlockDaoImpl implements FlockDao {
     }
 
     @Override
-    public Collection<Data> getFlockPerDayHistoryData(Long flockId, Long langId) throws SQLException {
-        String sql = "select * from flockhistory as fh " +
-                "left join datatable as dt on dt.dataid=fh.dataid where fh.flockid=? " +
-                "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? ";
-        return jdbcTemplate.query(sql, new Object[]{flockId, langId}, RowMappers.data());
+    public Collection<Data> getFlockPerDayHistoryData(Long flockId) throws SQLException {
+        String sql = "select * from flockhistory as fh where fh.flockid=? ";
+        return jdbcTemplate.query(sql, new Object[]{flockId}, RowMappers.data());
     }
 
     @Override
@@ -338,7 +328,8 @@ public class FlockDaoImpl implements FlockDao {
         String sql = "select * from flockhistory24 as f24 " +
                 "left join datatable as dt on dt.historydnum like concat('%',f24.dnum,'%') " +
                 "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? " +
-                "where flockid=? and growday=? and historyopt like '%HOUR%' group by dnum order by dt.type";
+                "where f24.flockid=? and f24.growday=? and dt.historyopt like '%HOUR%' " +
+                "group by f24.dnum order by dt.type";
         return jdbcTemplate.query(sql, new Object[]{langId, flockId, growDay}, RowMappers.data());
     }
 }

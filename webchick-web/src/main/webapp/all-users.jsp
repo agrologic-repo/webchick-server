@@ -52,76 +52,7 @@
             cursor: pointer;
         }
     </style>
-    <script type="text/javascript" src="resources/javascript/general.js">;</script>
-    <script type="text/javascript" src="resources/javascript/jquery.min.js">;</script>
-    <script type="text/javascript" src="resources/javascript/jquery.tablesorter.js">;</script>
-    <script type='text/javascript'>
-        //<![CDATA[
-        /**
-         * search function
-         */
-        $(window).load(function () {
-            $("#search").click(function () {
-                var text = $('#searchText').val();
-                var redirectUrl = $(this).attr('redirectUrl');
-                window.location.href = redirectUrl + "?searchText=" + text;
-            });
-        });
-        /**
-         * filter function
-         */
-        $(window).load(function () {
-            $("#filter").click(function () {
-                var company = $('#companyFilter :selected').val();
-                var role = $('#roleFilter :selected').val();
-                window.location.href = "./all-users.html?role=" + role + "&company=" + company;
-            });
-        });
-        /**
-         * sorting users table
-         */
-        $(document).ready(function () {
-            $("#table-users").tablesorter({
-                sortList: [
-                    [0, 0]
-                ], widgets: ['zebra'],
-                // These are detected by default,
-                // but you can change or disable them
-                headers: {
-                    // Disable sorting on the first column
-                    5: { sorter: false },
-                    6: { sorter: false }
-                }
-            });
-        });
-        //]]>
-    </script>
-    <script type="text/javascript">
-        function confirmRemove() {
-            return confirm("This action will remove user from database.\nDo you want to continue ?")
-        }
-        function addUser() {
-            redirect("./add-user.jsp");
-            return false;
-        }
-        function removeUser(userId) {
-            if (confirm("This action will remove user from database.\nDo you want to continue ?") == true) {
-                redirect("./removeuser.html?userId=" + userId);
-            }
-        }
-        function userPropertyPieChart() {
-            redirect("./propertysummary.html");
-            return false;
-        }
-        function showInfo(id) {
-            var showDiv = document.getElementById("showinfo" + id);
-            showDiv.style.display = "block";
-        }
-        function hideInfo(id) {
-            var showDiv = document.getElementById("showinfo" + id);
-            showDiv.style.display = "none";
-        }
-    </script>
+
 </head>
 <body>
 <div id="header">
@@ -314,6 +245,76 @@
         </tr>
     </table>
 </div>
+<script type="text/javascript" src="resources/javascript/general.js">;</script>
+<script type="text/javascript" src="resources/javascript/jquery.min.js">;</script>
+<script type="text/javascript" src="resources/javascript/jquery.tablesorter.js">;</script>
+<script type='text/javascript'>
+    //<![CDATA[
+    /**
+     * search function
+     */
+    $(window).load(function () {
+        $("#search").click(function () {
+            var text = $('#searchText').val();
+            var redirectUrl = $(this).attr('redirectUrl');
+            window.location.href = redirectUrl + "?searchText=" + text;
+        });
+    });
+    /**
+     * filter function
+     */
+    $(window).load(function () {
+        $("#filter").click(function () {
+            var company = $('#companyFilter :selected').val();
+            var role = $('#roleFilter :selected').val();
+            window.location.href = "./all-users.html?role=" + role + "&company=" + company;
+        });
+    });
+    /**
+     * sorting users table
+     */
+    $(document).ready(function () {
+        $("#table-users").tablesorter({
+            sortList: [
+                [0, 0]
+            ], widgets: ['zebra'],
+            // These are detected by default,
+            // but you can change or disable them
+            headers: {
+                // Disable sorting on the first column
+                5: { sorter: false },
+                6: { sorter: false }
+            }
+        });
+    });
+    //]]>
+</script>
+<script type="text/javascript">
+    function confirmRemove() {
+        return confirm("This action will remove user from database.\nDo you want to continue ?")
+    }
+    function addUser() {
+        redirect("./add-user.jsp");
+        return false;
+    }
+    function removeUser(userId) {
+        if (confirm("This action will remove user from database.\nDo you want to continue ?") == true) {
+            redirect("./removeuser.html?userId=" + userId);
+        }
+    }
+    function userPropertyPieChart() {
+        redirect("./propertysummary.html");
+        return false;
+    }
+    function showInfo(id) {
+        var showDiv = document.getElementById("showinfo" + id);
+        showDiv.style.display = "block";
+    }
+    function hideInfo(id) {
+        var showDiv = document.getElementById("showinfo" + id);
+        showDiv.style.display = "none";
+    }
+</script>
 <script type="text/javascript" language="javascript">
     var role =
     <%=request.getParameter("role")%>

@@ -4,11 +4,11 @@
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.Cellink" %>
+<%@ page import="com.agrologic.app.model.CellinkState" %>
 <%@ page import="com.agrologic.app.model.User" %>
-<%@ page import="com.agrologic.app.web.CellinkState" %>
 <%@ page import="java.util.Collection" %>
 
-<%  User user = (User) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
 
     if (user == null) {
         response.sendRedirect("./index.htm");
@@ -217,26 +217,30 @@
                                 <%}%>
                                 <td align="center" valign="middle">
                                     <a href="rmctrl-main-screen-ajax.jsp?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getName() %>&screenId=1">
-                                    <img src="resources/images/display.png" style="cursor: pointer" border="0" hspace="5"/>
-                                    <%=session.getAttribute("button.connect")%>
+                                        <img src="resources/images/display.png" style="cursor: pointer" border="0"
+                                             hspace="5"/>
+                                        <%=session.getAttribute("button.connect")%>
                                     </a>
 
                                 </td>
                                 <td align="center" valign="middle">
                                     <a href="./cellink-setting.html?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>">
-                                        <img src="resources/images/info.gif" style="cursor: pointer" border="0" hspace="5"/>
+                                        <img src="resources/images/info.gif" style="cursor: pointer" border="0"
+                                             hspace="5"/>
                                         <%=session.getAttribute("button.info")%>
                                     </a>
                                 </td>
                                 <td align="center" valign="middle">
                                     <a href="./editcellinkrequest.html?userId=<%= editUser.getId()%>&cellinkId=<%=cellink.getId()%>">
-                                        <img src="resources/images/edit.gif" style="cursor: pointer" border="0" hspace="5"/>
+                                        <img src="resources/images/edit.gif" style="cursor: pointer" border="0"
+                                             hspace="5"/>
                                         <%=session.getAttribute("button.edit")%>
                                     </a>
                                 </td>
                                 <td align="center" valign="middle">
                                     <a href="javascript:removeCellink(<%=editUser.getId()%>,<%=cellink.getId()%>);">
-                                        <img src="resources/images/close.png" style="cursor: pointer" border="0" hspace="5"/>
+                                        <img src="resources/images/close.png" style="cursor: pointer" border="0"
+                                             hspace="5"/>
                                         <%=session.getAttribute("button.delete")%>
                                     </a>
                                 </td>
@@ -256,7 +260,8 @@
                         <%=session.getAttribute("button.back") %>
                     </button>
                     <%} else {%>
-                    <button id="btnCancel" name="btnCancel" onclick='return back("./overview.html?userId=<%=user.getId() %>");'>
+                    <button id="btnCancel" name="btnCancel"
+                            onclick='return back("./overview.html?userId=<%=user.getId() %>");'>
                         <%=session.getAttribute("button.back") %>
                     </button>
                     <%}%>

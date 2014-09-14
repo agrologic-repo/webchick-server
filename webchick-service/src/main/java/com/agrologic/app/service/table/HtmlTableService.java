@@ -1,7 +1,7 @@
 package com.agrologic.app.service.table;
 
 import com.agrologic.app.model.Data;
-import com.agrologic.app.model.history.FromDayToDayParam;
+import com.agrologic.app.model.history.FromDayToDay;
 import com.agrologic.app.service.history.FlockHistoryService;
 import com.agrologic.app.service.history.HistoryContent;
 import com.agrologic.app.service.history.HistoryContentCreator;
@@ -34,17 +34,17 @@ public class HtmlTableService {
     }
 
     /**
-     * Create list of history values of specified flock
+     * Create HistoryContent object that encapsulate per day reports .
      *
      * @param flockId the flock id
-     * @return listOfHistoryDataValueColumns the list of history values
+     * @return HistoryContent object contain per day reports data
      */
-    private HistoryContent createHistoryPerDayTableContent(Long flockId, FromDayToDayParam fromDayToDayParam, Long langId)
+    private HistoryContent createHistoryPerDayTableContent(Long flockId, FromDayToDay fromDayToDay, Long langId)
             throws HistoryContentException {
         try {
             List<Data> defaultPerDayHistoryList = historyService.getPerDayHistoryData(langId);
             Map<Integer, String> flockPerDayHistoryNotParsedList
-                    = flockHistoryService.getFlockHistoryWithinRange(flockId, fromDayToDayParam);
+                    = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId, fromDayToDay);
             return HistoryContentCreator.createPerDayHistoryContent(flockPerDayHistoryNotParsedList,
                     defaultPerDayHistoryList);
         } catch (SQLException e) {
@@ -62,7 +62,7 @@ public class HtmlTableService {
     private HistoryContent createHistoryPerHourTableContent(Long flockId, Integer growDay, Long langId)
             throws HistoryContentException {
         try {
-            Collection<Data> perHourHistoryList = flockHistoryService.getFlockPerHourHistoryData(flockId, growDay, langId);
+            Collection<Data> perHourHistoryList = flockHistoryService.getFlockPerHourReportsData(flockId, growDay, langId);
             return HistoryContentCreator.createPerHourHistoryContent(growDay, perHourHistoryList);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
@@ -72,17 +72,17 @@ public class HtmlTableService {
 
 
     /**
-     * Creates string with history data in html format .
+     * Creates html table string with per day reports .
      *
-     * @param flockId           the flock id
-     * @param fromDayToDayParam
+     * @param flockId      the flock id
+     * @param fromDayToDay the range
      * @return the html table with history data
      * @throws HistoryContentException if failed to create history data content
      */
-    public String toHtmlTableHistoryData(Long flockId, FromDayToDayParam fromDayToDayParam, Long langId)
+    public String toHtmlTablePerDayReports(Long flockId, FromDayToDay fromDayToDay, Long langId)
             throws HistoryContentException {
         try {
-            HistoryContent tableContent = createHistoryPerDayTableContent(flockId, fromDayToDayParam, langId);
+            HistoryContent tableContent = createHistoryPerDayTableContent(flockId, fromDayToDay, langId);
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("<p><table class=table-list cellpadding='1' cellspacing='1' border='1'><tr>");
 
@@ -111,7 +111,7 @@ public class HtmlTableService {
     }
 
     /**
-     * Creates string with history data in html format .
+     * Creates html table string with per hour reports .
      *
      * @param flockId the flock id
      * @param growDay the grow day
@@ -119,7 +119,7 @@ public class HtmlTableService {
      * @throws HistoryContentException if failed to create history data content
      */
 
-    public String toHtmlTableHistoryDataPerHour(Long flockId, Integer growDay, Long langId) throws HistoryContentException {
+    public String toHtmlTablePerHourReports(Long flockId, Integer growDay, Long langId) throws HistoryContentException {
         try {
             HistoryContent tableContent = createHistoryPerHourTableContent(flockId, growDay, langId);
             StringBuilder stringBuilder = new StringBuilder();

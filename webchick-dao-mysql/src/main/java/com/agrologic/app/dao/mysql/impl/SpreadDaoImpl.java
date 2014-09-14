@@ -36,7 +36,6 @@ public class SpreadDaoImpl implements SpreadDao {
         valuesToInsert.put("NumberAccount", spread.getNumberAccount());
         valuesToInsert.put("Price", spread.getPrice());
         valuesToInsert.put("Total", spread.getTotal());
-
         jdbcInsert.execute(valuesToInsert);
     }
 

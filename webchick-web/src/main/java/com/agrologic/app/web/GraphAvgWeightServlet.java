@@ -10,11 +10,11 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.graph.DataGraphCreator;
-import com.agrologic.app.graph.daily.Graph24Empty;
+import com.agrologic.app.graph.daily.EmptyGraph;
 import com.agrologic.app.graph.history.HistoryGraph;
 import com.agrologic.app.management.PerGrowDayHistoryDataType;
 import com.agrologic.app.model.Data;
-import com.agrologic.app.model.history.FromDayToDayParam;
+import com.agrologic.app.model.history.FromDayToDay;
 import com.agrologic.app.service.history.FlockHistoryService;
 import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
 import org.jfree.chart.ChartUtilities;
@@ -51,12 +51,15 @@ public class GraphAvgWeightServlet extends AbstractServlet {
 
         try {
             long flockId = Long.parseLong(request.getParameter("flockId"));
-            FromDayToDayParam growDayRangeParam = new FromDayToDayParam(request.getParameter("fromDay"), request.getParameter("toDay"));
+            long langId = getInSessionLanguageId(request);
+            FromDayToDay growDayRangeParam = new FromDayToDay(request.getParameter("fromDay"),
+                    request.getParameter("toDay"));
 
             try {
 
                 FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
-                Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockHistoryWithinRange(flockId, growDayRangeParam);
+                Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId,
+                        growDayRangeParam);
 
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 List<Map<Integer, Data>> dataHistoryList = new ArrayList<Map<Integer, Data>>();
@@ -91,7 +94,7 @@ public class GraphAvgWeightServlet extends AbstractServlet {
                 out.close();
             } catch (Exception ex) {
                 logger.error("Unknown error. ", ex);
-                Graph24Empty graph = new Graph24Empty();
+                EmptyGraph graph = new EmptyGraph();
                 ChartUtilities.writeChartAsPNG(out, graph.getChart(), 600, 300);
                 out.flush();
                 out.close();

@@ -3,13 +3,16 @@ package com.agrologic.app.dao.derby.impl;
 import com.agrologic.app.dao.CreatebleDao;
 import com.agrologic.app.dao.DropableDao;
 import com.agrologic.app.dao.RemovebleDao;
+import com.agrologic.app.dao.mappers.RowMappers;
 import com.agrologic.app.dao.mysql.impl.FlockDaoImpl;
+import com.agrologic.app.model.Data;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -145,19 +148,6 @@ public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, Dro
         jdbcTemplate.execute(sql);
     }
 
-//    @Override
-//    public void insert(Flock flock) throws SQLException {
-//        logger.debug("Creating flock with id [{}]", flock.getFlockId());
-//        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
-//        valuesToInsert.put("flockid", flock.getFlockId());
-//        valuesToInsert.put("controllerid", flock.getControllerId());
-//        valuesToInsert.put("name", flock.getFlockName());
-//        valuesToInsert.put("status", flock.getStatus());
-//        valuesToInsert.put("startdate", flock.getStartTime());
-//        valuesToInsert.put("startdate", flock.getEndTime());
-//        jdbcInsert.execute(valuesToInsert);
-//    }
-
     @Override
     public void updateHistoryByGrowDay(Long flockId, Integer growDay, String values) throws SQLException {
         String sqlSelectQuery = "SELECT COUNT(HISTORYDATA) AS EXIST FROM FLOCKHISTORY WHERE FLOCKID=? AND GROWDAY=?";
@@ -201,5 +191,18 @@ public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, Dro
     public void deleteFromTable() throws SQLException {
         String sql = "DELETE FROM APP.FLOCK ";
         jdbcTemplate.execute(sql);
+    }
+
+    @Override
+    public Collection<Data> getFlockPerHourHistoryData(Long flockId, Integer growDay, Long langId) throws SQLException {
+//        String sql = "select * from flockhistory24 as f24 " +
+//                "left join datatable as dt on dt.historydnum like '%' || f24.DNUM || '%' " +
+//                "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? " +
+//                "where f24.flockid=? and f24.growday=? and dt.historyopt like '%HOUR%' order by dt.type ";
+        String sql = "select * from flockhistory24 " +
+                "inner join datatable on datatable.historydnum=flockhistory24.dnum " +
+                "left join databylanguage on databylanguage.dataid=datatable.dataid and databylanguage.langid=? where flockid=? and growday=?";
+        return jdbcTemplate.query(sql, new Object[]{langId, flockId, growDay}, RowMappers.data());
+
     }
 }

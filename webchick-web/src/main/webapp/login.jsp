@@ -162,6 +162,7 @@
                                 <option value="zh">Chinese</option>
                                 <option value="fr">French</option>
                                 <option value="de">German</option>
+                                <option value="tr">Turkish</option>
                             </select>
                         </td>
                     </tr>

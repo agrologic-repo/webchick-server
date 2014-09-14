@@ -10,11 +10,13 @@ import org.jfree.chart.annotations.AbstractXYAnnotation;
 import org.jfree.chart.annotations.XYPointerAnnotation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.*;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.chart.urls.TimeSeriesURLGenerator;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.HorizontalAlignment;
@@ -22,6 +24,8 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.TextAnchor;
 
 import java.awt.*;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -116,7 +120,18 @@ public class CombinedXYGraph {
     public void createFirstNextPlot(final String chartTitle, final String xAxisTitle, final String yAxisTitle,
                                     final Data data, final int graphType,
                                     final Map<Integer, Data>... coordinates) {
-        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+//        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+
+
+        StandardXYToolTipGenerator ttg = new StandardXYToolTipGenerator(
+                StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
+                NumberFormat.getInstance(), NumberFormat.getInstance());
+        TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series",
+                "values");
+        StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES,
+                ttg,
+                urlg);
+
         XYSeriesCollection dataset = new XYSeriesCollection();
 
         initTopAndBottomCoords();
@@ -130,13 +145,11 @@ public class CombinedXYGraph {
         }
 
         NumberAxis growDayAxis = new NumberAxis(yAxisTitle);
-
         growDayAxis.setAutoRangeIncludesZero(false);
         growDayAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         plots[plotCounter] = new XYPlot(dataset, null, growDayAxis, renderer);
 
         NumberAxis numberAxis = new NumberAxis(yAxisTitle);
-
         // numberAxis.setUpperBound(topCoord.getX() + (topCoord.getY()*0.1));
         numberAxis.setAutoRangeIncludesZero(true);
         numberAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -151,11 +164,23 @@ public class CombinedXYGraph {
         va.setUpperBound(upper);
         plots[plotCounter].setRangeAxis(va);
         plotCounter++;
+
+
     }
 
     public void createNextPlot(final String chartTitle, final String xAxisTitle, final String yAxisTitle,
                                final Data data, final int graphType, final Map<Integer, Data>... coordinates) {
-        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+//        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+
+        StandardXYToolTipGenerator ttg = new StandardXYToolTipGenerator(
+                StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
+                NumberFormat.getInstance(), NumberFormat.getInstance());
+        TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series",
+                "values");
+        StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES,
+                ttg,
+                urlg);
+
         XYSeriesCollection dataset = new XYSeriesCollection();
 
         initTopAndBottomCoords();

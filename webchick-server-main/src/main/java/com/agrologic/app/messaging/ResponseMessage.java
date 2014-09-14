@@ -170,6 +170,8 @@ public final class ResponseMessage implements Message {
             setMessageType(MessageType.ERROR);
             setErrorCodes(ErrorCodes.CHS_ERROR);
             logger.error(e.getMessage(), e);
+            String string = new String(getBuffer().clone(), 0, getBuffer().clone().length - 1);
+            System.out.println(string);
             return;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

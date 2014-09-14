@@ -55,9 +55,9 @@ public class ListScreenTables extends AbstractServlet {
 
                     Screen screen = screenDao.getById(programId, screenId);
                     if (screen.getTitle().equals("Action Set Buttons")) {
-                        ActionSetDao actionsetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDao.class);
-                        Collection<ActionSet> actionset = actionsetDao.getAll(programId, translateLang);
-                        request.setAttribute("actionset", actionset);
+                        ProgramActionSetDao programActionSetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramActionSetDao.class);
+                        Collection<ProgramActionSet> programActionSets = programActionSetDao.getAll(programId, translateLang);
+                        request.setAttribute("programactionsets", programActionSets);
 
                         LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
                         Collection<Language> langList = languageDao.geAll();

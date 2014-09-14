@@ -39,10 +39,8 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                 long userId = Long.parseLong(request.getParameter("userId"));
                 long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
                 long screenId = 1;
-                String lang = (String) request.getSession().getAttribute("lang");
-                if ((lang == null) || lang.equals("")) {
-                    lang = "en";
-                }
+                long langId = getInSessionLanguageId(request);
+
 
                 try {
                     CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
@@ -53,8 +51,6 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                         cellinkDao.update(cellink);
                     }
 
-                    LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
-                    long langId = languageDao.getLanguageId(lang);    // get language id
 
                     // get all controllers connected to cellink
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
@@ -443,6 +439,31 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                     out.println(programSystemState.getText());
                     out.println("</td>");
                     out.println("</tr >");
+                    break;
+                default:
+                    out.println("<tr class='' onmouseover=\"this.className='selected'\" onmouseout=\"this.className=''\">");
+                    out.println("<td class='label' nowrap>");
+                    out.println(data.getUnicodeLabel());
+                    out.println("</td>");
+                    out.println("<td class='value'>");
+
+                    if (!data.isReadonly()) {
+                        out.println(
+                                "<input type='text' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeypress=\"keyPress(event, this, "
+                                        + controller.getId() + "," + data.getId()
+                                        + " );\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
+                                        + data.getFormat()
+                                        + "')\" size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
+                                        + data.getFormattedValue() + ">");
+                    } else {
+                        out.println(
+                                "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6'"
+                                        + " style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
+                                        + data.getFormattedValue() + "'>");
+                    }
+
+                    out.println("</td>");
+                    out.println("</tr>");
                     break;
             }
         }

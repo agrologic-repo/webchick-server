@@ -1,9 +1,6 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.LanguageDao;
-import com.agrologic.app.model.history.FromDayToDayParam;
+import com.agrologic.app.model.history.FromDayToDay;
 import com.agrologic.app.service.table.HtmlTableService;
 
 import javax.servlet.ServletException;
@@ -40,16 +37,10 @@ public class ViewTableHistoryData extends AbstractServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                FromDayToDayParam fromDayToDayParam = new FromDayToDayParam(request.getParameter("fromDay"),
+                long langId = getInSessionLanguageId(request);
+                FromDayToDay fromDayToDay = new FromDayToDay(request.getParameter("fromDay"),
                         request.getParameter("toDay"));
-                String lang = (String) request.getSession().getAttribute("lang");
-                if ((lang == null) || lang.equals("")) {
-                    lang = "en";
-                }
-                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
-                long langId = languageDao.getLanguageId(lang);    // get language id
-
-                String htmlTable = tableService.toHtmlTableHistoryData(flockId, fromDayToDayParam, langId);
+                String htmlTable = tableService.toHtmlTablePerDayReports(flockId, fromDayToDay, langId);
                 out.println(htmlTable);
             }
         } catch (Exception e) {

@@ -80,7 +80,7 @@ public class WebchickDBCreator extends javax.swing.JFrame {
         jLabel4.setText("jLabel4");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Webchick Database Creator Ver.1.0");
+        setTitle("Webchick Database Creator Ver.1.1");
         setMinimumSize(new java.awt.Dimension(440, 510));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User and Farm id's"));

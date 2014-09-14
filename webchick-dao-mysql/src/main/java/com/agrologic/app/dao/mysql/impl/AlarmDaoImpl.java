@@ -76,9 +76,8 @@ public class AlarmDaoImpl implements AlarmDao {
     @Override
     public void insertTranslation(Long alarmId, Long langId, String translation) {
         logger.debug("Inserting alarm translation with id [{}] and language id [{}] ", alarmId, langId);
-        String sqlQuery =
-                "insert into alarmbylanguage(alarmid,langid,unicodename) values (?,?,?) " +
-                        "on duplicate key update UnicodeName=values(UnicodeName)";
+        String sqlQuery = "insert into alarmbylanguage(alarmid,langid,unicodename) values (?,?,?) " +
+                "on duplicate key update UnicodeName=values(UnicodeName)";
         jdbcTemplate.update(sqlQuery, new Object[]{alarmId, langId, translation});
     }
 
@@ -122,7 +121,7 @@ public class AlarmDaoImpl implements AlarmDao {
     public Collection<Alarm> getAll(Long langId) throws SQLException {
         logger.debug("Get all alarm names of given language id ");
         String sqlQuery = "select alarmnames.id, alarmnames.name, alarmbylanguage.alarmid, alarmbylanguage.langid, " +
-                "alarmbylanguage.unicodename from alarmnames  left join alarmbylanguage  " +
+                "alarmbylanguage.unicodename from alarmnames  left join alarmbylanguage " +
                 "on alarmnames.id=alarmbylanguage.alarmid and alarmbylanguage.langid=" + langId;
         return jdbcTemplate.query(sqlQuery, RowMappers.alarm());
     }

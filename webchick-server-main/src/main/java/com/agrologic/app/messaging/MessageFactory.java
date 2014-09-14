@@ -1,8 +1,10 @@
 package com.agrologic.app.messaging;
 
+import com.agrologic.app.model.Data;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MessageFactory {
@@ -101,7 +103,26 @@ public class MessageFactory {
                                                                    RequestMessageQueueHistory24.DataType... dataTypes) {
         List<RequestMessage> result = new ArrayList<RequestMessage>(dataTypes.length);
         for (RequestMessageQueueHistory24.DataType dataType : dataTypes) {
-            result.add(new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, dataType.name));
+            result.add(new RequestMessage(MessageType.REQUEST_PER_HOUR_REPORTS, netname, growDay, dataType.name));
+        }
+        return result;
+    }
+
+    /**
+     * Create the set of messages to get per hour reports from controller. This messages are used when new flock
+     * opened and age of bird was increased .
+     *
+     * @param netname        the type of the controller and its network index
+     * @param growDay        the age of birds we're going to get data for
+     * @param dataCollection the list of data types that used for request reports
+     * @return result a set of messages to be used to grab daily report
+     */
+    public static List<RequestMessage> createPerHourHistoryRequests(String netname, int growDay,
+                                                                    Collection<Data> dataCollection) {
+        List<RequestMessage> result = new ArrayList<RequestMessage>(dataCollection.size());
+        for (Data data : dataCollection) {
+            result.add(new RequestMessage(MessageType.REQUEST_PER_HOUR_REPORTS, netname, growDay,
+                    data.getHistoryHourDNum()));
         }
         return result;
     }

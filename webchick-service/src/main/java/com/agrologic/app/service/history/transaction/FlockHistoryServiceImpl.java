@@ -6,13 +6,12 @@ import com.agrologic.app.dao.FlockDao;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.model.Flock;
-import com.agrologic.app.model.history.FromDayToDayParam;
+import com.agrologic.app.model.history.FromDayToDay;
 import com.agrologic.app.service.history.FlockHistoryService;
-import com.agrologic.app.service.history.HistoryService;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -21,71 +20,28 @@ import java.util.TreeMap;
  */
 public class FlockHistoryServiceImpl implements FlockHistoryService {
     private FlockDao flockDao;
-    private HistoryService historyService;
 
     public FlockHistoryServiceImpl() {
-        historyService = new HistoryServiceImpl();
-        flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
+        this(DaoType.MYSQL);
+
+    }
+
+    public FlockHistoryServiceImpl(DaoType daoType) {
+        flockDao = DbImplDecider.use(daoType).getDao(FlockDao.class);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public Flock getFlock(long flockId) throws SQLException {
         return flockDao.getById(flockId);
     }
 
     /**
-     * Get flock management data
-     *
-     * @param flockId the flock id
-     * @return the map with management data per grow day
-     * @throws SQLException if failed to get  management data from database
-     */
-    public Map<Integer, String> getFlockHistory(long flockId) throws SQLException {
-        return getFlockHistoryWithinRange(flockId, new FromDayToDayParam());
-    }
-
-    /**
-     * Get flock management data within range
-     *
-     * @param flockId           the flock id
-     * @param fromDayToDayParam the range days
-     * @return the map with management data per grow day
-     * @throws SQLException if failed to get  management data from database
-     */
-    public Map<Integer, String> getFlockHistoryWithinRange(long flockId, FromDayToDayParam fromDayToDayParam)
-    throws SQLException {
-        Map<Integer, String> historyByGrowDay;
-        if (fromDayToDayParam.useRange()) {
-            historyByGrowDay = flockDao.getAllHistoryByFlock(flockId,
-                    fromDayToDayParam.getFromDay(),
-                    fromDayToDayParam.getToDay());
-        } else {
-            historyByGrowDay = flockDao.getAllHistoryByFlock(flockId);
-        }
-        return historyByGrowDay;
-    }
-
-    /**
      * {@inheritDoc}
      */
-    public List<String> getFlockHistory24Hour(long flockId, int growDay, Long langId) throws SQLException {
-        List<String> flockHistoryList = new ArrayList<String>();
-        List<Data> perHourHistoryDataList = getFlockPerHourHistoryData(flockId, growDay, langId);
-        for (Data data : perHourHistoryDataList) {
-            String historyValues = flockDao.getHistory24(flockId, growDay, data.getHistoryHourDNum());
-            if (historyValues == null || historyValues.equals("-1") || historyValues.equals("")) {
-                historyValues = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
-            }
-            flockHistoryList.add(historyValues);
-        }
-        return flockHistoryList;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Long getResetTime(long flockId, int growDay) throws SQLException {
         Integer resetTime = flockDao.getResetTime(flockId, growDay);
         if (resetTime != null) {
@@ -98,39 +54,71 @@ public class FlockHistoryServiceImpl implements FlockHistoryService {
     /**
      * {@inheritDoc}
      */
-    public List<String> getPerHourHistoryDataTitles(Long flockId, int growDay, Long langId) throws SQLException {
-        List<String> perHourHistoryDataTitles = new ArrayList<String>();
-        List<Data> perHourHistoryDataList = getFlockPerHourHistoryData(flockId, growDay, langId);
-        perHourHistoryDataTitles.add("Grow day " + growDay + "\n Hour(24)");
-        for (Data data : perHourHistoryDataList) {
-            perHourHistoryDataTitles.add(data.getLabel());
+    @Override
+    public Collection<String> getFlockPerHourReportsTitlesUsingGraphObjects(Long flockId, Integer growDay, Long langId)
+            throws SQLException {
+        String defaultValues = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
+        //Todo: should find more good solution for this hard coded
+        Map<Integer, Long> tableForSortingValues = new TreeMap<Integer, Long>();
+        tableForSortingValues.put(0, 3122L);
+        tableForSortingValues.put(1, 3107L);
+        tableForSortingValues.put(2, 3142L);
+        tableForSortingValues.put(3, 1301L);
+        tableForSortingValues.put(4, 1302L);
+
+        Map<Integer, String> historyList = new TreeMap<Integer, String>();
+        // put default values
+        for (Map.Entry<Integer, Long> entry : tableForSortingValues.entrySet()) {
+            historyList.put(entry.getKey(), defaultValues);
+
         }
-        return perHourHistoryDataTitles;
-    }
 
-    @Override
-    public List<Data> getFlockPerDayHistoryData(Long flockId, Long langId) throws SQLException {
-        return (List<Data>) flockDao.getFlockPerDayHistoryData(flockId, langId);
-    }
-
-    @Override
-    public List<Data> getFlockPerHourHistoryData(Long flockId, Integer growDay, Long langId) throws SQLException {
-        return (List<Data>) flockDao.getFlockPerHourHistoryData(flockId, growDay, langId);
+        Collection<Data> perHourHistoryDataList = getFlockPerHourReportsData(flockId, growDay, langId);
+        for (Data data : perHourHistoryDataList) {
+            String values = flockDao.getHistory24(flockId, growDay, data.getHistoryHourDNum());
+            if (values == null || values.equals("-1") || values.equals("")) {
+                values = defaultValues;
+            }
+            //Todo: should find more good solution for this hard coded
+            for (Map.Entry<Integer, Long> entry : tableForSortingValues.entrySet()) {
+                if (data.getId().equals(entry.getValue())) {
+                    historyList.put(entry.getKey(), values);
+                }
+            }
+        }
+        return new ArrayList<String>(historyList.values());
     }
 
     /**
      * {@inheritDoc}
      */
-    public Map<Integer, String> parseHistory24(long resetTime, String values) {
-        String[] valueList = values.split(" ");
-        Map<Integer, String> valuesMap = new TreeMap<Integer, String>();
-        int j = (int) resetTime / 100;
-        for (int i = 0; i < 24; i++) {
-            if (j == 24) {
-                j = 0;
-            }
-            valuesMap.put(j++, valueList[i]);
+    @Override
+    public Collection<Data> getFlockPerHourReportsData(Long flockId, Integer growDay, Long langId) throws SQLException {
+        return flockDao.getFlockPerHourHistoryData(flockId, growDay, langId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<Integer, String> getFlockPerDayNotParsedReports(long flockId) throws SQLException {
+        return getFlockPerDayNotParsedReportsWithinRange(flockId, new FromDayToDay());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Map<Integer, String> getFlockPerDayNotParsedReportsWithinRange(long flockId, FromDayToDay fromDayToDay)
+            throws SQLException {
+        Map<Integer, String> historyByGrowDay;
+        if (fromDayToDay.useRange()) {
+            historyByGrowDay = flockDao.getFlockPerDayNotParsedReports(flockId,
+                    fromDayToDay.getFromDay(),
+                    fromDayToDay.getToDay());
+        } else {
+            historyByGrowDay = flockDao.getFlockPerDayNotParsedReports(flockId);
         }
-        return valuesMap;
+        return historyByGrowDay;
     }
 }

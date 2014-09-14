@@ -1,6 +1,8 @@
 package com.agrologic.app.messaging;
 
 
+import com.agrologic.app.model.Controller;
+
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -11,18 +13,21 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
     /**
      * Construct a RequestPriorityQueue with default list of requests.
      *
-     * @param netname the net name for creating request.
+     * @param controller the controller for creating request.
      */
-    public RequestPriorityQueue(final String netname) {
-        this.netname = netname;
-        onCreateQueue();
+    public RequestPriorityQueue(final Controller controller) {
+        this.netname = controller.getNetName();
+        onCreateQueue(controller);
     }
 
     /**
      * Create real time data default request list
      */
-    public final void onCreateQueue() {
+    public final void onCreateQueue(final Controller controller) {
         requestList = MessageFactory.createRealTimeRequests(netname);
+        if (controller.getName().equals("T911")) {
+            requestList.remove(4);// remove request changed 'f'
+        }
         initReaTimeRequest();
     }
 

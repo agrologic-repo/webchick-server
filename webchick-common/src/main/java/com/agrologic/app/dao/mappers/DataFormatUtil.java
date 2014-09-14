@@ -2,7 +2,10 @@ package com.agrologic.app.dao.mappers;
 
 import com.agrologic.app.model.DataFormat;
 
+import java.util.Locale;
+
 public class DataFormatUtil {
+    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     public static boolean isDelimiterChar(char c) {
         if ((String.valueOf(c).equals(DataFormat.DOT_DELIMITER)) ||
@@ -48,7 +51,7 @@ public class DataFormatUtil {
 
             case DataFormat.DEC_1:
                 number /= 10;
-                string = String.format("%.1f", number);
+                string = String.format(DEFAULT_LOCALE, "%.1f", number);
 
                 if (string.length() > 4) {
                     string = string.substring(1, string.length());
@@ -58,7 +61,7 @@ public class DataFormatUtil {
 
             case DataFormat.DEC_2:
                 number /= 100;
-                string = String.format("%.2f", number);
+                string = String.format(DEFAULT_LOCALE, "%.2f", number);
 
                 if (string.length() > 5) {
                     string = string.substring(1, string.length());
@@ -68,7 +71,7 @@ public class DataFormatUtil {
 
             case DataFormat.DEC_3:
                 number /= 1000;
-                string = String.format("%.3f", number);
+                string = String.format(DEFAULT_LOCALE, "%.3f", number);
 
                 if (string.length() > 5) {
                     string = string.substring(1, string.length());
@@ -108,7 +111,7 @@ public class DataFormatUtil {
 
             case DataFormat.TIME:
                 number /= 100;
-                string = String.format("%.2f", number);
+                string = String.format(DEFAULT_LOCALE, "%.2f", number);
 
                 if (string.length() > 5) {
                     string = string.substring(1, string.length());
@@ -119,7 +122,7 @@ public class DataFormatUtil {
 
             case DataFormat.DATE:
                 number /= 100;
-                string = String.format("%.2f", number);
+                string = String.format(DEFAULT_LOCALE, "%.2f", number);
 
                 if (string.length() > 5) {
                     string = string.substring(1, string.length());
@@ -128,7 +131,7 @@ public class DataFormatUtil {
 
                 break;
         }
-
+//        return String.format(Locale.GERMAN, string);
         return string;
     }
 

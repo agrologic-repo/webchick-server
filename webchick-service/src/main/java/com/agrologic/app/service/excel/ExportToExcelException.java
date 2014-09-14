@@ -8,7 +8,6 @@ import com.agrologic.app.exception.GeneralException;
  * @author Valery Manakhimov
  */
 public class ExportToExcelException extends GeneralException {
-
     public ExportToExcelException(String message, Exception e) {
         super(message);
         setStackTrace(e.getStackTrace());

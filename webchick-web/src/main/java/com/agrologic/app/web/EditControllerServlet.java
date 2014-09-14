@@ -26,8 +26,7 @@ public class EditControllerServlet extends AbstractServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-
+        request.setCharacterEncoding("UTF-8");
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
             response.sendRedirect("./login.jsp");

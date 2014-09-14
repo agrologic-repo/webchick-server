@@ -4,7 +4,7 @@
 <%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="com.agrologic.app.model.UserRole" %>
 
-<%  User user = (User) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -585,7 +585,6 @@ function keyDown(val) {
             </form>
         </td>
     </tr>
-    <loading/>
 </table>
 </body>
 </html>

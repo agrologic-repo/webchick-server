@@ -94,7 +94,7 @@ public interface DataDao {
      *
      * @param newProgramId the id of added program
      * @param oldProgramId the id of selected program to get data data from it
-     * @throws java.sql.SQLException
+     * @throws java.sql.SQLException if failed to execute the query
      */
     void insertDataList(Long newProgramId, Long oldProgramId) throws SQLException;
 
@@ -103,22 +103,25 @@ public interface DataDao {
      * @param dataId
      * @param langId
      * @param label
-     * @throws java.sql.SQLException
+     * @throws java.sql.SQLException if failed to execute the query
      */
     void insertSpecialData(Long programId, Long dataId, Long langId, String label) throws SQLException;
 
     /**
-     * @param dataId
-     * @param langId
-     * @param translate
-     * @throws java.sql.SQLException
+     * Insert translation of data to table databylanguage .
+     *
+     * @param dataId    the data id
+     * @param langId    the language id
+     * @param translate the translation
+     * @throws java.sql.SQLException if failed to execute the query
      */
     void insertDataTranslation(Long dataId, Long langId, String translate) throws SQLException;
 
     /**
-     * Unchecked data on table that not used in given program id
+     * Unchecked data on table that not used in given program id and controller
      *
-     * @param programId the program id
+     * @param programId    the program id
+     * @param controllerId the controller id that used to get actual data
      * @throws java.sql.SQLException if failed to execute the query
      */
     void uncheckNotUsedDataOnAllScreens(Long programId, Long controllerId) throws SQLException;
@@ -158,6 +161,8 @@ public interface DataDao {
     void clearControllerData(Long controllerId) throws SQLException;
 
     void moveData(Long screenId, Long programId, Long tableId) throws SQLException;
+
+    void migrate(String statment) throws SQLException;
 
     Data getById(Long dataId) throws SQLException;
 
@@ -215,6 +220,8 @@ public interface DataDao {
     Collection<Data> getAllWithTranslation() throws SQLException;
 
     Collection<Data> getControllerDataValues(Long controllerId) throws SQLException;
+
+    Collection<Data> getPerHourHistoryDataByControllerValues(Long controllerId) throws SQLException;
 
     Map<Long, Long> getUpdatedControllerDataValues(Long controllerId) throws SQLException;
 

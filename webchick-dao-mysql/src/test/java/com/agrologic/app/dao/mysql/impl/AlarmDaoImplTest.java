@@ -45,7 +45,7 @@ public class AlarmDaoImplTest extends AbstractDaoTest {
         Collection<Alarm> expectedAlarms = createAlarmCollection();
         alarmDao.insert(expectedAlarms);
         Collection<Alarm> actualAlarms = alarmDao.getAll();
-        //assertReflectionEquals(expectedAlarms, actualAlarms);
+        assertReflectionEquals(expectedAlarms, actualAlarms);
     }
 
     @Test

@@ -53,7 +53,7 @@ public class FakeMessageSystemTest {
 
     private byte[] createKeepAlive() {
         return new byte[]{Message.ProtocolBytes.STX.getValue(), 'c', 't', 'b',
-                Message.ProtocolBytes.RS.getValue(), 'c', 't', 'b',
+                Message.ProtocolBytes.RS.getValue(), 'D', 'E', 'M', 'O', '-', '2', 'G',
                 Message.ProtocolBytes.RS.getValue(), '1', '.', '0', '0', 'G', 'h', '*',
                 Message.ProtocolBytes.RS.getValue(), Message.ProtocolBytes.ETX.getValue()};
     }

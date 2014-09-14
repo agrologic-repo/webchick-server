@@ -1,0 +1,5 @@
+ALTER TABLE `agrodb`.`eggs`
+ADD CONSTRAINT `FK_Eggs_FlockID`
+FOREIGN KEY (`FlockID`) REFERENCES `flocks` (`FlockID`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;

@@ -49,9 +49,9 @@ public class AddSelectedScreenFormServlet extends AbstractServlet {
                     screenDao.insertExistScreen(screen);
 
                     if (screen.getTitle().equals("Action Set Buttons")) {
-                        ActionSetDao actionSetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ActionSetDao.class);
-                        Collection<ActionSet> actionsetList = actionSetDao.getAll(program.getId());
-                        actionSetDao.insertActionSetList(Lists.newArrayList(actionsetList), programId);
+                        ProgramActionSetDao programActionSetDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramActionSetDao.class);
+                        Collection<ProgramActionSet> programActionSets = programActionSetDao.getAllOnScreen(program.getId());
+                        programActionSetDao.insertProgramActionSetList(Lists.newArrayList(programActionSets), programId);
 
                     } else {
                         TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);

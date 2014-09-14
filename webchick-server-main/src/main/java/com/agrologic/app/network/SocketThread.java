@@ -146,6 +146,8 @@ public class SocketThread implements Runnable {
                 } catch (SQLException ex) {
                     logger.error("Database action failed.\nUpdate cellink " + cellink.getId() + " was failed.");
                     networkState = NetworkState.STATE_ABORT;
+                } catch (Exception ex) {
+                    networkState = NetworkState.STATE_DELAY;
                 }
             }
         } finally {
@@ -193,25 +195,27 @@ public class SocketThread implements Runnable {
         if (responseMessage.getErrorCodes().equals(Message.ErrorCodes.SOT_ERROR)) {
             errCount++;
         }
-
-        if (errCount < maxError) {
-            requestQueue.setReplyForPreviousRequestPending(true);
-            responseMessage = (ResponseMessage) commControl.read();
-
-        } else {
-            errorTimeout(errCount);
-            errCount = 0;
-            // we need at least one controller in on state
-            // otherwise we well set all controllers on
-            if (allControllersOff()) {
-                setControllersOn();
-            }
-        }
         boolean withLogger = getWithLogging();
         if (withLogger) {
             logger.error(cellink.getName() + " [" + responseMessage + "] error count : " + errCount);
         }
-        setThreadState(NetworkState.STATE_DELAY);
+        if (errCount < maxError) {
+            requestQueue.setReplyForPreviousRequestPending(true);
+            responseMessage = (ResponseMessage) commControl.read();
+            setThreadState(NetworkState.STATE_DELAY);
+        } else {
+            errorTimeout(errCount);
+            errCount = 0;
+            // we need at least one controller in on state
+            // otherwise we well set all controllers off
+            if (allControllersOff()) {
+                setControllersOn();
+            }
+            setThreadState(NetworkState.STATE_STOP);
+            if (withLogger) {
+                logger.error("Connection to cellink " + cellink.getName() + " is lost . ");
+            }
+        }
         return errCount;
     }
 
@@ -271,7 +275,8 @@ public class SocketThread implements Runnable {
 
             } else if (sendMessageType == MessageType.REQUEST_EGG_COUNT
                     || sendMessageType == MessageType.REQUEST_CHICK_SCALE
-                    || sendMessageType == MessageType.REQUEST_CHANGED) {
+                    || sendMessageType == MessageType.REQUEST_CHANGED
+                    || sendMessageType == MessageType.REQUEST_GRAPHS) {
 
                 responseMessage.setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
@@ -283,7 +288,7 @@ public class SocketThread implements Runnable {
             }
         } else {
             if (sendMessage.getIndex().equals(responseMessage.getIndex()) || sendMessage.getIndex().equals("100")) {
-                if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY || sendMessage.getMessageType() == MessageType.REQUEST_HISTORY_24_HOUR) {
+                if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY || sendMessage.getMessageType() == MessageType.REQUEST_PER_HOUR_REPORTS) {
                     responseMessage.setMessageType(MessageType.RESPONSE_DATA);
                 }
                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
@@ -301,7 +306,7 @@ public class SocketThread implements Runnable {
         return errCount;
     }
 
-    private void sendRequestHandler() throws SQLException, IOException {
+    private void sendRequestHandler() throws SQLException, IOException, Exception {
         if (isCellinkTimedOut()) {
             logger.info("Disconnecting cellink [" + cellink + "], user activity timeout .");
             networkState = NetworkState.STATE_STOP;
@@ -318,9 +323,12 @@ public class SocketThread implements Runnable {
                     logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
                 }
                 setThreadState(NetworkState.STATE_BUSY);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 logger.debug("Connection to cellink [{}] lost .", cellink, e);
                 throw new IOException(e);
+            } catch (Exception e) {
+                logger.debug("Connection to cellink [{}] lost .", cellink, e);
+                throw new Exception(e);
             }
         }
         reqIndex.nextIndex();

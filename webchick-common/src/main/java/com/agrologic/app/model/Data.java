@@ -133,6 +133,16 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
         return readonly;
     }
 
+    public boolean isPassword() {
+
+        if (id.equals(3028L)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
     public void setReadonly(Boolean readonly) {
         this.readonly = readonly;
     }
@@ -170,9 +180,7 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
     }
 
     public String getUnicodeLabel() {
-        return (unicodeLabel == null)
-                ? ""
-                : unicodeLabel;
+        return (unicodeLabel == null) ? "" : unicodeLabel;
     }
 
     public void setUnicodeLabel(String unicodeLabel) {

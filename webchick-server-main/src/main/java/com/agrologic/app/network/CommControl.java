@@ -2,7 +2,6 @@ package com.agrologic.app.network;
 
 import com.agrologic.app.exception.EOTException;
 import com.agrologic.app.exception.SOTException;
-import com.agrologic.app.exception.TimeoutException;
 import com.agrologic.app.messaging.Message;
 import com.agrologic.app.messaging.ResponseMessage;
 import com.agrologic.app.model.CellinkVersion;
@@ -105,11 +104,7 @@ public class CommControl {
         } catch (EOTException ex) {
             logException(ex);
             response.setErrorCodes(Message.ErrorCodes.EOT_ERROR);
-            networkState = NetworkState.STATE_TIMEOUT;
-        } catch (TimeoutException ex) {
-            logException(ex);
-            response.setErrorCodes(Message.ErrorCodes.TIME_OUT_ERROR);
-            networkState = NetworkState.STATE_TIMEOUT;
+            networkState = NetworkState.STATE_ERROR;
         }
         return networkState;
     }

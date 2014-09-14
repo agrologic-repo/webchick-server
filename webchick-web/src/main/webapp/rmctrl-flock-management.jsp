@@ -43,9 +43,7 @@
                 },
                 beforeLoad: function (event, ui) {
                     ui.jqXHR.error(function () {
-                        ui.panel.html(
-                                "Couldn't load this tab. We'll try to fix this as soon as possible. " +
-                                        "If this wouldn't be a demo.");
+                        ui.panel.html('<img src="resources/images/loading2.gif" width="24" height="24" style="vertical-align:middle;"> Loading...');
                     });
                 }
             });

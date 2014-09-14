@@ -15,10 +15,28 @@ import java.util.Map;
  */
 public interface FlockDao {
 
+    /**
+     * Insert a new alarm row to table alarms .
+     *
+     * @param flock an objects that encapsulates an flock attributes .
+     * @throws java.sql.SQLException if failed to insert new data to the database .
+     */
     void insert(Flock flock) throws SQLException;
 
+    /**
+     * Updates an existing flock row in table flocks
+     *
+     * @param flock an object that encapsulates a flock attributes
+     * @throws java.sql.SQLException if failed to update the data in the database
+     */
     void update(Flock flock) throws SQLException;
 
+    /**
+     * Removes a data from the flocks database
+     *
+     * @param flockId the id of the flock to be removed from the database
+     * @throws java.sql.SQLException if failed to remove the data from the database
+     */
     void remove(Long flockId) throws SQLException;
 
     void close(Long flockId, String endDate) throws SQLException;
@@ -37,8 +55,6 @@ public interface FlockDao {
 
     String getHistory24(Long flockId, Integer growDay, String dn) throws SQLException;
 
-    String getDNHistory24(String dn) throws SQLException;
-
     Integer getResetTime(Long flockId, Integer growDay) throws SQLException;
 
     Integer getUpdatedGrowDayHistory(Long flockId) throws SQLException;
@@ -55,15 +71,15 @@ public interface FlockDao {
 
     Collection<Flock> getAllFlocksByController(Long controllerId) throws SQLException;
 
-    Collection<Data> getFlockPerDayHistoryData(Long flockId, Long langId) throws SQLException;
+    Collection<Data> getFlockPerDayHistoryData(Long flockId) throws SQLException;
 
     Collection<Data> getFlockPerHourHistoryData(Long flockId, Integer growDay, Long langId) throws SQLException;
 
     Map<String, String> getHistoryN();
 
-    Map<Integer, String> getAllHistoryByFlock(Long flockId) throws SQLException;
+    Map<Integer, String> getFlockPerDayNotParsedReports(Long flockId) throws SQLException;
 
-    Map<Integer, String> getAllHistoryByFlock(Long flockId, int fromDay, int toDay) throws SQLException;
+    Map<Integer, String> getFlockPerDayNotParsedReports(Long flockId, int fromDay, int toDay) throws SQLException;
 
     Map<Integer, String> getAllHistory24ByFlockAndDnum(Long flockId, String dnum) throws SQLException;
 }

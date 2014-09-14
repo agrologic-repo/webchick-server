@@ -12,7 +12,7 @@ import java.util.prefs.Preferences;
 
 public class Configuration extends Observable {
     private final Logger logger = LoggerFactory.getLogger(Configuration.class);
-    public static final String PROTOCOL_FIELD = "protocol";
+    private static final String PROTOCOL_FIELD = "protocol";
     public static final String LANGUAGE_FIELD = "language";
     public static final String ACCESS_FIELD = "access";
     public static final String COM_BAUD_FIELD = "com.baud";
@@ -449,7 +449,7 @@ public class Configuration extends Observable {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("IP = ").append(ip).toString();
+        return "IP = " + ip;
     }
 }
 

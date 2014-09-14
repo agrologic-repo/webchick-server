@@ -9,16 +9,13 @@
 <%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-
     Program program = (Program) request.getAttribute("program");
     Collection<Screen> screens = program.getScreens();
     Collection<Language> languages = (Collection<Language>) request.getAttribute("languages");
-
     String ptl = request.getParameter("translateLang");
     if (ptl == null) {
         ptl = "1";
@@ -123,8 +120,7 @@
                 return;
             }
             var cid = controllerId();
-            redirect("./uncheck-unused-data.html?programId="
-                    + programId + "&controllerId=" + cid);
+            redirect("./uncheck-unused-data.html?programId=" + programId + "&controllerId=" + cid);
         }
 
         function accept() {
@@ -134,6 +130,7 @@
             }
             return false;
         }
+
         function controllerId() {
             var controllerId = window.prompt("Please enter controller id :", "")
             return controllerId;
@@ -166,17 +163,13 @@
                 }
             }
         }
-        /**
-         *
-         */
+
         function filterLanguages(programId) {
             var langId = document.formScreen.languageFilter.value;
             redirect("./all-screens.html?programId=" + programId + "&translateLang=" + langId);
             return false;
         }
-        /**
-         *
-         */
+
         function setReadonly(screenid) {
             document.getElementById("txt" + screenid).setAttribute("readonly", false);
             document.getElementById("txt" + screenid).focus();

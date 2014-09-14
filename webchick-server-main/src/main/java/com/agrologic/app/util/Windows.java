@@ -29,8 +29,17 @@ public class Windows {
      */
     public static void centerOnScreen(Window window) {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-
         window.setLocation((d.width - window.getSize().width) / 2, (d.height - window.getSize().height) / 2);
+    }
+
+    /**
+     * Center a Window, Frame, JFrame, Dialog, etc..
+     *
+     * @param window
+     */
+    public static void centerOnTopScreen(Window window) {
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        window.setLocation((d.width - window.getSize().width) / 2, 0);
     }
 
     public static void setWindowsLAF(Window window) {

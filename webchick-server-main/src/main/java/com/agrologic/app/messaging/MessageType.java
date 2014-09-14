@@ -10,8 +10,9 @@ package com.agrologic.app.messaging;
  * Description: <br>
  * Copyright:   Copyright (c) 2009 <br>
  * Company:     Agro Logic LTD. <br>
- * @author      Valery Manakhimov <br>
- * @version     1.0 <br>
+ *
+ * @author Valery Manakhimov <br>
+ * @version 1.0 <br>
  */
 public enum MessageType {
 
@@ -98,7 +99,7 @@ public enum MessageType {
      * The format is  "Controller Type + Net Name + DN+ ' ' + 'GrawDay' + ' ' + CheckSum"
      * For Example "T901D1 12 CHS\CR\NL".
      */
-    REQUEST_HISTORY_24_HOUR,
+    REQUEST_PER_HOUR_REPORTS,
 
     /**
      * A request the the value of daily histogram.

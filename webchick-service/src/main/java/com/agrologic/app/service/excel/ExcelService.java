@@ -1,5 +1,6 @@
 package com.agrologic.app.service.excel;
 
+import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.service.history.FlockHistoryService;
@@ -29,11 +30,17 @@ public class ExcelService {
     private FlockHistoryService flockHistoryService;
     private Logger logger;
 
-
     public ExcelService() {
-        historyService = new HistoryServiceImpl();
         excelFileWriter = new ExcelFileWriter();
+        historyService = new HistoryServiceImpl();
         flockHistoryService = new FlockHistoryServiceImpl();
+        logger = LoggerFactory.getLogger(ExcelService.class);
+    }
+
+    public ExcelService(DaoType daoType) {
+        historyService = new HistoryServiceImpl(daoType);
+        excelFileWriter = new ExcelFileWriter();
+        flockHistoryService = new FlockHistoryServiceImpl(daoType);
         logger = LoggerFactory.getLogger(ExcelService.class);
     }
 
@@ -46,8 +53,8 @@ public class ExcelService {
     private HistoryContent createPerDayHistoryTableContent(Long flockId, Long langId) throws HistoryContentException {
         try {
             List<Data> defaultPerDayHistoryList = historyService.getPerDayHistoryData(langId);
-            Map<Integer, String> flockPerDayHistoryNotParsedList = flockHistoryService.getFlockHistory(flockId);
-            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayHistoryNotParsedList,
+            Map<Integer, String> flockPerDayNotParsedReports = flockHistoryService.getFlockPerDayNotParsedReports(flockId);
+            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayNotParsedReports,
                     defaultPerDayHistoryList);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
@@ -66,7 +73,8 @@ public class ExcelService {
     private HistoryContent createPerHourHistoryTableContent(Long flockId, Integer growDay, Long langId)
             throws HistoryContentException {
         try {
-            Collection<Data> perHourHistoryList = flockHistoryService.getFlockPerHourHistoryData(flockId, growDay, langId);
+            Collection<Data> perHourHistoryList = flockHistoryService.getFlockPerHourReportsData(flockId, growDay,
+                    langId);
             return HistoryContentCreator.createPerHourHistoryContent(growDay, perHourHistoryList);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
@@ -82,19 +90,40 @@ public class ExcelService {
      * @return outputFile the name of outputFile
      * @throws ExportToExcelException if failed to write to excel file
      */
-    public String writeHistoryPerHourToExcelFile(Long flockId, Integer growDay, Long langId) throws ExportToExcelException {
+    public String writeHistoryPerHourToExcelFile(Long flockId, Integer growDay, Long langId)
+            throws ExportToExcelException {
         try {
             HistoryContent historyContent = createPerHourHistoryTableContent(flockId, growDay, langId);
-            List<String> columnTitles = historyContent.getTitlesForExcelPerHour();
-            List<List<String>> historyDataColumns = historyContent.getExcelDataColumnsPerHour();
-            FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
             Flock flock = flockHistoryService.getFlock(flockId);
             String outputFile = flock.getFlockName();
-            excelFileWriter.setTitleList(columnTitles);
-            excelFileWriter.setCellDataList(historyDataColumns);
+            excelFileWriter.setTitleList(historyContent.getTitlesForExcelPerHour());
+            excelFileWriter.setCellDataList(historyContent.getExcelDataColumnsPerHour());
             excelFileWriter.setOutputFile(outputFile);
             excelFileWriter.write();
             return outputFile;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new ExportToExcelException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Write history data per hour of specified flock and grow day to excel file .
+     *
+     * @param flockId the specified flock id
+     * @param growDay the specified grow day
+     * @return true if data was successful saved
+     * @throws ExportToExcelException if failed to write to excel file
+     */
+    public Boolean writeHistoryPerHourToExcelFile(String filename, Long flockId, Integer growDay, Long langId)
+            throws ExportToExcelException {
+        try {
+            HistoryContent historyContent = createPerHourHistoryTableContent(flockId, growDay, langId);
+            excelFileWriter.setTitleList(historyContent.getTitlesForExcelPerHour());
+            excelFileWriter.setCellDataList(historyContent.getExcelDataColumnsPerHour());
+            excelFileWriter.setOutputFile(filename);
+            excelFileWriter.write();
+            return true;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ExportToExcelException(e.getMessage(), e);
@@ -111,17 +140,35 @@ public class ExcelService {
     public String writeHistoryPerDayToExcelFile(Long flockId, Long langId) throws ExportToExcelException {
         try {
             HistoryContent historyContent = createPerDayHistoryTableContent(flockId, langId);
-            List<String> columnTitles = historyContent.getTitlesForExcel();
-            List<List<String>> historyDataColumns = historyContent.getExcelDataColumns();
-
-            FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
             Flock flock = flockHistoryService.getFlock(flockId);
             String outputFile = flock.getFlockName();
-            excelFileWriter.setTitleList(columnTitles);
-            excelFileWriter.setCellDataList(historyDataColumns);
+            excelFileWriter.setTitleList(historyContent.getTitlesForExcel());
+            excelFileWriter.setCellDataList(historyContent.getExcelDataColumns());
             excelFileWriter.setOutputFile(outputFile);
             excelFileWriter.write();
             return outputFile;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new ExportToExcelException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Write history data  per day of specified flock to excel file .
+     *
+     * @param flockId the specified flock id
+     * @return true if data was successful saved
+     * @throws ExportToExcelException if failed to write to excel file
+     */
+    public Boolean writeHistoryPerDayToExcelFile(String filename, Long flockId, Long langId)
+            throws ExportToExcelException {
+        try {
+            HistoryContent historyContent = createPerDayHistoryTableContent(flockId, langId);
+            excelFileWriter.setTitleList(historyContent.getTitlesForExcel());
+            excelFileWriter.setCellDataList(historyContent.getExcelDataColumns());
+            excelFileWriter.setOutputFile(filename);
+            excelFileWriter.write();
+            return true;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ExportToExcelException(e.getMessage(), e);

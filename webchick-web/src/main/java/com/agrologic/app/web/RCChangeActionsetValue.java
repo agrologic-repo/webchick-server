@@ -28,18 +28,11 @@ public class RCChangeActionsetValue extends AbstractServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
         PrintWriter out = response.getWriter();
         long userId = Long.parseLong(request.getParameter("userId"));
         long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
         long controllerId = Long.parseLong(request.getParameter("controllerId"));
         long screenId = Long.parseLong(request.getParameter("screenId"));
-
-        String lang = (String) request.getSession().getAttribute("lang");
-        if ((lang == null) || lang.equals("")) {
-            lang = "en";
-        }
-
         try {
             long dataId = Long.parseLong(request.getParameter("dataId"));
             String svalue = request.getParameter("Nvalue");
@@ -73,10 +66,8 @@ public class RCChangeActionsetValue extends AbstractServlet {
 
     public String clearDots(String s) {
         String str = s.replace(".", "");
-
         str = str.replace(":", "");
         str = str.replace("/", "");
-
         return str;
     }
 

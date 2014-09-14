@@ -1,8 +1,5 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.LanguageDao;
 import com.agrologic.app.model.history.DayParam;
 import com.agrologic.app.service.table.HtmlTableService;
 
@@ -40,15 +37,9 @@ public class ViewTableHistory24Data extends AbstractServlet {
 
             try {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
+                long langId = getInSessionLanguageId(request);
                 DayParam growDayParam = new DayParam(request.getParameter("growDay"));
-                String lang = (String) request.getSession().getAttribute("lang");
-                if ((lang == null) || lang.equals("")) {
-                    lang = "en";
-                }
-                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
-                long langId = languageDao.getLanguageId(lang);    // get language id
-
-                String htmlTable = tableService.toHtmlTableHistoryDataPerHour(flockId, growDayParam.getGrowDay(), langId);
+                String htmlTable = tableService.toHtmlTablePerHourReports(flockId, growDayParam.getGrowDay(), langId);
                 out.println(htmlTable);
             } catch (Exception e) {
                 logger.error("Unknown error. ", e);

@@ -12,7 +12,7 @@ public interface EggDao {
      * @param eggs the eggs
      * @throws java.sql.SQLException
      */
-    public void insert(Eggs eggs) throws SQLException;
+    void insert(Eggs eggs) throws SQLException;
 
     /**
      * Edit eggs
@@ -20,7 +20,7 @@ public interface EggDao {
      * @param eggs the eggs
      * @throws java.sql.SQLException
      */
-    public void update(Eggs eggs) throws SQLException;
+    void update(Eggs eggs) throws SQLException;
 
     /**
      * Remove eggs from database
@@ -29,7 +29,7 @@ public interface EggDao {
      * @param day     the day
      * @throws java.sql.SQLException
      */
-    public void remove(Long flockId, Integer day) throws SQLException;
+    void remove(Long flockId, Integer day) throws SQLException;
 
     /**
      * Get eggs by id
@@ -38,7 +38,7 @@ public interface EggDao {
      * @return Eggs the eggs
      * @throws java.sql.SQLException
      */
-    public Eggs getById(Long id) throws SQLException;
+    Eggs getById(Long id) throws SQLException;
 
     /**
      * Get eggs by flock id
@@ -47,5 +47,5 @@ public interface EggDao {
      * @return list of eggs
      * @throws java.sql.SQLException
      */
-    public List<Eggs> getAllByFlockId(Long flockId) throws SQLException;
+    List<Eggs> getAllByFlockId(Long flockId) throws SQLException;
 }

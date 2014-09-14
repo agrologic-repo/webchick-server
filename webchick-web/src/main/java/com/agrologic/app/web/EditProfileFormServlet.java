@@ -34,24 +34,21 @@ public class EditProfileFormServlet extends AbstractServlet {
             response.sendRedirect("./login.jsp");
         } else {
             User currUser = (User) request.getSession().getAttribute("user");
-            User user = new User();
-            String forwardLink = "";
+
             String password = request.getParameter("Npassword");
             String firstName = request.getParameter("Nfname");
             String lastName = request.getParameter("Nlname");
             String phoneNumber = request.getParameter("Nphone");
             String email = request.getParameter("Nemail");
-
-            user = currUser;
-
             String encpsswd = Base64.encode(password);
 
+            User user = currUser;
             user.setPassword(encpsswd);
             user.setFirstName(firstName);
             user.setLastName(lastName);
             user.setPhone(phoneNumber);
             user.setEmail(email);
-            forwardLink = "./my-profile.jsp?userId=" + user.getId();
+            String forwardLink = "./my-profile.jsp?userId=" + user.getId();
 
             UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
 

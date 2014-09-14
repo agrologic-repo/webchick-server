@@ -12,9 +12,8 @@ public class RequestMessageQueueHistory24 {
      */
     public enum DataType {
         INSIDE_TEMPERATURE("D18", 3122), OUTSIDE_TEMPERATURE("D19", 3107), PER_HOUR_HUMIDITY("D20", 3142),
-        PER_HOUR_WATER_CONSUMPTION("D21", 1302), WATER_2_CONSUMPTION("D42", 1329), FEED_2_CONSUMPTION("D43", 1328),
-        RESET_TIME("D70", 3009), PER_HOUR_WATER_2_CONSUMPTION("D71", 1329), PER_HOUR_FEED_CONSUMPTION("D72", 1301),
-        PER_HOUR_FEED_2_CONSUMPTION("D73", 1328);
+        PER_HOUR_WATER_CONSUMPTION("D21", 1302), RESET_TIME("D70", 3009), PER_HOUR_WATER_2_CONSUMPTION("D71", 1329),
+        PER_HOUR_FEED_CONSUMPTION("D72", 1301), PER_HOUR_FEED_2_CONSUMPTION("D73", 1328);
 
         private DataType(String name, int id) {
             this.name = name;
@@ -50,7 +49,9 @@ public class RequestMessageQueueHistory24 {
     public RequestMessageQueueHistory24(final String netname, final Integer growDay) {
         this.netname = netname;
         this.growDay = growDay;
-        initDefaultList();
+        for (RequestMessage request : MessageFactory.createPerHourDailyReportRequests(netname, growDay)) {
+            requestMessageBooleanHashMap.put(request, true);
+        }
         initDnMap();
         this.requests = new CyclicQueue<RequestMessage>();
         setActiveRequests(null);
@@ -110,7 +111,7 @@ public class RequestMessageQueueHistory24 {
         requests.clear();
 
         for (RequestMessage rm : activeRequests) {
-            RequestMessage newrm = new RequestMessage(MessageType.REQUEST_HISTORY_24_HOUR, netname, growDay, rm.getDnum());
+            RequestMessage newrm = new RequestMessage(MessageType.REQUEST_PER_HOUR_REPORTS, netname, growDay, rm.getDnum());
             requests.add(newrm);
         }
     }

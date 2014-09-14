@@ -37,6 +37,9 @@ public abstract class AbstractDaoTest {
     protected AlarmDao alarmDao;
 
     @Autowired
+    protected DataDao dataDao;
+
+    @Autowired
     protected TransactionDao transactionDao;
 
 
@@ -120,6 +123,24 @@ public abstract class AbstractDaoTest {
         alarm.setUnicodeText("test");
         alarm.setLangId(1L);
         return alarm;
+    }
+
+    public final static Data data() {
+        Data data = new Data();
+        data.setId(0L);
+        data.setType(4096L);
+        data.setTitle("Room_Temp");
+        data.setStatus(false);
+        data.setReadonly(false);
+        data.setIsRelay(false);
+        data.setSpecial(5);
+        data.setHistoryOpt("DAY;HOUR");
+        data.setHistoryDNum("D533;D534");
+        data.setFormat(1);
+        data.setLabel("Requested Temperature");
+        data.setUnicodeLabel("טמפרטורה רצויה ");
+        data.setLangId(2L);
+        return data;
     }
 
     public final static Language language() {

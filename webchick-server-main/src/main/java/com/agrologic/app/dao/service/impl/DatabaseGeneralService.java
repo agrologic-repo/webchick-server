@@ -21,6 +21,7 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
     protected FlockDao flockDao;
     protected DaoType daoType;
     protected DataDao dataDao;
+    protected ActionSetDao actionSetDao;
     protected DistribDao distribDao;
     protected FeedDao feedDao;
     protected FeedTypeDao feedTypeDao;
@@ -36,6 +37,7 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
     protected ProgramAlarmDao programAlarmDao;
     protected ProgramRelayDao programRelayDao;
     protected ProgramSystemStateDao programSystemStateDao;
+    protected ProgramActionSetDao programActionSetDao;
     protected RelayDao relayDao;
     protected SchemaDao schemaDao;
     protected ScreenDao screenDao;
@@ -82,9 +84,11 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
         programAlarmDao = DbImplDecider.use(daoType).getDao(ProgramAlarmDao.class);
         programRelayDao = DbImplDecider.use(daoType).getDao(ProgramRelayDao.class);
         programSystemStateDao = DbImplDecider.use(daoType).getDao(ProgramSystemStateDao.class);
+        programActionSetDao = DbImplDecider.use(daoType).getDao(ProgramActionSetDao.class);
         screenDao = DbImplDecider.use(daoType).getDao(ScreenDao.class);
         tableDao = DbImplDecider.use(daoType).getDao(TableDao.class);
         dataDao = DbImplDecider.use(daoType).getDao(DataDao.class);
+        actionSetDao = DbImplDecider.use(daoType).getDao(ActionSetDao.class);
         alarmDao = DbImplDecider.use(daoType).getDao(AlarmDao.class);
         relayDao = DbImplDecider.use(daoType).getDao(RelayDao.class);
         systemStateDao = DbImplDecider.use(daoType).getDao(SystemStateDao.class);
@@ -164,6 +168,16 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
     }
 
     @Override
+    public ActionSetDao getActionSetDao() {
+        return actionSetDao;
+    }
+
+    @Override
+    public void setActionSetDao(ActionSetDao actionSetDao) {
+        this.actionSetDao = actionSetDao;
+    }
+
+    @Override
     public LanguageDao getLanguageDao() {
         return languageDao;
     }
@@ -208,6 +222,16 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
 
     public void setProgramSystemStateDao(ProgramSystemStateDao programSystemStateDao) {
         this.programSystemStateDao = programSystemStateDao;
+    }
+
+    @Override
+    public ProgramActionSetDao getProgramActionSetDao() {
+        return programActionSetDao;
+    }
+
+    @Override
+    public void setActionSetDao(ProgramActionSetDao programActionSetDao) {
+        this.programActionSetDao = programActionSetDao;
     }
 
     @Override

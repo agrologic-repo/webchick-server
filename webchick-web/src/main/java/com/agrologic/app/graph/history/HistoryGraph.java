@@ -123,13 +123,9 @@ public class HistoryGraph {
         plot.setRangeAxis(count, createNumberAxis(axisLabel, Color.BLUE));
         StandardXYToolTipGenerator ttg = new StandardXYToolTipGenerator(
                 StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
-                new SimpleDateFormat("DD"), NumberFormat.getInstance());
-
-        TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(
-                new SimpleDateFormat("DD"),
-                "",
-                "series",
-                "hitDate");
+                NumberFormat.getInstance(), NumberFormat.getInstance());
+        TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series",
+                "values");
         StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES,
                 ttg,
                 urlg);
@@ -211,12 +207,10 @@ public class HistoryGraph {
         plot.setRangeGridlinePaint(Color.lightGray);
         plot.setDomainPannable(true);
         plot.setRangePannable(true);
-
         StandardXYToolTipGenerator ttg =
                 new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
-                        new SimpleDateFormat("DD"), NumberFormat.getInstance());
-
-        TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series", "hitDate");
+                        NumberFormat.getInstance(), NumberFormat.getInstance());
+        TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series", "values");
         StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg, urlg);
         renderer.setBaseShapesVisible(true);
         renderer.setBaseShapesFilled(true);

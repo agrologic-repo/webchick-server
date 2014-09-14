@@ -37,6 +37,10 @@ public class DatabaseInsertion implements DatabaseInsertable {
             dba.getSystemStateDao().insert(dla.getSystemStates());
             dba.getSystemStateDao().insertTranslation(dla.getSystemStates());
             logger.info("the data inserted successfully to the systemStates and systemstatesbylanguage table");
+            dba.getActionSetDao().insert(dla.getActionSets());
+            dba.getActionSetDao().insertTranslation(dla.getActionSets());
+            logger.info("the data inserted successfully to the systemStates and actionsetbylanguage table");
+
             dba.getDataDao().insert(dla.getDataTable());
             dba.getDataDao().insertTranslation(dla.getDataTable());
             logger.info("the data inserted successfully to the datatable and databylanguage table");
@@ -62,6 +66,9 @@ public class DatabaseInsertion implements DatabaseInsertable {
                     dba.getProgramRelayDao().insert(program.getProgramRelays());
                     logger.info("the program relay inserted successfully to the programrelay table");
                     dba.getProgramSystemStateDao().insertProgramSystemState(program.getProgramSystemStates());
+                    logger.info("the program system state inserted successfully to the programsysstate table");
+
+                    dba.getProgramActionSetDao().insertProgramActionSetList(program.getProgramActionSet());
                     logger.info("the program system state inserted successfully to the programsysstate table");
 
                     Collection<Screen> screenList = program.getScreens();

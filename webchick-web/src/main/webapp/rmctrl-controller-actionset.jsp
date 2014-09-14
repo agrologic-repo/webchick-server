@@ -6,11 +6,11 @@
 <%@ page import="java.util.Collection" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
+
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
@@ -20,11 +20,11 @@
     Collection<Screen> screens = program.getScreens();
     Integer newConnectionTimeout = (Integer) request.getAttribute("newConnectionTimeout");
 
-    Collection<ActionSet> actionsets = (Collection<ActionSet>) request.getAttribute("actionset");
+    Collection<ProgramActionSet> programactionsets = (Collection<ProgramActionSet>) request.getAttribute("programactionset");
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
     Locale currLocal = (Locale) session.getAttribute("currLocale");
     if (!oldLocal.equals(currLocal)) {
-        response.sendRedirect("./rmtctrl-actionset.html?lang=" + lang + "&userId=" + userId + "&cellinkId=" + cellinkId + "&screenId=" + screenId + "&controllerId=" + controllerId);
+        response.sendRedirect("./rmtctrl-actionset.html?lang=" + currLocal.getLanguage() + "&userId=" + userId + "&cellinkId=" + cellinkId + "&screenId=" + screenId + "&controllerId=" + controllerId);
     }
 %>
 <!DOCTYPE html>
@@ -182,14 +182,14 @@
                                 <table border="0" cellPadding="2" cellSpacing="2" align="center">
                                     <% int column = 0;%>
                                     <%
-                                        for (ActionSet asd : actionsets) {
+                                        for (ProgramActionSet pasd : programactionsets) {
                                             if ((column % 5) == 0) {
                                     %>
                                     <tr>
                                         <%}%>
                                         <td align="center">
                                             <button class="actionbutton" type="sumbit"
-                                                    onclick="buttonPress(<%=controllerId %>,<%=asd.getDataId() %>, <%=asd.getValueId() %>)"><%=asd.getUnicodeLabel()%>
+                                                    onclick="buttonPress(<%=controllerId %>,<%=pasd.getDataId() %>, <%=pasd.getValueId() %>)"><%=pasd.getUnicodeLabel()%>
                                             </button>
                                         </td>
                                         <%column++;%>

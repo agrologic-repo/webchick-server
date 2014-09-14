@@ -26,6 +26,7 @@ public class EditControllerFormServlet extends AbstractServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
         logger.error("Unauthorized access!");
         PrintWriter out = response.getWriter();
         try {

@@ -1,7 +1,6 @@
 package com.agrologic.app.graph.daily;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class GraphType {
@@ -58,60 +57,6 @@ public class GraphType {
      */
     public static String typeToString(int type) {
         return (String) graphTypeMap.get(type);
-    }
-
-    /**
-     * Convert a GraphType to a String object.
-     *
-     * @param type The GraphType
-     * @return The String or null
-     */
-    public static String typeToString(GraphType type) {
-        Iterator keys = graphTypeMap.keySet().iterator();
-
-        while (keys.hasNext()) {
-            String key = (String) keys.next();
-
-            if (((GraphType) graphTypeMap.get(key)).equals(type)) {
-                return key;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Convert a String to a GraphType object.
-     *
-     * @param str The String
-     * @return The GraphType or null
-     */
-    public static GraphType stringToState(String str) {
-        return (GraphType) graphTypeMap.get(str);
-    }
-
-    /**
-     * Convert a int to a GraphType object.
-     *
-     * @param i index of graph type
-     * @return The GraphType or null
-     */
-    public static GraphType intToGraphType(int i) {
-        if (i == IN_OUT_TEMP_HUMID_GRAPH) {
-            return IN_OUT_TEMP_HUMID;
-        } else if (i == IN_FEED_WATER_GRAPH) {
-            return IN_FEED_WATER;
-        } else {
-            return BLANK;
-        }
-    }
-
-    public static Map listState() {
-        return graphTypeMap;
-    }
-
-    public static GraphType getGraphType(int type) {
-        return intToGraphType(type);
     }
 
     @Override

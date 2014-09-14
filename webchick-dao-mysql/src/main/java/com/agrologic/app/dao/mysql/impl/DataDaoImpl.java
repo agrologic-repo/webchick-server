@@ -14,11 +14,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ *
+ */
 public class DataDaoImpl implements DataDao {
     protected final Logger logger = LoggerFactory.getLogger(DataDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
-
 
     public DataDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -34,6 +36,7 @@ public class DataDaoImpl implements DataDao {
     public void insert(Data data) throws SQLException {
         logger.debug("Inserting data with name [{}]", data.getTitle());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+        valuesToInsert.put("DataId", data.getId());
         valuesToInsert.put("Type", data.getType());
         valuesToInsert.put("Status", data.isStatus());
         valuesToInsert.put("ReadOnly", data.isReadonly());
@@ -42,6 +45,8 @@ public class DataDaoImpl implements DataDao {
         valuesToInsert.put("Label", data.getLabel());
         valuesToInsert.put("IsSpecial", data.getSpecial());
         valuesToInsert.put("IsRelay", data.getIsRelay());
+        valuesToInsert.put("HistoryOpt", data.getHistoryOpt());
+        valuesToInsert.put("HistoryDnum", data.getHistoryDNum());
         jdbcInsert.execute(valuesToInsert);
     }
 
@@ -70,8 +75,8 @@ public class DataDaoImpl implements DataDao {
         // there is duplicate data elements in dataList we need only unique elements
         Collection<Data> uniqueDataList = Util.getUniqueElements(dataCollection);
         String sql = "INSERT INTO DATATABLE "
-                + "(DATAID, TYPE, STATUS, READONLY, TITLE, FORMAT, LABEL, ISRELAY, ISSPECIAL ) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "(DATAID, TYPE, STATUS, READONLY, TITLE, FORMAT, LABEL, ISRELAY, ISSPECIAL, HISTORYOPT, HISTORYDNUM) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         List<Data> dadaList = new ArrayList(uniqueDataList);
         List<Object[]> batch = new ArrayList<Object[]>();
         for (Data data : dadaList) {
@@ -84,7 +89,10 @@ public class DataDaoImpl implements DataDao {
                     data.getFormat(),
                     data.getLabel(),
                     data.getIsRelay(),
-                    data.getSpecial()};
+                    data.getSpecial(),
+                    data.getHistoryOpt(),
+                    data.getHistoryDNum()
+            };
             batch.add(values);
         }
         jdbcTemplate.batchUpdate(sql, batch);
@@ -198,8 +206,8 @@ public class DataDaoImpl implements DataDao {
      */
     @Override
     public void insertDataTranslation(Long dataId, Long langId, String translate) throws SQLException {
-        String sql = "insert into databylanguage values (?,?,?) on duplicate key update " +
-                "UnicodeLabel=values(UnicodeLabel)";
+//        String sql = "insert into databylanguage values (?,?,?) ";
+        String sql = "insert into databylanguage values (?,?,?) on duplicate key update UnicodeLabel=values(UnicodeLabel)";
         jdbcTemplate.update(sql, dataId, langId, translate);
     }
 
@@ -219,6 +227,11 @@ public class DataDaoImpl implements DataDao {
     public void moveData(Long screenId, Long programId, Long tableId) throws SQLException {
         String sql = "update tabledata set screenid=? where programid=? and tableid=? ";
         jdbcTemplate.update(sql, screenId, programId, tableId);
+    }
+
+    @Override
+    public void migrate(String statment) throws SQLException {
+        jdbcTemplate.update(statment);
     }
 
     /**
@@ -343,7 +356,8 @@ public class DataDaoImpl implements DataDao {
      * {@inheritDoc}
      */
     @Override
-    public Collection<Data> getTableDataList(Long programId, Long screenId, Long tableId, String display) throws SQLException {
+    public Collection<Data> getTableDataList(Long programId, Long screenId, Long tableId, String display)
+            throws SQLException {
         String sql = "select datatable.DataID , datatable.Type ,datatable.Status , datatable.ReadOnly, " +
                 "datatable.Title,datatable.Format ,datatable.Label ,datatable.IsSpecial ,datatable.IsRelay , " +
                 "tabledata.TableID,tabledata.ProgramID ,tabledata.ScreenID ,tabledata.DisplayOnTable, " +
@@ -352,7 +366,7 @@ public class DataDaoImpl implements DataDao {
                 "tabledata.screenid=? and tabledata.tableid=? and tabledata.DisplayOnTable like ? order by position asc ";
 
         return jdbcTemplate.query(sql, new Object[]{programId, screenId, tableId,
-                (display == null) ? "%%" : "%" + display + "%"},
+                        (display == null) ? "%%" : "%" + display + "%"},
                 RowMappers.data());
     }
 
@@ -413,6 +427,17 @@ public class DataDaoImpl implements DataDao {
     public Collection<Data> getControllerDataValues(Long controllerId) throws SQLException {
         String sql = "select * from datatable as dt inner join controllerdata "
                 + "as cd on dt.dataid=cd.dataid and cd.controllerid=?";
+        return jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<Data> getPerHourHistoryDataByControllerValues(Long controllerId) throws SQLException {
+        String sql = "select * from datatable where dataid in "
+                + "(select dataid from controllerdata  where controllerid=? )"
+                + " and historyopt like '%HOUR%' and historydnum <>'' order by type";
         return jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
     }
 

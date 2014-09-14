@@ -17,10 +17,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DerbyControllerDaoImpl extends ControllerDaoImpl implements CreatebleDao, DropableDao, RemovebleDao {
 
@@ -109,6 +106,9 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
 
     @Override
     public void updateControllerData(Long controllerId, Long dataId, Long value) throws SQLException {
+        Locale locale = Locale.getDefault();
+        Locale.setDefault(Locale.ENGLISH);
+
         String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
         int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId, dataId);
@@ -123,10 +123,13 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
             valuesToInsert.put("value", value);
             jdbcInsert.execute(valuesToInsert);
         }
+        Locale.setDefault(locale);
     }
 
     @Override
     public void updateControllerData(final Long controllerId, final Collection<Data> onlineData) throws SQLException {
+        Locale locale = Locale.getDefault();
+        Locale.setDefault(Locale.ENGLISH);
         final String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         final String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
         final Collection<Data> dataToUpdate = new ArrayList<Data>();
@@ -160,9 +163,13 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
                 return dataToUpdate.size();
             }
         });
+        Locale.setDefault(locale);
+
     }
 
     public void updateControllerGraph(Long controllerId, String values, Timestamp updateTime) throws SQLException {
+        Locale locale = Locale.getDefault();
+        Locale.setDefault(Locale.ENGLISH);
         final String sqlSelectQuery = "SELECT COUNT(DATASET) AS EXIST FROM GRAPH24HOURS WHERE CONTROLLERID=?";
         final String sqlUpdateQuery = "UPDATE GRAPH24HOURS SET DATASET=? ,UPDATETIME=? WHERE CONTROLLERID=?";
 
@@ -179,10 +186,14 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
             valuesToInsert.put("controllerId", controllerId);
             jdbcControllerDataInsert.execute(valuesToInsert);
         }
+        Locale.setDefault(locale);
     }
 
     @Override
     public void sendNewDataValueToController(Long controllerId, Long dataId, Long value) throws SQLException {
+        Locale locale = Locale.getDefault();
+        Locale.setDefault(Locale.ENGLISH);
+
         String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM NEWCONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         String sqlUpdateQuery = "UPDATE NEWCONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
         int exist = jdbcTemplate.queryForInt(sqlSelectQuery, controllerId, dataId);
@@ -198,10 +209,14 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
             valuesToInsert.put("VALUE", value);
             jdbcControllerDataInsert.execute(valuesToInsert);
         }
+        Locale.setDefault(locale);
     }
 
     @Override
     public void saveNewDataValueOnController(Long controllerId, Long dataId, Long value) throws SQLException {
+        Locale locale = Locale.getDefault();
+        Locale.setDefault(Locale.ENGLISH);
+
         String sqlSelectQuery = "SELECT COUNT(VALUE) AS EXIST FROM CONTROLLERDATA WHERE CONTROLLERID=? AND DATAID=?";
         String sqlUpdateQuery = "UPDATE CONTROLLERDATA SET VALUE=? WHERE CONTROLLERID=? AND DATAID=?";
 
@@ -218,6 +233,7 @@ public class DerbyControllerDaoImpl extends ControllerDaoImpl implements Createb
             valuesToInsert.put("VALUE", value);
             jdbcControllerDataInsert.execute(valuesToInsert);
         }
+        Locale.setDefault(locale);
     }
 
     @Override

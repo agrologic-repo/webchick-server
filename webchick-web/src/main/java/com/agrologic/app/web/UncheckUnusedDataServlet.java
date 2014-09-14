@@ -4,10 +4,7 @@
  */
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DataDao;
-import com.agrologic.app.dao.DbImplDecider;
-import com.agrologic.app.dao.ProgramDao;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.util.DateLocal;
 
@@ -47,6 +44,13 @@ public class UncheckUnusedDataServlet extends AbstractServlet {
                 try {
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     dataDao.uncheckNotUsedDataOnAllScreens(programId, controllerId);
+
+                    TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
+                    tableDao.uncheckNotUsedTableOnAllScreens(programId);
+
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    screenDao.uncheckNotUsedScreenInProgram(programId);
+
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     Program program = programDao.getById(programId);
                     program.setModifiedDate(DateLocal.currentDate());

@@ -18,18 +18,15 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Title: ControllerMessageManager <br> Description: Decorator for Controller and Observer for MessageManager<br>
- * Copyright: Copyright (c) 2009 <br>
- *
  * @author Valery Manakhimov
  * @version 1.0 <br>
  */
 public class MessageManager implements Observer {
     public static final int DATA_TABLE_SIZE = 65535;
-    private static final int REQUEST_CYCLE = 2; //request cycle must be minimum 5
+    private static final int REQUEST_CYCLE = 5; //request cycle must be minimum 5
     private static final long SET_CLOCK_DATA_ID = 1309;
-    private int histRequestCycle = REQUEST_CYCLE;
-    private int hist24RequestCycle = REQUEST_CYCLE;
+    private int perPerDayReportRequestCycle = REQUEST_CYCLE;
+    private int perHourReportRequestCycle = REQUEST_CYCLE;
     private Controller controller;
     private ControllerDao controllerDao;
     private FlockDao flockDao;
@@ -39,14 +36,14 @@ public class MessageManager implements Observer {
     private HashMap<Long, Data> onlineDatatable;
     private RequestMessage requestToSend;
     private RequestPriorityQueue requests;
-    private RequestMessageQueueHistory24 requestsHistory24;
+    private PerHourReportRequestQueue perHourReportRequestQueue;
     private Logger logger;
     private boolean updatedFlag = true;
     private boolean requestCreated = false;
 
     public MessageManager(Controller controller) {
         this.controller = controller;
-        this.requests = new RequestPriorityQueue(controller.getNetName());
+        this.requests = new RequestPriorityQueue(controller);
         this.controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
         this.flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
         this.dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
@@ -61,11 +58,15 @@ public class MessageManager implements Observer {
      */
     public MessageManager(Controller controller, DatabaseAccessor databaseAccessor) {
         this.controller = controller;
-        this.requests = new RequestPriorityQueue(controller.getNetName());
+        this.requests = new RequestPriorityQueue(controller);
         this.controllerDao = databaseAccessor.getControllerDao();
         this.flockDao = databaseAccessor.getFlockDao();
         this.dataDao = databaseAccessor.getDataDao();
         this.logger = Logger.getLogger(MessageManager.class);
+    }
+
+    public void recreateRequests() {
+        this.requests = new RequestPriorityQueue(controller);
     }
 
     private boolean isRequestCreated() {
@@ -146,22 +147,24 @@ public class MessageManager implements Observer {
             //2. create graph request hourly.
             requestToSend = MessageFactory.createGraphRequest(controller.getNetName());
             setRequestCreated(true);
-        } else if (historyShouldBeRequested()) {
+        } else if (dailyReportShouldBeRequested()) {
             //3.1. create management daily
             try {
-                requestToSend = createHistoryRequest();
+                requestToSend = createDailyReportRequest();
                 setRequestCreated(true);
             } catch (IllegalAccessException ex) {
                 controller.switchOff();
+                recreateRequests();
                 setRequestCreated(false);
             }
-        } else if (history24HourShouldBeRequested()) {
+        } else if (perHourReportsShouldBeRequested()) {
             //3.2. create management 24 hours
             try {
-                requestToSend = create24HourHistoryRequest();
+                requestToSend = createPerHourReportsRequest();
                 setRequestCreated(true);
             } catch (IllegalAccessException ex) {
-                controller.switchOff();
+//                controller.switchOff();
+                recreateRequests();
                 setRequestCreated(false);
             }
 ////        } else if (histogramShouldBeRequested()) {
@@ -174,6 +177,7 @@ public class MessageManager implements Observer {
                 setRequestCreated(true);
             } catch (IllegalAccessException ex) {
                 controller.switchOff();
+                recreateRequests();
                 setRequestCreated(false);
             }
         }
@@ -226,7 +230,7 @@ public class MessageManager implements Observer {
      */
     private boolean isAnyDataToChange() throws SQLException {
         Data data = dataDao.getChangedDataValue(controller.getId());
-        if (data != null) {
+        if (data != null && messageParser != null) {
             messageParser.setDataToSend(data);
             return true;
         }
@@ -258,17 +262,18 @@ public class MessageManager implements Observer {
      * @return true if management should be requested.
      * @throws SQLException
      */
-    private boolean historyShouldBeRequested() throws SQLException {
+    private boolean dailyReportShouldBeRequested() throws SQLException {
         // lasy initialisation of flock
         if (flock == null) {
             flock = flockDao.getOpenFlockByController(controller.getId());
         }
         // flock is opened
         if (flock != null) {
-            if (histRequestCycle == 0 && (requestsHistory24 == null || requestsHistory24.isCycleComplete())) {
+            if (perPerDayReportRequestCycle == 0 &&
+                    (perHourReportRequestQueue == null || perHourReportRequestQueue.isCycleComplete())) {
                 resetHistReqCycle();
-                if (requestsHistory24 != null) {
-                    requestsHistory24.resetCycleFlag();
+                if (perHourReportRequestQueue != null) {
+                    perHourReportRequestQueue.resetCycleFlag();
                 }
                 Data growDay = dataDao.getGrowDay(controller.getId());
                 if (growDay == null) {
@@ -279,7 +284,7 @@ public class MessageManager implements Observer {
                     return true;
                 }
             }
-            decHistReqCycle();
+            decPerDayReportRequestCycle();
         }
         return false;
     }
@@ -290,50 +295,66 @@ public class MessageManager implements Observer {
      * @return true if management should be requested.
      * @throws SQLException
      */
-    private boolean history24HourShouldBeRequested() throws SQLException {
-        // lasy initialisation of flock
+    private boolean perHourReportsShouldBeRequested() throws SQLException {
+        // lasy initialization of flock
         if (flock == null) {
             flock = flockDao.getOpenFlockByController(controller.getId());
         }
 
+        Collection<Data> perHourReportDataList = dataDao.getPerHourHistoryDataByControllerValues(controller.getId());
+        if (perHourReportDataList.isEmpty()) {
+            return false;
+        }
+
         // flock is opened
         if (flock != null) {
-            if (hist24RequestCycle == 0) {
+            if (perPerDayReportRequestCycle == 0) {
                 Data growDay = dataDao.getGrowDay(controller.getId());
                 if (growDay == null) {
                     return false;
                 }
+
                 Integer updatedGrowDay = flockDao.getUpdatedGrowDayHistory24(flock.getFlockId());
                 try {
                     if (updatedGrowDay == null || (growDay.getValue() > updatedGrowDay + 1)) {
                         return true;
+                    } else {
+                        int perHourReportCount = flockDao.getFlockPerHourHistoryData(flock.getFlockId(),
+                                updatedGrowDay, 1L).size();
+                        int perHourRecordQueueCount = perHourReportRequestQueue.getSize();
+                        if (perHourReportCount < perHourRecordQueueCount) {
+                            return true;
+                        } else {
+                            perHourReportRequestQueue.recreateRequests(updatedGrowDay + 1);
+                            resetPerHourReportRequestCycle();
+                            return false;
+                        }
                     }
                 } catch (Exception ex) {
                     logger.error(ex.getMessage(), ex);
                 }
             }
-            decHist24ReqCycle();
         }
         return false;
     }
 
     private void resetHistReqCycle() {
-        histRequestCycle = REQUEST_CYCLE;
+        perPerDayReportRequestCycle = REQUEST_CYCLE;
     }
 
-    private void decHistReqCycle() {
-        if (histRequestCycle > 0) {
-            histRequestCycle--;
+    private void decPerDayReportRequestCycle() {
+        if (perPerDayReportRequestCycle > 0) {
+            perPerDayReportRequestCycle--;
         }
     }
 
-    private void resetHist24ReqCycle() {
-        hist24RequestCycle = REQUEST_CYCLE;
+    private void resetPerHourReportRequestCycle() {
+        perHourReportRequestCycle = REQUEST_CYCLE;
     }
 
-    private void decHist24ReqCycle() {
-        if (hist24RequestCycle > 0) {
-            hist24RequestCycle--;
+    private void decPerHourReportRequestCycle() {
+        if (perHourReportRequestCycle > 0) {
+            perHourReportRequestCycle--;
         }
     }
 
@@ -343,7 +364,7 @@ public class MessageManager implements Observer {
      * @return requestHistory the management request.
      * @throws SQLException
      */
-    private RequestMessage createHistoryRequest() throws SQLException, IllegalAccessException {
+    private RequestMessage createDailyReportRequest() throws SQLException, IllegalAccessException {
         Integer growDay = flockDao.getUpdatedGrowDayHistory(flock.getFlockId());
         if (growDay == null) {
             growDay = 1;
@@ -359,25 +380,33 @@ public class MessageManager implements Observer {
      * @return requestHistory the management request.
      * @throws SQLException
      */
-    private RequestMessage create24HourHistoryRequest() throws SQLException, IllegalAccessException {
-        Integer growDay = flockDao.getUpdatedGrowDayHistory24(flock.getFlockId());
-        if (growDay == null) {
-            growDay = 1;
+    private RequestMessage createPerHourReportsRequest() throws SQLException, IllegalAccessException {
+
+        Collection<Data> perHourReportDataList = dataDao.getPerHourHistoryDataByControllerValues(controller.getId());
+        if (perHourReportRequestQueue == null) {
+            perHourReportRequestQueue = new PerHourReportRequestQueue(controller.getNetName(), perHourReportDataList);
         }
 
-        if (requestsHistory24 == null) {
-            requestsHistory24 = new RequestMessageQueueHistory24(controller.getNetName(), growDay);
+        Integer updatedGrowDay = flockDao.getUpdatedGrowDayHistory24(flock.getFlockId());
+        if (updatedGrowDay == null) {
+            updatedGrowDay = 1;
         }
 
-        RequestMessage returnRequest = requestsHistory24.next();
-        if (requestsHistory24.isCycleComplete()) {
-            requestsHistory24.recreateHistory24Requests(growDay + 1);
-            resetHist24ReqCycle();
+        if (perHourReportRequestQueue.getGrowDay().equals(updatedGrowDay)) {
+            int perHourReportCount = flockDao.getFlockPerHourHistoryData(flock.getFlockId(), updatedGrowDay, 1L).size();
+            int perHourRecordQueueCount = perHourReportRequestQueue.getSize();
+            if (perHourReportCount >= perHourRecordQueueCount) {
+                perHourReportRequestQueue.recreateRequests(updatedGrowDay + 1);
+            }
+        } else {
+            perHourReportRequestQueue.recreateRequests(updatedGrowDay);
         }
-        return returnRequest;
+        return perHourReportRequestQueue.next();
     }
 
     /**
+     * Update online data map
+     *
      * @param responseMessageMap
      * @throws SQLException
      */
@@ -452,7 +481,7 @@ public class MessageManager implements Observer {
                     }
                     break;
 
-                case REQUEST_HISTORY_24_HOUR:
+                case REQUEST_PER_HOUR_REPORTS:
                     Integer growDay24 = requestToSend.getGrowDay();
                     String dnum = requestToSend.getDnum();
                     if (response.toString().equals("Request Error")) {
@@ -545,7 +574,7 @@ public class MessageManager implements Observer {
         boolean exist = responseMessageMap.isContainRequest(requestToSend);
         if (exist) {
             updatedFlag = true;
-            if (requestToSend.isUnusedType()) {
+            if (requestToSend.isUnusedType(controller.getName())) {
                 requests.removedUnusedFromQueue(requestToSend);
             }
             if (requestToSend.getMessageType() == MessageType.REQUEST_PANEL

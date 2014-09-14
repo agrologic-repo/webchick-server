@@ -26,6 +26,8 @@ public interface DatabaseLoadAccessor {
     public Collection<SystemState> getSystemStates();
 
     public Collection<Program> getPrograms();
+
+    public Collection<ActionSet> getActionSets();
 }
 
 

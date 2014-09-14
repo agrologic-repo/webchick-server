@@ -124,8 +124,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <table class="table-list" border=1 width="100%"
-                                                >
+                                        <table class="table-list" border=1 width="100%">
                                             <thead>
                                             <th align="center" width="100px"
                                                 onmouseover="this.style.background='#ADD8E6'"

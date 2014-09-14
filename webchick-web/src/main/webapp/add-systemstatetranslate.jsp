@@ -4,22 +4,17 @@
 <%@ page import="com.agrologic.app.dao.LanguageDao" %>
 <%@ page import="com.agrologic.app.model.Language" %>
 <%@ page import="com.agrologic.app.model.User" %>
-
 <% User user = (User) request.getSession().getAttribute("user");
-
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-
     Long systemstateId = Long.parseLong(request.getParameter("systemstateId"));
     String systemstateName = request.getParameter("systemstateName");
     Long translateLang = Long.parseLong(request.getParameter("translateLang"));
     LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
     Language lang = languageDao.getById(translateLang);
 %>
-
-
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
@@ -97,8 +92,10 @@
                     </tr>
                     <tr>
                         <td>
-                            <button id="btnAdd" name="btnAdd" type="submit"><img src="resources/images/plus1.gif">&nbsp;Add</button>
-                            <button type="button" onclick='self.close();'><img src="resources/images/close.png">&nbsp;Close</button>
+                            <button id="btnAdd" name="btnAdd" type="submit"><img src="resources/images/plus1.gif">&nbsp;Add
+                            </button>
+                            <button type="button" onclick='self.close();'><img src="resources/images/close.png">&nbsp;Close
+                            </button>
                         </td>
                     </tr>
                 </table>

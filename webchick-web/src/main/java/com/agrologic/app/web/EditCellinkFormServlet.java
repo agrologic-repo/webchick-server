@@ -13,7 +13,6 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 
 public class EditCellinkFormServlet extends AbstractServlet {
@@ -47,8 +46,8 @@ public class EditCellinkFormServlet extends AbstractServlet {
                     UserDao userDao = DbImplDecider.use(DaoType.MYSQL).getDao(UserDao.class);
                     CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                    Cellink cellink = cellinkDao.getById(cellinkId);
 
+                    Cellink cellink = cellinkDao.getById(cellinkId);
                     cellink.setName(name);
                     cellink.setPassword(password);
                     cellink.setSimNumber(simNumber);
@@ -71,14 +70,11 @@ public class EditCellinkFormServlet extends AbstractServlet {
                     }
 
                     for (User u : users) {
-                        Collection<Cellink> cellinks = (List<Cellink>) cellinkDao.getAllUserCellinks(u.getId());
-
+                        Collection<Cellink> cellinks = cellinkDao.getAllUserCellinks(u.getId());
                         for (Cellink c : cellinks) {
                             Collection<Controller> controllers = controllerDao.getAllByCellink(c.getId());
-
                             c.setControllers(controllers);
                         }
-
                         u.setCellinks(cellinks);
                     }
 

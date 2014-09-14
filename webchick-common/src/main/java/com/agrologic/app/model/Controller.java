@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Controller implements Serializable {
     private static final long serialVersionUID = 166073822830898227L;
-    private static final long OFF_STATE_DELAY = TimeUnit.MINUTES.toMillis(10);
+    private static final long OFF_STATE_DELAY = TimeUnit.MINUTES.toMillis(5);
     private Long id;
     private Long cellinkId;
     private Long programId;

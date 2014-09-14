@@ -1,3 +1,6 @@
+<%@ page import="com.agrologic.app.graph.GenerateGraph" %>
+<%@ page import="com.agrologic.app.model.Flock" %>
+<%@ page import="java.io.PrintWriter" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ include file="language.jsp" %>
@@ -6,6 +9,8 @@
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
+    Flock flock = (Flock) request.getAttribute("flock");
+    Locale currLocal = (Locale) session.getAttribute("currLocale");
     Integer fromDay = -1;
     Integer toDay = -1;
     try {
@@ -27,10 +32,106 @@
         }
     } catch (Exception ex) {
         growDay = 1;
+
     }
 
-    String flockName = (String) request.getAttribute("flockName");
-    String houseName = (String) request.getAttribute("houseName");
+    //////////////////////////////////////////////////Graph 24 hour/////////////////////////////////////////////////////
+    String filenameth = (String) session.getAttribute("filenameth-flockid=" + flockId + "&growday=" + growDay);
+    if (filenameth == null) {
+        filenameth = GenerateGraph.generateChartFlockTempHum(flockId, growDay.toString(), session,
+                new PrintWriter(out), currLocal);
+        session.setAttribute("filenameth-flockid=" + flockId + "&growday=" + growDay, filenameth);
+    }
+
+    String graphURLTH;
+    if (filenameth.contains("public_error")) {
+        graphURLTH = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+    } else {
+        graphURLTH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameth;
+    }
+    String filenamewft = (String) session.getAttribute("filenamewft");
+    if (filenamewft == null) {
+        filenamewft = GenerateGraph.generateChartFlockWaterFeedTemp(flockId, growDay.toString(), session, new PrintWriter(out), currLocal);
+        session.setAttribute("filenamewft", filenamewft);
+    }
+
+    String graphURLWFT;
+    if (filenamewft.contains("public_error")) {
+        graphURLWFT = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+    } else {
+        graphURLWFT = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamewft;
+    }
+    //////////////////////////////////////////////////Graph Daily///////////////////////////////////////////////////////
+
+    String filenamefw = (String) session.getAttribute("filenamefw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
+    if (filenamefw == null) {
+        filenamefw = GenerateGraph.generateChartFlockWaterFeed(flockId, fromDay.toString(), toDay.toString(),
+                session, new PrintWriter(out), currLocal);
+    }
+
+    String graphURLWF;
+    if (filenamefw.contains("public_error")) {
+        graphURLWF = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+    } else {
+        graphURLWF = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamefw;
+    }
+
+    String filenameaw = (String) session.getAttribute("filenameaw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
+    if (filenameaw == null) {
+        filenameaw = GenerateGraph.generateChartFlockAverageWeight(flockId, fromDay.toString(), toDay.toString(),
+                session, new PrintWriter(out), currLocal);
+        session.setAttribute("filenamefw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamefw);
+    }
+
+    String graphURLAW;
+    if (filenameaw.contains("public_error")) {
+        graphURLAW = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+    } else {
+        graphURLAW = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameaw;
+    }
+
+    String filenamehot = (String) session.getAttribute("filenameaw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
+    if (filenamehot == null) {
+        filenamehot = GenerateGraph.generateChartFlockHeatOnTime(flockId, fromDay.toString(), toDay.toString(),
+                session, new PrintWriter(out), currLocal);
+        session.setAttribute("filenamehot-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamehot);
+    }
+
+    String graphURLHOT;
+    if (filenamehot.contains("public_error")) {
+        graphURLHOT = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+    } else {
+        graphURLHOT = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamehot;
+    }
+
+
+    String filenamem = (String) session.getAttribute("filenamem-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
+    if (filenamem == null) {
+        filenamem = GenerateGraph.generateChartFlockMortality(flockId, fromDay.toString(), toDay.toString(),
+                session, new PrintWriter(out), currLocal);
+        session.setAttribute("filenamem-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamem);
+    }
+
+    String graphURLM;
+    if (filenamem.contains("public_error")) {
+        graphURLM = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+    } else {
+        graphURLM = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamem;
+    }
+
+
+    String filenamemmh = (String) session.getAttribute("filenamemmh-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
+    if (filenamemmh == null) {
+        filenamemmh = GenerateGraph.generateChartFlockMinMaxTemperatureHumidity(flockId, fromDay.toString(), toDay.toString(),
+                session, new PrintWriter(out), currLocal);
+        session.setAttribute("filenamemmh-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamemmh);
+    }
+    String graphURLMMH;
+    if (filenamefw.contains("public_error")) {
+        graphURLMMH = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+    } else {
+        graphURLMMH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamemmh;
+    }
 %>
 
 
@@ -45,32 +146,6 @@
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
-    <script>
-        $(function () {
-            $("#accordion-daily-graph").accordion({
-                resizable: true,
-                collapsible: true,
-                width: 800,
-                heightStyle: "content"
-            });
-        });
-        $(function () {
-            $("#accordion-hourly-graph").accordion({
-                resizable: true,
-                collapsible: true,
-                width: 800,
-                heightStyle: "content"
-            });
-        });
-        $(document).ready(function () {
-            $("#btnClear").click(function () {
-                $('input[name="fromDay"]').val('');
-                $('input[name="toDay"]').val('');
-                $("#flock-graph").submit();
-            })
-        });
-
-    </script>
 </head>
 <body>
 <div>
@@ -84,13 +159,11 @@
             <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
                 <table width="85%">
                     <tr>
-                        <td>
-                            <%@include file="toplang.jsp" %>
-                        </td>
                         <td width="65%">
                             <h1 style="text-align: center;"><%=session.getAttribute("history.graph.page.title")%>
-                                <%=flockName%> - <%=houseName%>
+                                <%=flock.getFlockName()%>
                             </h1>
+
                         </td>
                         <td width="20%">
                             <a href="rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
@@ -127,9 +200,9 @@
                                     <table class="table-list-small">
                                         <tr>
                                             <td>
-                                                <%=session.getAttribute("label.growday")%> : <input type="text" size="5"
-                                                                                                    name="growDay"
-                                                                                                    value="<%=growDay%>"/>
+                                                <%--<%=session.getAttribute("label.growday")%> : <input type="text" size="5"--%>
+                                                <%--name="growDay"--%>
+                                                <%--value="<%=growDay%>"/>--%>
 
                                                 <%if (fromDay == -1 || toDay == -1) {%>
                                                 <%=session.getAttribute("label.from")%> : <input type="text" size="5"
@@ -172,40 +245,49 @@
                             <div id="accordion-daily-graph">
                                 <h3><%=session.getAttribute("history.graph.page.panel.fwt.label")%>
                                 </h3>
-
                                 <div>
-                                    <img border="0"
-                                         src="./feedwatergraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
+                                    <%
+                                        //                                    String graphURLTH;
+//                                    String filenameth = (String)session.getAttribute("filenameth-flockid="+flockId+"&growday="+growDay);
+                                        if (filenameth == null) {
+                                            filenameth = GenerateGraph.generateChartFlockTempHum(flockId, growDay.toString(), session,
+                                                    new PrintWriter(out), currLocal);
+                                            session.setAttribute("filenameth-flockid=" + flockId + "&growday=" + growDay, filenameth);
+                                        }
 
+                                        if (filenameth.contains("public_error")) {
+                                            graphURLTH = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+                                        } else {
+                                            graphURLTH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameth;
+                                        }
+                                    %>
+                                    <img src="<%=graphURLWF%>" width=800 height=600 border=0 usemap="#<%=filenamefw%>">
                                 </div>
                                 <h3><%=session.getAttribute("history.graph.page.panel.aw.label")%>
                                 </h3>
 
                                 <div>
-                                    <img border="0"
-                                         src="./avgweightgraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
-
+                                    <img src="<%=graphURLAW%>" width=800 height=600 border=0 usemap="#<%=filenameaw%>">
                                 </div>
                                 <h3><%=session.getAttribute("history.graph.page.panel.max.label")%>
                                 </h3>
 
                                 <div>
-                                    <img border="0"
-                                         src="./minmaxhumgraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
+                                    <img src="<%=graphURLMMH%>" width=800 height=600 border=0
+                                         usemap="#<%=filenamemmh%>">
                                 </div>
                                 <h3><%=session.getAttribute("history.graph.page.panel.mor.label")%>
                                 </h3>
 
                                 <div>
-                                    <img border="0"
-                                         src="./mortalitygraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
+                                    <img src="<%=graphURLM%>" width=800 height=600 border=0 usemap="#<%=filenamem%>">
                                 </div>
                                 <h3><%=session.getAttribute("history.graph.page.panel.hon.label")%>
                                 </h3>
 
                                 <div>
-                                    <img border="0"
-                                         src="./heatontimegraph.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&fromDay=<%=fromDay%>&toDay=<%=toDay%>"/>
+                                    <img src="<%=graphURLHOT%>" width=800 height=600 border=0
+                                         usemap="#<%=filenamehot%>">
                                 </div>
                             </div>
                         </td>
@@ -260,15 +342,15 @@
                                 </h3>
 
                                 <div>
-                                    <img border="0"
-                                         src="./Graph24HourIOHServlet?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&growDay=<%=growDay%>"/>
+                                    <img src="<%=graphURLTH%>" width=800 height=600 border=0
+                                         usemap="#<%=filenameth%>">
                                 </div>
                                 <h3><%=session.getAttribute("history.graph.page.panel.fwt24.label")%>
                                 </h3>
 
                                 <div>
-                                    <img border="0"
-                                         src="./Graph24HourFWServlet?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&growDay=<%=growDay%>"/>
+                                    <img src="<%= graphURLWFT %>" width=800 height=600 border=0
+                                         usemap="#<%= filenamewft %>">
                                 </div>
                             </div>
                         </td>

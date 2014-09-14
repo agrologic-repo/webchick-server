@@ -1,9 +1,9 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.dao.*;
-import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.history.DayParam;
+import com.agrologic.app.service.history.FlockHistoryService;
+import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,17 +31,17 @@ public class FlockGraphServlet extends AbstractServlet {
             Long flockId = Long.parseLong(request.getParameter("flockId"));
 
             try {
-                FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-                Flock flock = flockDao.getById(flockId);
-                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                Controller controller = controllerDao.getById(flock.getControllerId());
-                DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                DayParam growDayParam = new DayParam(request.getParameter("growDay"));
+                FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
+                Flock flock = flockHistoryService.getFlock(flockId);
+                request.setAttribute("flock", flock);
 
-                request.setAttribute("flockName", flock.getFlockName());
-                request.setAttribute("houseName", controller.getTitle());
-                request.getRequestDispatcher("./rmctrl-flock-graphs.jsp?cellinkId=" + cellinkId + "&growDay="
+                DayParam growDayParam = new DayParam(request.getParameter("growDay"));
+//                request.getRequestDispatcher("./rmctrl-flock-graphs.jsp?cellinkId=" + cellinkId + "&growDay="
+//                        + growDayParam.getGrowDay()).forward(request, response);
+
+                request.getRequestDispatcher("./rmctrl-flock-graphs-main.jsp?cellinkId=" + cellinkId + "&growDay="
                         + growDayParam.getGrowDay()).forward(request, response);
+
             } catch (Exception ex) {
                 logger.trace("Fail save management setting", ex);
             }

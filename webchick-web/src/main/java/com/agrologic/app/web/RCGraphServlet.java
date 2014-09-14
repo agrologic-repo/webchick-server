@@ -1,10 +1,7 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.*;
-import com.agrologic.app.model.Controller;
-import com.agrologic.app.model.Program;
-import com.agrologic.app.model.ProgramRelay;
-import com.agrologic.app.model.Screen;
+import com.agrologic.app.model.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +35,7 @@ public class RCGraphServlet extends AbstractServlet {
             long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             long controllerId = Long.parseLong(request.getParameter("controllerId"));
             long screenId = Long.parseLong(request.getParameter("screenId"));
-            String lang = (String) request.getSession().getAttribute("lang");
-            if ((lang == null) || lang.equals("")) {
-                lang = "en";
-            }
+            long langId = getInSessionLanguageId(request);
             try {
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 Controller controller = controllerDao.getById(controllerId);
@@ -50,9 +44,6 @@ public class RCGraphServlet extends AbstractServlet {
                 ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                 Program program = programDao.getById(controller.getProgramId());
                 controller.setProgram(program);
-
-                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
-                long langId = languageDao.getLanguageId(lang);
 
                 ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
                 Collection<Screen> screens = screenDao.getAllScreensByProgramAndLang(program.getId(), langId, false);
