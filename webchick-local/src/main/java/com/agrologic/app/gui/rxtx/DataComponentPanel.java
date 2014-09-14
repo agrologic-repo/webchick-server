@@ -15,15 +15,14 @@ public class DataComponentPanel extends JPanel {
     private static int maxComponentCounter = 0;
     private int componentCounter = 0;
     private Controller controller;
-    private Program program;
+    private Table table;
+    private DatabaseAccessor dbaccess;
+    private GridBagConstraints gridBagConstraints;
+    private DataComponent prevComponent;
     private List<ProgramAlarm> programAlarms;
     private List<ProgramRelay> programRelays;
     private List<ProgramSystemState> programSystemStates;
-    private Table table;
     private List<DataController> dataControllerList;
-    private DatabaseAccessor dbaccess;
-    private DataComponent prevComponent;
-    private GridBagConstraints gridBagConstraints;
 
     /**
      * @param table
@@ -47,12 +46,12 @@ public class DataComponentPanel extends JPanel {
                               List<ProgramRelay> programRelays, List<ProgramSystemState> programSystemStates,
                               DatabaseAccessor dbaccess, ComponentOrientation componentOrientation,
                               Table table, List<DataController> dataControllerList, DataComponent prevComponent) {
+
         super(new GridBagLayout());
         this.setComponentOrientation(componentOrientation);
         this.prevComponent = prevComponent;
         this.controller = controller;
         this.dbaccess = dbaccess;
-        this.program = program;
         this.programRelays = programRelays;
         this.programAlarms = programAlarms;
         this.programSystemStates = programSystemStates;
@@ -86,7 +85,8 @@ public class DataComponentPanel extends JPanel {
                                 } else {
                                     programRelay.init(data.getValueToUI());
                                 }
-                                dataComponent = ComponentFactory.createRelayComponent(data, programRelay, getComponentOrientation());
+                                dataComponent = ComponentFactory.createRelayComponent(data, getComponentOrientation(),
+                                        programRelay);
                                 gridBagConstraints.gridy++;
                                 gridBagConstraints.gridx = 0;
                                 add(dataComponent.getLabel(), gridBagConstraints);
@@ -97,7 +97,7 @@ public class DataComponentPanel extends JPanel {
                         }
                     }
                 } else if (data.isAlarm()) {
-                    dataComponent = ComponentFactory.createAlarmComponent(data, programAlarms, getComponentOrientation());
+                    dataComponent = ComponentFactory.createAlarmComponent(data, getComponentOrientation(), programAlarms);
                     gridBagConstraints.gridy++;
                     gridBagConstraints.gridx = 0;
                     add(dataComponent.getLabel(), gridBagConstraints);
@@ -105,7 +105,7 @@ public class DataComponentPanel extends JPanel {
                     add(dataComponent.getComponent(), gridBagConstraints);
                     componentCounter++;
                 } else if (data.isSystemState()) {
-                    dataComponent = ComponentFactory.createSystemStateComponent(data, programSystemStates, getComponentOrientation());
+                    dataComponent = ComponentFactory.createSystemStateComponent(data, getComponentOrientation(), programSystemStates);
                     gridBagConstraints.gridy++;
                     gridBagConstraints.gridx = 0;
                     add(dataComponent.getLabel(), gridBagConstraints);
@@ -113,7 +113,7 @@ public class DataComponentPanel extends JPanel {
                     add(dataComponent.getComponent(), gridBagConstraints);
                     componentCounter++;
                 } else {
-                    dataComponent = ComponentFactory.createDataComponent(data, controller, dbaccess, getComponentOrientation());
+                    dataComponent = ComponentFactory.createDataComponent(data, getComponentOrientation(), controller, dbaccess);
                     gridBagConstraints.gridy++;
                     gridBagConstraints.gridx = 0;
                     add(dataComponent.getLabel(), gridBagConstraints);

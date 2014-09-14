@@ -49,6 +49,7 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
     private JPanel mainPanel;
     private StatusBar statusBar;
     private MainScreenPanel[] mainScreenPanels;
+    private SingleMainScreenPanel singleMainScreenPanel;
     private ExecutorService threadPool = Executors.newFixedThreadPool(1);
     public static Logger logger = Logger.getLogger(ApplicationLocal.class);
 
@@ -65,6 +66,7 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
         LocaleManager localeManager = new LocaleManager();
         localeManager.setCurrentLanguage(configuration.getLanguage());
         Locale.setDefault(localeManager.getCurrentLocale());
+
 
         if (localeManager.getCurrentLanguage().equals(LocaleManager.Language.HEBREW)) {
             currentOrientation = orientationRTL;
@@ -190,10 +192,9 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
      */
     private synchronized void createControllersScreens() {
         logger.info("Get loaded controllers");
-        Collection<Controller> controllers =
-                dbManager.getDatabaseLoader().getUser().getCellinks().iterator().next().getControllers();
+        Collection<Controller> controllers = dbManager.getDatabaseLoader().getUser()
+                .getCellinks().iterator().next().getControllers();
 
-        int size = controllers.size();
         logger.info("Start creating  main screens ");
         mainPanel = new JPanel(new ModifiedFlowLayout(FlowLayout.CENTER));
         mainPanel.setComponentOrientation(currentOrientation);
@@ -201,8 +202,26 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
         scrollPaneMain.setAutoscrolls(true);
         scrollPaneMain.getVerticalScrollBar().setUnitIncrement(32);
 
-        mainScreenPanels = new MainScreenPanel[size];
-        for (int i = 0; i < size; i++) {
+        createMainScreenPanel(controllers);
+
+//        Controller c = controllers.iterator().next();
+//        createSingleMainScreenPanel(c);
+
+        statusBar = new StatusBar(currentOrientation);
+        getContentPane().add(scrollPaneMain, BorderLayout.CENTER);
+        getContentPane().add(statusBar, BorderLayout.PAGE_END);
+        setComponentOrientation(currentOrientation);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension newDimension = new Dimension(dimension.width, (dimension.height - 35));
+        setSize(newDimension);
+        Windows.setWindowsLAF(this);
+        Windows.centerOnTopScreen(this);
+        networkThread.setStatusBar(statusBar);
+    }
+
+    public void createMainScreenPanel(Collection<Controller> controllers) {
+        mainScreenPanels = new MainScreenPanel[controllers.size()];
+        for (int i = 0; i < mainScreenPanels.length; i++) {
             mainScreenPanels[i] = new MainScreenPanel(dbManager, Lists.newArrayList(controllers).get(i), currentOrientation);
             mainScreenPanels[i].setFirstScrollPane(scrollPaneMain);
             mainScreenPanels[i].setParent(this);
@@ -216,17 +235,14 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
                 }
             }
         }
+    }
 
-        statusBar = new StatusBar(currentOrientation);
-        getContentPane().add(scrollPaneMain, BorderLayout.CENTER);
-        getContentPane().add(statusBar, BorderLayout.PAGE_END);
-        setComponentOrientation(currentOrientation);
-        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension newDimension = new Dimension(dimension.width, (dimension.height - 35));
-        setSize(newDimension);
-        Windows.setWindowsLAF(this);
-        Windows.centerOnTopScreen(this);
-        networkThread.setStatusBar(statusBar);
+
+    public void createSingleMainScreenPanel(Controller controller) {
+        singleMainScreenPanel = new SingleMainScreenPanel(dbManager, controller, getComponentOrientation());
+        singleMainScreenPanel.setFirstScrollPane(scrollPaneMain);
+        singleMainScreenPanel.setParent(this);
+        mainPanel.add(singleMainScreenPanel);
     }
 
     /**
@@ -257,9 +273,7 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
      * @param message the error message text
      */
     public void showErrorMessage(String title, String message) {
-        JOptionPane.showMessageDialog(ApplicationLocal.this, message,
-                title,
-                JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(ApplicationLocal.this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
     /**

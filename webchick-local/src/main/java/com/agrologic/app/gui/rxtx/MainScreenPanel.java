@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class MainScreenPanel extends JPanel implements ScreenUI {
+public class MainScreenPanel extends JPanel implements ScreenPanelUI {
     private static Logger logger = LoggerFactory.getLogger(MainScreenPanel.class);
     private static int maxComponentCounter = 0;
     private int componentCounter = 0;
@@ -159,7 +159,9 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                 secondMainPanel.add(secondScreenPanel);
                 secondScrollPane = new JScrollPane(secondMainPanel);
                 secondScreenPanel.setSecondScrollPane(secondScrollPane);
-                secondScrollPane.setAutoscrolls(true);
+
+                secondScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+                secondScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                 secondScrollPane.getVerticalScrollBar().setUnitIncrement(32);
                 int scrollBarPosition = 0;
                 if (currentOrientation == ApplicationLocal.orientationLTR) {
@@ -168,7 +170,6 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                     scrollBarPosition = secondScrollPane.getHorizontalScrollBar().getMaximum();
                 }
                 secondScrollPane.getHorizontalScrollBar().setValue(scrollBarPosition);
-                secondScreenPanel.startTimerThread();
                 parent.getContentPane().add(secondScrollPane);
                 parent.validate();
                 parent.repaint();
@@ -193,7 +194,8 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                                 } else {
                                     programRelay.init(data.getValueToUI());
                                 }
-                                dataComponent = ComponentFactory.createRelayComponent(data, programRelay, getComponentOrientation());
+                                dataComponent = ComponentFactory.createRelayComponent(data, getComponentOrientation(),
+                                        programRelay);
                                 componentCounter++;
                                 gridBagConstraints.gridy++;
                                 gridBagConstraints.gridx = 0;
@@ -204,7 +206,8 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                         }
                     }
                 } else if (data.isAlarm()) {
-                    dataComponent = ComponentFactory.createAlarmComponent(data, programAlarms, getComponentOrientation());
+                    dataComponent = ComponentFactory.createAlarmComponent(data, getComponentOrientation(),
+                            programAlarms);
                     componentCounter++;
                     gridBagConstraints.gridy++;
                     gridBagConstraints.gridx = 0;
@@ -212,7 +215,7 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                     gridBagConstraints.gridx = 1;
                     add(dataComponent.getComponent(), gridBagConstraints);
                 } else if (data.isSystemState()) {
-                    dataComponent = ComponentFactory.createSystemStateComponent(data, programSystemStates, getComponentOrientation());
+                    dataComponent = ComponentFactory.createSystemStateComponent(data, getComponentOrientation(), programSystemStates);
                     componentCounter++;
                     gridBagConstraints.gridy++;
                     gridBagConstraints.gridx = 0;
@@ -220,7 +223,7 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                     gridBagConstraints.gridx = 1;
                     add(dataComponent.getComponent(), gridBagConstraints);
                 } else {
-                    dataComponent = ComponentFactory.createDataComponent(data, controller, dbManager.getDatabaseGeneralService(), getComponentOrientation());
+                    dataComponent = ComponentFactory.createDataComponent(data, getComponentOrientation(), controller, dbManager.getDatabaseGeneralService());
                     componentCounter++;
                     gridBagConstraints.gridy++;
                     gridBagConstraints.gridx = 0;
@@ -255,11 +258,10 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
                     }
                 }
             }
-
-            calculateMaxComponentCounter(componentCounter);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        calculateMaxComponentCounter(componentCounter);
     }
 
     /**
@@ -268,7 +270,8 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
     public void fillEmptyComponents() {
         while (componentCounter < maxComponentCounter) {
             JTextField text = new JTextField("");
-            text.setBorder(BorderFactory.createEmptyBorder(1, 2, 1, 2));
+            text.setOpaque(false);
+            text.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
             text.setEditable(false);
             text.setComponentOrientation(currentOrientation);
             gridBagConstraints.gridy++;
@@ -281,14 +284,17 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
     }
 
     private GridBagConstraints createGridBagConstraint() {
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 0.5;
-        c.gridwidth = 2;
-        c.insets = new Insets(1, 2, 1, 2);  //top padding
-        return c;
+        if (gridBagConstraints == null) {
+            GridBagConstraints c = new GridBagConstraints();
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.weightx = 0.5;
+            c.gridwidth = 2;
+            c.insets = new Insets(1, 2, 1, 2);  //top padding
+            return c;
+        }
+        return gridBagConstraints;
     }
 
     private void calculateMaxComponentCounter(int componentCounter) {
@@ -298,6 +304,7 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
     }
 
     /**
+     *
      * @param firstScrollPane
      */
     public void setFirstScrollPane(JScrollPane firstScrollPane) {
@@ -308,7 +315,6 @@ public class MainScreenPanel extends JPanel implements ScreenUI {
         this.secondScreenPanel = null;
         this.secondMainPanel = null;
         this.secondScrollPane = null;
-
     }
 
     /**
