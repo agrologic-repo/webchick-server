@@ -78,8 +78,8 @@
                         </h2>
                     </td>
                     <td width="20%">
-                        <a href="rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
-                            <img src="resources/images/display.png" style="cursor: pointer" border="0"/>
+                        <a href="rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
+                        <img src="resources/images/display.png" style="cursor: pointer" border="0"/>
                             &nbsp;<%=session.getAttribute("button.screens")%>&nbsp;
                         </a>
                         <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
@@ -272,8 +272,8 @@
                                 <tr>
                                     <td>
                                         <button id="btnBack" name="btnBack"
-                                                onclick='return back("./rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1")'>
-                                            <%=session.getAttribute("button.back") %>
+                                                onclick='return back("./rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1")'>
+                                        <%=session.getAttribute("button.back") %>
                                         </button>
                                     </td>
                                 </tr>

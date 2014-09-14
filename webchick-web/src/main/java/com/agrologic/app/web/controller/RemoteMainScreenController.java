@@ -13,13 +13,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
-public class CellinkController {
+public class RemoteMainScreenController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @RequestMapping(value = "/cellinkname.html", method = RequestMethod.GET)
-    public ModelAndView showCellinkName(@RequestParam(value = "cellinkId") long cellinkId) {
+    @RequestMapping(value = "/rmctrl-main-screen.html", method = RequestMethod.GET)
+    public ModelAndView showRemoteMainScreen(@RequestParam(value = "userId") long userId, @RequestParam(value = "cellinkId") long cellinkId) {
         Cellink cellink = null;
         try {
             CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
@@ -29,6 +31,10 @@ public class CellinkController {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return new ModelAndView("cellink-name", "cellink", cellink);
+
+        Map<String, Object> pageModel = new HashMap<String, Object>();
+        pageModel.put("cellink", cellink);
+        pageModel.put("userId", userId);
+        return new ModelAndView("rmctrl-main-screen", pageModel);
     }
 }

@@ -65,7 +65,7 @@ public class RCChangeValue extends AbstractServlet {
                 logger.info("Data successfully changed :" + data);
 
                 if (screenId == 1) {
-                    response.sendRedirect("./rmctrl-main-screen-ajax.jsp?userId=" + userId + "&cellinkId=" + cellinkId);
+                    response.sendRedirect("./rmctrl-main-screen.html?userId=" + userId + "&cellinkId=" + cellinkId);
                 } else {
                     response.sendRedirect("./rmctrl-controller-screens-ajax.jsp?userId=" + userId + "&cellinkId="
                             + cellinkId + "&controllerId=" + controllerId + "&screenId=" + screenId);
@@ -75,7 +75,7 @@ public class RCChangeValue extends AbstractServlet {
 
             // error page
             logger.info("Error occurs while changing data", ex);
-            response.sendRedirect("./rmctrl-main-screen-ajax.jsp?userId=" + userId + "&cellinkId=" + cellinkId);
+            response.sendRedirect("./rmctrl-main-screen.html?userId=" + userId + "&cellinkId=" + cellinkId);
         } finally {
             out.close();
         }

@@ -221,13 +221,13 @@
                             <img src="resources/images/online.gif" onmouseover="this.src='resources/images/honline.gif'"
                                  onmouseout="this.src='resources/images/online.gif'"
                                  title="<%=cellink.getName()%> (<%=session.getAttribute("cellink.state.online")%>)"
-                                 onclick="redirect('./rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>&screenId=1&')"/>
+                                 onclick="redirect('./rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>&screenId=1&')"/>
                             <%} else if (cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {%>
                             <img src="resources/images/running.gif"
                                  onmouseover="this.src='resources/images/hrunning.gif'"
                                  onmouseout="this.src='resources/images/running.gif'"
                                  title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.running")%>)"
-                                 onclick="window.location.href = 'rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>'"/>
+                                 onclick="window.location.href = 'rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>'"/>
                             <%} else {%>
                             <img src="resources/images/offline.gif"
                                  title="<%=cellink.getName()%>(<%=session.getAttribute("cellink.state.offline")%>)"/>
@@ -237,7 +237,7 @@
                                         || cellink.getCellinkState().getValue() == CellinkState.STATE_START
                                         || cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {
                             %>
-                            <a href="rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
+                            <a href="rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
                                 <%=cellink.getName()%>
                             </a>
                             <%} else {%>
@@ -261,7 +261,7 @@
                                     || cellink.getCellinkState().getValue() == CellinkState.STATE_START) {
                         %>
                         <td align="center" valign="middle">
-                            <a href="rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
+                            <a href="rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
                                 <img src="resources/images/display.png" style="cursor: pointer"
                                      title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
                                      hspace="5"/><%=session.getAttribute("button.connect.cellink")%>
@@ -269,7 +269,7 @@
                         </td>
                         <%} else if (cellink.getCellinkState().getValue() == CellinkState.STATE_RUNNING) {%>
                         <td align="center" valign="middle">
-                            <a href="rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
+                            <a href="rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>">
                                 <img src="resources/images/display.png" style="cursor: pointer"
                                      title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
                                      hspace="5"/><%=session.getAttribute("button.chicken.coop")%>

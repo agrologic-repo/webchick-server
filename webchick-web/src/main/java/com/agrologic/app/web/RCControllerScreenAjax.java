@@ -107,10 +107,10 @@ public class RCControllerScreenAjax extends AbstractServlet {
 
                     if (screen.getId().equals(MAIN_SCREEN)) {
                         out.println("<td nowrap align=center>");
-                        out.println("<a class='" + cssClass + "' href='./rmctrl-main-screen-ajax.jsp?userId=" + userId
+                        out.println("<a class='" + cssClass + "' href='./rmctrl-main-screen.html?userId=" + userId
                                 + "&cellinkId=" + controller.getCellinkId() + "&screenId="
                                 + MAIN_SCREEN + "' id=" + screen.getId() + " >");
-//                        out.println("<a class='" + cssClass + "' href='./rmctrl-main-screen-ajax.jsp?lang=" + lang
+//                        out.println("<a class='" + cssClass + "' href='./rmctrl-main-screen.html?lang=" + lang
 //                                + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId() + "&screenId="
 //                                + MAIN_SCREEN + "' id=" + screen.getId() + " >");
                         out.println(screen.getUnicodeTitle());

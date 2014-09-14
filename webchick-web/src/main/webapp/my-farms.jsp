@@ -85,7 +85,7 @@
                                     <tr>
                                         <td valign="top">
                                             <img class="link" src="resources/images/chicken_house1.jpg"
-                                                 onclick="javascript:window.location.href='./rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>' "/>
+                                                 onclick="javascript:window.location.href='./rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>' "/>
                                         </td>
                                         <td align="center">
                                             <table>
@@ -98,7 +98,7 @@
                                                 <tr>
                                                     <td colspan="2">
                                                         <a class="button"
-                                                           href="rmctrl-main-screen-ajax.jsp?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>&role=<%=user.getRole() %>"><%=session.getAttribute("button.show.houses") %>
+                                                           href="rmctrl-main-screen.html?userId=<%=cellink.getUserId()%>&cellinkId=<%=cellink.getId()%>&role=<%=user.getRole() %>"><%=session.getAttribute("button.show.houses") %>
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -139,7 +139,8 @@
                                                                     </a>
                                                                 </td>
                                                                 <td>
-                                                                    <img src="resources/images/refresh.gif" style="cursor: pointer"
+                                                                    <img src="resources/images/refresh.gif"
+                                                                         style="cursor: pointer"
                                                                          border="0" hspace="5"/>
                                                                     <a href="./my-farms.html?userId=<%=cellink.getUserId()%>">
                                                                         <%=session.getAttribute("button.refresh")%>
@@ -198,7 +199,8 @@
                                                                     </a>
                                                                 </td>
                                                                 <td>
-                                                                    <img src="resources/images/refresh.gif" style="cursor: pointer"
+                                                                    <img src="resources/images/refresh.gif"
+                                                                         style="cursor: pointer"
                                                                          border="0" hspace="5"/>
                                                                     <a href="./my-farms.html?userId=<%=cellink.getUserId()%>"><%=session.getAttribute("button.refresh")%>
                                                                     </a>

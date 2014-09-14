@@ -44,7 +44,7 @@ public class StartPage extends AbstractServlet {
 
                 logger.info("Current user  {} ", user);
                 request.setAttribute("user", user);
-                request.getRequestDispatcher("./rmctrl-main-screen-ajax.jsp?userId=" + cellink.getUserId()
+                request.getRequestDispatcher("./rmctrl-main-screen.html?userId=" + cellink.getUserId()
                         + "&cellinkId=" + cellink.getId()).forward(request, response);
             } else {
                 response.sendRedirect("./login.jsp");

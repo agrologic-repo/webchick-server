@@ -20,7 +20,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>spring-dispatcher</servlet-name>
-        <url-pattern>/cellinkname.html</url-pattern>
+        <url-pattern>/rmctrl-main-screen.html</url-pattern>
     </servlet-mapping>
 
 

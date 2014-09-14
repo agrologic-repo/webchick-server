@@ -30,7 +30,7 @@
 <hr>
 <br>
 
-<h3><a href="rmctrl-main-screen-ajax.jsp?cellinkId=<%=cellink.getId()%>&screenId=1" target="body" class="leftlink"><img
+<h3><a href="rmctrl-main-screen.html?cellinkId=<%=cellink.getId()%>&screenId=1" target="body" class="leftlink"><img
         src="resources/images/ComputerScreen.gif" style="border:0px;height:32px;width:32px;"> Screens </a></h3>
 Control your farm as if you were sitting in front of it.
 <br>

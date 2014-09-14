@@ -39,8 +39,8 @@
 
                         </td>
                         <td width="20%">
-                            <a href="./rmctrl-main-screen-ajax.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
-                                <img src="resources/images/display.png" style="cursor: pointer" hspace="5"
+                            <a href="./rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
+                            <img src="resources/images/display.png" style="cursor: pointer" hspace="5"
                                      border="0" name="top" target="_blank"/><%=session.getAttribute("button.screens")%>
                             </a>
                             <a href="./flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">

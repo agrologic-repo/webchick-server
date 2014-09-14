@@ -1,8 +1,11 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="language.jsp" %>
-<%@ page errorPage="anerrorpage.jsp" %>
+<%@ include file="../../language.jsp" %>
+<%@ page errorPage="../../anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="com.agrologic.app.model.UserRole" %>
+<jsp:useBean id="userId" scope="request" type="java.lang.Long"/>
+<jsp:useBean id="cellink" scope="request" type="com.agrologic.app.model.Cellink"/>
 
 <% User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
@@ -10,17 +13,12 @@
         return;
     }
 
-    long userId = Long.parseLong(request.getParameter("userId"));
-    long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    request.setAttribute("cellinkId", cellinkId);
-
     UserRole role = user.getRole();
-    HashMap<Long, Long> nextScrIdsByCntrl = (HashMap<Long, Long>) request.getAttribute("nextScrIdsByCntrl");
 
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
     Locale currLocal = (Locale) session.getAttribute("currLocale");
     if (!oldLocal.equals(currLocal)) {
-        response.sendRedirect("./rmctrl-main-screen-ajax.jsp?userId=" + userId + "&cellinkId=" + cellinkId + "");
+        response.sendRedirect("./rmctrl-main-screen.html?userId=" + userId + "&cellinkId=" + cellink.getId() + "");
     }
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -79,7 +77,7 @@
     function ajaxFunction() {
         var getdate = new Date();  //Used to prevent caching during ajax call
         if (xmlhttp) {
-            xmlhttp.open("GET", "RCMainScreenAjaxNew?getdate=" + getdate.getTime() + "&userId=<%=userId%>&cellinkId=<%=cellinkId%>", true); //gettime will be the servlet name
+            xmlhttp.open("GET", "RCMainScreenAjaxNew?getdate=" + getdate.getTime() + "&userId=<%=userId%>&cellinkId=<%=cellink.getId()%>", true); //gettime will be the servlet name
             xmlhttp.onreadystatechange = handleServerResponse;
             xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xmlhttp.send(null);
@@ -157,7 +155,7 @@
             e = window.event;
         }
         if (e.keyCode == 13) {
-            document.mainForm.action = "./change-value.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&controllerId=" + cid + "&dataId=" + did + "&Nvalue=" + o.value;
+            document.mainForm.action = "./change-value.html?userId=<%=userId%>&cellinkId=<%=cellink.getId()%>&controllerId=" + cid + "&dataId=" + did + "&Nvalue=" + o.value;
             document.mainForm.method = "POST";
             document.mainForm.submit();
         }
@@ -538,16 +536,16 @@ function keyDown(val) {
                 <table border="0" cellPadding=1 cellSpacing=1 width="85%">
                     <tr>
                         <td width="35%">
-                            <jsp:include page="toplang.jsp"/>
+                            <jsp:include page="../../toplang.jsp"/>
                         </td>
                         <td width="65%">
-                            <jsp:include page="./cellinkname.html?cellinkId=<%=cellinkId%>"/>
+                            <h1><c:out value="${cellink.name}"/></h1>
                         </td>
                     </tr>
                     <tr>
                         <td valign="bottom" colspan="2">
                             <img src="resources/images/chicken-icon.png" border="0" hspace="5"/>
-                            <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
+                            <a href="flocks.html?userId=<%=userId%>&cellinkId=<c:out value="${cellink.id}"/>">
                                 <%=session.getAttribute("button.flocks")%>
                             </a>
                             <% String access = (String) request.getSession().getAttribute("access");%>

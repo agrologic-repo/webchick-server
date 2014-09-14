@@ -5,13 +5,7 @@
     StringBuffer url = request.getRequestURL();
     String uri = (String) request.getAttribute("javax.servlet.forward.request_uri");
     if (uri != null) {
-        int slash = url.lastIndexOf("/");
-        String urlWithoutPage = url.substring(0, slash);
-        slash = uri.lastIndexOf("/");
-        String uriPage = uri.substring(slash);
-        url.delete(0, url.length());
-        urlWithoutPage = urlWithoutPage.concat(uriPage);
-        url.append(urlWithoutPage);
+        url = new StringBuffer(uri);
     }
 
     String paramString = "";

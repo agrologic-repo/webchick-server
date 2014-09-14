@@ -140,7 +140,7 @@
                                     <% if (screen.getId() == MAIN_SCREEN) {%>
                                     <td nowrap>
                                         <a class="<%=cssClass%>"
-                                           href="rmctrl-main-screen-ajax.jsp?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&screenId=<%=MAIN_SCREEN%>"
+                                           href="rmctrl-main-screen.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&screenId=<%=MAIN_SCREEN%>"
                                            id="<%=screen.getId()%>"
                                            onclick='document.body.style.cursor = "wait"'><%=screen.getUnicodeTitle()%>
                                         </a>

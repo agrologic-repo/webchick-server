@@ -206,7 +206,7 @@
                                 <td align="center"
                                     bgcolor="<%=CellinkState.getCellinkStateBGColor(cellink.getState())%>"
                                     style="cursor: pointer" title="<%=session.getAttribute("button.connect.cellink")%>"
-                                    onclick="redirect('./rmctrl-main-screen-ajax.jsp?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getName() %>&screenId=1')">
+                                    onclick="redirect('./rmctrl-main-screen.html?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getName() %>&screenId=1')">
                                     <%=session.getAttribute("cellink.state." + CellinkState.intToState(CellinkState.STATE_ONLINE))%>
                                 </td>
                                 <%} else {%>
@@ -216,7 +216,7 @@
                                 </td>
                                 <%}%>
                                 <td align="center" valign="middle">
-                                    <a href="rmctrl-main-screen-ajax.jsp?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getName() %>&screenId=1">
+                                    <a href="rmctrl-main-screen.html?userId=<%=editUser.getId()%>&cellinkId=<%=cellink.getId()%>&cellink=<%=cellink.getName() %>&screenId=1">
                                         <img src="resources/images/display.png" style="cursor: pointer" border="0"
                                              hspace="5"/>
                                         <%=session.getAttribute("button.connect")%>
