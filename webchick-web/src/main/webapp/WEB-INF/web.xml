@@ -12,6 +12,16 @@
 
     <display-name>webchick</display-name>
 
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath:/mysql-dao-context.xml
+            classpath:/common-dao-context.xml
+        </param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
     <servlet>
         <!--Defining Front Controller - it will handle all its HTTP requests and invoke controllers-->
         <servlet-name>spring-dispatcher</servlet-name>
