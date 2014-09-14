@@ -6,6 +6,9 @@ import org.jfree.chart.JFreeChart;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ *
+ */
 public abstract class AbstractGraph implements Graph {
     public static final int DAY_HOURS = 24;
     public static final int IN_TEMP_INDEX = 0;

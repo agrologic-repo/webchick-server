@@ -22,6 +22,7 @@ import java.util.Locale;
 
 /**
  *
+ *
  * @author Administrator
  */
 public class AddFuelDialog extends JDialog {
