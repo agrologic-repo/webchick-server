@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,19 @@ public class ExcelService {
     private HistoryContent createPerDayHistoryTableContent(Long flockId, Long langId) throws HistoryContentException {
         try {
             List<Data> defaultPerDayHistoryList = historyService.getPerDayHistoryData(langId);
+            // if grow day data not the first in array so find it and swap with first
+            if (!defaultPerDayHistoryList.get(0).getId().equals(800L)) {
+                int growDayIndex = -1;
+                int counter = 0;
+                for (Data data : defaultPerDayHistoryList) {
+                    if (data.getId().equals(800L)) {
+                        growDayIndex = counter;
+                        break;
+                    }
+                    counter++;
+                }
+                Collections.swap(defaultPerDayHistoryList, 0, growDayIndex);
+            }
             Map<Integer, String> flockPerDayNotParsedReports = flockHistoryService.getFlockPerDayNotParsedReports(flockId);
             return HistoryContentCreator.createPerDayHistoryContent(flockPerDayNotParsedReports,
                     defaultPerDayHistoryList);
