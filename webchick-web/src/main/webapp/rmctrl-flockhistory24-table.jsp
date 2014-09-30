@@ -8,8 +8,7 @@
         response.sendRedirect("./index.htm");
         return;
     }
-    Long userId = Long.parseLong(request.getParameter("userId"));
-    Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+
     Long flockId = Long.parseLong(request.getParameter("flockId"));
     String growDay = request.getParameter("growDay");
     Integer fromDay = -1;
@@ -39,8 +38,6 @@
 <body>
 <form action="./rmctrl-flockhistory24-table.jsp">
     <input type="hidden" name="flockId" value="<%=flockId%>">
-    <input type="hidden" name="cellinkId" value="<%=cellinkId%>">
-    <input type="hidden" name="userId" value="<%=userId%>">
     <table cellpadding="1" cellspacing="1" border="0" width="100%">
         <tr>
             <td align="center">

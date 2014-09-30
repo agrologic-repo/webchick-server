@@ -67,7 +67,10 @@ public class HistoryContentCreator {
                                         value = highValue + lowValue;
                                     }
                                     data.setValue(Long.valueOf(value));
-                                    actualPerDayHistoryList.add((Data) data.clone());
+                                    // we need only data than not equals to -1
+                                    if (!data.getValue().equals(-1L)) {
+                                        actualPerDayHistoryList.add((Data) data.clone());
+                                    }
                                 }
                             } catch (NoSuchElementException e) {
                                 // skip this exception

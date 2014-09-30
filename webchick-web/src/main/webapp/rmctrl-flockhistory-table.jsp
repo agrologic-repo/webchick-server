@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page errorPage="anerrorpage.jsp" %>
+<%--<%@ page errorPage="anerrorpage.jsp" %>--%>
 <%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
@@ -9,8 +9,6 @@
         return;
     }
 
-    Long userId = Long.parseLong(request.getParameter("userId"));
-    Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
     Integer fromDay = -1;
     Integer toDay = -1;
@@ -32,56 +30,78 @@
 <head>
     <title></title>
     <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
-
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/multiopt.css"/>
+    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
 </head>
 <body>
-<form action="./rmctrl-flockhistory-table.jsp">
-    <input type="hidden" name="flockId" value="<%=flockId%>">
-    <input type="hidden" name="cellinkId" value="<%=cellinkId%>">
-    <input type="hidden" name="userId" value="<%=userId%>">
-    <table cellpadding="1" cellspacing="1" border="0" width="100%">
-        <tr>
-            <td align="center">
-                <fieldset style="-moz-border-radius:8px;  border-radius: 8px;  -webkit-border-radius: 8px; width: 85%">
-                    <h1>Flock History Table</h1>
-                </fieldset>
-            </td>
-        </tr>
-        <tr>
-            <td align="center">
-                <fieldset style="-moz-border-radius:8px;  border-radius: 8px;  -webkit-border-radius: 8px; width: 85%">
-                    <h2></h2>
-                    <table border="0">
-                        <tr>
-                            <td>
+
+<div id="loading" style="display: none;"></div>
+<table cellpadding="1" cellspacing="1" border="0" width="100%">
+    <tr>
+        <td align="center">
+            <fieldset style="-moz-border-radius:8px;  border-radius: 8px;  -webkit-border-radius: 8px; width: 100%">
+                <h1><%=session.getAttribute("history.table.page.title")%>
+                </h1>
+            </fieldset>
+        </td>
+    </tr>
+    <tr>
+        <td align="center">
+            <fieldset style="-moz-border-radius:8px;  border-radius: 8px;  -webkit-border-radius: 8px; width: 100%">
+                <h2></h2>
+                <table border="0" width="100%">
+                    <tr>
+                        <td width="100%" align="center">
+                            <form action="./rmctrl-flockhistory-table.jsp" style="display: inline-block">
+                                <input type="hidden" name="flockId" value="<%=flockId%>">
+                                <%=session.getAttribute("label.show.range")%>&nbsp;
                                 <%if (fromDay == -1 || toDay == -1) {%>
-                                From : <input type="text" size="5" name="fromDay"/>
-                                To : <input type="text" size="5" name="toDay"/>
+                                <%=session.getAttribute("label.from")%> : <input type="text" size="5"
+                                                                                 name="fromDay"
+                                                                                 style="display: inline;"/>
+                                <%=session.getAttribute("label.to")%> : <input type="text" size="5"
+                                                                               name="toDay"
+                                                                               style="display: inline;"/>
                                 <%} else {%>
-                                From : <input type="text" size="5" name="fromDay" value="<%=fromDay%>"/>
-                                To : <input type="text" size="5" name="toDay" value="<%=toDay %>"/>
+                                <%=session.getAttribute("label.from")%> : <input type="text" size="5"
+                                                                                 name="fromDay"
+                                                                                 value="<%=fromDay%>"
+                                                                                 style="display: inline;"/>
+                                <%=session.getAttribute("label.to")%> : <input type="text" size="5" name="toDay"
+                                                                               value="<%=toDay%>"
+                                                                               style="display: inline;"/>
                                 <%}%>
-                                <input type="submit" value="Submit">
-                            </td>
-                        </tr>
-                    </table>
-                    <br/>
-                    <jsp:include page="view-tablehistory.html"/>
-                </fieldset>
-            </td>
-        </tr>
-        <tr>
-            <td align="center">
-                <p>
-                    <button id="btnClose" name="btnClose"
-                            onclick='self.close()'><%=session.getAttribute("button.close")%>
-                    </button>
-                </p>
-            </td>
-        </tr>
-    </table>
-</form>
+
+                                <button id="btnGo" style="min-width: 80px">
+                                    <%=session.getAttribute("button.apply")%>
+                                </button>
+                            </form>
+                            <button id="btnClear" name="btnClear" style="min-width: 80px">
+                                <%=session.getAttribute("button.clear")%>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <jsp:include page="view-tablehistory.html"/>
+            </fieldset>
+        </td>
+    </tr>
+    <tr>
+        <td align="center">
+            <p>
+                <button id="btnClose" name="btnClose"
+                        onclick='self.close()'><%=session.getAttribute("button.close")%>
+                </button>
+            </p>
+        </td>
+    </tr>
+</table>
+<script>
+    $("#btnClear").click(function () {
+        window.location.href = "./rmctrl-flockhistory-table.jsp?flockId=<%=flockId%>";
+    });
+</script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <%@ page import="com.agrologic.app.model.Flock" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page errorPage="anerrorpage.jsp" %>
+<%--<%@ page errorPage="anerrorpage.jsp" %>--%>
 <%@ include file="language.jsp" %>
 
 <%
@@ -29,25 +29,35 @@
 </div>
 <table width="100%">
     <tr>
-        <td align="center">
+        <td align="center" width="100%">
             <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
-                <table width="85%">
+                <table width="100%" border="0">
                     <tr>
-                        <td width="65%">
+                        <td wdith="90%" align="center">
                             <h1 style="text-align: center;"><%=session.getAttribute("history.graph.page.title")%>
                             </h1>
 
+                            <h2 style="text-align: center;"><%=flockId%>
+
                         </td>
-                        <td width="20%">
-                            <a href="./rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
-                            <img src="resources/images/display.png" style="cursor: pointer" hspace="5"
-                                     border="0" name="top" target="_blank"/><%=session.getAttribute("button.screens")%>
-                            </a>
-                            <a href="./flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
-                                <img src="resources/images/chicken-icon.png" style="cursor: pointer" hspace="5"
-                                     border="0" name="top"
-                                     target="_blank"/><%=session.getAttribute("main.screen.page.flocks")%>
-                            </a>
+                        <td width="10%">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <a href="./rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
+                                            <img src="resources/images/display.png" style="cursor: pointer" hspace="5"
+                                                 border="0" name="top"
+                                                 target="_blank"/><%=session.getAttribute("button.screens")%>
+                                        </a>
+                                        <a href="./flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
+                                            <img src="resources/images/chicken-icon.png" style="cursor: pointer"
+                                                 hspace="5"
+                                                 border="0" name="top"
+                                                 target="_blank"/><%=session.getAttribute("main.screen.page.flocks")%>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                 </table>

@@ -9,7 +9,6 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
-import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.urls.TimeSeriesURLGenerator;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
@@ -17,9 +16,6 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.date.SerialDate;
-import org.jfree.ui.RectangleEdge;
-import org.jfree.ui.RectangleInsets;
-import org.jfree.util.UnitType;
 
 import java.awt.*;
 import java.text.NumberFormat;
@@ -38,14 +34,14 @@ public class FeedWaterConsumpTemp extends PerHourReportGraph {
     @Override
     public final JFreeChart createChart() {
         if (!isEmpty()) {
-            DateAxis dateaxis = new DateAxis(dictinary.get("graph.fw.axis.time"));
+            DateAxis dateaxis = new DateAxis(dictinary.get("graph.feed.water.axis.time"));
             dateaxis.setDateFormatOverride(new SimpleDateFormat("HH"));
             dateaxis.setLabelPaint(Color.BLACK);
             dateaxis.setLabelFont(new Font("Dialog", Font.PLAIN, 16));
             dateaxis.setTickLabelFont(new Font("Dialog", Font.BOLD, 12));
             dateaxis.setVerticalTickLabels(false);
 
-            NumberAxis numberaxis = new NumberAxis(dictinary.get("graph.fw.axis.feed"));
+            NumberAxis numberaxis = new NumberAxis(dictinary.get("graph.feed.water.axis.feed"));
             numberaxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
             numberaxis.setAutoRangeIncludesZero(true);
             numberaxis.setLabelPaint(Color.RED);
@@ -63,7 +59,7 @@ public class FeedWaterConsumpTemp extends PerHourReportGraph {
             renderer.setBaseShapesFilled(true);
             renderer.setSeriesPaint(0, Color.RED);
 
-            NumberAxis waterAxis = new NumberAxis(dictinary.get("graph.fw.axis.water"));
+            NumberAxis waterAxis = new NumberAxis(dictinary.get("graph.feed.water.axis.water"));
             numberaxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
             waterAxis.setAutoRangeIncludesZero(true);
             waterAxis.setLabelFont(new Font("Dialog", Font.PLAIN, 16));
@@ -98,24 +94,21 @@ public class FeedWaterConsumpTemp extends PerHourReportGraph {
             plot.setBackgroundPaint(Color.WHITE);
 
             // set tooltip
-            chart = new JFreeChart(dictinary.get("graph.fw.title"), JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+            chart = new JFreeChart(dictinary.get("graph.feed.water.title"), JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             chart.setBorderPaint(Color.BLACK);
             chart.setBackgroundPaint(java.awt.Color.LIGHT_GRAY);
+            changeLegendFont();
 
-            LegendTitle legendTitle = (LegendTitle) chart.getSubtitle(0);
-            legendTitle.setItemFont(new Font("Dialog", Font.PLAIN, 16));
-            legendTitle.setPosition(RectangleEdge.TOP);
-            legendTitle.setMargin(new RectangleInsets(UnitType.ABSOLUTE, 0.0D, 4.0D, 0.0D, 4.0D));
         } else {
             final XYPlot xyplot = new XYPlot();
-            xyplot.setNoDataMessage("No data available!");
+            xyplot.setNoDataMessage(dictinary.get("graph.no.data.available"));
             xyplot.setNoDataMessageFont(new Font("Serif", 2, 15));
             xyplot.setNoDataMessagePaint(Color.red);
             xyplot.setDomainCrosshairVisible(true);
             xyplot.setRangeCrosshairVisible(true);
             xyplot.setDomainPannable(true);
             xyplot.setRangePannable(true);
-            chart = new JFreeChart(dictinary.get("graph.fw.title"), JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
+            chart = new JFreeChart(dictinary.get("graph.feed.water.title"), JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
         }
         return chart;
     }
@@ -130,7 +123,7 @@ public class FeedWaterConsumpTemp extends PerHourReportGraph {
         Day today = new Day(SerialDate.createInstance(day, month, year));
         Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
         final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
-        final TimeSeries feedSeries = new TimeSeries(dictinary.get("graph.fw.series.feed"));
+        final TimeSeries feedSeries = new TimeSeries(dictinary.get("graph.feed.water.series.feed"));
         int hour = (int) (currentTime / 100) - 1;
 
         for (int i = FEED_INDEX + DAY_HOURS - 1; i >= FEED_INDEX; i--, hour--) {
@@ -165,7 +158,7 @@ public class FeedWaterConsumpTemp extends PerHourReportGraph {
         Day today = new Day(SerialDate.createInstance(day, month, year));
         Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
         final TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();
-        final TimeSeries timeseries1 = new TimeSeries(dictinary.get("graph.fw.series.water"));
+        final TimeSeries timeseries1 = new TimeSeries(dictinary.get("graph.feed.water.series.water"));
 
         resetMinMaxY();
 

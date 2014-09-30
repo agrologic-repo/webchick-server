@@ -1,12 +1,14 @@
 package com.agrologic.app.graph.daily;
 
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.title.LegendTitle;
+import org.jfree.ui.RectangleEdge;
+import org.jfree.ui.RectangleInsets;
+import org.jfree.util.UnitType;
 
+import java.awt.*;
 import java.util.*;
 
-/**
- * Created by Valery on 1/13/14.
- */
 public abstract class PerHourReportGraph {
     public static final int DAY_HOURS = 24;
     public static final int IN_TEMP_INDEX = 0;
@@ -59,6 +61,15 @@ public abstract class PerHourReportGraph {
     protected boolean isEmpty() {
         return empty;
     }
+
+    protected void changeLegendFont() {
+        LegendTitle legendTitle = (LegendTitle) chart.getSubtitle(0);
+        Font itemFont = new Font("Dialog", Font.PLAIN, 15);
+        legendTitle.setItemFont(itemFont);
+        legendTitle.setPosition(RectangleEdge.BOTTOM);
+        legendTitle.setMargin(new RectangleInsets(UnitType.ABSOLUTE, 0.0D, 4.0D, 0.0D, 4.0D));
+    }
+
 
     public abstract JFreeChart createChart();
 }

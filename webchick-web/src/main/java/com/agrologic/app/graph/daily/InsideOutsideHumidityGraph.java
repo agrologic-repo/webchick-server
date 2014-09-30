@@ -10,7 +10,6 @@ import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
-import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.urls.TimeSeriesURLGenerator;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
@@ -18,9 +17,6 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.date.SerialDate;
-import org.jfree.ui.RectangleEdge;
-import org.jfree.ui.RectangleInsets;
-import org.jfree.util.UnitType;
 
 import java.awt.*;
 import java.text.NumberFormat;
@@ -35,9 +31,9 @@ import java.util.Locale;
  * @version 1.1 <br>
  */
 public class InsideOutsideHumidityGraph extends PerHourReportGraph {
-    public InsideOutsideHumidityGraph(String values, Long currnetTime, Locale locale) {
+    public InsideOutsideHumidityGraph(String values, Long currentTime, Locale locale) {
         super(values);
-        this.currentTime = currnetTime;
+        this.currentTime = currentTime;
         this.locale = locale;
         initLanguage();
     }
@@ -45,14 +41,14 @@ public class InsideOutsideHumidityGraph extends PerHourReportGraph {
     @Override
     public final JFreeChart createChart() {
         if (!isEmpty()) {
-            DateAxis dateaxis = new DateAxis(dictinary.get("graph.ioh.axis.time"));
+            DateAxis dateaxis = new DateAxis(dictinary.get("graph.inside.outside.humidity.axis.time"));
             dateaxis.setDateFormatOverride(new SimpleDateFormat("HH"));
             dateaxis.setLabelPaint(Color.BLACK);
             dateaxis.setLabelFont(new Font("Dialog", Font.PLAIN, 16));
             dateaxis.setTickLabelFont(new Font("Dialog", Font.BOLD, 12));
             dateaxis.setVerticalTickLabels(false);
 
-            NumberAxis tempAxis = new NumberAxis(dictinary.get("graph.ioh.axis.temperature"));
+            NumberAxis tempAxis = new NumberAxis(dictinary.get("graph.inside.outside.humidity.axis.temperature"));
 
             tempAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
             tempAxis.setAutoRangeIncludesZero(true);
@@ -76,7 +72,7 @@ public class InsideOutsideHumidityGraph extends PerHourReportGraph {
             renderer.setSeriesPaint(1, Color.BLUE);
 
             // ////////////////////////////////////////////////////
-            NumberAxis humidityAxis = new NumberAxis(dictinary.get("graph.ioh.axis.humidity"));
+            NumberAxis humidityAxis = new NumberAxis(dictinary.get("graph.inside.outside.humidity.axis.humidity"));
             humidityAxis.setAutoRangeIncludesZero(true);
             humidityAxis.setLabelFont(new Font("Dialog", Font.PLAIN, 16));
             humidityAxis.setTickLabelFont(new Font("Dialog", Font.BOLD, 12));
@@ -113,27 +109,22 @@ public class InsideOutsideHumidityGraph extends PerHourReportGraph {
             plot.setBackgroundPaint(Color.WHITE);
 
             // set tooltip
-            chart = new JFreeChart(dictinary.get("graph.ioh.title"), JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+            chart = new JFreeChart(dictinary.get("graph.inside.outside.humidity.title"), JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             chart.setBorderPaint(Color.BLACK);
             chart.setBackgroundPaint(java.awt.Color.LIGHT_GRAY);
-
-            LegendTitle legendTitle = (LegendTitle) chart.getSubtitle(0);
-
-            legendTitle.setItemFont(new Font("Dialog", Font.PLAIN, 16));
-            legendTitle.setPosition(RectangleEdge.TOP);
-            legendTitle.setMargin(new RectangleInsets(UnitType.ABSOLUTE, 0.0D, 4.0D, 0.0D, 4.0D));
+            changeLegendFont();
             tempAxis.setLowerBound(minY - 10);
             tempAxis.setUpperBound(maxY + 10);
         } else {
             final XYPlot xyplot = new XYPlot();
-            xyplot.setNoDataMessage("No data available!");
+            xyplot.setNoDataMessage(dictinary.get("graph.no.data.available"));
             xyplot.setNoDataMessageFont(new Font("Serif", 2, 15));
             xyplot.setNoDataMessagePaint(Color.red);
             xyplot.setDomainCrosshairVisible(true);
             xyplot.setRangeCrosshairVisible(true);
             xyplot.setDomainPannable(true);
             xyplot.setRangePannable(true);
-            chart = new JFreeChart(dictinary.get("graph.ioh.title"), JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
+            chart = new JFreeChart(dictinary.get("graph.inside.outside.humidity.title"), JFreeChart.DEFAULT_TITLE_FONT, xyplot, true);
         }
 
         // hideSeries(1, 0);
@@ -160,7 +151,7 @@ public class InsideOutsideHumidityGraph extends PerHourReportGraph {
                 Day today = new Day(SerialDate.createInstance(now.getDate(), now.getMonth(), now.getYear()));
                 Day yesterday = new Day(SerialDate.createInstance(yday.getDate(), yday.getMonth(), yday.getYear()));
                 int hour = (int) (currentTime / 100) - 1;
-                final TimeSeries insideseries = new TimeSeries(dictinary.get("graph.ioh.series.inside"));
+                final TimeSeries insideseries = new TimeSeries(dictinary.get("graph.inside.outside.humidity.series.inside"));
 
                 for (int i = IN_TEMP_INDEX + DAY_HOURS - 1; i >= IN_TEMP_INDEX; i--, hour--) {
                     String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
@@ -187,7 +178,7 @@ public class InsideOutsideHumidityGraph extends PerHourReportGraph {
                 // testing
                 hour = (int) (currentTime / 100) - 1;
 
-                final TimeSeries outsideseries = new TimeSeries(dictinary.get("graph.ioh.series.outside"));
+                final TimeSeries outsideseries = new TimeSeries(dictinary.get("graph.inside.outside.humidity.series.outside"));
 
                 for (int i = OUT_TEMP_INDEX + DAY_HOURS - 1; i >= OUT_TEMP_INDEX; i--, hour--) {
                     String value = DataFormat.formatToStringValue(DataFormat.DEC_1, Long.valueOf(datasetString[i]));
@@ -237,7 +228,7 @@ public class InsideOutsideHumidityGraph extends PerHourReportGraph {
 
             // testing
             int hour = (int) (currentTime / 100) - 1;
-            final TimeSeries humidityseries = new TimeSeries(dictinary.get("graph.ioh.series.humidity"));
+            final TimeSeries humidityseries = new TimeSeries(dictinary.get("graph.inside.outside.humidity.series.humidity"));
 
             for (int i = HUMIDITY_INDEX + DAY_HOURS - 1; i >= HUMIDITY_INDEX; i--, hour--) {
                 String value = DataFormat.formatToStringValue(DataFormat.HUMIDITY, Long.valueOf(datasetString[i]));

@@ -1,7 +1,7 @@
 <%@ page import="com.agrologic.app.graph.GenerateGraph" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page errorPage="anerrorpage.jsp" %>
+<%--<%@ page errorPage="anerrorpage.jsp" %>--%>
 <%@ include file="language.jsp" %>
 
 <%
@@ -28,21 +28,16 @@
         }
     } catch (Exception ex) {
         growDay = 1;
-
     }
 
     //////////////////////////////////////////////////Daily Graphs/////////////////////////////////////////////////////
-    String filenameth = (String) session.getAttribute("filenameth-flockid=" + flockId + "&growday=" + growDay);
-    if (filenameth == null) {
-        filenameth = GenerateGraph.generateChartFlockWaterFeed(flockId, fromDay.toString(), toDay.toString(),
-                session, new PrintWriter(out), currLocal);
-    }
-
-    String graphURLTH;
-    if (filenameth.contains("public_error")) {
-        graphURLTH = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+    String filenamefw = GenerateGraph.generateChartFlockWaterFeed(flockId, fromDay.toString(), toDay.toString(),
+            session, new PrintWriter(out), currLocal);
+    String graphURLWF;
+    if (filenamefw.contains("public_error")) {
+        graphURLWF = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
     } else {
-        graphURLTH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameth;
+        graphURLWF = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamefw;
     }
 %>
 
@@ -52,9 +47,11 @@
 <head>
     <title><%=session.getAttribute("history.graph.page.title")%>
     </title>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" href="resources/style/jquery.tablescroll.css"/>
     <style media="screen" type="text/css">
-        .layer1_class {
+        .loadingClass {
             position: absolute;
             z-index: 1;
             top: 100px;
@@ -62,100 +59,203 @@
             visibility: visible;
         }
 
-        .layer2_class {
+        .contentClass {
             position: absolute;
             z-index: 2;
-            top: 10px;
-            left: 10px;
+            top: 0px;
+            left: 0px;
             visibility: hidden
         }
     </style>
-    <script>
-        function downLoad() {
-            if (document.all) {
-                document.all["layer1"].style.visibility = "hidden";
-                document.all["layer2"].style.visibility = "visible";
-            } else if (document.getElementById) {
-                node = document.getElementById("layer1").style.visibility = 'hidden';
-                node = document.getElementById("layer2").style.visibility = 'visible';
-            }
-        }
-    </script>
+    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.tablescroll.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.tablesorter.js">;</script>
+
 </head>
 </head>
 <body onload="downLoad()">
-<div id="layer1" class="layer1_class">
+<div id="loadingDiv" class="loadingClass" style="width: 100%">
     <table width="100%">
         <tr>
-            <td align="center"><p><strong><em>Please wait while this page is loading...</em></strong></p></td>
+            <td align="center"><p><strong><em><%=session.getAttribute("graph.please.wait.while.page.loading")%>
+            </em></strong></p></td>
         </tr>
     </table>
 </div>
-<div id="layer2" class="layer2_class">
-    <table width="100%">
-        <tr>
-            <td align="center">
-                <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
-                    <table border="0" width="85%" cellpadding="0" cellspacing="0" style="padding:1px;">
+<div id="contentDiv" class="contentClass" style="width: 100%">
+    <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
+        <table width="100%">
+            <tr>
+                <td>
+                    <table width="100%">
                         <tr>
                             <td>
-
-                                <form id="flock-graph" name="flock-graph"
-                                      action="./rmctrl-flock-feed-water.jsp?currLocal=<%=currLocal%>">
+                                <form id="flock-graph" name="flock-graph" class="flock-graph"
+                                      action="./rmctrl-flock-feed-water.jsp?currLocal=<%=currLocal%>"
+                                      style="display: inline-block">
                                     <input type="hidden" name="flockId" value="<%=flockId%>"/>
-
+                                    <%=session.getAttribute("label.show.range")%>&nbsp;
                                     <%if (fromDay == -1 || toDay == -1) {%>
-                                    <%=session.getAttribute("label.from")%> : <input type="text" size="5"
-                                                                                     name="fromDay"/>
-                                    <%=session.getAttribute("label.to")%> : <input type="text" size="5"
-                                                                                   name="toDay"/>
+                                    <label>
+
+                                        <%=session.getAttribute("label.from")%> : <input type="text" size="5"
+                                                                                         name="fromDay"
+                                                                                         style="display: inline;"/>
+                                    </label>
+                                    <label>
+                                        <%=session.getAttribute("label.to")%> : <input type="text" size="5"
+                                                                                       name="toDay"
+                                                                                       style="display: inline;"/>
+                                    </label>
                                     <%} else {%>
                                     <%=session.getAttribute("label.from")%> : <input type="text" size="5"
                                                                                      name="fromDay"
-                                                                                     value="<%=fromDay%>"/>
-                                    <%=session.getAttribute("label.to")%> :
-                                    <input type="text" size="5" name="toDay" value="<%=toDay%>"/>
+                                                                                     value="<%=fromDay%>"
+                                                                                     style="display: inline;"/>
+                                    <%=session.getAttribute("label.to")%> : <input type="text" size="5" name="toDay"
+                                                                                   value="<%=toDay%>"
+                                                                                   style="display: inline;"/>
                                     <%}%>
-                                    <input type="submit" value="<%=session.getAttribute("button.go")%>"/>
-                                    <input type="button" id="btnClear" name="btnClear"
-                                           value="<%=session.getAttribute("button.clear")%>"/>
+                                    <button id="btnGo" name="btnGo" style="min-width: 80px">
+                                        <%=session.getAttribute("button.apply")%>
+                                    </button>
                                 </form>
+                                <button id="btnClear" name="btnClear" style="min-width: 80px">
+                                    <%=session.getAttribute("button.clear")%>
+                                </button>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <a href="./exptoexcelhistory.htmlflockId=<%=flockId%>"
-                                   onclick="window.location.href.replace('./exptoexcelhistory.html?flockId=<%=flockId%>')">
-                                    <img src="resources/images/excel.gif" style="cursor: pointer"
-                                         hspace="5"
-                                         border="0"/><%=session.getAttribute("button.export")%>
-                                </a>
-                                <a title="Table" style="cursor: pointer"
-                                   onclick="window.open('./rmctrl-flockhistory-table.jsp?flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
-                                    <img src="resources/images/table.gif" style="cursor: pointer"
-                                         hspace="5"
-                                         border="0"/><%=session.getAttribute("button.table")%>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h2><%=session.getAttribute("history.graph.page.growday.graph.title")%>
-                                </h2>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div>
-                                    <img src="<%=graphURLTH%>" width=800 height=600 border=0 usemap="#<%=filenameth%>">
-                                </div>
+                            <td valign="top">
+                                <button id="showTable"
+                                        onclick="window.open('./rmctrl-flockhistory-table.jsp?flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')"><%=session.getAttribute("button.table")%><img
+                                        src="resources/images/table.gif"
+                                        style="cursor: pointer; vertical-align: bottom" hspace="5" border="0"
+                                        onclick="window.open('./rmctrl-flockhistory-table.jsp?flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')"/>
+                                </button>
+                                <button id="exportExcel"><%=session.getAttribute("button.export")%><img
+                                        id="exportToExcel" name="exportToExcel" src="resources/images/excel.gif"
+                                        style="cursor: pointer; vertical-align: bottom" hspace="5" border="0"/>
+
+                                </button>
+                                <div id="loading" style="display:none"></div>
                             </td>
                         </tr>
                     </table>
-                </fieldset>
-            </td>
-        </tr>
-    </table>
+                </td>
+            </tr>
+            <tr>
+                <td align="" width="100%">
+                    <div id="graph" class="ui-accordion ui-corner-all">
+                        <table border="0" cellpadding="0" cellspacing="0" style="padding:1px;">
+                            <tr>
+                                <td align="center" colspan="2" width="80%">
+                                    <img src="<%=graphURLWF%>" usemap="#<%=filenamefw%>">
+                                </td>
+                                <%--<td valign="top" width="20%">--%>
+                                <%--<table id="thetable" class="tablescroll">--%>
+                                <%--<thead>--%>
+                                <%--<tr>--%>
+                                <%--<td>flock id</td>--%>
+                                <%--<td>grow day</td>--%>
+                                <%--<td>feed consumtion</td>--%>
+                                <%--<td>water consumtion</td>--%>
+                                <%--<td>feed consumtion</td>--%>
+                                <%--<td>water consumtion</td>--%>
+                                <%--</tr>--%>
+                                <%--</thead>--%>
+                                <%--<tbody>--%>
+                                <%--<tr class="first">--%>
+                                <%--<td>00501</td>--%>
+                                <%--<td>1</td>--%>
+                                <%--<td>73</td>--%>
+                                <%--<td>73</td>--%>
+                                <%--<td>73</td>--%>
+                                <%--<td>73</td>--%>
+                                <%--</tr>--%>
+                                <%--<tr>--%>
+                                <%--<td>00501</td>--%>
+                                <%--<td>1</td>--%>
+                                <%--<td>73</td>--%>
+                                <%--<td>73</td>--%>
+                                <%--<td>73</td>--%>
+                                <%--<td>73</td>--%>
+                                <%--</tr>--%>
+                                <%--</tbody>--%>
+                                <%--</table>--%>
+                                <%--</td>--%>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
 </div>
+<script>
+    $("#btnClear").click(function () {
+        window.location.href = "./rmctrl-flock-feed-water.jsp?currLocal=<%=currLocal%>&flockId=<%=flockId%>";
+    });
+
+    $("#exportToExcel").click(function (e) {
+        $("#loading").show()
+        window.location.href = 'exptoexcelhistory.html?flockId=<%=flockId%>';
+        $("#loading").fadeOut(2000);
+
+    });
+
+    $("#exportExcel").click(function (e) {
+        $("#loading").show()
+        window.location.href = 'exptoexcelhistory.html?flockId=<%=flockId%>';
+        $("#loading").fadeOut(2000);
+
+    });
+
+    $("#showTable").click(function (e) {
+        $("#loading").show()
+        window.open('./rmctrl-flockhistory-table.jsp?flockId=<%=flockId%>', 'mywindow',
+                'width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes');
+        $("#loading").fadeOut(2000);
+
+    });
+
+
+    jQuery(document).ready(function ($) {
+        $('#thetable').tableScroll({height: 465});
+        $('#thetable tr').hover(function () {
+            $(this).addClass('hover');
+        }, function () {
+            $(this).removeClass('hover');
+        });
+    });
+
+    function downLoad() {
+        if (document.all) {
+            document.all["loadingDiv"].style.visibility = "hidden";
+            document.all["contentDiv"].style.visibility = "visible";
+        } else if (document.getElementById) {
+            node = document.getElementById("loadingDiv").style.visibility = 'hidden';
+            node = document.getElementById("contentDiv").style.visibility = 'visible';
+        }
+    }
+    $(document).ready(function () {
+
+        if ($('<%=filenamefw%>')) {
+            $('<%=filenamefw%> area').each(function () {
+                var id = $(this).attr('id');
+                alert(id);
+                $(this).mouseover(function () {
+                    $('#overlay' + id).show();
+
+                });
+
+                $(this).mouseout(function () {
+                    var id = $(this).attr('id');
+                    $('#overlay' + id).hide();
+                });
+
+            });
+        }
+    });
+</script>
 </body>
 </html>

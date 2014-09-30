@@ -17,9 +17,11 @@ import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.urls.TimeSeriesURLGenerator;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.HorizontalAlignment;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.util.UnitType;
@@ -35,6 +37,7 @@ import java.util.Set;
 
 public class HistoryGraph {
 
+    public static final Color BACKGROUND_COLOR = new Color(230, 230, 230);
     /**
      * Line style: dashed
      */
@@ -49,30 +52,13 @@ public class HistoryGraph {
     public static final String STYLE_LINE = "line";
     public Number max = Double.MIN_VALUE;
     public Number min = Double.MAX_VALUE;
-    /**
-     * The bottom coordinate of series
-     */
     private Coordinate<Long> bottomCoord;
-    /**
-     *
-     */
     protected JFreeChart chart;
-    /**
-     *
-     */
     private List<Map<Integer, Data>> dataHistoryList;
-    /**
-     * The top coordinate of series
-     */
     private Coordinate<Long> topCoord;
-    /**
-     *
-     */
     private boolean unitTickX;
-    /**
-     *
-     */
     private boolean unitTickY;
+
 
     public void createChart(final String title, final String xAxisTitle, final String yAxisTitle) {
         // create series collection
@@ -88,11 +74,9 @@ public class HistoryGraph {
                 false);
         // now do some optional customisation of the chart...
         // set chart background color
-        chart.setBackgroundPaint(Color.LIGHT_GRAY);
-        LegendTitle legendTitle = (LegendTitle) chart.getSubtitle(0);
-        legendTitle.setItemFont(new Font("Dialog", Font.PLAIN, 16));
-        legendTitle.setPosition(RectangleEdge.TOP);
-        legendTitle.setMargin(new RectangleInsets(UnitType.ABSOLUTE, 0.0D, 4.0D, 0.0D, 4.0D));
+        chart.setBackgroundPaint(BACKGROUND_COLOR);
+        changeLegendFont();
+
         // get a reference to the plot for further customisation...
         final XYPlot plot = chart.getXYPlot();
         setPlotParameters(plot);
@@ -107,28 +91,56 @@ public class HistoryGraph {
         setAxisParameters(yAxis, yAxisTitle, Color.red);
     }
 
+    public void createChart(final String title, final String subtitle, final String xAxisTitle, final String yAxisTitle) {
+        // create series collection
+        XYSeriesCollection seriesCollection = createSeriesCollection(dataHistoryList);
+        //      create the chart ...
+        chart = ChartFactory.createXYLineChart(title, // chart title
+                xAxisTitle, // x axis label
+                yAxisTitle, // y axis label
+                seriesCollection, // data
+                PlotOrientation.VERTICAL,//
+                true, // include legend
+                true, // tooltips
+                false);
+        // now do some optional customisation of the chart...
+        // set chart background color
+        chart.setBackgroundPaint(BACKGROUND_COLOR);
+
+        changeLegendFont();
+        // get a reference to the plot for further customisation...
+        final XYPlot plot = chart.getXYPlot();
+        setPlotParameters(plot);
+
+        NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
+        setAxisParameters(xAxis, xAxisTitle, Color.black);
+        xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        xAxis.setLowerBound(getMinValue(plot).doubleValue());
+        xAxis.setUpperBound((getMaxValue(plot).doubleValue() + 1));
+
+        NumberAxis yAxis = (NumberAxis) plot.getRangeAxis();
+        setAxisParameters(yAxis, yAxisTitle, Color.red);
+
+//        setSubtitle(subtitle);
+    }
+
     /**
      * Creates series collection of data management by grow day and add to plot.
      *
-     * @param dataHsitoryList the list of data management by grow day map.
+     * @param dataHistoryList the list of data management by grow day map.
      * @param axisLabel       the label of series collection.
      */
-    public void createAndAddSeriesCollection(List<Map<Integer, Data>> dataHsitoryList, String axisLabel) {
+    public void createAndAddSeriesCollection(List<Map<Integer, Data>> dataHistoryList, String axisLabel) {
         initTopAndBottomCoords();
-        XYSeriesCollection seriesCollect = createSeriesCollection(dataHsitoryList);
+        XYSeriesCollection seriesCollect = createSeriesCollection(dataHistoryList);
         final XYPlot plot = chart.getXYPlot();
         int count = plot.getRangeAxisCount();
         plot.setDataset(count, seriesCollect);
         plot.mapDatasetToRangeAxis(count, count);
         plot.setRangeAxis(count, createNumberAxis(axisLabel, Color.BLUE));
-        StandardXYToolTipGenerator ttg = new StandardXYToolTipGenerator(
-                StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
-                NumberFormat.getInstance(), NumberFormat.getInstance());
-        TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series",
-                "values");
-        StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES,
-                ttg,
-                urlg);
+        StandardXYToolTipGenerator ttg = new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT, NumberFormat.getInstance(), NumberFormat.getInstance());
+        TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series", "values");
+        StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg, urlg);
         renderer.setBaseShapesVisible(true);
         renderer.setBaseShapesFilled(true);
         renderer.setSeriesPaint(count - 1, Color.BLUE);
@@ -169,6 +181,23 @@ public class HistoryGraph {
         }
         return series;
     }
+
+    private void changeLegendFont() {
+        LegendTitle legendTitle = (LegendTitle) getChart().getSubtitle(0);
+        Font itemFont = new Font("Dialog", Font.PLAIN, 15);
+        legendTitle.setItemFont(itemFont);
+        legendTitle.setPosition(RectangleEdge.RIGHT);
+        legendTitle.setMargin(new RectangleInsets(UnitType.ABSOLUTE, 0.0D, 4.0D, 0.0D, 4.0D));
+    }
+
+    private void setSubtitle(String subtitle) {
+        TextTitle localTextTitle = new TextTitle(subtitle);
+        localTextTitle.setFont(new Font("Dialog", Font.ITALIC, 14));
+        localTextTitle.setPosition(RectangleEdge.BOTTOM);
+        localTextTitle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        getChart().addSubtitle(localTextTitle);
+    }
+
 
     private Number valueByType(Data data) {
         if (DataFormat.TIME == data.getFormat()) {
@@ -245,7 +274,7 @@ public class HistoryGraph {
         numberAxis.setStandardTickUnits(NumberAxis.createStandardTickUnits());
         numberAxis.setLabelPaint(color);
         numberAxis.setTickLabelPaint(color);
-        numberAxis.setLabelFont(new Font("Dialog", Font.BOLD, 16));
+        numberAxis.setLabelFont(new Font("Dialog", Font.BOLD, 12));
         numberAxis.setTickLabelFont(new Font("Dialog", Font.PLAIN, 12));
         return numberAxis;
     }

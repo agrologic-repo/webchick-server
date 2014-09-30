@@ -102,6 +102,7 @@ public class HtmlTableService {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("<p><table class=table-list cellpadding='1' cellspacing='1' border='1'><tr>");
 
+            List<Data> test = tableContent.getTitlesForHtml();
             for (Data data : tableContent.getTitlesForHtml()) {
                 stringBuilder.append("<th style=\"font-size: small\">" +
                         StringEscapeUtils.unescapeHtml(data.getUnicodeLabel()) + "</th>");

@@ -1,6 +1,9 @@
 package com.agrologic.app.graph;
 
-import com.agrologic.app.dao.*;
+import com.agrologic.app.dao.ControllerDao;
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.graph.daily.FeedWaterConsumpTemp;
 import com.agrologic.app.graph.daily.InsideOutsideHumidityGraph;
 import com.agrologic.app.graph.daily.PerHourReportGraph;
@@ -9,6 +12,7 @@ import com.agrologic.app.management.PerGrowDayHistoryDataType;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.history.DayParam;
 import com.agrologic.app.model.history.FromDayToDay;
+import com.agrologic.app.service.LocaleService;
 import com.agrologic.app.service.history.FlockHistoryService;
 import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
 import org.jfree.chart.ChartRenderingInfo;
@@ -23,22 +27,20 @@ import java.io.PrintWriter;
 import java.util.*;
 
 public class GenerateGraph {
-    public static final String FEED_KG_AXIST_TITLE = "Feed[KG]";
-    public static final String FEED_AND_WATER_CONSUMPTION_TITLE = "Feed And Water Consumption";
-    public static final String GROW__DAY_AXIS_TITLE = "Grow Day[Day]";
-    public static final String WATER_LITER_AXIS_TITLE = "Water[Liter]";
-
+    public static final String NO_DATA_AVAILABLE = "No data available in database to create {} graph .";
     private static final Logger logger = LoggerFactory.getLogger(GenerateGraph.class);
+    private static LocaleService localeService = new LocaleService();
 
     /**
-     * @param controllerId
-     * @param session
-     * @param pw
-     * @param locale
-     * @return
+     * Creates temperature and humidity chart and return path to png file with map of each series .
+     *
+     * @param controllerId controller id
+     * @param session      the session
+     * @param pw           PrintWriter object
+     * @param locale       the current locale
+     * @return the path to png file with chart
      */
-    public static String generateChartTempHum(Long controllerId, HttpSession session, PrintWriter pw,
-                                              Locale locale) {
+    public static String generateChartTempHum(Long controllerId, HttpSession session, PrintWriter pw, Locale locale) {
         String filenameth;
 
         try {
@@ -48,8 +50,8 @@ public class GenerateGraph {
             Data setClock = dataDao.getSetClockByController(controllerId);
 
             if (values == null) {
-                logger.error("No data available in database to create Temperature\\Humidity graph .");
-                throw new Exception("No data available in database to create Temperature\\Humidity graph .");
+                logger.error(NO_DATA_AVAILABLE, "Temperature nad Humidity");
+                throw new Exception(NO_DATA_AVAILABLE);
             } else {
                 InsideOutsideHumidityGraph graph;
                 if (setClock.getValue() == null) {
@@ -60,7 +62,7 @@ public class GenerateGraph {
 
                 // Write the chart image to the temporary directory
                 ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-                filenameth = ServletUtilities.saveChartAsPNG(graph.createChart(), 800, 600, info, session);
+                filenameth = ServletUtilities.saveChartAsPNG(graph.createChart(), 1024, 500, info, session);
 
                 // Write the image map to the PrintWriter
                 ChartUtilities.writeImageMap(pw, filenameth, info, false);
@@ -68,19 +70,67 @@ public class GenerateGraph {
                 pw.flush();
             }
         } catch (Exception e) {
-            logger.error("No data available in database to create Temperature\\Humidity graph .", e);
+            logger.error(NO_DATA_AVAILABLE, "Feed/Water");
             filenameth = "public_error_500x300.png";
         }
         return filenameth;
     }
 
     /**
-     * @param flockId
-     * @param growDay
-     * @param session
-     * @param pw
-     * @param locale
-     * @return
+     * Creates feed and water chart and return path to png file with map of each series .
+     *
+     * @param controllerId controller id
+     * @param session      the session
+     * @param pw           PrintWriter object
+     * @param locale       the current locale
+     * @return the path to png file with chart
+     */
+    public static String generateChartWaterFeedTemp(Long controllerId, HttpSession session, PrintWriter pw,
+                                                    Locale locale) {
+        String filenamewft;
+
+        try {
+            ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+            String values = controllerDao.getControllerGraph(controllerId);
+            DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+            Data setClock = dataDao.getSetClockByController(controllerId);
+
+            if (values == null) {
+                logger.error(NO_DATA_AVAILABLE, "Feed/Water");
+                throw new Exception(NO_DATA_AVAILABLE);
+            } else {
+                FeedWaterConsumpTemp graph;
+                if (setClock.getValue() == null) {
+                    graph = new FeedWaterConsumpTemp(values, Long.valueOf("0"), locale);
+                } else {
+                    graph = new FeedWaterConsumpTemp(values, setClock.getValueToUI(), locale);
+                }
+
+                // Write the chart image to the temporary directory
+                ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+
+                filenamewft = ServletUtilities.saveChartAsPNG(graph.createChart(), 1024, 500, info, session);
+
+                // Write the image map to the PrintWriter
+                ChartUtilities.writeImageMap(pw, filenamewft, info, false);
+                session.setAttribute("filenamewct", filenamewft);
+                pw.flush();
+            }
+        } catch (Exception e) {
+            logger.error(NO_DATA_AVAILABLE, "Feed/Water");
+            filenamewft = "public_error_500x300.png";
+        }
+        return filenamewft;
+    }
+
+    /**
+     * Creates temperature and humidity chart and return path to png file with map of each series .
+     *
+     * @param flockId the flock id
+     * @param session the session
+     * @param pw      PrintWriter object
+     * @param locale  the current locale
+     * @return the path to png file with chart
      */
     public static String generateChartFlockTempHum(Long flockId, String growDay, HttpSession session, PrintWriter pw,
                                                    Locale locale) {
@@ -101,74 +151,30 @@ public class GenerateGraph {
 
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenameth = ServletUtilities.saveChartAsPNG(perHourReportGraph.createChart(), 800, 600, info, session);
+            filenameth = ServletUtilities.saveChartAsPNG(perHourReportGraph.createChart(), 1024, 500, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenameth, info, false);
             session.setAttribute("filenameth-flockid=" + flockId + "&growday=" + growDay, filenameth);
             pw.flush();
         } catch (Exception e) {
-            logger.error("No data available in database to create Temperature\\Humidity graph .", e);
+            logger.error(NO_DATA_AVAILABLE, "Temperature and Humidity");
             filenameth = "public_error_500x300.png";
         }
         return filenameth;
     }
 
     /**
-     * @param controllerId
-     * @param session
-     * @param pw
-     * @param locale
-     * @return
+     * Creates water and feed chart and return path to png file with map of each series .
+     *
+     * @param flockId the flock id
+     * @param session the session
+     * @param pw      PrintWriter object
+     * @param locale  the current locale
+     * @return the path to png file with chart
      */
-    public static String generateChartWaterFeedTemp(Long controllerId, HttpSession session, PrintWriter pw,
-                                                    Locale locale) {
-        String filenamewft;
-
-        try {
-            ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-            String values = controllerDao.getControllerGraph(controllerId);
-            DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-            Data setClock = dataDao.getSetClockByController(controllerId);
-
-            if (values == null) {
-                logger.error("No data available in database to create Water\\Feed\\Humidity graph .");
-                throw new Exception("No data available in database to create Water\\Feed\\Humidity graph .");
-            } else {
-                FeedWaterConsumpTemp graph = null;
-                if (setClock.getValue() == null) {
-                    graph = new FeedWaterConsumpTemp(values, Long.valueOf("0"), locale);
-                } else {
-                    graph = new FeedWaterConsumpTemp(values, setClock.getValueToUI(), locale);
-                }
-
-                // Write the chart image to the temporary directory
-                ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-
-                filenamewft = ServletUtilities.saveChartAsPNG(graph.createChart(), 800, 600, info, session);
-
-                // Write the image map to the PrintWriter
-                ChartUtilities.writeImageMap(pw, filenamewft, info, false);
-                session.setAttribute("filenamewct", filenamewft);
-                pw.flush();
-            }
-        } catch (Exception e) {
-            logger.error("No data available in database to create Water\\Feed\\Humidity graph .");
-            filenamewft = "public_error_500x300.png";
-        }
-        return filenamewft;
-    }
-
-    /**
-     * @param flockId
-     * @param growDay
-     * @param session
-     * @param pw
-     * @param locale
-     * @return
-     */
-    public static String generateChartFlockWaterFeedTemp(Long flockId, String growDay, HttpSession session, PrintWriter pw,
-                                                         Locale locale) {
+    public static String generateChartFlockWaterFeedTemp(Long flockId, String growDay,
+                                                         HttpSession session, PrintWriter pw, Locale locale) {
 
 
         DayParam growDayParam = new DayParam(growDay);
@@ -188,31 +194,47 @@ public class GenerateGraph {
 
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenamewft = ServletUtilities.saveChartAsPNG(perHourReportGraph.createChart(), 800, 600, info, session);
+            filenamewft = ServletUtilities.saveChartAsPNG(perHourReportGraph.createChart(), 1024, 500, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenamewft, info, false);
             session.setAttribute("filenamewct", filenamewft);
             pw.flush();
         } catch (Exception e) {
-            logger.error("No data available in database to create Water\\Feed\\Humidity graph .");
+            logger.error(NO_DATA_AVAILABLE, "Feed/Water");
             filenamewft = "public_error_500x300.png";
         }
         return filenamewft;
     }
 
-    public static String generateChartFlockWaterFeed(Long flockId, String fromDay, String toDay, HttpSession session,
-                                                     PrintWriter pw, Locale locale) {
-
+    /**
+     * Creates water and feed chart and return path to png file with map of each series .
+     *
+     * @param flockId the flock id
+     * @param session the session
+     * @param pw      PrintWriter object
+     * @param locale  the current locale
+     * @return the path to png file with chart
+     */
+    public static String generateChartFlockWaterFeed(Long flockId, String fromDay, String toDay,
+                                                     HttpSession session, PrintWriter pw, Locale locale) {
         String filenamefw;
         FromDayToDay growDayRangeParam = new FromDayToDay(fromDay, toDay);
         try {
+            Long langId = localeService.getLanguageId(locale.getLanguage());
+
+            HashMap<String, String> dictionary = createDictionary(locale);
+            String title = dictionary.get("graph.feed.water.title");
+            String y1AxisLabel = dictionary.get("graph.feed.water.axis.feed");
+            String y2AxisLabel = dictionary.get("graph.feed.water.axis.water");
+            String xAxisLabel = dictionary.get("graph.feed.water.axis.grow.day");
+
             FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
             Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId, growDayRangeParam);
 
             List<Map<Integer, Data>> dataHistoryList = new ArrayList<Map<Integer, Data>>();
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-            Data data1 = dataDao.getById(PerGrowDayHistoryDataType.FEED_CONSUMPTION_ID.getId());
+            Data data1 = dataDao.getById(PerGrowDayHistoryDataType.FEED_CONSUMPTION_ID.getId(), langId);
 
             List<String> axisTitles = new ArrayList<String>();
             axisTitles.add(data1.getLabel());
@@ -220,17 +242,22 @@ public class GenerateGraph {
 
             HistoryGraph waterFeedGraph = new HistoryGraph();
             waterFeedGraph.setDataHistoryList(dataHistoryList);
-            waterFeedGraph.createChart(FEED_AND_WATER_CONSUMPTION_TITLE, GROW__DAY_AXIS_TITLE, FEED_KG_AXIST_TITLE);
+            if (!growDayRangeParam.useRange()) {
+                growDayRangeParam.setFromDay(1);
+                growDayRangeParam.setToDay(dataHistoryList.get(0).size());
+            }
 
-            Data data2 = dataDao.getById(PerGrowDayHistoryDataType.WATER_CONSUMPTION_ID.getId());
+            waterFeedGraph.createChart(title, growDayRangeParam.toString(), xAxisLabel, y1AxisLabel);
+
+            Data data2 = dataDao.getById(PerGrowDayHistoryDataType.WATER_CONSUMPTION_ID.getId(), langId);
             axisTitles.add(data2.getLabel());
             dataHistoryList.clear();
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
-            waterFeedGraph.createAndAddSeriesCollection(dataHistoryList, WATER_LITER_AXIS_TITLE);
+            waterFeedGraph.createAndAddSeriesCollection(dataHistoryList, y2AxisLabel);
 
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenamefw = ServletUtilities.saveChartAsPNG(waterFeedGraph.getChart(), 800, 600, info, session);
+            filenamefw = ServletUtilities.saveChartAsPNG(waterFeedGraph.getChart(), 1024, 500, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenamefw, info, false);
@@ -238,19 +265,29 @@ public class GenerateGraph {
 
             pw.flush();
         } catch (Exception e) {
-            logger.error("No data available in database to create Water\\Feed graph .");
+            logger.error(NO_DATA_AVAILABLE, "Water/Feed");
             filenamefw = "public_error_500x300.png";
         }
         return filenamefw;
     }
 
-
-    public static String generateChartFlockAverageWeight(Long flockId, String fromDay, String toDay, HttpSession session,
-                                                         PrintWriter pw, Locale locale) {
+    /**
+     * Creates water and feed chart and return path to png file with map of each series .
+     *
+     * @param flockId the flock id
+     * @param session the session
+     * @param pw      PrintWriter object
+     * @param locale  the current locale
+     * @return the path to png file with chart
+     */
+    public static String generateChartFlockAverageWeight(Long flockId, String fromDay, String toDay,
+                                                         HttpSession session, PrintWriter pw, Locale locale) {
 
         String filenameaw;
         FromDayToDay growDayRangeParam = new FromDayToDay(fromDay, toDay);
         try {
+            Long langId = localeService.getLanguageId(locale.getLanguage());
+
             FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
             Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId,
                     growDayRangeParam);
@@ -258,16 +295,16 @@ public class GenerateGraph {
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             List<Map<Integer, Data>> dataHistoryList = new ArrayList<Map<Integer, Data>>();
 
-            Data data1 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_1_ID.getId());
+            Data data1 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_1_ID.getId(), langId);
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
 
-            Data data2 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_2_ID.getId());
+            Data data2 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_2_ID.getId(), langId);
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
 
-            Data data3 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_3_ID.getId());
+            Data data3 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_3_ID.getId(), langId);
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data3));
 
-            Data data4 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_4_ID.getId());
+            Data data4 = dataDao.getById(PerGrowDayHistoryDataType.AVERAGE_WEIGHT_4_ID.getId(), langId);
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data4));
 
 
@@ -280,37 +317,52 @@ public class GenerateGraph {
             HistoryGraph averageWeightGraph = new HistoryGraph();
             averageWeightGraph.setDataHistoryList(dataHistoryList);
 
-            String title = "Average Weight";
-            String xAxisLabel = "Grow Day[Day]";
-            String yAxisLabel = "Weight[KG]";
-
-            averageWeightGraph.createChart(title, xAxisLabel, yAxisLabel);
+            HashMap<String, String> dictionary = createDictionary(locale);
+            String title = dictionary.get("graph.average.weight.title");    // "Daily Mortality";
+            String xAxisLabel = dictionary.get("graph.average.weight.axis.grow.day");    // "Grow Day[Day]";
+            String yAxisLabel = dictionary.get("graph.average.weight.axis.weight");    // "Birds";
+            if (!growDayRangeParam.useRange()) {
+                growDayRangeParam.setFromDay(1);
+                growDayRangeParam.setToDay(dataHistoryList.get(0).size());
+            }
+            averageWeightGraph.createChart(title, growDayRangeParam.toString(), xAxisLabel, yAxisLabel);
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenameaw = ServletUtilities.saveChartAsPNG(averageWeightGraph.getChart(), 800, 600, info, session);
+            filenameaw = ServletUtilities.saveChartAsPNG(averageWeightGraph.getChart(), 1024, 500, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenameaw, info, false);
             session.setAttribute("filenameaw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenameaw);
             pw.flush();
         } catch (Exception e) {
-            logger.error("No data available in database to create Water\\Feed graph .");
+            logger.error(NO_DATA_AVAILABLE, "Average Weight");
             filenameaw = "public_error_500x300.png";
         }
         return filenameaw;
     }
 
+    /**
+     * Creates heaters on time chart and return path to png file with map of each series .
+     *
+     * @param flockId the flock id
+     * @param session the session
+     * @param pw      PrintWriter object
+     * @param locale  the current locale
+     * @return the path to png file with chart
+     */
     public static String generateChartFlockHeatOnTime(Long flockId, String fromDay, String toDay, HttpSession session,
                                                       PrintWriter pw, Locale locale) {
 
         String filenamehot;
         FromDayToDay growDayRangeParam = new FromDayToDay(fromDay, toDay);
         try {
+            Long langId = localeService.getLanguageId(locale.getLanguage());
+
             FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
             Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId, growDayRangeParam);
 
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-            Data data1 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_1_TIME_ON.getId());
+            Data data1 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_1_TIME_ON.getId(), langId);
 
             List<String> axisTitles = new ArrayList<String>();
             axisTitles.add(data1.getLabel());
@@ -318,180 +370,218 @@ public class GenerateGraph {
             List<Map<Integer, Data>> dataHistoryList = new ArrayList<Map<Integer, Data>>();
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
 
-            Data data2 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_2_TIME_ON.getId());
+            Data data2 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_2_TIME_ON.getId(), langId);
 
             axisTitles.add(data2.getLabel());
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
 
-            Data data3 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_3_TIME_ON.getId());
+            Data data3 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_3_TIME_ON.getId(), langId);
 
             axisTitles.add(data3.getLabel());
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data3));
 
-            Data data4 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_4_TIME_ON.getId());
+            Data data4 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_4_TIME_ON.getId(), langId);
 
             axisTitles.add(data4.getLabel());
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data4));
 
-            Data data5 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_5_TIME_ON.getId());
+            Data data5 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_5_TIME_ON.getId(), langId);
 
             axisTitles.add(data5.getLabel());
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data5));
 
-            Data data6 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_6_TIME_ON.getId());
+            Data data6 = dataDao.getById(PerGrowDayHistoryDataType.HEATER_6_TIME_ON.getId(), langId);
 
             axisTitles.add(data6.getLabel());
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data6));
 
-            String title = "Heat On Time";
-            String xAxisLabel = "Grow Day[Day]";
-            String yAxisLabel = "Time[Minute]";
+            HashMap<String, String> dictionary = createDictionary(locale);
+            String title = dictionary.get("graph.heater.on.time.title");    // "Daily Mortality";
+            String xAxisLabel = dictionary.get("graph.heater.on.time.axis.grow.day");    // "Grow Day[Day]";
+            String yAxisLabel = dictionary.get("graph.heater.on.time.axis.time");    // "Birds";
+
             HistoryGraph heatontimeGraph = new HistoryGraph();
             heatontimeGraph.setDataHistoryList(dataHistoryList);
-            heatontimeGraph.createChart(title, xAxisLabel, yAxisLabel);
+            if (!growDayRangeParam.useRange()) {
+                growDayRangeParam.setFromDay(1);
+                growDayRangeParam.setToDay(dataHistoryList.get(0).size());
+            }
+            heatontimeGraph.createChart(title, growDayRangeParam.toString(), xAxisLabel, yAxisLabel);
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenamehot = ServletUtilities.saveChartAsPNG(heatontimeGraph.getChart(), 800, 600, info, session);
+            filenamehot = ServletUtilities.saveChartAsPNG(heatontimeGraph.getChart(), 1024, 500, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenamehot, info, false);
             session.setAttribute("filenamehot-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamehot);
             pw.flush();
         } catch (Exception e) {
-            logger.error("No data available in database to create Water\\Feed graph .");
+            logger.error(NO_DATA_AVAILABLE, "Heat On Time");
             filenamehot = "public_error_500x300.png";
         }
         return filenamehot;
     }
 
+    /**
+     * Creates flock mortality chart and return path to png file with map of each series .
+     *
+     * @param flockId the flock id
+     * @param session the session
+     * @param pw      PrintWriter object
+     * @param locale  the current locale
+     * @return the path to png file with chart
+     */
     public static String generateChartFlockMortality(Long flockId, String fromDay, String toDay, HttpSession session,
                                                      PrintWriter pw, Locale locale) {
 
         String filenamem;
         FromDayToDay growDayRangeParam = new FromDayToDay(fromDay, toDay);
         try {
+            Long langId = localeService.getLanguageId(locale.getLanguage());
+
             FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
             Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId, growDayRangeParam);
 
             List<Map<Integer, Data>> dataHistoryList = new ArrayList<Map<Integer, Data>>();
             List<String> axisTitles = new ArrayList<String>();
-            Locale currLocale = locale;
-            String lang = currLocale.toString().substring(0, 2);
-            LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
-            long langId = languageDao.getLanguageId(lang);
 
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-            Data data1 = dataDao.getById(PerGrowDayHistoryDataType.DAY_MORTALITY.getId());
+            Data data1 = dataDao.getById(PerGrowDayHistoryDataType.DAY_MORTALITY.getId(), langId);
             axisTitles.add(data1.getLabel());
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
 
-            Data data2 = dataDao.getById(PerGrowDayHistoryDataType.DAY_MORTALITY_MALE.getId());
+            Data data2 = dataDao.getById(PerGrowDayHistoryDataType.DAY_MORTALITY_MALE.getId(), langId);
             axisTitles.add(data2.getLabel());
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
 
-            Data data3 = dataDao.getById(PerGrowDayHistoryDataType.DAY_MORTALITY_FEMALE.getId());
+            Data data3 = dataDao.getById(PerGrowDayHistoryDataType.DAY_MORTALITY_FEMALE.getId(), langId);
             axisTitles.add(data3.getLabel());
             dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data3));
 
-            HashMap<String, String> dictinary = createDictionary(currLocale);
-            String title = dictinary.get("graph.mrt.title");    // "Daily Mortality";
-            String xAxisTitle = dictinary.get("graph.mrt.axis.growday");    // "Grow Day[Day]";
-            String yAxisTitle = dictinary.get("graph.mrt.axis.birds");    // "Birds";
+            HashMap<String, String> dictionary = createDictionary(locale);
+            String title = dictionary.get("graph.mortality.title");    // "Daily Mortality";
+            String xAxisTitle = dictionary.get("graph.mortality.axis.grow.day");    // "Grow Day[Day]";
+            String yAxisTitle = dictionary.get("graph.mortality.axis.birds");    // "Birds";
             HistoryGraph mortalityGraph = new HistoryGraph();
-
             mortalityGraph.setDataHistoryList(dataHistoryList);
-            mortalityGraph.createChart(title, xAxisTitle, yAxisTitle);
+
+            if (!growDayRangeParam.useRange()) {
+                growDayRangeParam.setFromDay(1);
+                growDayRangeParam.setToDay(dataHistoryList.get(0).size());
+            }
+
+            mortalityGraph.createChart(title, growDayRangeParam.toString(), xAxisTitle, yAxisTitle);
+
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenamem = ServletUtilities.saveChartAsPNG(mortalityGraph.getChart(), 800, 600, info, session);
+            filenamem = ServletUtilities.saveChartAsPNG(mortalityGraph.getChart(), 1024, 500, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenamem, info, false);
             session.setAttribute("filenamem-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamem);
             pw.flush();
         } catch (Exception e) {
-            logger.error("No data available in database to create Water\\Feed graph .");
+            logger.error(NO_DATA_AVAILABLE, "Mortality");
             filenamem = "public_error_500x300.png";
         }
         return filenamem;
     }
 
-
-    public static String generateChartFlockMinMaxTemperatureHumidity(Long flockId, String fromDay, String toDay, HttpSession session,
-                                                                     PrintWriter pw, Locale locale) {
+    /**
+     * Creates minimum and maximum temperature and humidity chart and return path to png file with map of each series .
+     *
+     * @param flockId the flock id
+     * @param session the session
+     * @param pw      PrintWriter object
+     * @param locale  the current locale
+     * @return the path to png file with chart
+     */
+    public static String generateChartFlockMinMaxTemperatureHumidity(Long flockId, String fromDay, String toDay,
+                                                                     HttpSession session, PrintWriter pw, Locale locale) {
 
         String filenamemmh;
         FromDayToDay growDayRangeParam = new FromDayToDay(fromDay, toDay);
         try {
+            Long langId = localeService.getLanguageId(locale.getLanguage());
+
             FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
             Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId, growDayRangeParam);
 
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-            Data data = dataDao.getById(PerGrowDayHistoryDataType.MAX_TEMP_IN.getId());
+            Data data = dataDao.getById(PerGrowDayHistoryDataType.MAX_TEMP_IN.getId(), langId);
 
             Map<Integer, Data> interestData = createDataSet(historyByGrowDay, data);
-            data = dataDao.getById(PerGrowDayHistoryDataType.MIN_TEMP_IN.getId());
+            data = dataDao.getById(PerGrowDayHistoryDataType.MIN_TEMP_IN.getId(), langId);
 
             Map<Integer, Data> interestData2 = createDataSet(historyByGrowDay, data);
-            data = dataDao.getById(PerGrowDayHistoryDataType.MAX_TEMP_OUT.getId());
+            data = dataDao.getById(PerGrowDayHistoryDataType.MAX_TEMP_OUT.getId(), langId);
 
             Map<Integer, Data> interestData3 = createDataSet(historyByGrowDay, data);
-            data = dataDao.getById(PerGrowDayHistoryDataType.MIN_TEMP_OUT.getId());
+            data = dataDao.getById(PerGrowDayHistoryDataType.MIN_TEMP_OUT.getId(), langId);
 
             Map<Integer, Data> interestData4 = createDataSet(historyByGrowDay, data);
             CombinedXYGraph combGraph = new CombinedXYGraph();
-            combGraph.createFirstNextPlot("Maximum and Minimum Inside Temperature", "Grow Day[Day]",
-                    "Temperature[C]", data, 0, interestData,
-                    interestData2);
 
-            combGraph.createNextPlot("Maximum and Minimum Outside Temperature", "Grow Day[Day]",
-                    "Temperature[C]", data, 0, interestData3, interestData4);
-            data = dataDao.getById(PerGrowDayHistoryDataType.MAX_HUMIDITY.getId());
+            HashMap<String, String> dictionary = createDictionary(locale);
+            String title = dictionary.get("graph.minimum.maximum.humidity.title");    // "Daily Mortality";
+            String xAxisTitle = dictionary.get("graph.minimum.maximum.humidity.axis.grow.day");    // "Grow Day[Day]";
+            String y1AxisTitle = dictionary.get("graph.minimum.maximum.humidity.axis.temperature");    // "Birds";
+            String y2AxisTitle = dictionary.get("graph.minimum.maximum.humidity.axis.humidity");    // "Birds";
+
+
+            combGraph.createFirstNextPlot(title, xAxisTitle, y1AxisTitle, data, 0, interestData, interestData2);
+
+            combGraph.createNextPlot(title, xAxisTitle, y1AxisTitle, data, 0, interestData3, interestData4);
+            data = dataDao.getById(PerGrowDayHistoryDataType.MAX_HUMIDITY.getId(), langId);
 
             Map<Integer, Data> interestData5 = createDataSet(historyByGrowDay, data);
-            data = dataDao.getById(PerGrowDayHistoryDataType.MIN_HUMIDITY.getId());
+            data = dataDao.getById(PerGrowDayHistoryDataType.MIN_HUMIDITY.getId(), langId);
+
             Map<Integer, Data> interestData6 = createDataSet(historyByGrowDay, data);
 
-            combGraph.createNextPlot("Humidity", "Grow Day[Day]", "Humidity[%]", data, 1, interestData5,
-                    interestData6);
-            combGraph.createChart("In\\Out Min\\Max Temperature And Humidity Graph", growDayRangeParam.toString());
+            combGraph.createNextPlot("", xAxisTitle, y2AxisTitle, data, 1, interestData5, interestData6);
+            combGraph.createChart(title, growDayRangeParam.toString(), xAxisTitle);
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenamemmh = ServletUtilities.saveChartAsPNG(combGraph.getChart(), 800, 600, info, session);
+            filenamemmh = ServletUtilities.saveChartAsPNG(combGraph.getChart(), 1024, 500, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenamemmh, info, false);
             session.setAttribute("filenamemmh-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamemmh);
             pw.flush();
         } catch (Exception e) {
-            logger.error("No data available in database to create Water\\Feed graph .");
+            logger.error(NO_DATA_AVAILABLE, "Minimum/Maximum and Humidity");
             filenamemmh = "public_error_500x300.png";
         }
         return filenamemmh;
     }
 
-
+    /**
+     * Creates dictionary map for graphs information according to locale .
+     *
+     * @param locale the current locale
+     * @return the dictionary
+     */
     protected static HashMap<String, String> createDictionary(Locale locale) {
-        HashMap<String, String> dictinary = new HashMap<String, String>();
+        HashMap<String, String> dictionary = new HashMap<String, String>();
         ResourceBundle bundle = ResourceBundle.getBundle("labels", locale);
-
         for (Enumeration<String> e = bundle.getKeys(); e.hasMoreElements(); ) {
             String key = e.nextElement();
-
             if (key.startsWith("graph")) {
                 String value = bundle.getString(key);
-
-                dictinary.put(key, value);
+                dictionary.put(key, value);
             }
         }
 
-        return dictinary;
+        return dictionary;
     }
 
     /**
-     * @param historyByGrowDay
-     * @param data
-     * @return
+     * Helper method to create data set for minimum maximum and humidity graph .
+     *
+     * @param historyByGrowDay the data map by grow day to create data set for graph
+     * @param data             the data object that encapsulate data id and title for data set
+     * @return dataSet the created data set map
      */
     private static Map<Integer, Data> createDataSet(final Map<Integer, String> historyByGrowDay, final Data data) {
         Map<Integer, Data> dataSet = new HashMap<Integer, Data>();
@@ -525,7 +615,6 @@ public class GenerateGraph {
 
         return dataSet;
     }
-
 }
 
 

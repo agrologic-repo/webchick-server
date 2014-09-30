@@ -1,37 +1,16 @@
-<%@ page import="com.agrologic.app.model.Flock" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page errorPage="anerrorpage.jsp" %>
+<%--<%@ page errorPage="anerrorpage.jsp" %>--%>
 <%@ include file="language.jsp" %>
 
 <%
-    Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    Flock flock = (Flock) request.getAttribute("flock");
     Locale currLocal = (Locale) session.getAttribute("currLocale");
-    Integer fromDay = -1;
-    Integer toDay = -1;
-    try {
-        fromDay = Integer.parseInt(request.getParameter("fromDay"));
-        if (fromDay == null) {
-            fromDay = -1;
-        }
-        toDay = Integer.parseInt(request.getParameter("toDay"));
-        if (toDay == null) {
-            toDay = -1;
-        }
-    } catch (Exception ex) {
+    String pageDir = "rightPage";
+    if (session.getAttribute("dir").equals("rtl")) {
+        pageDir = "leftPage";
     }
-    Integer growDay = 1;
-    try {
-        growDay = Integer.parseInt(request.getParameter("growDay"));
-        if (growDay == null) {
-            growDay = 1;
-        }
-    } catch (Exception ex) {
-        growDay = 1;
 
-    }
 %>
 
 
@@ -41,128 +20,148 @@
     <title><%=session.getAttribute("history.graph.page.title")%>
     </title>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
     <style type="text/css">
+        label {
+            display: block;
+            margin: 20px 0 0 0;
+        }
+
+        select {
+            width: 100%;
+        }
         table {
-            border: 1px solid #1B213B;
             font: normal 15px tahoma;
-            width: 200px;
             margin: 0px;
         }
 
-        .leftlink {
+        .link-menu {
             margin: 0px;
             color: white;
             float: left;
             text-decoration: none;
-            line-height: 30px;
-            cursor: pointer
+            cursor: pointer display : block;
+            width: 100%;
+            height: 100%;
         }
 
-        .leftlinkh {
+        .row-menu {
             margin: 0px;
             background: blue;
-            color: black;
+            border-bottom: 1px solid #0084e1;
+            color: white;
             text-decoration: none;
             text-align: left;
-            width: 200px;
             display: block;
-            cursor: default
+            cursor: default;
+            line-height: 30px;
+
         }
 
-        a, a:active, a:visited {
-            outline: none
+        .row-menu:hover {
+            background-color: green;
+        }
+
+        .selected {
+            background-color: green;
         }
     </style>
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
+    <script type="text/javascript" src="resources/javascript/jquery.simplesidebar.js">;</script>
 </head>
 <body>
-<div>
-    <input id="cellinkId" type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
-    <input id="flockId" type="hidden" name="flockId" value="<%=flockId%>"/>
-</div>
-<div> Choose Graph</div>
-<select id="dropDown">
-    <option></option>
-    <option value="div1">Daily Graphs</option>
-    <option value="div2">Hourly Graphs</option>
-</select>
+<%%>
 
-<div id="div1" class="drop-down-show-hide">
-    <table border="0" cellpadding="0" cellspacing="0" border="1" style="border: 1px solid #1B213B;">
-        <tr class=leftlinkh>
-            <td class=lefttd>
-                <a href="./rmctrl-flock-feed-water.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>&fromDay<%=fromDay%>&toDay=<%=toDay%>"
-                   target="rightPage" class="leftlink">
+<input id="cellinkId" type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
+<input id="flockId" type="hidden" name="flockId" value="<%=flockId%>"/>
+
+<div class="ui-widget ui-corner-all">
+    <label for="combobox" style="color: white">Choose Graph Type</label>
+    <select name="combobox" id="combobox">
+        <option></option>
+        <option value="div1"><%=session.getAttribute("history.graph.page.by.grow.day")%>
+        </option>
+        <option value="div2"><%=session.getAttribute("history.graph.page.by.hour")%>
+        </option>
+    </select>
+</div>
+<hr>
+<div id="div1" class="drop-down-show-hide" style="width: 100%;">
+    <table id="daily-history-menu" border="0" cellpadding="0" cellspacing="0" border="1"
+           style="border: 0px solid #0084e1;" width="100%">
+        <tr class="row-menu">
+            <td>
+                <a href="./rmctrl-flock-feed-water.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                   target="<%=pageDir%>" class="link-menu">
                     <h3>
-                        Feed & Water
+                        <%=session.getAttribute("history.graph.page.menu.feed.water.label")%>
                     </h3>
                 </a>
             </td>
         </tr>
-        <tr class=leftlinkh>
+        <tr class=row-menu>
             <td class=lefttd>
-                <a href="./rmctrl-flock-average-weight.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>&fromDay<%=fromDay%>&toDay=<%=toDay%>"
-                   target="rightPage" class="leftlink">
+                <a href="./rmctrl-flock-average-weight.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                   target="<%=pageDir%>" class="link-menu">
                     <h3>
-                        Average Weight
+                        <%=session.getAttribute("history.graph.page.menu.average.weight.label")%>
                     </h3>
                 </a>
             </td>
         </tr>
-        <tr class=leftlinkh>
+        <tr class=row-menu>
             <td class=lefttd>
-                <a href="./rmctrl-flock-minmaxhum.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>&fromDay<%=fromDay%>&toDay=<%=toDay%>"
-                   target="rightPage" class="leftlink">
+                <a href="./rmctrl-flock-minmaxhum.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                   target="<%=pageDir%>" class="link-menu">
                     <h3>
-                        Min & Max
+                        <%=session.getAttribute("history.graph.page.menu.temperature.humidity.label")%>
                     </h3>
                 </a>
             </td>
         </tr>
-        <tr class=leftlinkh>
-            <td class=lefttd>
-                <a href="./rmctrl-flock-heaton-time.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>&fromDay<%=fromDay%>&toDay=<%=toDay%>"
-                   target="rightPage" class="leftlink">
+        <tr class="row-menu">
+            <td>
+                <a href="./rmctrl-flock-heaton-time.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                   target="<%=pageDir%>" class="link-menu">
                     <h3>
-                        Heaters On Time
+                        <%=session.getAttribute("history.graph.page.menu.heaters.on.time.label")%>
                     </h3>
                 </a>
             </td>
         </tr>
-        <tr class=leftlinkh>
-            <td class=lefttd>
-                <a href="./rmctrl-flock-mortality.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>&fromDay<%=fromDay%>&toDay=<%=toDay%>"
-                   target="rightPage" class="leftlink">
+        <tr class="row-menu">
+            <td>
+                <a href="./rmctrl-flock-mortality.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                   target="<%=pageDir%>" class="link-menu" style="width: 100%">
                     <h3>
-                        Mortality
+                        <%=session.getAttribute("history.graph.page.menu.mortality.label")%>
                     </h3>
                 </a>
             </td>
         </tr>
     </table>
 </div>
-<div id="div2" class="drop-down-show-hide">
-    <table border="0" cellpadding="0" cellspacing="0" border="1" style="border: 1px solid #1B213B;">
-        <tr class=leftlinkh>
-            <td class=lefttd>
-                <a href="./rmctrl-flock-feed-water.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>&fromDay<%=fromDay%>&toDay=<%=toDay%>"
-                   target="rightPage" class="leftlink">
+<div id="div2" class="drop-down-show-hide" style="width: 100%;">
+    <table id="hourly-history-menu" border="0" cellpadding="0" cellspacing="0" border="1"
+           style="border: 0px solid #1B213B;" width="100%;">
+        <tr class=row-menu>
+            <td>
+                <a href="./rmctrl-flock-feed-water-24hour.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                   target="<%=pageDir%>" class="link-menu">
                     <h3>
-                        Feed & Water
+                        <%=session.getAttribute("history.graph.page.menu.feed.water.label")%>
                     </h3>
                 </a>
             </td>
         </tr>
-        <tr class=leftlinkh>
-            <td class=lefttd>
-                <a href="./rmctrl-flock-minmaxhum.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>&fromDay<%=fromDay%>&toDay=<%=toDay%>"
-                   target="rightPage" class="leftlink">
+        <tr class=row-menu>
+            <td>
+                <a href="./rmctrl-temperature-humidity-24hour.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                   target="<%=pageDir%>" class="link-menu">
                     <h3>
-                        Temperature & Humidity
+                        <%=session.getAttribute("history.graph.page.menu.temperature.humidity.label")%>
                     </h3>
                 </a>
             </td>
@@ -171,11 +170,28 @@
 </div>
 <script>
     $('.drop-down-show-hide').hide();
-    $('#dropDown').change(function () {
+    $('#combobox').change(function () {
         $('.drop-down-show-hide').hide();
         $('#' + this.value).show();
+        $('#daily-history-menu tr').removeClass('selected');
     });
-    $("#dropDown").val("div1").change();
+    $("#combobox").val("div1").change();
+
+    $('#daily-history-menu tr').on('click', function () {
+        $('#daily-history-menu tr').removeClass('selected');
+        $(this).toggleClass('selected');
+        if ($(this).data('href') !== undefined) {
+            document.location = $(this).data('href');
+        }
+    });
+
+    $('#hourly-history-menu tr').on('click', function () {
+        $('#hourly-history-menu tr').removeClass('selected');
+        $(this).toggleClass('selected');
+        if ($(this).data('href') !== undefined) {
+            document.location = $(this).data('href');
+        }
+    });
 </script>
 </body>
 </html>

@@ -56,14 +56,13 @@ public class HistoryContent {
     }
 
     public List<Data> getTitlesForHtml() {
-        int index = 1, maxSizeIndex = 1;
+        int maxSizeIndex = 1;
         int maxSize = 0;
-        for (List<Data> dataList : historyContentPerDay.values()) {
-            if (dataList.size() > maxSize) {
-                maxSize = dataList.size();
-                maxSizeIndex = index;
+        for (Map.Entry<Integer, List<Data>> entry : historyContentPerDay.entrySet()) {
+            if (entry.getValue().size() > maxSize) {
+                maxSize = entry.getValue().size();
+                maxSizeIndex = entry.getKey();
             }
-            index++;
         }
         return historyContentPerDay.get(maxSizeIndex);
     }

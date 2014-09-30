@@ -1,5 +1,7 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ page errorPage="anerrorpage.jsp" %>
+<%@ page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%--<%@ page errorPage="anerrorpage.jsp" %>--%>
 <%@ include file="language.jsp" %>
 
 <%
@@ -8,12 +10,12 @@
     Long flockId = Long.parseLong(request.getParameter("flockId"));
     Locale currLocal = (Locale) session.getAttribute("currLocale");
 %>
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
     <style type="text/css">
         .menuFarme {
-            border-right: 0px solid #1B213B;
             border-style: 1px solid #1B213B;
+
             border-collapse: collapse;
         "
         }
@@ -23,14 +25,30 @@
         }
     </style>
 </head>
-<frameset rows="13%, * " frameborder="yes" border="2">
-    <frame src="rmctrl-flock-graphs-top.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>"
-           name="top" target="_blank">
-    <frameset cols="13.5%,*">
-        <frame class="menuFarme"
-               src="./rmctrl-flock-graphs-left.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>"
-               name="leftPage">
-        <frame src="dashboard.html" name="rightPage">
-    </frameset>
-</frameset>
+<c:choose>
+    <c:when test='${dir eq "ltr"}'>
+        <frameset rows="13%, * " frameborder="yes" border="2">
+            <frame src="rmctrl-flock-graphs-top.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                   name="top" target="_blank">
+            <frameset cols="13.5%, *">
+                <frame class="menuFarme"
+                       src="./rmctrl-flock-graphs-left.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                       name="leftPage">
+                <frame src="dashboard.html" name="rightPage">
+            </frameset>
+        </frameset>
+    </c:when>
+    <c:otherwise>
+        <frameset rows="13%, * " frameborder="yes" border="2">
+            <frame src="rmctrl-flock-graphs-top.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                   name="top" target="_blank">
+            <frameset cols="* , 13.5%">
+                <frame src="dashboard.html" name="leftPage">
+                <frame class="menuFarme"
+                       src="./rmctrl-flock-graphs-left.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>"/>
+                " name="rightPage">
+            </frameset>
+        </frameset>
+    </c:otherwise>
+</c:choose>
 </html>
