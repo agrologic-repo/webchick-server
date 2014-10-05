@@ -49,6 +49,7 @@
     } else {
         graphURLTH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameth;
     }
+
     String filenamewft = (String) session.getAttribute("filenamewft");
     if (filenamewft == null) {
         filenamewft = GenerateGraph.generateChartFlockWaterFeedTemp(flockId, growDay.toString(), session, new PrintWriter(out), currLocal);
@@ -154,211 +155,211 @@
 </div>
 
 <table width="100%">
-    <tr>
-        <td align="center">
-            <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
-                <table width="85%">
-                    <tr>
-                        <td width="65%">
-                            <h1 style="text-align: center;"><%=session.getAttribute("history.graph.page.title")%>
-                                <%=flock.getFlockName()%>
-                            </h1>
+<tr>
+    <td align="center">
+        <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
+            <table width="85%">
+                <tr>
+                    <td width="65%">
+                        <h1 style="text-align: center;"><%=session.getAttribute("history.graph.page.title")%>
+                            <%=flock.getFlockName()%>
+                        </h1>
 
-                        </td>
-                        <td width="20%">
-                            <a href="rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
+                    </td>
+                    <td width="20%">
+                        <a href="rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
                             <img src="resources/images/display.png" style="cursor: pointer" hspace="5"
-                                     border="0"/><%=session.getAttribute("button.screens")%>
-                            </a>
-                            <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
-                                <img src="resources/images/chicken-icon.png" style="cursor: pointer" hspace="5"
-                                     border="0"/><%=session.getAttribute("main.screen.page.flocks")%>
-                            </a>
-                        </td>
-                    </tr>
-                </table>
-            </fieldset>
-        </td>
-    </tr>
-    <tr>
-        <td align="center">
-            <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
-                <table border="0" width="85%" cellpadding="0" cellspacing="0" style="padding:1px;">
-                    <tr>
-                        <td>
-                            <h2><%=session.getAttribute("history.graph.page.growday.graph.title")%>
-                            </h2>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
-                                <form id="flock-graph" name="flock-graph" action="./rmctrl-flock-graphs.html">
-                                    <input type="hidden" name="flockId" value="<%=flockId%>"/>
-                                    <input type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
-                                    <input type="hidden" name="userId" value="<%=userId%>"/>
-                                    <table class="table-list-small">
-                                        <tr>
-                                            <td>
-                                                <%--<%=session.getAttribute("label.growday")%> : <input type="text" size="5"--%>
-                                                <%--name="growDay"--%>
-                                                <%--value="<%=growDay%>"/>--%>
+                                 border="0"/><%=session.getAttribute("button.screens")%>
+                        </a>
+                        <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
+                            <img src="resources/images/chicken-icon.png" style="cursor: pointer" hspace="5"
+                                 border="0"/><%=session.getAttribute("main.screen.page.flocks")%>
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </td>
+</tr>
+<tr>
+    <td align="center">
+        <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
+            <table border="0" width="85%" cellpadding="0" cellspacing="0" style="padding:1px;">
+                <tr>
+                    <td>
+                        <h2><%=session.getAttribute("history.graph.page.growday.graph.title")%>
+                        </h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
+                            <form id="flock-graph" name="flock-graph" action="./rmctrl-flock-graphs.html">
+                                <input type="hidden" name="flockId" value="<%=flockId%>"/>
+                                <input type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
+                                <input type="hidden" name="userId" value="<%=userId%>"/>
+                                <table class="table-list-small">
+                                    <tr>
+                                        <td>
+                                            <%--<%=session.getAttribute("label.grow.day")%> : <input type="text" size="5"--%>
+                                            <%--name="growDay"--%>
+                                            <%--value="<%=growDay%>"/>--%>
 
-                                                <%if (fromDay == -1 || toDay == -1) {%>
-                                                <%=session.getAttribute("label.from")%> : <input type="text" size="5"
-                                                                                                 name="fromDay"/>
-                                                <%=session.getAttribute("label.to")%> : <input type="text" size="5"
-                                                                                               name="toDay"/>
-                                                <%} else {%>
-                                                <%=session.getAttribute("label.from")%> : <input type="text" size="5"
-                                                                                                 name="fromDay"
-                                                                                                 value="<%=fromDay%>"/>
-                                                <%=session.getAttribute("label.to")%> :
-                                                <input type="text" size="5" name="toDay" value="<%=toDay%>"/>
-                                                <%}%>
-                                                <input type="submit" value="<%=session.getAttribute("button.go")%>"/>
-                                                <input type="button" id="btnClear" name="btnClear"
-                                                       value="<%=session.getAttribute("button.clear")%>"/>
-                                            </td>
-                                            <td>
-                                                <a href="./exptoexcelhistory.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>"
-                                                   onclick="window.location.href.replace('./exptoexcelhistory.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>')">
-                                                    <img src="resources/images/excel.gif" style="cursor: pointer"
-                                                         hspace="5"
-                                                         border="0"/><%=session.getAttribute("button.export")%>
-                                                </a>
-                                                <a title="Table" style="cursor: pointer"
-                                                   onclick="window.open('./rmctrl-flockhistory-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
-                                                    <img src="resources/images/table.gif" style="cursor: pointer"
-                                                         hspace="5"
-                                                         border="0"/><%=session.getAttribute("button.table")%>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </form>
-                            </fieldset>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div id="accordion-daily-graph">
-                                <h3><%=session.getAttribute("history.graph.page.panel.fwt.label")%>
-                                </h3>
-                                <div>
-                                    <%
-                                        //                                    String graphURLTH;
+                                            <%if (fromDay == -1 || toDay == -1) {%>
+                                            <%=session.getAttribute("label.from")%> : <input type="text" size="5"
+                                                                                             name="fromDay"/>
+                                            <%=session.getAttribute("label.to")%> : <input type="text" size="5"
+                                                                                           name="toDay"/>
+                                            <%} else {%>
+                                            <%=session.getAttribute("label.from")%> : <input type="text" size="5"
+                                                                                             name="fromDay"
+                                                                                             value="<%=fromDay%>"/>
+                                            <%=session.getAttribute("label.to")%> :
+                                            <input type="text" size="5" name="toDay" value="<%=toDay%>"/>
+                                            <%}%>
+                                            <input type="submit" value="<%=session.getAttribute("button.apply")%>"/>
+                                            <input type="button" id="btnClear" name="btnClear"
+                                                   value="<%=session.getAttribute("button.clear")%>"/>
+                                        </td>
+                                        <td>
+                                            <a href="./exptoexcelhistory.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>"
+                                               onclick="window.location.href.replace('./exptoexcelhistory.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>')">
+                                                <img src="resources/images/excel.gif" style="cursor: pointer"
+                                                     hspace="5"
+                                                     border="0"/><%=session.getAttribute("button.export")%>
+                                            </a>
+                                            <a title="Table" style="cursor: pointer"
+                                               onclick="window.open('./rmctrl-flockhistory-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
+                                                <img src="resources/images/table.gif" style="cursor: pointer"
+                                                     hspace="5"
+                                                     border="0"/><%=session.getAttribute("button.table")%>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </fieldset>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="accordion-daily-graph">
+                            <h3><%=session.getAttribute("history.graph.page.panel.fwt.label")%>
+                            </h3>
+
+                            <div>
+                                <%
+                                    //                                    String graphURLTH;
 //                                    String filenameth = (String)session.getAttribute("filenameth-flockid="+flockId+"&growday="+growDay);
-                                        if (filenameth == null) {
-                                            filenameth = GenerateGraph.generateChartFlockTempHum(flockId, growDay.toString(), session,
-                                                    new PrintWriter(out), currLocal);
-                                            session.setAttribute("filenameth-flockid=" + flockId + "&growday=" + growDay, filenameth);
-                                        }
+                                    if (filenameth == null) {
+                                        filenameth = GenerateGraph.generateChartFlockTempHum(flockId, growDay.toString(), session,
+                                                new PrintWriter(out), currLocal);
+                                        session.setAttribute("filenameth-flockid=" + flockId + "&growday=" + growDay, filenameth);
+                                    }
 
-                                        if (filenameth.contains("public_error")) {
-                                            graphURLTH = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
-                                        } else {
-                                            graphURLTH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameth;
-                                        }
-                                    %>
-                                    <img src="<%=graphURLWF%>" width=800 height=600 border=0 usemap="#<%=filenamefw%>">
-                                </div>
-                                <h3><%=session.getAttribute("history.graph.page.panel.aw.label")%>
-                                </h3>
-
-                                <div>
-                                    <img src="<%=graphURLAW%>" width=800 height=600 border=0 usemap="#<%=filenameaw%>">
-                                </div>
-                                <h3><%=session.getAttribute("history.graph.page.panel.max.label")%>
-                                </h3>
-
-                                <div>
-                                    <img src="<%=graphURLMMH%>" width=800 height=600 border=0
-                                         usemap="#<%=filenamemmh%>">
-                                </div>
-                                <h3><%=session.getAttribute("history.graph.page.panel.mor.label")%>
-                                </h3>
-
-                                <div>
-                                    <img src="<%=graphURLM%>" width=800 height=600 border=0 usemap="#<%=filenamem%>">
-                                </div>
-                                <h3><%=session.getAttribute("history.graph.page.panel.hon.label")%>
-                                </h3>
-
-                                <div>
-                                    <img src="<%=graphURLHOT%>" width=800 height=600 border=0
-                                         usemap="#<%=filenamehot%>">
-                                </div>
+                                    if (filenameth.contains("public_error")) {
+                                        graphURLTH = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+                                    } else {
+                                        graphURLTH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameth;
+                                    }
+                                %>
+                                <img src="<%=graphURLWF%>" width=800 height=600 border=0 usemap="#<%=filenamefw%>">
                             </div>
-                        </td>
-                    </tr>
-                </table>
-                <table border="0" width="85%" cellpadding="0" cellspacing="0" style="padding:1px;">
-                    <tr>
-                        <td>
-                            <h2><%=session.getAttribute("history.graph.page.24hour.graph.title")%>
-                            </h2>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
-                                <form action="./rmctrl-flock-graphs.html">
-                                    <input type="hidden" name="flockId" value="<%=flockId%>"/>
-                                    <input type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
-                                    <input type="hidden" name="userId" value="<%=userId%>"/>
-                                    <table class="table-list-small">
-                                        <tr>
-                                            <td>
-                                                <%=session.getAttribute("label.growday")%> : <input type="text" size="5"
-                                                                                                    name="growDay"
-                                                                                                    value="<%=growDay%>"/>
-                                                <input type="submit" value="<%=session.getAttribute("button.go")%>"/>
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td>
-                                                <img src="resources/images/excel.gif" style="cursor: pointer" hspace="5"
-                                                     border="0"/>
-                                                <a href="./exptoexcelhistory24.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&growDay=<%=growDay%>">
-                                                    <%=session.getAttribute("button.export")%>
-                                                </a>
-                                                <img src="resources/images/table.gif" style="cursor: pointer" hspace="5"
-                                                     border="0"/>
-                                                <a onclick="window.open('./rmctrl-flockhistory24-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&growDay=<%=growDay%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
-                                                    <%=session.getAttribute("button.table")%>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </form>
-                            </fieldset>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div id="accordion-hourly-graph">
-                                <h3><%=session.getAttribute("history.graph.page.panel.ioh24.label")%>
-                                </h3>
+                            <h3><%=session.getAttribute("history.graph.page.panel.aw.label")%>
+                            </h3>
 
-                                <div>
-                                    <img src="<%=graphURLTH%>" width=800 height=600 border=0
-                                         usemap="#<%=filenameth%>">
-                                </div>
-                                <h3><%=session.getAttribute("history.graph.page.panel.fwt24.label")%>
-                                </h3>
-
-                                <div>
-                                    <img src="<%= graphURLWFT %>" width=800 height=600 border=0
-                                         usemap="#<%= filenamewft %>">
-                                </div>
+                            <div>
+                                <img src="<%=graphURLAW%>" width=800 height=600 border=0 usemap="#<%=filenameaw%>">
                             </div>
-                        </td>
-                    </tr>
-                </table>
-            </fieldset>
-        </td>
-    </tr>
+                            <h3><%=session.getAttribute("history.graph.page.panel.max.label")%>
+                            </h3>
+
+                            <div>
+                                <img src="<%=graphURLMMH%>" width=800 height=600 border=0
+                                     usemap="#<%=filenamemmh%>">
+                            </div>
+                            <h3><%=session.getAttribute("history.graph.page.panel.mor.label")%>
+                            </h3>
+
+                            <div>
+                                <img src="<%=graphURLM%>" width=800 height=600 border=0 usemap="#<%=filenamem%>">
+                            </div>
+                            <h3><%=session.getAttribute("history.graph.page.panel.hon.label")%>
+                            </h3>
+
+                            <div>
+                                <img src="<%=graphURLHOT%>" width=800 height=600 border=0
+                                     usemap="#<%=filenamehot%>">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <table border="0" width="85%" cellpadding="0" cellspacing="0" style="padding:1px;">
+                <tr>
+                    <td>
+                        <h2><%=session.getAttribute("history.graph.page.24hour.graph.title")%>
+                        </h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
+                            <form action="./rmctrl-flock-graphs.html">
+                                <input type="hidden" name="flockId" value="<%=flockId%>"/>
+                                <input type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
+                                <input type="hidden" name="userId" value="<%=userId%>"/>
+                                <table class="table-list-small">
+                                    <tr>
+                                        <td>
+                                            <%=session.getAttribute("label.grow.day")%> : <input type="text" size="5"
+                                                                                                 name="growDay"
+                                                                                                 value="<%=growDay%>"/>
+                                            <input type="submit" value="<%=session.getAttribute("button.apply")%>"/>
+                                        </td>
+                                        <td>
+                                        </td>
+                                        <td>
+                                            <img src="resources/images/excel.gif" style="cursor: pointer" hspace="5"
+                                                 border="0"/>
+                                            <a href="./exptoexcelhistory24.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&growDay=<%=growDay%>">
+                                                <%=session.getAttribute("button.export")%>
+                                            </a>
+                                            <img src="resources/images/table.gif" style="cursor: pointer" hspace="5"
+                                                 border="0"/>
+                                            <a onclick="window.open('./rmctrl-flockhistory24-table.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&growDay=<%=growDay%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
+                                                <%=session.getAttribute("button.table")%>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </fieldset>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="accordion-hourly-graph">
+                            <h3><%=session.getAttribute("history.graph.page.panel.ioh24.label")%>
+                            </h3>
+
+                            <div>
+                                <img src="<%=graphURLTH%>" width=800 height=600 border=0 usemap="#<%=filenameth%>">
+                            </div>
+                            <h3><%=session.getAttribute("history.graph.page.panel.fwt24.label")%>
+                            </h3>
+
+                            <div>
+                                <img src="<%= graphURLWFT %>" width=800 height=600 border=0
+                                     usemap="#<%= filenamewft %>">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </td>
+</tr>
 </table>
 </body>
 </html>

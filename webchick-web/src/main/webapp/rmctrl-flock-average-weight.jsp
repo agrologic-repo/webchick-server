@@ -88,8 +88,8 @@
 <table width="100%">
 <tr>
     <td>
-        <table width="100%">
-            <tr>
+        <table>
+        <tr>
                 <td>
                     <form id="flock-graph" name="flock-graph" class="flock-graph"
                           action="./rmctrl-flock-average-weight.jsp?currLocal=<%=currLocal%>"
@@ -147,12 +147,12 @@
     </td>
 </tr>
 <tr>
-    <td align="" width="100%">
+    <td width="100%">
         <div id="graph" class="ui-accordion ui-corner-all">
             <table border="0" cellpadding="0" cellspacing="0" style="padding:1px;">
                 <tr>
-                    <td align="center" colspan="2" width="80%">
-                        <img src="<%=graphURLAW%>" usemap="#<%=filenameaw%>">
+                    <td colspan="2" width="80%">
+                    <img src="<%=graphURLAW%>" usemap="#<%=filenameaw%>">
                     </td>
                     <%--<td valign="top" width="20%">--%>
                     <%--<table id="thetable" class="tablescroll">--%>

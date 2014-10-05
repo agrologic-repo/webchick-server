@@ -109,7 +109,6 @@
                 if (firstload == 1) {
                     firstload = 0;
                     document.getElementById("loading").style.display = "block";
-                    ;
                 }
 
                 break;
@@ -516,16 +515,7 @@ function keyDown(val) {
 </script>
 </head>
 <body onload="javascript:setAutoLoad()">
-<div id="loading" style="position:relative; width:100%; text-align:center; top:300px;">
-    <table style="width: auto;height: 45px; border: 1px solid #6699FF; background: white;" align="center">
-        <tr>
-            <td>
-                <img src="resources/images/loader.gif" border="0" alt=""
-                     hspace="10"><%=session.getAttribute("page.loading")%>
-            </td>
-        </tr>
-    </table>
-</div>
+<div id="loading"></div>
 <table width="100%">
     <tr>
         <td align="center">

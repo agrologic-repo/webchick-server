@@ -193,18 +193,18 @@
 
 
                 <div id="accordion-graph">
-                    <h3><%=session.getAttribute("graph.ioh.title")%>
+                    <h3><%=session.getAttribute("graph.inside.outside.humidity.title")%>
                     </h3>
 
                     <div>
-                        <img src="<%=graphURLTH%>" width=800 height=600 border=0
+                        <img src="<%=graphURLTH%>" width=800 height=400 border=0
                              usemap="#<%=filenameth%>">
                     </div>
-                    <h3><%=session.getAttribute("graph.fw.title")%>
+                    <h3><%=session.getAttribute("graph.feed.water.title")%>
                     </h3>
 
                     <div>
-                        <img src="<%= graphURLWFT %>" width=800 height=600 border=0
+                        <img src="<%= graphURLWFT %>" width=800 height=400 border=0
                              usemap="#<%= filenamewft %>">
                     </div>
                 </div>

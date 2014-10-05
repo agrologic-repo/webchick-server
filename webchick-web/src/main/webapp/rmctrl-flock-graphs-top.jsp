@@ -1,4 +1,3 @@
-<%@ page import="com.agrologic.app.model.Flock" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%--<%@ page errorPage="anerrorpage.jsp" %>--%>
 <%@ include file="language.jsp" %>
@@ -7,7 +6,7 @@
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
-    Flock flock = (Flock) request.getAttribute("flock");
+    String flock = request.getParameter("flockName");
     Locale currLocal = (Locale) session.getAttribute("currLocale");
 %>
 <!DOCTYPE html>
@@ -34,10 +33,10 @@
                 <table width="100%" border="0">
                     <tr>
                         <td wdith="90%" align="center">
-                            <h1 style="text-align: center;"><%=session.getAttribute("history.graph.page.title")%>
+                            <h1 style="text-align: center;"><span><%=session.getAttribute("history.graph.page.title")%>
+                                <h2 style="text-align: center;"><%=flock%>
+                                </h2></span>
                             </h1>
-
-                            <h2 style="text-align: center;"><%=flockId%>
 
                         </td>
                         <td width="10%">

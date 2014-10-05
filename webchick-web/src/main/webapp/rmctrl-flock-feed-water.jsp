@@ -29,16 +29,6 @@
     } catch (Exception ex) {
         growDay = 1;
     }
-
-    //////////////////////////////////////////////////Daily Graphs/////////////////////////////////////////////////////
-    String filenamefw = GenerateGraph.generateChartFlockWaterFeed(flockId, fromDay.toString(), toDay.toString(),
-            session, new PrintWriter(out), currLocal);
-    String graphURLWF;
-    if (filenamefw.contains("public_error")) {
-        graphURLWF = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
-    } else {
-        graphURLWF = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamefw;
-    }
 %>
 
 
@@ -88,7 +78,7 @@
         <table width="100%">
             <tr>
                 <td>
-                    <table width="100%">
+                    <table>
                         <tr>
                             <td>
                                 <form id="flock-graph" name="flock-graph" class="flock-graph"
@@ -143,13 +133,23 @@
                     </table>
                 </td>
             </tr>
+            <%
+                String filenamefw = GenerateGraph.generateChartFlockWaterFeed(flockId, fromDay.toString(), toDay.toString(),
+                        session, new PrintWriter(out), currLocal);
+                String graphURLWF;
+                if (filenamefw.contains("public_error")) {
+                    graphURLWF = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+                } else {
+                    graphURLWF = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamefw;
+                }
+            %>
             <tr>
                 <td align="" width="100%">
                     <div id="graph" class="ui-accordion ui-corner-all">
                         <table border="0" cellpadding="0" cellspacing="0" style="padding:1px;">
                             <tr>
-                                <td align="center" colspan="2" width="80%">
-                                    <img src="<%=graphURLWF%>" usemap="#<%=filenamefw%>">
+                                <td align="" colspan="2" width="80%">
+                                    <img src="<%=graphURLWF%>" usemap="#<%=filenamefw%>" width="800" height="400">
                                 </td>
                                 <%--<td valign="top" width="20%">--%>
                                 <%--<table id="thetable" class="tablescroll">--%>

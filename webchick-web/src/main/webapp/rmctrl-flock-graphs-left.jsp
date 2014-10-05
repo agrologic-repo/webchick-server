@@ -20,6 +20,7 @@
     <title><%=session.getAttribute("history.graph.page.title")%>
     </title>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+
     <style type="text/css">
         label {
             display: block;
@@ -78,7 +79,8 @@
 <input id="flockId" type="hidden" name="flockId" value="<%=flockId%>"/>
 
 <div class="ui-widget ui-corner-all">
-    <label for="combobox" style="color: white">Choose Graph Type</label>
+    <label for="combobox" style="color: black"><h3><%=session.getAttribute("history.graph.page.select.type")%>
+    </h3></label>
     <select name="combobox" id="combobox">
         <option></option>
         <option value="div1"><%=session.getAttribute("history.graph.page.by.grow.day")%>
@@ -91,18 +93,18 @@
 <div id="div1" class="drop-down-show-hide" style="width: 100%;">
     <table id="daily-history-menu" border="0" cellpadding="0" cellspacing="0" border="1"
            style="border: 0px solid #0084e1;" width="100%">
-        <tr class="row-menu">
+        <tr class="row-menu ui-widget ui-corner-all">
             <td>
                 <a href="./rmctrl-flock-feed-water.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
-                   target="<%=pageDir%>" class="link-menu">
-                    <h3>
+                   target="<%=pageDir%>" class="link-menu" id="feed-water">
+                <h3>
                         <%=session.getAttribute("history.graph.page.menu.feed.water.label")%>
                     </h3>
                 </a>
             </td>
         </tr>
-        <tr class=row-menu>
-            <td class=lefttd>
+        <tr class="row-menu ui-widget ui-corner-all">
+        <td class=lefttd>
                 <a href="./rmctrl-flock-average-weight.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
                    target="<%=pageDir%>" class="link-menu">
                     <h3>
@@ -169,6 +171,9 @@
     </table>
 </div>
 <script>
+    $("document").ready(function () {
+        $("#feed-water")[0].click();
+    });
     $('.drop-down-show-hide').hide();
     $('#combobox').change(function () {
         $('.drop-down-show-hide').hide();

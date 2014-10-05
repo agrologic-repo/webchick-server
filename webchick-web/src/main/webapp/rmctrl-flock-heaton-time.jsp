@@ -78,7 +78,7 @@
 <table width="100%">
 <tr>
     <td>
-        <table width="100%">
+        <table>
             <tr>
                 <td>
                     <form id="flock-graph" name="flock-graph" class="flock-graph"
@@ -139,7 +139,7 @@
         <div id="graph" class="ui-accordion ui-corner-all">
             <table border="0" cellpadding="0" cellspacing="0" style="padding:1px;">
                 <tr>
-                    <td align="center" colspan="2" width="80%">
+                    <td align="" colspan="2" width="80%">
                         <img src="<%=graphURLHOT%>" border=0 usemap="#<%=filenamehot%>">
                     </td>
                     <%--<td valign="top" width="20%">--%>

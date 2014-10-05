@@ -58,9 +58,14 @@
             redirect("./closeflock.html?userId=<%=userId%>&cellinkId=" + <%=cellinkId%> +
                     "&flockId=" + flockid + "&endDate=" + endDate);
         }
+        function onLoad() {
+            if (window.location != window.parent.location) {
+                parent.location.replace(window.location)
+            }
+        }
     </script>
 </head>
-<body>
+<body onload="onLoad();">
 <table width="100%">
 <tr>
     <td align="center">
