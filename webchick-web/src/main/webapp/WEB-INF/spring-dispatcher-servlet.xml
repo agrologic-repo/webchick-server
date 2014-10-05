@@ -40,6 +40,7 @@
               </constructor-arg>
             </bean>
             <bean class="org.springframework.web.accept.HeaderContentNegotiationStrategy"/>
+
           </list>
         </constructor-arg>
       </bean>
@@ -49,5 +50,9 @@
         <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
       </list>
     </property>
+  </bean>
+
+  <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+      <property name="defaultErrorView" value="errorPage"/>
   </bean>
 </beans>

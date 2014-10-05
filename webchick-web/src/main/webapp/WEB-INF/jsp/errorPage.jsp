@@ -1,8 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page isErrorPage="true" %>
 <!DOCTYPE html>
-<%-- this error page must be removed after moving all pages to WEB-INF\jsp --%>
-
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title></title>
