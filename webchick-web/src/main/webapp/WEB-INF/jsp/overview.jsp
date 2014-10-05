@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="../../anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.CellinkState" %>
@@ -71,7 +72,7 @@
         <% if (user.getRole() == UserRole.ADMIN) {%>
         <td>
             <fieldset>
-                <legend class="chart-legend-label"><%=session.getAttribute("cellink.states")%></legend>
+                <legend class="chart-legend-label"><spring:message code="cellink.states"/></legend>
                 <table class="table-list-small" width="200px">
                     <tr>
                         <td>
@@ -81,7 +82,7 @@
                                         <img class="images" src="resources/images/online.gif"
                                              style="vertical-align: middle"
                                              hspace="5"/>
-                                        <a href="overview.html?state=1"><%=session.getAttribute("cellink.state.online")%>
+                                        <a href="overview.html?state=1"><spring:message code="cellink.state.online"/>
                                         </a>
                                     </td>
                                 </tr>
@@ -89,7 +90,7 @@
                                     <td style="padding: 1px 2px 1px 5px; vertical-align: middle">
                                         <img src="resources/images/running.gif" style="vertical-align: middle"
                                              hspace="5">
-                                        <a href="overview.html?state=3"><%=session.getAttribute("cellink.state.running")%>
+                                        <a href="overview.html?state=3"><spring:message code="cellink.state.running"/>
                                         </a>
                                     </td>
                                 </tr>
@@ -97,7 +98,7 @@
                                     <td style="padding: 1px 2px 1px 5px; vertical-align: middle">
                                         <img src="resources/images/offline.gif" style="vertical-align: middle"
                                              hspace="5"/>
-                                        <a href="overview.html?state=0"><%=session.getAttribute("cellink.state.offline")%>
+                                        <a href="overview.html?state=0"><spring:message code="cellink.state.offline"/>
                                         </a>
                                     </td>
                                 </tr>
@@ -119,7 +120,7 @@
             <img id="refresh" src="resources/images/refresh.png" border="0" onclick="redirect('./overview.html')"/>
 
             <form id="formFilter" name="formFilter" style="display: inline;">
-                <%=session.getAttribute("cellink.states")%> :
+                <spring:message code="cellink.states"/> :
                 <select id="filterStatus">
                     <option value="-1"></option>
                     CellinkState.listState()
@@ -136,7 +137,7 @@
 
             <form name="mainForm" style="display: inline;">
                 <button id="btnDisconnect" name="btnDisconnect" onclick='disconnect()'>
-                    <%=session.getAttribute("button.disconnect.cellink")%>
+                    <spring:message code="button.disconnect.cellink"/>
                 </button>
             </form>
         </td>
@@ -158,18 +159,18 @@
                         <th>
                             <input type="checkbox" id="selectall"/>
                         </th>
-                        <th width="50px"><span><%=session.getAttribute("table.col.cellink.id")%></span></th>
-                        <th><%=session.getAttribute("table.col.cellink.name")%>
+                        <th width="50px"><span><spring:message code="table.col.cellink.id"/></span></th>
+                        <th><spring:message code="table.col.cellink.name"/>
                         </th>
-                        <th><%=session.getAttribute("table.col.cellink.version")%>
+                        <th><spring:message code="table.col.cellink.version"/>
                         </th>
-                        <th><%=session.getAttribute("table.col.cellink.user")%>
+                        <th><spring:message code="table.col.cellink.user"/>
                         </th>
-                        <th><%=session.getAttribute("table.col.cellink.sim")%>
+                        <th><spring:message code="table.col.cellink.sim"/>
                         </th>
-                        <th><%=session.getAttribute("table.col.cellink.lastupdate")%>
+                        <th><spring:message code="table.col.cellink.lastupdate"/>
                         </th>
-                        <th colspan="2"><%=session.getAttribute("table.col.cellink.action")%>
+                        <th colspan="2"><spring:message code="table.col.cellink.action"/>
                         </th>
                     </tr>
                     </thead>
@@ -231,8 +232,8 @@
                                     <td align="center" valign="middle">
                                         <a href="rmctrl-main-screen.html?userId=${cellink.userId}&cellinkId=${cellink.id}">
                                             <img src="resources/images/display.png" style="cursor: pointer"
-                                                 title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
-                                                 hspace="5"/><%=session.getAttribute("button.connect.cellink")%>
+                                                 title="<spring:message code="button.connect.cellink"/>" border="0"
+                                                 hspace="5"/><spring:message code="button.connect.cellink"/>
                                         </a>
                                     </td>
 
@@ -241,16 +242,16 @@
                                     <td align="center" valign="middle">
                                         <a href="rmctrl-main-screen.html?userId=${cellink.userId}&cellinkId=${cellink.id}">
                                             <img src="resources/images/display.png" style="cursor: pointer"
-                                                 title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
-                                                 hspace="5"/><%=session.getAttribute("button.chicken.coop")%>
+                                                 title="<spring:message code="button.connect.cellink"/>" border="0"
+                                                 hspace="5"/><spring:message code="button.chicken.coop"/>
                                         </a>
                                     </td>
                                 </c:when>
                                 <c:otherwise>
                                     <td align="center">
                                         <img src="resources/images/not-available.gif" hspace="5"
-                                             title="(<%=session.getAttribute("cellink.state.offline")%>)"/>
-                                        <%=session.getAttribute("button.noaction.cellink")%>
+                                             title="(<spring:message code="cellink.state.offline"/>)"/>
+                                        <spring:message code="button.noaction.cellink"/>
                                     </td>
 
                                 </c:otherwise>
@@ -258,8 +259,8 @@
                             <td align="center" valign="middle">
                                 <a href="./cellink-setting.html?userId=${cellink.userId}&cellinkId=${cellink.id}">
                                     <img src="resources/images/setting.png" style="cursor: pointer"
-                                         title="<%=session.getAttribute("button.connect.cellink")%>" border="0"
-                                         hspace="5"/><%=session.getAttribute("button.setting")%>
+                                         title="<spring:message code="button.connect.cellink"/>" border="0"
+                                         hspace="5"/><spring:message code="button.setting"/>
                                 </a>
                             </td>
                         </tr>

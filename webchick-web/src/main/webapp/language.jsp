@@ -38,10 +38,15 @@
 
     Locale oldLocale = (Locale) session.getAttribute("currLocale");
     session.setAttribute("currLocale", locale);
+
+//   SessionLocaleResolver expects locale to be stored in this attribute
+    session.setAttribute("org.springframework.web.servlet.i18n.SessionLocaleResolver.LOCALE",locale);
+
     if (oldLocale == null) {
         oldLocale = locale;
     }
     session.setAttribute("oldLocale", oldLocale);
+
 
     ResourceBundle bundle = ResourceBundle.getBundle("labels", locale);
     for (Enumeration<String> e = bundle.getKeys(); e.hasMoreElements(); ) {
@@ -49,4 +54,7 @@
         String s = bundle.getString(key);
         session.setAttribute(key, s);
     }
+
+
+
 %>

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="../../language.jsp" %>
 <%@ page errorPage="../../anerrorpage.jsp" %>
@@ -23,7 +24,7 @@
 %>
 <html>
 <head>
-<title><%=session.getAttribute("main.screen.page.title")%>
+<title><spring:message code='main.screen.page.title'/>
 </title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="shortcut icon" type="image/x-icon" href="img/favicon5.ico" title="AgroLogic Ltd."/>
@@ -247,13 +248,13 @@ function validate() {
     var valid = true;
     var val = document.editForm.Nvalue.value;
     if (val == "") {
-        document.getElementById("msgValue").innerHTML = "<%=session.getAttribute("edit.value.empty.message")%>";
+        document.getElementById("msgValue").innerHTML = "<spring:message code='edit.value.empty.message'/>";
         document.getElementById("msgValue").style.color = "RED";
         document.editForm.Nvalue.focus();
         valid = false;
     }
     if (IsNumeric(val) == false) {
-        document.getElementById("msgValue").innerHTML = "<%=session.getAttribute("edit.value.error.message")%>";
+        document.getElementById("msgValue").innerHTML = "<spring:message code='edit.value.error.message'/>";
         document.getElementById("msgValue").style.color = "RED";
         document.editForm.Nvalue.focus();
         valid = false;
@@ -515,24 +516,24 @@ function keyDown(val) {
                         <td valign="bottom" colspan="2">
                             <img src="resources/images/chicken-icon.png" border="0" hspace="5"/>
                             <a href="flocks.html?userId=<%=userId%>&cellinkId=<c:out value="${cellink.id}"/>">
-                                <%=session.getAttribute("button.flocks")%>
+                                <spring:message code='button.flocks'/>
                             </a>
                             <% String access = (String) request.getSession().getAttribute("access");%>
                             <% if (!access.toLowerCase().equals("regular")) {%>
                             <%if (role == UserRole.USER) {%>
                             <img src="resources/images/cellinks.png" border="0" hspace="5"/>
                             <a href="./my-farms.html?userId=<%=userId%>">
-                                <%=session.getAttribute("button.myfarms")%>
+                                <spring:message code='button.myfarms'/>
                             </a>
                             <%} else {%>
                             <img src="resources/images/cellinks.png" border="0" hspace="5" alt=""/>
                             <a href="./overview.html?userId=<%=userId%>">
-                                <%=session.getAttribute("button.overview")%>
+                                <spring:message code='button.overview'/>
                             </a>
                             <%}%>
                             <img src="resources/images/logout.gif" border="0" hspace="5" alt=""/>
                             <a href="logout.html">
-                                <%=session.getAttribute("label.logout")%>
+                                <spring:message code='label.logout'/>
                             </a>
                             <%}%>
                         </td>
