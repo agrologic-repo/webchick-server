@@ -52,25 +52,10 @@
 <%--%>--%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Webchick overview</title>
-    <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
-    <style type='text/css'>
-        #search {
-            cursor: pointer;
-        }
 
-        #refresh {
-            cursor: pointer;
-        }
-
-        #filter {
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
 <div id="header">
