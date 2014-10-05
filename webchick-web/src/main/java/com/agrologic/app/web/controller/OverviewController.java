@@ -57,11 +57,8 @@ public class OverviewController {
         }
 
         int count = getCount(criteria);
-        int from = index * 25 + 1;
-        int to = (index + 1) * 25;
-        if (to > count) {
-            to = count;
-        }
+        int from = getRecordsFrom(index);
+        int to = getRecordsTo(index, count);
 
         Map<String, Object> pageModel = new HashMap<String, Object>();
         pageModel.put("cellinks", getCellinks(criteria));
@@ -72,47 +69,23 @@ public class OverviewController {
         pageModel.put("searchText", searchText);
 
         if(cellinkIds != null) {
-            pageModel.put("message","Cellink(s) with ID " + cellinkIds + " successfully disconnected" );
+            pageModel.put("message", "Cellink(s) with ID " + cellinkIds + " successfully disconnected");
             pageModel.put("error", error);
         }
 
         return new ModelAndView("overview", pageModel);
     }
 
-    @RequestMapping(value = "/overview.html", method = RequestMethod.POST)
-    public ModelAndView getAllByCriteriaPost(@RequestParam(value = "searchText", defaultValue = "") String searchText,
-                                         @RequestParam(value = "state", required = false) Integer state,
-                                         @RequestParam(value = "type", required = false) String type,
-                                         @RequestParam(value = "index", defaultValue = "0") Integer index,
-                                         HttpSession session) throws Exception {
-        User user = (User) session.getAttribute("user");
-
-        CellinkCriteria criteria = new CellinkCriteria();
-        criteria.setState(state);
-        criteria.setName(searchText);
-        criteria.setType(type);
-        criteria.setIndex(index);
-        criteria.setUserId(user.getId());
-        criteria.setRole(user.getRole().getValue());
-        if (user.getRole() == UserRole.DISTRIBUTOR) {
-            criteria.setCompany(user.getCompany());
-        }
-
-        int count = getCount(criteria);
-        int from = index * 25 + 1;
-        int to = (index + 1) * 25;
+    static int getRecordsTo(Integer index, int count) {
+        int to = index + 25;
         if (to > count) {
             to = count;
         }
+        return to;
+    }
 
-        Map<String, Object> pageModel = new HashMap<String, Object>();
-        pageModel.put("cellinks", getCellinks(criteria));
-        pageModel.put("userId", user.getId());
-        pageModel.put("of", count);
-        pageModel.put("from", from);
-        pageModel.put("to", to);
-        pageModel.put("searchText", searchText);
-        return new ModelAndView("overview", pageModel);
+    static int getRecordsFrom(Integer index) {
+        return index + 1;
     }
 
     private int getCount(CellinkCriteria criteria) {
