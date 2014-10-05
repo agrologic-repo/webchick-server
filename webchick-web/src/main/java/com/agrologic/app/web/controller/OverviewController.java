@@ -40,6 +40,8 @@ public class OverviewController {
                                          @RequestParam(value = "state", required = false) Integer state,
                                          @RequestParam(value = "type", required = false) String type,
                                          @RequestParam(value = "index", defaultValue = "0") Integer index,
+                                         @RequestParam(value = "cellinkIds",required = false) String cellinkIds,
+                                         @RequestParam(value = "error",required = false) Boolean error,
                                          HttpSession session) {
         User user = (User) session.getAttribute("user");
 
@@ -68,6 +70,12 @@ public class OverviewController {
         pageModel.put("from", from);
         pageModel.put("to", to);
         pageModel.put("searchText", searchText);
+
+        if(cellinkIds != null) {
+            pageModel.put("message","Cellink(s) with ID " + cellinkIds + " successfully disconnected" );
+            pageModel.put("error", error);
+        }
+
         return new ModelAndView("overview", pageModel);
     }
 

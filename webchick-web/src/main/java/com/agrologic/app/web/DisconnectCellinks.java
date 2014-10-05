@@ -48,9 +48,8 @@ public class DisconnectCellinks extends AbstractServlet {
             }
 
             String result = sb.substring(0, sb.toString().length() - 1);
-            request.setAttribute("message", "Cellink(s) with ID " + result + " successfully disconnected");
-            request.setAttribute("error", false);
-            request.getRequestDispatcher("./overview.html?userId=" + userId).forward(request, response);
+            response.sendRedirect("./overview.html?userId=" + userId + "&cellinkIds=" + result+"&error=false");
+
         } finally {
             out.close();
         }
