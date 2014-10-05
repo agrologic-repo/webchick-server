@@ -229,7 +229,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <h2><%=session.getAttribute("controller.page.sub.header")%>
+                                <h2><%=session.getAttribute("controller.page.add.header")%>
                                 </h2>
 
                                 <div><p style="color:red;">Boxes with an asterisk next to them are required</div>
