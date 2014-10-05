@@ -31,30 +31,6 @@
 <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
-<style type="text/css">
-    div.tableHolder {
-        OVERFLOW: auto;
-        WIDTH: 800px;
-        HEIGHT: 600px;
-        POSITION: relative;
-    }
-
-    thead td {
-        Z-INDEX: 20;
-        POSITION: relative;
-        TOP: expression(this.offsetParent.scrollTop-2);
-        HEIGHT: 20px;
-        TEXT-ALIGN: center
-    }
-
-    tfoot td {
-        Z-INDEX: 20;
-        POSITION: relative;
-        TOP: expression(this.offsetParent.clientHeight - this.offsetParent.scrollHeight + this.offsetParent.scrollTop);
-        HEIGHT: 20px;
-        TEXT-ALIGN: left;
-    }
-</style>
 <script type="text/javascript">
     var timeoutID;
     function getXMLObject() { //XML OBJECT
@@ -111,25 +87,6 @@
                     tableDataDiv.innerHTML = innerHTML;
                 }
                 break;
-            case interactive:
-                //var innerHTML = "<table class=\"infoMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"
-                //tableDataDiv.innerHTML = innerHTML;
-                break;
-
-            case loaded:
-                //var innerHTML = "<table class=\"infoMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"
-                //tableDataDiv.innerHTML = innerHTML;//
-                break;
-
-            case loading:
-                //var innerHTML = "<table class=\"infoMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"
-                //tableDataDiv.innerHTML = innerHTML;
-                break;
-
-            case uninitialized:
-                //var innerHTML = "<table class=\"infoMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"
-                //tableDataDiv.innerHTML = innerHTML;
-                break;
         }
 
 
@@ -149,7 +106,13 @@
         setTimeout("ajaxFunction();", 100);
     }
 
-    function keyPress(e, o, cid, did) {
+    function onLoad() {
+        if (window.location != window.parent.location) {
+            parent.location.replace(window.location)
+        }
+    }
+
+function keyPress(e, o, cid, did) {
         // look for window.event in case event isn't passed in
         if (window.event) {
             e = window.event;
@@ -528,7 +491,7 @@ function keyDown(val) {
 </script>
 <script type="text/javascript" src="resources/javascript/fhelp.js"></script>
 </head>
-<body onload="setAutoLoad();">
+<body onload="setAutoLoad(); onLoad();">
 <table border="0" cellPadding=1 cellSpacing=1 width="100%" align="center">
     <tr>
         <td style="text-align: center;">

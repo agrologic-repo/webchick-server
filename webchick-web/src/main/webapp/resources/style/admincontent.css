@@ -44,7 +44,6 @@ a:hover {
     text-decoration: none;
 }
 
-
 img {
     border: 0px;
     vertical-align: middle;
@@ -198,7 +197,6 @@ button {
     border-color: #C6C6C6;
     border: 1px black solid;
 }
-
 
 #search {
     cursor: pointer
@@ -474,17 +472,17 @@ button {
     color: #949494;
 }
 
-
 /* tables */
 table.tablesorter {
     border: 1px solid #C6C6C6;
     border-collapse: collapse;
     width: 100%;
     table-layout: auto;
-    font-family:arial;
+    font-family: arial;
     background-color: #CDCDCD;
     /*margin:10px 0pt 15px;*/
 }
+
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
     height: 20px;
     border: 1px solid #C6C6C6;
@@ -494,27 +492,33 @@ table.tablesorter thead tr th, table.tablesorter tfoot tr th {
     font-weight: bold;
     background-color: #D5EFFF;
 }
+
 table.tablesorter thead tr .header {
     background-image: url(../images/bg.gif);
     background-repeat: no-repeat;
     background-position: center right;
     cursor: pointer;
 }
+
 table.tablesorter tbody td {
     color: #3D3D3D;
     padding: 4px;
     background-color: #FFF;
     vertical-align: top;
 }
+
 table.tablesorter tbody tr.odd td {
-    background-color:#F0F0F6;
+    background-color: #F0F0F6;
 }
+
 table.tablesorter thead tr .headerSortUp {
     background-image: url(../images/asc.gif);
 }
+
 table.tablesorter thead tr .headerSortDown {
     background-image: url(../images/desc.gif);
 }
+
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
     background-color: #8dbdd8;
 }
@@ -525,6 +529,7 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
     background-color: #84a10b;
     overflow: hidden;
 }
+
 .ac_results ul {
     width: 100%;
     list-style-position: outside;
@@ -532,13 +537,14 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
     padding: 0;
     margin: 0;
 }
+
 .ac_results li {
     margin: 0px;
     padding: 2px 5px;
     cursor: default;
     display: block;
     color: #fff;
-    font-family:verdana;
+    font-family: verdana;
     /*
     if width will be 100% horizontal scrollbar will apear
     when scroll mode will be used
@@ -552,24 +558,48 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
     line-height: 16px;
     overflow: hidden;
 }
+
 .ac_loading {
     background: white url('../images/indicator.gif') right center no-repeat;
 }
+
 .ac_odd {
     background-color: #84a10b;
     color: #ffffff;
 }
+
 .ac_over {
     background-color: #5a6b13;
     color: #ffffff;
 }
-.input_text{
-    font-family:Arial, Helvetica, sans-serif;
-    font-size:12px;
-    border:1px solid #84a10b;
-    padding:2px;
-    width:150px;
-    color:#000;
-    background:white url(../images/search.png) no-repeat 3px 2px;
-    padding-left:17px;
+
+.input_text {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    border: 1px solid #84a10b;
+    padding: 2px;
+    width: 150px;
+    color: #000;
+    background: white url(../images/search.png) no-repeat 3px 2px;
+    padding-left: 17px;
+}
+
+.vr {
+    display: inline;
+    height: 100%;
+    width: 1px;
+    border: 1px inset;
+    margin: 5px
+}
+
+#loading {
+    text-align: justify;
+    background: #000 url(../images/loader1.gif) no-repeat center center;
+    height: 32px;
+    width: 32px;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    margin: -25px 0 0 -25px;
 }

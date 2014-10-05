@@ -84,6 +84,6 @@ public class FromDayToDay {
 
     @Override
     public String toString() {
-        return getDayRangeParamString();
+        return getDayRangeParamString().toLowerCase();
     }
 }

@@ -1,10 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="../../anerrorpage.jsp" %>
-<%@ page import="com.agrologic.app.model.Cellink" %>
 <%@ page import="com.agrologic.app.model.CellinkState" %>
 <%@ page import="com.agrologic.app.model.User" %>
-<%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Set" %>
 
 <%@ include file="../../language.jsp" %>
@@ -29,29 +27,29 @@
     }
 %>
 
-<%! int countCellinksByState(Collection<Cellink> cellinks, int state) {
-    int count = 0;
-    for (Cellink cellink : cellinks) {
-        if (cellink.getState() == state) {
-            count++;
-        }
-    }
-    return count;
-}
-%>
-<%! Collection<Cellink> getCellinksByState(Collection<Cellink> cellinks, int state) {
-    if (state == -1) {
-        return cellinks;
-    }
-    Collection<Cellink> cellinkList = new ArrayList<Cellink>();
-    for (Cellink cellink : cellinks) {
-        if (cellink.getState() == state) {
-            cellinkList.add(cellink);
-        }
-    }
-    return cellinkList;
-}
-%>
+<%--<%! int countCellinksByState(Collection<Cellink> cellinks, int state) {--%>
+    <%--int count = 0;--%>
+    <%--for (Cellink cellink : cellinks) {--%>
+        <%--if (cellink.getState() == state) {--%>
+            <%--count++;--%>
+        <%--}--%>
+    <%--}--%>
+    <%--return count;--%>
+<%--}--%>
+<%--%>--%>
+<%--<%! Collection<Cellink> getCellinksByState(Collection<Cellink> cellinks, int state) {--%>
+    <%--if (state == -1) {--%>
+        <%--return cellinks;--%>
+    <%--}--%>
+    <%--Collection<Cellink> cellinkList = new ArrayList<Cellink>();--%>
+    <%--for (Cellink cellink : cellinks) {--%>
+        <%--if (cellink.getState() == state) {--%>
+            <%--cellinkList.add(cellink);--%>
+        <%--}--%>
+    <%--}--%>
+    <%--return cellinkList;--%>
+<%--}--%>
+<%--%>--%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
@@ -80,15 +78,10 @@
 </div>
 <div id="main-shell">
 <table border="0" cellPadding=1 cellSpacing=1 width="100%">
-    <% Map<String, Integer> stateMap = CellinkState.listState();%>
-    <% Set<Map.Entry<String, Integer>> setState = stateMap.entrySet();%>
     <tr>
         <td style="vertical-align: top" width="20%">
-            <h1><%=session.getAttribute("overview.page.title")%>
-            </h1>
-
-            <h2><%=session.getAttribute("overview.page.header")%>
-            </h2>
+            <h1><%=session.getAttribute("overview.page.title")%></h1>
+            <h2><%=session.getAttribute("overview.page.header")%></h2>
         </td>
         <td colspan="2" width="50%">
             <jsp:include page="../../messages.jsp"/>
@@ -149,7 +142,8 @@
                 <%=session.getAttribute("cellink.states")%> :
                 <select id="filterStatus">
                     <option value="-1"></option>
-                    <% Set<Map.Entry<String, Integer>> states = stateMap.entrySet();%>
+                    CellinkState.listState()
+                    <% Set<Map.Entry<String, Integer>> states = CellinkState.listState().entrySet();%>
                     <% for (Map.Entry<String, Integer> ss : states) {%>
                     <option value='<%=ss.getValue()%>'>
                         <%=session.getAttribute("cellink.state." + ss.getKey())%>
@@ -205,7 +199,7 @@
                         <c:set var="onMouseOver" value="changeOdd(this)"/>
                         <c:set var="onmouseout" value="changeOdd(this)"/>
                         <c:if test="${status.index % 2 == 0}">
-                            <c:set var="class" value="even"/>
+                            <c:set var="cssClass" value="even"/>
                             <c:set var="onMouseOver" value="changeEven(this)"/>
                             <c:set var="onmouseout" value="changeEven(this)"/>
                         </c:if>

@@ -186,7 +186,7 @@ public class HistoryGraph {
         LegendTitle legendTitle = (LegendTitle) getChart().getSubtitle(0);
         Font itemFont = new Font("Dialog", Font.PLAIN, 15);
         legendTitle.setItemFont(itemFont);
-        legendTitle.setPosition(RectangleEdge.RIGHT);
+        legendTitle.setPosition(RectangleEdge.BOTTOM);
         legendTitle.setMargin(new RectangleInsets(UnitType.ABSOLUTE, 0.0D, 4.0D, 0.0D, 4.0D));
     }
 

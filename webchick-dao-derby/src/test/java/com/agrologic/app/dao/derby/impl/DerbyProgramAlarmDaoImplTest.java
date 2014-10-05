@@ -1,6 +1,7 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.model.ProgramAlarm;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,6 +18,7 @@ import static junit.framework.Assert.assertEquals;
 @ContextConfiguration({"/common-dao-context.xml", "/derby-dao-context.xml"})
 @TransactionConfiguration
 @Transactional
+@Ignore
 public class DerbyProgramAlarmDaoImplTest extends AbstractDaoTest {
 
     @Override

@@ -57,6 +57,10 @@
             <artifactId>tomcat-dbcp</artifactId>
             <version>7.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>sitemesh</artifactId>
+        </dependency>
         <!-- Logging -->
         <dependency>
             <groupId>log4j</groupId>

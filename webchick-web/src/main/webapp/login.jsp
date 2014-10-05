@@ -89,14 +89,6 @@
     return rememberme;
 }
 %>
-<script language="javascript">
-    function doSubmit() {
-        <%  StringBuffer url = request.getRequestURL();%>
-        var lang = document.loginForm.selectLang.value;
-        window.location = "<%=url%>?lang=" + lang;
-    }
-</script>
-
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
@@ -107,7 +99,7 @@
     <script language="javascript" src="resources/javascript/menu.js">;</script>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
 </head>
-<body>
+<body onload="onLoad();">
 <table align="center" valign="middle">
     <tr>
         <td align="center" valign="middle">
@@ -196,6 +188,18 @@
             break;
         }
     }
+
+    function doSubmit() {
+        <%  StringBuffer url = request.getRequestURL();%>
+        var lang = document.loginForm.selectLang.value;
+        window.location = "<%=url%>?lang=" + lang;
+    }
+    function onLoad() {
+        if (window.location != window.parent.location) {
+            parent.location.replace(window.location)
+        }
+    }
 </script>
+
 </body>
 </html>

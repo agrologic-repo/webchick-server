@@ -44,7 +44,6 @@
         </constructor-arg>
       </bean>
     </property>
-
     <property name="viewResolvers">
       <list>
         <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>

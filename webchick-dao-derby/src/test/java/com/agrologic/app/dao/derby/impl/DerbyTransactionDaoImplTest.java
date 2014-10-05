@@ -1,6 +1,7 @@
 package com.agrologic.app.dao.derby.impl;
 
 import com.agrologic.app.dao.CreatebleDao;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration({"/common-dao-context.xml", "/derby-dao-context.xml"})
 @TransactionConfiguration
 @Transactional
+@Ignore
 public class DerbyTransactionDaoImplTest extends AbstractDaoTest {
 
     @Override

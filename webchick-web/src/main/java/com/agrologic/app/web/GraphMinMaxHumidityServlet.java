@@ -45,8 +45,7 @@ public class GraphMinMaxHumidityServlet extends AbstractServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
-                FromDayToDay growDayRangeParam
-                        = new FromDayToDay(request.getParameter("fromDay"), request.getParameter("toDay"));
+                FromDayToDay growDayRangeParam = new FromDayToDay(request.getParameter("fromDay"), request.getParameter("toDay"));
                 try {
 
                     FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
@@ -79,7 +78,7 @@ public class GraphMinMaxHumidityServlet extends AbstractServlet {
 
                     combGraph.createNextPlot("Humidity", "Grow Day[Day]", "Humidity[%]", data, 1, interestData5,
                             interestData6);
-                    combGraph.createChart("In\\Out Min\\Max Temperature And Humidity Graph", growDayRangeParam.toString());
+                    combGraph.createChart("In\\Out Min\\Max Temperature And Humidity Graph", growDayRangeParam.toString(),"Grow Day[Day]" );
                     request.setAttribute("fromDay", growDayRangeParam.getFromDay());
                     request.setAttribute("toDay", growDayRangeParam.getToDay());
                     ChartUtilities.writeChartAsPNG(out, combGraph.getChart(), 800, 800);

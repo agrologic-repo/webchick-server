@@ -62,7 +62,7 @@ public class GenerateGraph {
 
                 // Write the chart image to the temporary directory
                 ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-                filenameth = ServletUtilities.saveChartAsPNG(graph.createChart(), 1024, 500, info, session);
+                filenameth = ServletUtilities.saveChartAsPNG(graph.createChart(), 800, 400, info, session);
 
                 // Write the image map to the PrintWriter
                 ChartUtilities.writeImageMap(pw, filenameth, info, false);
@@ -109,7 +109,7 @@ public class GenerateGraph {
                 // Write the chart image to the temporary directory
                 ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
 
-                filenamewft = ServletUtilities.saveChartAsPNG(graph.createChart(), 1024, 500, info, session);
+                filenamewft = ServletUtilities.saveChartAsPNG(graph.createChart(), 800, 400, info, session);
 
                 // Write the image map to the PrintWriter
                 ChartUtilities.writeImageMap(pw, filenamewft, info, false);
@@ -151,7 +151,7 @@ public class GenerateGraph {
 
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenameth = ServletUtilities.saveChartAsPNG(perHourReportGraph.createChart(), 1024, 500, info, session);
+            filenameth = ServletUtilities.saveChartAsPNG(perHourReportGraph.createChart(), 800, 400, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenameth, info, false);
@@ -194,7 +194,7 @@ public class GenerateGraph {
 
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenamewft = ServletUtilities.saveChartAsPNG(perHourReportGraph.createChart(), 1024, 500, info, session);
+            filenamewft = ServletUtilities.saveChartAsPNG(perHourReportGraph.createChart(), 800, 400, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenamewft, info, false);
@@ -257,7 +257,7 @@ public class GenerateGraph {
 
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenamefw = ServletUtilities.saveChartAsPNG(waterFeedGraph.getChart(), 1024, 500, info, session);
+            filenamefw = ServletUtilities.saveChartAsPNG(waterFeedGraph.getChart(), 800, 400, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenamefw, info, false);
@@ -328,7 +328,7 @@ public class GenerateGraph {
             averageWeightGraph.createChart(title, growDayRangeParam.toString(), xAxisLabel, yAxisLabel);
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenameaw = ServletUtilities.saveChartAsPNG(averageWeightGraph.getChart(), 1024, 500, info, session);
+            filenameaw = ServletUtilities.saveChartAsPNG(averageWeightGraph.getChart(), 800, 400, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenameaw, info, false);
@@ -409,7 +409,7 @@ public class GenerateGraph {
             heatontimeGraph.createChart(title, growDayRangeParam.toString(), xAxisLabel, yAxisLabel);
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenamehot = ServletUtilities.saveChartAsPNG(heatontimeGraph.getChart(), 1024, 500, info, session);
+            filenamehot = ServletUtilities.saveChartAsPNG(heatontimeGraph.getChart(), 800, 400, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenamehot, info, false);
@@ -474,7 +474,7 @@ public class GenerateGraph {
 
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenamem = ServletUtilities.saveChartAsPNG(mortalityGraph.getChart(), 1024, 500, info, session);
+            filenamem = ServletUtilities.saveChartAsPNG(mortalityGraph.getChart(), 800, 400, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenamem, info, false);
@@ -543,7 +543,7 @@ public class GenerateGraph {
             combGraph.createChart(title, growDayRangeParam.toString(), xAxisTitle);
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-            filenamemmh = ServletUtilities.saveChartAsPNG(combGraph.getChart(), 1024, 500, info, session);
+            filenamemmh = ServletUtilities.saveChartAsPNG(combGraph.getChart(), 800, 400, info, session);
 
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filenamemmh, info, false);

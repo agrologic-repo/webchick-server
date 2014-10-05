@@ -116,7 +116,7 @@
                             <h1><%=session.getAttribute("tables.page.header") %>
                             </h1>
 
-                            <h2><%=session.getAttribute("tables.page.sub.header") %>
+                            <h2><%=session.getAttribute("tables.page.header") %>
                             </h2>
 
                             <h3>Program - <font color="teal"><%=program.getName()%>
