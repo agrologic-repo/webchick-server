@@ -1,5 +1,6 @@
 <decorators defaultdir="/WEB-INF/template">
     <decorator name="main" page="decorator.jsp">
         <pattern>/overview.html</pattern>
+        <pattern>/rmctrl-main-screen.html</pattern>
     </decorator>
 </decorators>

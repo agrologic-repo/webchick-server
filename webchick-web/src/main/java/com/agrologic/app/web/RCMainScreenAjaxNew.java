@@ -152,7 +152,7 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                             out.println(controller.getTitle());
                             out.println("</a>");
                             out.println("<br>");
-                            out.println("<span style='font-size:12; color: tomato;'>");
+                            out.println("<span class='last-updated-label'>");
 
                             if (controllerDataList.size() > 0) {
                                 if (controller.getSetClock().getValue() == -1) {

@@ -54,7 +54,7 @@
 <html>
 <head>
     <title>Webchick overview</title>
-
+    <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
 </head>
 <body>
 <div id="header">
@@ -64,8 +64,6 @@
 <table border="0" cellPadding=1 cellSpacing=1 width="100%">
     <tr>
         <td style="vertical-align: top" width="20%">
-            <h1><%=session.getAttribute("overview.page.title")%></h1>
-            <h2><%=session.getAttribute("overview.page.header")%></h2>
         </td>
         <td colspan="2" width="50%">
             <jsp:include page="../../messages.jsp"/>
@@ -73,8 +71,7 @@
         <% if (user.getRole() == UserRole.ADMIN) {%>
         <td>
             <fieldset>
-                <legend><b><%=session.getAttribute("cellink.states")%>
-                </b></legend>
+                <legend class="chart-legend-label"><%=session.getAttribute("cellink.states")%></legend>
                 <table class="table-list-small" width="200px">
                     <tr>
                         <td>
@@ -110,7 +107,6 @@
                 </table>
             </fieldset>
         </td>
-
         <td>
             <img border="0" src="TotalCellinkStatePieChart" width="100" height="100"/>
         </td>

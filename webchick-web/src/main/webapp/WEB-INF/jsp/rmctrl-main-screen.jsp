@@ -21,14 +21,12 @@
         response.sendRedirect("./rmctrl-main-screen.html?userId=" + userId + "&cellinkId=" + cellink.getId() + "");
     }
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html dir="<%=session.getAttribute("dir")%>">
+<html>
 <head>
 <title><%=session.getAttribute("main.screen.page.title")%>
 </title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="shortcut icon" type="image/x-icon" href="img/favicon5.ico" title="AgroLogic Ltd."/>
-<link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
 <script type="text/javascript">
@@ -58,7 +56,7 @@
             xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xmlhttp.send(null);
         }
-        timeoutID = setTimeout("ajaxFunction()", 10000);
+        timeoutID = setTimeout("ajaxFunction()", 60000);
     }
 
     var uninitialized = 0;
@@ -77,10 +75,10 @@
                     var status = getStatus(xmlhttp.responseText);
                     if (status == true) {
                         clearTimeout(timeoutID);
-                        timeoutID = window.setTimeout("ajaxFunction();", 10000);
+                        timeoutID = window.setTimeout("ajaxFunction();", 60000);
                     } else {
                         clearTimeout(timeoutID);
-                        timeoutID = window.setTimeout("ajaxFunction();", 5000);
+                        timeoutID = window.setTimeout("ajaxFunction();", 60000);
                     }
                 } else {
                     var innerHTML = "<table class=\"errMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"
@@ -112,7 +110,7 @@
         }
     }
 
-function keyPress(e, o, cid, did) {
+    function keyPress(e, o, cid, did) {
         // look for window.event in case event isn't passed in
         if (window.event) {
             e = window.event;
@@ -141,6 +139,14 @@ function keyPress(e, o, cid, did) {
         }
     }
 </script>
+<script type="text/javascript">
+    window.onload = function() {
+        setAutoLoad();
+        onLoad();
+
+    }
+</script>
+
 <script type="text/javascript">
 var doClearOld = true;
 var isChanged = false;
@@ -491,7 +497,7 @@ function keyDown(val) {
 </script>
 <script type="text/javascript" src="resources/javascript/fhelp.js"></script>
 </head>
-<body onload="setAutoLoad(); onLoad();">
+<body>
 <table border="0" cellPadding=1 cellSpacing=1 width="100%" align="center">
     <tr>
         <td style="text-align: center;">
@@ -536,7 +542,7 @@ function keyDown(val) {
         </td>
     </tr>
     <tr>
-        <td style="text-align: center;">
+        <td>
             <form name="mainForm" action="">
                 <fieldset style="-moz-border-radius:15px;  border-radius: 15px;  -webkit-border-radius: 15px;">
                     <div id="tableData">

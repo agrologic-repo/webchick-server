@@ -239,7 +239,7 @@ button {
 }
 
 .table-screens th {
-    text-align: center;
+    /*text-align: center;*/
     font-size: 12pt;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
@@ -264,6 +264,11 @@ button {
 
 .table-screens img {
     vertical-align: top;
+}
+
+.last-updated-label {
+    font-size:12px;
+    color: tomato;
 }
 
 .table-pages {
@@ -602,4 +607,21 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
     left: 50%;
     top: 50%;
     margin: -25px 0 0 -25px;
+}
+
+.chart-legend-label {
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+#search {
+    cursor: pointer;
+}
+
+#refresh {
+    cursor: pointer;
+}
+
+#filter {
+    cursor: pointer;
 }
