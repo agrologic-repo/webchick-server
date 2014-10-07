@@ -80,7 +80,7 @@ public class CellinkManagerServiceImpl implements CellinkManagerService {
         // if cellink state was just started
         cellinkDao.changeState(id, CellinkState.STATE_START, CellinkState.STATE_STOP);
         // if cellink state was running
-        cellinkDao.changeState(id, CellinkState.STATE_START, CellinkState.STATE_STOP);
+        cellinkDao.changeState(id, CellinkState.STATE_RUNNING, CellinkState.STATE_STOP);
     }
 
     @Override
