@@ -3,4 +3,8 @@
         <pattern>/overview.html</pattern>
         <pattern>/rmctrl-main-screen.html</pattern>
     </decorator>
+    <excludes>
+        <pattern>/rmctrl-flock*</pattern>
+        <pattern>/dashboard*</pattern>
+    </excludes>
 </decorators>

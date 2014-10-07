@@ -1,6 +1,6 @@
 body {
     font-family: Arial, Tahoma, Helvetica, sans-serif;
-    font-size: 12px;
+    font-size: 15px;
     margin: 2px;
     padding: 2px;
 }
@@ -38,6 +38,7 @@ a {
     color: #0000CC;
     text-decoration: underline;
     cursor: pointer;
+    font-size: 15px;
 }
 
 a:hover {
@@ -200,6 +201,10 @@ button {
 
 #search {
     cursor: pointer
+}
+
+table {
+    font-size: 12px;
 }
 
 .table-simple {

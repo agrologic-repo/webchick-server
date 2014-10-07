@@ -1,7 +1,7 @@
 <%@ page import="com.agrologic.app.graph.GenerateGraph" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-<%--<%@ page errorPage="anerrorpage.jsp" %>--%>
+<%@ page errorPage="anerrorpage.jsp" %>
 <%@ include file="language.jsp" %>
 
 <%
