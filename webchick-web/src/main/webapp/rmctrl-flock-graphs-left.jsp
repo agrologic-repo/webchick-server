@@ -20,7 +20,7 @@
     <title><%=session.getAttribute("history.graph.page.title")%>
     </title>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-
+    <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
     <style type="text/css">
         label {
             display: block;
@@ -37,7 +37,7 @@
 
         .link-menu {
             margin: 0px;
-            color: white;
+            color: #000000;
             float: left;
             text-decoration: none;
             cursor: pointer display : block;
@@ -47,9 +47,8 @@
 
         .row-menu {
             margin: 0px;
-            background: blue;
-            border-bottom: 1px solid #0084e1;
-            color: white;
+            background-color: #aaaaaa;
+            border-bottom: 1px solid #ffffff;
             text-decoration: none;
             text-align: left;
             display: block;
@@ -59,11 +58,11 @@
         }
 
         .row-menu:hover {
-            background-color: green;
+            background-color: #e6e6e6;
         }
 
         .selected {
-            background-color: green;
+            background-color: #e6e6e6;
         }
     </style>
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
@@ -78,7 +77,7 @@
 <input id="cellinkId" type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
 <input id="flockId" type="hidden" name="flockId" value="<%=flockId%>"/>
 
-<div class="ui-widget ui-corner-all">
+<div class="">
     <label for="combobox" style="color: black"><h3><%=session.getAttribute("history.graph.page.select.type")%>
     </h3></label>
     <select name="combobox" id="combobox">
@@ -113,7 +112,7 @@
                 </a>
             </td>
         </tr>
-        <tr class=row-menu>
+        <tr class="row-menu ui-widget ui-corner-all">
             <td class=lefttd>
                 <a href="./rmctrl-flock-minmaxhum.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
                    target="<%=pageDir%>" class="link-menu">
@@ -123,7 +122,7 @@
                 </a>
             </td>
         </tr>
-        <tr class="row-menu">
+        <tr class="row-menu ui-widget ui-corner-all">
             <td>
                 <a href="./rmctrl-flock-heaton-time.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
                    target="<%=pageDir%>" class="link-menu">
@@ -133,7 +132,7 @@
                 </a>
             </td>
         </tr>
-        <tr class="row-menu">
+        <tr class="row-menu ui-widget ui-corner-all">
             <td>
                 <a href="./rmctrl-flock-mortality.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
                    target="<%=pageDir%>" class="link-menu" style="width: 100%">
@@ -148,7 +147,7 @@
 <div id="div2" class="drop-down-show-hide" style="width: 100%;">
     <table id="hourly-history-menu" border="0" cellpadding="0" cellspacing="0" border="1"
            style="border: 0px solid #1B213B;" width="100%;">
-        <tr class=row-menu>
+        <tr class="row-menu ui-widget ui-corner-all">
             <td>
                 <a href="./rmctrl-flock-feed-water-24hour.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
                    target="<%=pageDir%>" class="link-menu">
@@ -158,9 +157,9 @@
                 </a>
             </td>
         </tr>
-        <tr class=row-menu>
+        <tr class="row-menu ui-widget ui-corner-all">
             <td>
-                <a href="./rmctrl-temperature-humidity-24hour.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                <a href="./rmctrl-flock-temp-humidity-24hour.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
                    target="<%=pageDir%>" class="link-menu">
                     <h3>
                         <%=session.getAttribute("history.graph.page.menu.temperature.humidity.label")%>

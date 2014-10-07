@@ -77,7 +77,7 @@
                         <tr>
                             <td>
                                 <form id="flock-graph" name="flock-graph" class="flock-graph"
-                                      action="./rmctrl-temperature-humidity-24hour.jsp?currLocal=<%=currLocal%>"
+                                      action="./rmctrl-flock-temp-humidity-24hour.jsp?currLocal=<%=currLocal%>"
                                       style="display: inline-block">
                                     <input type="hidden" name="flockId" value="<%=flockId%>"/>
                                     <label>
