@@ -274,6 +274,7 @@
 
     $("#exportToExcel").click(function (e) {
         $("#loading").show()
+
         window.location.href = 'exptoexcelhistory24.html?flockId=<%=flockId%>&growDay=<%=growDay%>';
         $("#loading").fadeOut(2000);
 
@@ -281,6 +282,7 @@
 
     $("#exportExcel").click(function (e) {
         $("#loading").show()
+
         window.location.href = 'exptoexcelhistory24.html?flockId=<%=flockId%>&growDay=<%=growDay%>';
         $("#loading").fadeOut(2000);
 
