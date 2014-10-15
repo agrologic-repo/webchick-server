@@ -269,19 +269,19 @@
 </div>
 <script>
     $("#btnClear").click(function () {
-        window.location.href = "./rmctrl-flockhistory24-table.jsp?currLocal=<%=currLocal%>&flockId=<%=flockId%>";
+        window.location.href = "./rmctrl-flockhistory24-table.jsp?currLocal=<%=currLocal%>&flockId=<%=flockId%>&growDay=<%=growDay%>";
     });
 
     $("#exportToExcel").click(function (e) {
         $("#loading").show()
-        window.location.href = 'exptoexcelhistory.html?flockId=<%=flockId%>';
+        window.location.href = 'exptoexcelhistory24.html?flockId=<%=flockId%>&growDay=<%=growDay%>';
         $("#loading").fadeOut(2000);
 
     });
 
     $("#exportExcel").click(function (e) {
         $("#loading").show()
-        window.location.href = 'exptoexcelhistory.html?flockId=<%=flockId%>';
+        window.location.href = 'exptoexcelhistory24.html?flockId=<%=flockId%>&growDay=<%=growDay%>';
         $("#loading").fadeOut(2000);
 
     });
