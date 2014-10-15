@@ -1,6 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page errorPage="../../anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.CellinkState" %>
 <%@ page import="com.agrologic.app.model.User" %>
@@ -26,31 +26,11 @@
         response.sendRedirect("./logout.html");
         return;
     }
-%>
+    request.setAttribute("searchText", searchText);
+    Integer state = (Integer)request.getAttribute("state");
+    request.setAttribute("state", state);
 
-<%--<%! int countCellinksByState(Collection<Cellink> cellinks, int state) {--%>
-    <%--int count = 0;--%>
-    <%--for (Cellink cellink : cellinks) {--%>
-        <%--if (cellink.getState() == state) {--%>
-            <%--count++;--%>
-        <%--}--%>
-    <%--}--%>
-    <%--return count;--%>
-<%--}--%>
-<%--%>--%>
-<%--<%! Collection<Cellink> getCellinksByState(Collection<Cellink> cellinks, int state) {--%>
-    <%--if (state == -1) {--%>
-        <%--return cellinks;--%>
-    <%--}--%>
-    <%--Collection<Cellink> cellinkList = new ArrayList<Cellink>();--%>
-    <%--for (Cellink cellink : cellinks) {--%>
-        <%--if (cellink.getState() == state) {--%>
-            <%--cellinkList.add(cellink);--%>
-        <%--}--%>
-    <%--}--%>
-    <%--return cellinkList;--%>
-<%--}--%>
-<%--%>--%>
+%>
 
 <html>
 <head>
