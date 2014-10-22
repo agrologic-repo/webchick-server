@@ -10,7 +10,8 @@
     </tr>
     <tr>
         <td>
-            <c:choose>
+
+        <c:choose>
                 <c:when test="${ofInt % 25 > 0}">
                     <c:set var="pages" value="${ (ofInt / 25) + 1}"/>
                 </c:when>
@@ -26,10 +27,11 @@
                 <c:choose>
                     <%--set active page --%>
                     <c:when test="${i * 25 <= fromInt && (i * 25) + 25 >= toInt}">
-                        <a class="active" href="${param.navigate}?index=${i * 25}&searchText=${searchText}&state=${state}&role=${role}&company=${company}">${i + 1}</a>
+                            <a class="active" href="${param.navigate}?index=${i * 25}&searchText=${searchText}&state=${state}&role=${role}&company=${company}">${i + 1}</a>
                     </c:when>
                     <c:otherwise>
-                        <a href="${param.navigate}?index=${i * 25}&searchText=${searchText}&state=${state}&role=${role}&company=${company}">${i + 1}</a>
+                            <a href="${param.navigate}?index=${i * 25}&searchText=${searchText}&state=${state}&role=${role}&company=${company}">${i + 1}</a>
+
                     </c:otherwise>
                 </c:choose>
             </c:forEach>
