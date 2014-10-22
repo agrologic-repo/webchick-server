@@ -31,6 +31,17 @@
 <link rel="shortcut icon" type="image/x-icon" href="img/favicon5.ico" title="AgroLogic Ltd."/>
 <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
+<%--<style>--%>
+    <%--body {--%>
+        <%--background-image: url('resources/images/gradient2.bmp');--%>
+        <%--background-repeat: no-repeat;--%>
+        <%--background-position: center;--%>
+        <%--background-size: cover;--%>
+        <%--width: 100%;--%>
+        <%--height: 100%;--%>
+    <%--}--%>
+<%--</style>--%>
+
     <script type="text/javascript">
         var timeoutID;
         function getXMLObject() { //XML OBJECT

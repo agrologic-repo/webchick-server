@@ -139,7 +139,7 @@ public class TableDaoImpl implements TableDao {
 
     @Override
     public void uncheckNotUsedTableOnAllScreens(Long programId) throws SQLException {
-        String sql = "update screentable  set displayonscreen='no' where programid=? and tableid not in " +
+        String sql = "update screentable  set displayonscreen='no' where programid=? and title <>'' and tableid not in " +
                 "(select distinct(tableid) from tabledata as td where programid=? and displayontable='yes' );";
         jdbcTemplate.update(sql, programId, programId);
     }

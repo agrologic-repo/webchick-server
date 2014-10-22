@@ -54,7 +54,4 @@
         String s = bundle.getString(key);
         session.setAttribute(key, s);
     }
-
-
-
 %>
