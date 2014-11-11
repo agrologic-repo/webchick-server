@@ -69,7 +69,7 @@
                 xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xmlhttp.send(null);
             }
-            timeoutID = setTimeout("ajaxFunction()", 60000);
+            timeoutID = setTimeout("ajaxFunction()", 10000);
         }
 
         var uninitialized = 0;
@@ -88,10 +88,10 @@
                         var status = getStatus(xmlhttp.responseText);
                         if (status == true) {
                             clearTimeout(timeoutID);
-                            timeoutID = window.setTimeout("ajaxFunction();", 60000);
+                            timeoutID = window.setTimeout("ajaxFunction();", 10000);
                         } else {
                             clearTimeout(timeoutID);
-                            timeoutID = window.setTimeout("ajaxFunction();", 60000);
+                            timeoutID = window.setTimeout("ajaxFunction();", 10000);
                         }
                     } else {
                         var innerHTML = "<table class=\"errMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"

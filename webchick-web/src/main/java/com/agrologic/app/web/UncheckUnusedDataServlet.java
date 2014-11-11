@@ -38,8 +38,7 @@ public class UncheckUnusedDataServlet extends AbstractServlet {
                 response.sendRedirect("./login.jsp");
             } else {
                 Long programId = Long.parseLong(request.getParameter("programId"));
-                Long controllerId = Long.valueOf(103);
-                controllerId = Long.parseLong(request.getParameter("controllerId"));
+                Long controllerId = Long.parseLong(request.getParameter("controllerId"));
 
                 try {
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);

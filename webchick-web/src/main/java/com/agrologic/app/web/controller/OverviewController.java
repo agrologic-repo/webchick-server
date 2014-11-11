@@ -6,6 +6,7 @@ import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.CellinkCriteria;
 import com.agrologic.app.model.User;
 import com.agrologic.app.model.UserRole;
+import com.agrologic.app.web.CheckUserInSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,15 +39,36 @@ public class OverviewController {
         this.controllerDao = controllerDao;
     }
 
+    static int getRecordsTo(Integer index, int count) {
+        int to = index + 25;
+        if (to > count) {
+            to = count;
+        }
+        return to;
+    }
+
+    static int getRecordsFrom(Integer index) {
+        return index + 1;
+    }
+
     @RequestMapping(value = "/overview.html", method = RequestMethod.GET)
     public ModelAndView getAllByCriteria(@RequestParam(value = "searchText", defaultValue = "") String searchText,
                                          @RequestParam(value = "state", required = false) Integer state,
                                          @RequestParam(value = "type", required = false) String type,
                                          @RequestParam(value = "index", defaultValue = "0") Integer index,
-                                         @RequestParam(value = "cellinkIds",required = false) String cellinkIds,
-                                         @RequestParam(value = "error",required = false) Boolean error,
-                                         HttpSession session) {
+                                         @RequestParam(value = "cellinkIds", required = false) String cellinkIds,
+                                         @RequestParam(value = "error", required = false) Boolean error,
+                                         HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+
         User user = (User) session.getAttribute("user");
+        if (!CheckUserInSession.isUserInSession(request)) {
+            logger.error("Unauthorized access!");
+            try {
+                response.sendRedirect("./login.jsp");
+            } catch (IOException e) {
+                logger.error("Unauthorized access!");
+            }
+        }
 
         CellinkCriteria criteria = new CellinkCriteria();
         criteria.setState(state);
@@ -66,9 +91,10 @@ public class OverviewController {
         pageModel.put("of", count);
         pageModel.put("from", from);
         pageModel.put("to", to);
+        pageModel.put("state", state);
         pageModel.put("searchText", searchText);
 
-        if(cellinkIds != null) {
+        if (cellinkIds != null) {
             pageModel.put("message", "Cellink(s) with ID " + cellinkIds + " successfully disconnected");
             pageModel.put("error", error);
         }
@@ -76,26 +102,14 @@ public class OverviewController {
         return new ModelAndView("overview", pageModel);
     }
 
-    static int getRecordsTo(Integer index, int count) {
-        int to = index + 25;
-        if (to > count) {
-            to = count;
-        }
-        return to;
-    }
-
-    static int getRecordsFrom(Integer index) {
-        return index + 1;
-    }
-
     private int getCount(CellinkCriteria criteria) {
         try {
             return cellinkDao.count(criteria);
         } catch (SQLException ex) {
-            logger.error("Error durring sql query running ", ex);
+            logger.error("Error during sql query running ", ex);
             return 0;
         } catch (Exception ex) {
-            logger.error("Error durring sql query running ", ex);
+            logger.error("Error during sql query running ", ex);
             return 0;
         }
     }
@@ -109,7 +123,7 @@ public class OverviewController {
             }
             return cellinks;
         } catch (SQLException ex) {
-            logger.error("Error durring sql query running ", ex);
+            logger.error("Error during sql query running ", ex);
             return new ArrayList<Cellink>();
         }
     }

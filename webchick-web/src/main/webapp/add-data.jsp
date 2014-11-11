@@ -221,15 +221,15 @@
         }
     }
     function wait(msecs) {
-        document.getElementById("loading").innerHTML = "adding data set .";
-        var text = document.getElementById("loading").innerHTML;
+        document.getElementById("load").innerHTML = "adding data set .";
+        var text = document.getElementById("load").innerHTML;
         var start = new Date().getTime();
         var cur = start
         while (cur - start < msecs) {
-            document.getElementById("loading").innerHTML = text + ".";
-            document.getElementById("loading").style.color = "GREEN";
+            document.getElementById("load").innerHTML = text + ".";
+            document.getElementById("load").style.color = "GREEN";
             cur = new Date().getTime();
-            text = document.getElementById("loading").innerHTML;
+            text = document.getElementById("load").innerHTML;
         }
     }
 </script>
@@ -375,7 +375,7 @@
     <tr>
         <td>
             <form name="loadForm">
-                <span id="loading" name="loading"></span>
+                <span id="load" name="load"></span>
             </form>
         </td>
     </tr>

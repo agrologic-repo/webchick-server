@@ -1,5 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
 <%@ include file="language.jsp" %>
 <%@ page errorPage="errorPage.jsp" %>
 <%@ page import="com.agrologic.app.util.Base64" %>
@@ -108,7 +107,8 @@
                        width="400px">
                     <th colspan="2"
                         style="border : 1px solid blue; ;border-collapse:collapse;background:#283d9a; color: #FFFFFF;">
-                        <h3><img src="resources/images/key.png"><%=session.getAttribute("login.page.header")%>
+                        <h3><img src="resources/images/key.png">
+                            <%=session.getAttribute("login.page.header")%>
                         </h3>
                     </th>
                     <% String errormessage = (String) request.getAttribute("errormessage");
