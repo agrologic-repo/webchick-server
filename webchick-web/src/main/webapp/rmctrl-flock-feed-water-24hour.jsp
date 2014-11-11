@@ -269,7 +269,7 @@
 </div>
 <script>
     $("#btnClear").click(function () {
-        window.location.href = "./rmctrl-flockhistory24-table.jsp?currLocal=<%=currLocal%>&flockId=<%=flockId%>&growDay=<%=growDay%>";
+        window.location.href = "./rmctrl-flock-feed-water-24hour.jsp?currLocal=<%=currLocal%>&flockId=<%=flockId%>";
     });
 
     $("#exportToExcel").click(function (e) {
