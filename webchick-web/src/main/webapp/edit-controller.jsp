@@ -151,6 +151,8 @@
                 event.returnValue = false;
                 document.editForm.title.focus();
                 valid = false;
+            } else {
+                document.editForm.title.value = encode(document.editForm.title);
             }
 
             if (document.editForm.spinner.value == "") {
@@ -190,16 +192,17 @@
                 result += '&#' + source.charCodeAt(i) + ';';
             return result;
         }
-        function showNewName() {
-            var checked = editForm.newControllerName.checked;
-            if (checked == true) {
-                document.getElementById('existingNameDiv').style.display = "none";
-                document.getElementById('newNameDiv').style.display = "inline";
-            } else {
-                document.getElementById('existingNameDiv').style.display = "inline";
-                document.getElementById('newNameDiv').style.display = "none";
-            }
-        }
+
+//        function showNewName() {
+//            var checked = editForm.newControllerName.checked;
+//            if (checked == true) {
+//                document.getElementById('existingNameDiv').style.display = "none";
+//                document.getElementById('newNameDiv').style.display = "inline";
+//            } else {
+//                document.getElementById('existingNameDiv').style.display = "inline";
+//                document.getElementById('newNameDiv').style.display = "none";
+//            }
+//        }
     </script>
 </head>
 <body>
@@ -207,9 +210,7 @@
     <%@include file="usermenuontop.jsp" %>
 </div>
 <div id="main-shell">
-    <form id="editForm" name="editForm"
-          action="editcontroller.html?userId=<%=userId%>&cellinkId=<%=cellinkId %>&controllerId=<%=editController.getId() %>"
-          method="post" onsubmit="return validate();">
+    <form id="editForm" name="editForm" action="editcontroller.html?userId=<%=userId%>&cellinkId=<%=cellinkId %>&controllerId=<%=editController.getId() %>" method="post">
         <table border="0" cellPadding=1 cellSpacing=1 width="100%">
             <tr>
                 <td valign="top" style="padding-top:0px">
@@ -316,7 +317,7 @@
                         <%=session.getAttribute("button.cancel") %>
                     </button>
                     <%}%>
-                    <button name="btnOk" type="submit">
+                    <button name="btnOk" type="submit" onclick="return validate();">
                         <%=session.getAttribute("button.ok") %>
                     </button>
                 </td>
