@@ -29,9 +29,7 @@
     request.setAttribute("searchText", searchText);
     Integer state = (Integer)request.getAttribute("state");
     request.setAttribute("state", state);
-
 %>
-
 <html>
 <head>
     <title>Webchick overview</title>
@@ -366,7 +364,6 @@
         document.mainForm.submit();
     }
 </script>
-
 <script type="text/javascript" language="javascript">
     var state = <%=request.getParameter("state")%>;
     var length = document.formFilter.filterStatus.options.length;

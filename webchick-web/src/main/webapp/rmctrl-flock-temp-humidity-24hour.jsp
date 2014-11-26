@@ -263,7 +263,6 @@
                 </td>
             </tr>
         </table>
-
     </fieldset>
 </div>
 <script>
@@ -305,22 +304,17 @@
             node = document.getElementById("contentDiv").style.visibility = 'visible';
         }
     }
-
-
     <%--$(document).ready(function() {--%>
     <%--if($('#<%=filenameth%>')) {--%>
     <%--$('#<%=filenameth%> area').each(function() {--%>
     <%--var id = $(this).attr('id');--%>
     <%--$(this).mouseover(function() {--%>
     <%--$('#overlay'+id).show();--%>
-
     <%--});--%>
-
     <%--$(this).mouseout(function() {--%>
     <%--var id = $(this).attr('id');--%>
     <%--$('#overlay'+id).hide();--%>
     <%--});--%>
-
     <%--});--%>
     <%--}--%>
     <%--});--%>

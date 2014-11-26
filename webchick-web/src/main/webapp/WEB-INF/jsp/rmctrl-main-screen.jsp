@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
@@ -23,7 +24,7 @@
         response.sendRedirect("./rmctrl-main-screen.html?userId=" + userId + "&cellinkId=" + cellink.getId() + "");
     }
 %>
-<html>
+<html dir="<%=session.getAttribute("dir")%>">
 <head>
 <title><spring:message code='main.screen.page.title'/>
 </title>
@@ -43,7 +44,10 @@
 <%--</style>--%>
 
     <script type="text/javascript">
-        var timeoutID;
+    var doClearOld = true;
+    var isChanged = false;
+
+    var timeoutID;
         function getXMLObject() { //XML OBJECT
             var xmlHttp = false;
             try {
@@ -61,6 +65,7 @@
             return xmlHttp;  // Mandatory Statement returning the ajax object created
         }
         var xmlhttp = new getXMLObject();	//xmlhttp holds the ajax object
+
         function ajaxFunction() {
             var getdate = new Date();  //Used to prevent caching during ajax call
             if (xmlhttp) {
@@ -128,10 +133,21 @@
             if (window.event) {
                 e = window.event;
             }
-            if (e.keyCode == 13) {
-                document.mainForm.action = "./change-value.html?userId=<%=userId%>&cellinkId=<%=cellink.getId()%>&controllerId=" + cid + "&dataId=" + did + "&Nvalue=" + o.value;
-                document.mainForm.method = "POST";
-                document.mainForm.submit();
+            var code = (e.keyCode ? e.keyCode : e.which);
+            switch (code) {
+                case 13:
+                    unblockAjax();
+                    o.blur();
+                    doClearOld = true;
+                    isChanged = false;;
+                    $.ajax({
+                        type: "POST",
+                        url: "./change-value.html?userId=<%=userId%>&cellinkId=<%=cellink.getId()%>&controllerId=" + cid + "&dataId=" + did + "&Nvalue=" + o.value,
+                        success: function () {
+                            o.style.border = "1px orange solid";
+                        }
+                    });
+                    break;
             }
         }
 
@@ -151,18 +167,13 @@
                 cur = new Date().getTime();
             }
         }
-    </script>
-    <script type="text/javascript">
+
         window.onload = function() {
             setAutoLoad();
             onLoad();
 
         }
-    </script>
 
-    <script type="text/javascript">
-    var doClearOld = true;
-    var isChanged = false;
     var DEC_0 = 0;
     var DEC_1 = 1;
     var DEC_2 = 2;
@@ -303,6 +314,7 @@
         }
         doDecPoint(event, val, type);
     }
+
     function doDecPoint(event, val, type) {
         var txt = "";
         if (keyCode == 16) {
@@ -345,6 +357,7 @@
             }
         }
     }
+
     function getFixFormat(txt, t, changed) {
         var type = parseInt(t);
         switch (type) {
@@ -497,18 +510,22 @@
                 break;
         }
     }
+
     function closeWindow() {
         self.close();
         window.opener.location.reload(true);
     }
+
     function keyDown(val) {
         if (doClearOld) {
             val.value = "";
             doClearOld = false;
         }
     }
+
     </script>
     <script type="text/javascript" src="resources/javascript/fhelp.js"></script>
+    <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
 </head>
 <body>
 <table border="0" cellPadding=1 cellSpacing=1 width="100%" align="center">

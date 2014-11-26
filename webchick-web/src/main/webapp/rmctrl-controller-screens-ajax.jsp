@@ -32,7 +32,6 @@
     return null;
 }
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 <title><%=session.getAttribute("all.screen.page.title")%>
@@ -40,7 +39,10 @@
 <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
+<script type="text/javascript" src="resources/javascript/jquery.js">;</script>
 <script type="text/javascript">
+    var doClearOld = true;
+    var isChanged = false;
     var firstload = 1;
     var timeoutID;
     function getXMLObject() { //XML OBJECT
@@ -140,10 +142,23 @@
         if (window.event) {
             e = window.event;
         }
-        if (e.keyCode == 13) {
-            document.mainForm.action = "./change-value.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&controllerId=" + cid + "&screenId=" + sid + "&dataId=" + did + "&Nvalue=" + o.value;
-            document.mainForm.method = "POST";
-            document.mainForm.submit();
+
+        var code = (e.keyCode ? e.keyCode : e.which);
+        switch (code) {
+            case 13:
+                unblockAjax();
+                o.blur();
+
+                doClearOld = true;
+                isChanged = false;
+                $.ajax({
+                type: "POST",
+                url: "./change-value.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&controllerId=" + cid + "&screenId=" + sid + "&dataId=" + did + "&Nvalue=" + o.value,
+                success: function () {
+                    o.style.border = "1px orange solid";
+                }
+            });
+            break;
         }
     }
 
@@ -164,10 +179,6 @@
         }
     }
 
-</script>
-<script type="text/javascript">
-var doClearOld = true;
-var isChanged = false;
 var DEC_0 = 0;
 var DEC_1 = 1;
 var DEC_2 = 2;
@@ -540,7 +551,9 @@ function keyDown(val) {
         <td style="text-align: center;">
             <form name="mainForm">
                 <fieldset style="-moz-border-radius:15px;  border-radius: 15px;  -webkit-border-radius: 15px;">
-                    <div id="tableData"></div>
+                    <div id="tableData">
+
+                    </div>
                 </fieldset>
             </form>
         </td>

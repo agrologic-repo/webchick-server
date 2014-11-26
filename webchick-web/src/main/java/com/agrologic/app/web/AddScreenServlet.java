@@ -36,7 +36,7 @@ public class AddScreenServlet extends AbstractServlet {
                 ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
 
                 for (Program p : programs) {
-                    List<Screen> screens = (List<Screen>) screenDao.getAllByProgramId(p.getId());
+                    List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(p.getId(),1L,false);
                     p.setScreens(screens);
                 }
 

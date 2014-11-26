@@ -449,15 +449,12 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
 
                     if (!data.isReadonly()) {
                         out.println(
-                                "<input type='text' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeypress=\"keyPress(event, this, "
-                                        + controller.getId() + "," + data.getId()
-                                        + " );\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
-                                        + data.getFormat()
-                                        + "')\" size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
-                                        + data.getFormattedValue() + ">");
+                                "<input type='text' name='test' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeypress=\"keyPress(event, this, "
+                                        + controller.getId() + "," + data.getId() + " );\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'" + data.getFormat()
+                                        + "')\" size='8' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value="+ data.getFormattedValue() + ">");
                     } else {
                         out.println(
-                                "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6'"
+                                "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='8'"
                                         + " style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
                                         + data.getFormattedValue() + "'>");
                     }

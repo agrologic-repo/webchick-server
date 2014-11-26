@@ -64,12 +64,6 @@ public class RCChangeValue extends AbstractServlet {
                 controllerDao.saveNewDataValueOnController(controller.getId(), data.getId(), data.getValue());
                 logger.info("Data successfully changed :" + data);
 
-                if (screenId == 1) {
-                    response.sendRedirect("./rmctrl-main-screen.html?userId=" + userId + "&cellinkId=" + cellinkId);
-                } else {
-                    response.sendRedirect("./rmctrl-controller-screens-ajax.jsp?userId=" + userId + "&cellinkId="
-                            + cellinkId + "&controllerId=" + controllerId + "&screenId=" + screenId);
-                }
             }
         } catch (SQLException ex) {
 

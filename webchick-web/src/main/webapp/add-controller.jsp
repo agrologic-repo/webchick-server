@@ -48,8 +48,6 @@
         //                source: availableHouseType
         //            });
         //        }).focus(function () {$(this).autocomplete("search","")});
-
-
         $(document).ready(function () {
             $("input#controllerType").autocomplete({
                 width: 300,
