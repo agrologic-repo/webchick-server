@@ -26,7 +26,6 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Add Screen</title>
-
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
@@ -79,6 +78,9 @@
             if (!valid) {
                 return false;
             }
+            var spid = document.addForm1.programs.value;
+            var ssid = "screen" + document.addForm1.programs.value;
+
         }
         function IsNumeric(sText) {
             var ValidChars = "0123456789.";
@@ -116,7 +118,6 @@
                             <p>
 
                             <h2>add new screen</h2>
-
                             <div><br>
                                 <input type="radio" name="group1" id="ns" checked onclick="optionToAddScreen('ns')">&nbsp;New
                                 Screen
@@ -139,11 +140,11 @@
                                                 <select name="programs" id="program" onclick="showScreens('program')">
                                                     <% for (Program p : programs) {%>
                                                     <% if (p.getId().equals(defaultProgId)) {%>
-                                                    <option value="<%=p.getId() %>" selected><%=p.getName() %>
-                                                            <%} else if(!p.getId().equals(programId)){%>
-                                                    <option value="<%=p.getId() %>"><%=p.getName() %>
-                                                            <%}%>
-                                                            <%}%>
+                                                        <option value="<%=p.getId() %>" selected><%=p.getName() %>
+                                                    <%} else if(!p.getId().equals(programId)){%>
+                                                        <option value="<%=p.getId() %>"><%=p.getName() %>
+                                                    <%}%>
+                                                    <%}%>
                                                 </select>
                                             </td>
                                         </tr>
@@ -152,22 +153,20 @@
                                             <td valign="center">
                                                 <%for (Program p : programs) {%>
                                                 <p>
-                                                        <%if(p.getId()== 1){%>
-                                                    <select name="screen<%=p.getId()%>" id="screen<%=p.getId()%>"
-                                                            style="display:block">
+                                                    <%if(p.getId()== 1){%>
+                                                        <select name="screen<%=p.getId()%>" id="screen<%=p.getId()%>" style="display:block">
                                                         <%for (Screen s : p.getScreens()) {%>
-                                                        <option value="<%=s.getId()%>"><%=s.getTitle()%>
-                                                                <%}%>
-                                                    </select>
-                                                        <%} else if(!p.getId().equals(programId)){%>
-                                                    <select name="screen<%=p.getId()%>" id="screen<%=p.getId()%>"
-                                                            style="display:none">
+                                                            <option value="<%=s.getId()%>"><%=s.getTitle()%>
+                                                        <%}%>
+                                                        </select>
+                                                    <%} else if(!p.getId().equals(programId)){%>
+                                                        <select name="screen<%=p.getId()%>" id="screen<%=p.getId()%>" style="display:none">
                                                         <%for (Screen s : p.getScreens()) {%>
-                                                        <option value="<%=s.getId()%>"><%=s.getTitle()%>
-                                                                <%}%>
-                                                    </select>
+                                                            <option value="<%=s.getId()%>"><%=s.getTitle()%>
                                                         <%}%>
-                                                        <%}%>
+                                                        </select>
+                                                    <%}%>
+                                                <%}%>
                                             </td>
                                         </tr>
                                         <tr>

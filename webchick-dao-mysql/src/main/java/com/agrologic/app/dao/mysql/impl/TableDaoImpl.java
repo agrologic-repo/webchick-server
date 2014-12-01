@@ -114,27 +114,35 @@ public class TableDaoImpl implements TableDao {
 
     @Override
     public void insertTranslation(final Collection<Table> tables) throws SQLException {
+//        try {
+//            jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+//
+//                @Override
+//                public void setValues(PreparedStatement ps, int i) throws SQLException {
+//                    Table table = Lists.newArrayList(tables).get(i);
+//                    ps.setLong(1, table.getId());
+//                    ps.setLong(2, table.getLangId());
+//                    ps.setString(3, table.getUnicodeTitle() == null ? "" : table.getUnicodeTitle());
+//                }
+//
+//                @Override
+//                public int getBatchSize() {
+//                    return tables.size();
+//                }
+//            });
+//        } catch (DuplicateKeyException e) {
+//            e.printStackTrace();
+//        }
         logger.debug("Insert collection translation of tables ");
         final String sql = "insert into tablebylanguage values (?,?,?)";
-        try {
-            jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-
-                @Override
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    Table table = Lists.newArrayList(tables).get(i);
-                    ps.setLong(1, table.getId());
-                    ps.setLong(2, table.getLangId());
-                    ps.setString(3, table.getUnicodeTitle() == null ? "" : table.getUnicodeTitle());
-                }
-
-                @Override
-                public int getBatchSize() {
-                    return tables.size();
-                }
-            });
-        } catch (DuplicateKeyException e) {
-            //e.printStackTrace();
+        for(Table table:tables) {
+            try {
+                jdbcTemplate.update(sql, new Object[]{table.getId(), table.getLangId(), table.getUnicodeTitle()});
+            } catch (DuplicateKeyException e) {
+                logger.error("Translation for table id [{}] for language id [{}] already exist ",table.getId(), table.getLangId() );
+            }
         }
+
     }
 
     @Override
@@ -211,7 +219,7 @@ public class TableDaoImpl implements TableDao {
     public Collection<Table> getScreenTables(Long programId, Long screenId, Boolean showAll) throws SQLException {
         logger.debug("Get tables by program with id [{}]", programId);
         String sqlQuery = "select * from screentable where programid=? and screenid =? ";
-        if (!showAll) {
+        if (showAll != null && !showAll) {
             sqlQuery = sqlQuery.concat(" and DisplayOnScreen='yes'");
         }
         sqlQuery = sqlQuery.concat(" order by Position");

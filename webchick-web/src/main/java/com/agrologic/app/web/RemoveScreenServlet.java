@@ -46,7 +46,7 @@ public class RemoveScreenServlet extends AbstractServlet {
                         request.setAttribute("error", true);
                         request.getRequestDispatcher("./all-screens.html").forward(request, response);
                     } else {
-                        Collection<Table> tables = tableDao.getScreenTables(programId, screenId, false);
+                        Collection<Table> tables = tableDao.getScreenTables(programId, screenId, null);
                         for (Table t : tables) {
                             dataDao.removeDataFromTable(programId, screenId, t.getId());
                         }

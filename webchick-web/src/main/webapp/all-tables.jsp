@@ -30,12 +30,10 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Screen Manager - Tables On Screen</title>
-
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
-
     <script type="text/javascript">
         function save(programId, screenId) {
             var showTableMap = new Hashtable();
@@ -94,7 +92,6 @@
                 }
             }
         }
-
         function filterLanguages(programId, screenId) {
             var langId = document.formScreen.Lang_Filter.value;
             redirect("./all-tables.html?programId=" + programId + "&screenId=" + screenId + "&translateLang=" + langId);
