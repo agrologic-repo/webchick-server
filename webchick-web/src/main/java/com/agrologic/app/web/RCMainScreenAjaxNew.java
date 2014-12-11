@@ -35,12 +35,10 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                 logger.error("Unauthorized access!");
                 response.sendRedirect("./login.jsp");
             } else {
-
                 long userId = Long.parseLong(request.getParameter("userId"));
                 long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
                 long screenId = 1;
                 long langId = getInSessionLanguageId(request);
-
 
                 try {
                     CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);

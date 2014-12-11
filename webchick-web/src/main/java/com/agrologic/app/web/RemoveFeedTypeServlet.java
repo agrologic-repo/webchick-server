@@ -13,7 +13,6 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Collection;
 
-
 public class RemoveFeedTypeServlet extends AbstractServlet {
 
     /**

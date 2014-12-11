@@ -43,17 +43,21 @@ public class UncheckUnusedDataServlet extends AbstractServlet {
                 try {
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                     dataDao.uncheckNotUsedDataOnAllScreens(programId, controllerId);
+                    logger.info("all unused data was unchecked !");
 
                     TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                     tableDao.uncheckNotUsedTableOnAllScreens(programId);
+                    logger.info("all unused tables was unchecked !");
 
                     ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
                     screenDao.uncheckNotUsedScreenInProgram(programId);
+                    logger.info("all unused screens was unchecked !");
 
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     Program program = programDao.getById(programId);
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
+                    logger.info("Changes modified !");
                     request.setAttribute("message", "Data successfully saved !");
                     request.setAttribute("error", Boolean.FALSE);
                     request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request, response);

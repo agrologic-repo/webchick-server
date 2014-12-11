@@ -42,6 +42,7 @@
         <servlet-name>spring-dispatcher</servlet-name>
         <url-pattern>/rmctrl-main-screen.html</url-pattern>
         <url-pattern>/overview.html</url-pattern>
+        <url-pattern>/clear-controller-data.html</url-pattern>
     </servlet-mapping>
 
 
@@ -505,10 +506,10 @@
         <servlet-name>UncheckUnusedDataServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.UncheckUnusedDataServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>ClearControllerData</servlet-name>
-        <servlet-class>com.agrologic.app.web.ClearControllerData</servlet-class>
-    </servlet>
+    <!--<servlet>-->
+        <!--<servlet-name>ClearControllerData</servlet-name>-->
+        <!--<servlet-class>com.agrologic.app.web.ClearControllerData</servlet-class>-->
+    <!--</servlet>-->
     <servlet-mapping>
         <servlet-name>LoginNameServlet</servlet-name>
         <url-pattern>/logincheckservlet</url-pattern>
@@ -1215,10 +1216,10 @@
         <servlet-name>UncheckUnusedDataServlet</servlet-name>
         <url-pattern>/uncheck-unused-data.html</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ClearControllerData</servlet-name>
-        <url-pattern>/clear-controller-data.html</url-pattern>
-    </servlet-mapping>
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>ClearControllerData</servlet-name>-->
+        <!--<url-pattern>/clear-controller-data.html</url-pattern>-->
+    <!--</servlet-mapping>-->
     <session-config>
         <session-timeout>60</session-timeout>
     </session-config>

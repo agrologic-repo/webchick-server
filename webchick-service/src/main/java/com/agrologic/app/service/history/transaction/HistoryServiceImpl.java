@@ -18,7 +18,6 @@ public class HistoryServiceImpl implements HistoryService {
 
     private DataDao dataDao;
 
-
     public HistoryServiceImpl() {
         this(DaoType.MYSQL);
     }
