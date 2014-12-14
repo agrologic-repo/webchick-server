@@ -73,6 +73,7 @@ public class OverviewController {
         CellinkCriteria criteria = new CellinkCriteria();
         criteria.setState(state);
         criteria.setName(searchText);
+
         criteria.setType(type);
         criteria.setIndex(index);
         criteria.setUserId(user.getId());

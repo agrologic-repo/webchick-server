@@ -69,7 +69,7 @@ public class DatabaseInsertion implements DatabaseInsertable {
                     logger.info("the program system state inserted successfully to the programsysstate table");
 
                     dba.getProgramActionSetDao().insertProgramActionSetList(program.getProgramActionSet());
-                    logger.info("the program system state inserted successfully to the programsysstate table");
+                    logger.info("the program action buttons inserted successfully to the programactionset table");
 
                     Collection<Screen> screenList = program.getScreens();
                     dba.getScreenDao().insert(screenList);

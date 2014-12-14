@@ -130,8 +130,9 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
 
                             User user = (User) request.getSession().getAttribute("user");
                             if (user.getRole() == UserRole.ADMIN) {
-                                out.println("<img src=\"resources/images/clear.gif\" border=0 "
-                                        + "onclick=\"window.document.location=\'./clear-controller-data.html?userId="
+                                out.println("<img src=\"resources/images/clear.gif\" border=0 onMouseOver=\"this.style.cursor='pointer'\" "
+                                        + " click to delete controller data "
+                                        + " onclick=\"window.document.location=\'./clear-controller-data.html?userId="
                                         + +userId + "&cellinkId="
                                         + cellinkId + "&controllerId="
                                         + controller.getId() + "\'\"/>");

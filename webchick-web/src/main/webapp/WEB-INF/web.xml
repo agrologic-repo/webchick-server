@@ -43,6 +43,7 @@
         <url-pattern>/rmctrl-main-screen.html</url-pattern>
         <url-pattern>/overview.html</url-pattern>
         <url-pattern>/clear-controller-data.html</url-pattern>
+        <url-pattern>/my-farms.html</url-pattern>
     </servlet-mapping>
 
 
@@ -1082,10 +1083,6 @@
     <servlet-mapping>
         <servlet-name>StartPage</servlet-name>
         <url-pattern>/startpage.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MyFarms</servlet-name>
-        <url-pattern>/my-farms.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ListRelays</servlet-name>

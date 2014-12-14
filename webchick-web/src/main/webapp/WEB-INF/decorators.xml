@@ -3,6 +3,7 @@
         <pattern>/overview.html</pattern>
         <pattern>/rmctrl-main-screen.html</pattern>
         <pattern>/clear-controller-data.html</pattern>
+        <pattern>/my-farms.html</pattern>
     </decorator>
     <excludes>
         <pattern>/rmctrl-flock*</pattern>
