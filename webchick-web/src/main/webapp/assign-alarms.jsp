@@ -99,8 +99,7 @@
 
                                             <h3><%=dataAlarm.getLabel() %>
                                             </h3>
-                                            <input type="hidden" id="dataid" name="dataid"
-                                                   value="<%=dataAlarm.getId() %>">
+                                            <input type="hidden" id="dataid" name="dataid" value="<%=dataAlarm.getId() %>">
                                             <input type="hidden" id="datamap" name="datamap">
                                             <table class="table-list" border="0" cellPadding=1 cellSpacing=1
                                                    width="100%">
@@ -118,8 +117,7 @@
                                                 <% ProgramAlarm alarm = findAlarm(programAlarms, dataAlarm.getId(), digitNumber); %>
                                                 <tr>
                                                     <td align="left" width="30px">
-                                                        <input style="width:30px" type="text" name="digits"
-                                                               value="<%=digitNumber%>">
+                                                        <input style="width:30px" type="text" name="digits" readonly value="<%=digitNumber%>">
                                                     </td>
                                                     <td align="left" width="80px">
                                                         <select id="alarmnames" name="alarmnames" style="width:auto;">

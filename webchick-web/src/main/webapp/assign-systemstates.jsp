@@ -97,7 +97,7 @@
                                 <% ProgramSystemState systemState = findSystemState(programSystemStates, dataSysState.getId(), number);%>
                                 <tr>
                                     <td align="left" width="50px">
-                                        <input style="width:50px" type="text" name="numbers" value="<%=number%>">
+                                        <input style="width:50px" type="text" readonly name="numbers" value="<%=number%>">
                                     </td>
                                     <td align="left" width="80px">
                                         <select id="systemstatenames" name="systemstatenames" style="width:auto;">

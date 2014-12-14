@@ -103,7 +103,7 @@
                                     <% ProgramRelay relay = findRelay(programRelays, dataRelay.getId(), bitNumber);%>
                                     <tr>
                                         <td align="center" width="20px">
-                                            <input style="width:20px" type="text" name="bits" value="<%=bitNumber%>"/>
+                                            <input style="width:20px" type="text" readonly name="bits" value="<%=bitNumber%>"/>
                                         </td>
                                         <td align="left" width="80px">
                                             <select id="relaynames" name="relaynames" style="width:120px;">
