@@ -59,7 +59,7 @@
                 </ul>
                 <p><h2><%=session.getAttribute("label.help")%></h2></p>
                 <ul class="niceList">
-                    <li><a target="_blank" href="help.html"><%=session.getAttribute("label.help")%></a>
+                    <li><a target="_blank" href="./help/index.html"><%=session.getAttribute("label.help")%></a>
                         - <%=session.getAttribute("label.help.descript")%>
                     </li>
                 </ul>

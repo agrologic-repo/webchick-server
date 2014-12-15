@@ -100,7 +100,7 @@
             <span>|</span>
             <a href="my-profile.jsp?userId=<%=user.getId()%>"><%=session.getAttribute("button.profile")%></a>&nbsp;
             <span>|</span>
-            <a href="./help.html"><%=session.getAttribute("label.help")%></a>
+            <a href="./help/index.html" target="_blank"><%=session.getAttribute("label.help")%></a>
             <span>|</span>
             <a href="./logout.html"><%=session.getAttribute("label.logout")%></a>
             <%}%>
