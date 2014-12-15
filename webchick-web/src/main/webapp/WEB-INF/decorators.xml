@@ -4,6 +4,7 @@
         <pattern>/rmctrl-main-screen.html</pattern>
         <pattern>/clear-controller-data.html</pattern>
         <pattern>/my-farms.html</pattern>
+        <pattern>/disconnect-cellink.html</pattern>
     </decorator>
     <excludes>
         <pattern>/rmctrl-flock*</pattern>

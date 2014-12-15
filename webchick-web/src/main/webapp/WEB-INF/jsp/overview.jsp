@@ -21,7 +21,7 @@
 <c:set var="STATE_START" value="<%=com.agrologic.app.model.CellinkState.STATE_START%>"/>
 <c:set var="STATE_ONLINE" value="<%=com.agrologic.app.model.CellinkState.STATE_ONLINE%>"/>
 
-<% User user = (User) request.getSession().getAttribute("user");
+<%  User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./logout.html");
         return;
