@@ -4,11 +4,11 @@
     <parent>
         <artifactId>webchick-server</artifactId>
         <groupId>com.agrologic</groupId>
-        <version>6.7.3-SNAPSHOT</version>
+        <version>6.7.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>webchick-web</artifactId>
-    <version>6.7.3-SNAPSHOT</version>
+    <version>6.7.4-SNAPSHOT</version>
 
     <packaging>war</packaging>
 
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>com.agrologic</groupId>
             <artifactId>webchick-dao-mysql</artifactId>
-            <version>6.7.3-SNAPSHOT</version>
+            <version>6.7.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

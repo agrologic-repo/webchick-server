@@ -50,7 +50,7 @@ public class GenerateGraph {
             Data setClock = dataDao.getSetClockByController(controllerId);
 
             if (values == null) {
-                logger.error(NO_DATA_AVAILABLE, "Temperature nad Humidity");
+                logger.error(NO_DATA_AVAILABLE, "Temperature and Humidity");
                 throw new Exception(NO_DATA_AVAILABLE);
             } else {
                 InsideOutsideHumidityGraph graph;
@@ -70,7 +70,7 @@ public class GenerateGraph {
                 pw.flush();
             }
         } catch (Exception e) {
-            logger.error(NO_DATA_AVAILABLE, "Feed/Water");
+            logger.error(NO_DATA_AVAILABLE, "Temperature/Humidity");
             filenameth = "public_error_500x300.png";
         }
         return filenameth;
@@ -488,6 +488,67 @@ public class GenerateGraph {
     }
 
     /**
+     * Creates flock co2 chart and return path to png file with map of each series .
+     *
+     * @param flockId the flock id
+     * @param session the session
+     * @param pw      PrintWriter object
+     * @param locale  the current locale
+     * @return the path to png file with chart
+     */
+    public static String generateChartFlockCO2(Long flockId, String fromDay, String toDay, HttpSession session,
+                                                     PrintWriter pw, Locale locale) {
+
+        String filenamem;
+        FromDayToDay growDayRangeParam = new FromDayToDay(fromDay, toDay);
+        try {
+            Long langId = localeService.getLanguageId(locale.getLanguage());
+
+            FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
+            Map<Integer, String> historyByGrowDay = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId, growDayRangeParam);
+
+            List<Map<Integer, Data>> dataHistoryList = new ArrayList<Map<Integer, Data>>();
+            List<String> axisTitles = new ArrayList<String>();
+
+            DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+            Data data1 = dataDao.getById(PerGrowDayHistoryDataType.DAY_CO2_MAX.getId(), langId);
+            axisTitles.add(data1.getLabel());
+            dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data1));
+
+            Data data2 = dataDao.getById(PerGrowDayHistoryDataType.DAY_CO2_MIN.getId(), langId);
+            axisTitles.add(data2.getLabel());
+            dataHistoryList.add(DataGraphCreator.createHistoryDataByGrowDay(historyByGrowDay, data2));
+
+            HashMap<String, String> dictionary = createDictionary(locale);
+            String title = dictionary.get("graph.co2.title");    // "Daily Mortality";
+            String xAxisTitle = dictionary.get("graph.co2.axis.grow.day");    // "Grow Day[Day]";
+            String yAxisTitle = dictionary.get("graph.co2.axis.co2");    // "Birds";
+            HistoryGraph mortalityGraph = new HistoryGraph();
+            mortalityGraph.setDataHistoryList(dataHistoryList);
+
+            if (!growDayRangeParam.useRange()) {
+                growDayRangeParam.setFromDay(1);
+                growDayRangeParam.setToDay(dataHistoryList.get(0).size());
+            }
+
+            mortalityGraph.createChart(title, growDayRangeParam.toString(), xAxisTitle, yAxisTitle);
+
+            // Write the chart image to the temporary directory
+            ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+            filenamem = ServletUtilities.saveChartAsPNG(mortalityGraph.getChart(), 800, 400, info, session);
+
+            // Write the image map to the PrintWriter
+            ChartUtilities.writeImageMap(pw, filenamem, info, false);
+            session.setAttribute("filenamem-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamem);
+            pw.flush();
+        } catch (Exception e) {
+            logger.error(NO_DATA_AVAILABLE, "CO2");
+            filenamem = "public_error_500x300.png";
+        }
+        return filenamem;
+    }
+
+    /**
      * Creates minimum and maximum temperature and humidity chart and return path to png file with map of each series .
      *
      * @param flockId the flock id
@@ -523,10 +584,10 @@ public class GenerateGraph {
             CombinedXYGraph combGraph = new CombinedXYGraph();
 
             HashMap<String, String> dictionary = createDictionary(locale);
-            String title = dictionary.get("graph.minimum.maximum.humidity.title");    // "Daily Mortality";
-            String xAxisTitle = dictionary.get("graph.minimum.maximum.humidity.axis.grow.day");    // "Grow Day[Day]";
-            String y1AxisTitle = dictionary.get("graph.minimum.maximum.humidity.axis.temperature");    // "Birds";
-            String y2AxisTitle = dictionary.get("graph.minimum.maximum.humidity.axis.humidity");    // "Birds";
+            String title = dictionary.get("graph.minimum.maximum.humidity.title");
+            String xAxisTitle = "xAxisTitle";//dictionary.get("graph.minimum.maximum.humidity.axis.grow.day");
+            String y1AxisTitle = "y1AxisTitle";//dictionary.get("graph.minimum.maximum.humidity.axis.temperature");
+            String y2AxisTitle = "y2AxisTitle";//dictionary.get("graph.minimum.maximum.humidity.axis.humidity");
 
 
             combGraph.createFirstNextPlot(title, xAxisTitle, y1AxisTitle, data, 0, interestData, interestData2);
@@ -597,14 +658,10 @@ public class GenerateGraph {
                     String dataElem = (String) st.nextElement();
                     String valElem = (String) st.nextElement();
                     String dataType = data.getType().toString();
-
                     if (dataElem.equals(dataType) && (valElem.indexOf('-') == -1)) {
                         data.setValueFromUI(valElem);
-
                         Data cloned = (Data) data.clone();
-
                         dataSet.put(key, cloned);
-
                         break;
                     }
                 } catch (Exception e) {

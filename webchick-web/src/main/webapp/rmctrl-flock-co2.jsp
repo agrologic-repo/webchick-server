@@ -33,7 +33,7 @@
     }
 
     //////////////////////////////////////////////////Daily Graphs/////////////////////////////////////////////////////
-    String filenamem = GenerateGraph.generateChartFlockMortality(flockId, fromDay.toString(), toDay.toString(), session, new PrintWriter(out), currLocal);
+    String filenamem = GenerateGraph.generateChartFlockCO2(flockId, fromDay.toString(), toDay.toString(), session, new PrintWriter(out), currLocal);
     String graphURLM;
     if (filenamem.contains("public_error")) {
         graphURLM = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
@@ -93,7 +93,7 @@
             <tr>
                 <td>
                     <form id="flock-graph" name="flock-graph" class="flock-graph"
-                          action="./rmctrl-flock-mortality.jsp?currLocal=<%=currLocal%>"
+                          action="./rmctrl-flock-co2.jsp?currLocal=<%=currLocal%>"
                           style="display: inline-block">
                         <input type="hidden" name="flockId" value="<%=flockId%>"/>
                         <%=session.getAttribute("label.show.range")%>&nbsp;
@@ -164,7 +164,7 @@
 </div>
 <script>
     $("#btnClear").click(function () {
-        window.location.href = "./rmctrl-flock-mortality.jsp?currLocal=<%=currLocal%>&flockId=<%=flockId%>";
+        window.location.href = "./rmctrl-flock-co2.jsp?currLocal=<%=currLocal%>&flockId=<%=flockId%>";
     });
 
     $("#exportToExcel").click(function (e) {

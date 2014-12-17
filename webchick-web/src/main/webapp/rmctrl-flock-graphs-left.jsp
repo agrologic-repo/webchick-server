@@ -142,6 +142,16 @@
                 </a>
             </td>
         </tr>
+        <tr class="row-menu ui-widget ui-corner-all">
+            <td>
+                <a href="./rmctrl-flock-co2.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                   target="<%=pageDir%>" class="link-menu" style="width: 100%">
+                    <h3>
+                        <%=session.getAttribute("history.graph.page.menu.co2.label")%>
+                    </h3>
+                </a>
+            </td>
+        </tr>
     </table>
 </div>
 <div id="div2" class="drop-down-show-hide" style="width: 100%;">
