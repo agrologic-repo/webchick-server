@@ -585,9 +585,9 @@ public class GenerateGraph {
 
             HashMap<String, String> dictionary = createDictionary(locale);
             String title = dictionary.get("graph.minimum.maximum.humidity.title");
-            String xAxisTitle = "xAxisTitle";//dictionary.get("graph.minimum.maximum.humidity.axis.grow.day");
-            String y1AxisTitle = "y1AxisTitle";//dictionary.get("graph.minimum.maximum.humidity.axis.temperature");
-            String y2AxisTitle = "y2AxisTitle";//dictionary.get("graph.minimum.maximum.humidity.axis.humidity");
+            String xAxisTitle = dictionary.get("graph.minimum.maximum.humidity.axis.grow.day");
+            String y1AxisTitle = dictionary.get("graph.minimum.maximum.humidity.axis.temperature");
+            String y2AxisTitle = dictionary.get("graph.minimum.maximum.humidity.axis.humidity");
 
 
             combGraph.createFirstNextPlot(title, xAxisTitle, y1AxisTitle, data, 0, interestData, interestData2);
