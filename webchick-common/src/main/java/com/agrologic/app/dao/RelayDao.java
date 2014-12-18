@@ -95,6 +95,15 @@ public interface RelayDao {
      * @throws java.sql.SQLException if failed to retrieve all relay from the database
      */
     Collection<Relay> getAllWithTranslation() throws SQLException;
+
+    /**
+     * Copy relays of selected program
+     *
+     * @param newProgramId the id of added program
+     * @param selectedProgramId the id of selected program to get data data from it
+     * @throws java.sql.SQLException if failed to execute the query
+     */
+    void copyRelays(Long newProgramId, Long selectedProgramId);
 }
 
 

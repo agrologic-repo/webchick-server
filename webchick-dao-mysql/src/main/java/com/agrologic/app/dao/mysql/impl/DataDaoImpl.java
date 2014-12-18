@@ -631,6 +631,17 @@ public class DataDaoImpl implements DataDao {
      * {@inheritDoc}
      */
     @Override
+    public void copySpecialData(Long newProgramId, Long selectedProgramId) {
+        logger.debug("Insert special data ");
+        final String sqlQuery = "insert into specialdatalabels (DataID,ProgramID,LangID,SpecialLabel) " +
+                " (select DataID,?,LangID,SpecialLabel from specialdatalabels where programid=?)";
+        jdbcTemplate.update(sqlQuery, new Object[]{newProgramId, selectedProgramId});
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Collection<Data> getAllBySpecial(Integer special) throws SQLException {
         String sql = "select * from datatable where isspecial = ?";
         return jdbcTemplate.query(sql, new Object[]{special}, RowMappers.data());

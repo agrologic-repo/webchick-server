@@ -29,6 +29,10 @@ public class AddProgramFormServlet extends AbstractServlet {
             String name = request.getParameter("Nname");
             Long programId = Long.parseLong(request.getParameter("Nprogramid"));
             Long selectedProgramId = Long.parseLong(request.getParameter("Selectedprogramid"));
+            String relays = request.getParameter("relays");
+            String alarms = request.getParameter("alarms");
+            String systemstates = request.getParameter("systemstates");
+            String specialdata = request.getParameter("specialdata");
 
             try {
                 Program newProgram = new Program();
@@ -50,12 +54,31 @@ public class AddProgramFormServlet extends AbstractServlet {
                 logger.info("New screens successfully added !");
 
                 // Get screens of inserted program. Screens of new programs have
-                // same ID's , so we need same screens but new progam id in screen .
+                // same ID's , so we need same screens but new program id in screen .
                 TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
                 tableDao.insertDefaultTables(newProgram.getId(), selectedProgramId);
 
                 DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 dataDao.insertDataList(newProgram.getId(), selectedProgramId);
+
+                if ((relays != null) && "ON".equals(relays.toUpperCase())) {
+                    RelayDao relayDao = DbImplDecider.use(DaoType.MYSQL).getDao(RelayDao.class);
+                    relayDao.copyRelays(newProgram.getId(), selectedProgramId);
+                }
+
+                if ((alarms != null) && "ON".equals(alarms.toUpperCase())) {
+                    AlarmDao alarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(AlarmDao.class);
+                    alarmDao.copyAlarms(newProgram.getId(), selectedProgramId);
+                }
+
+                if ((systemstates != null) && "ON".equals(systemstates.toUpperCase())) {
+                    SystemStateDao systemStateDao = DbImplDecider.use(DaoType.MYSQL).getDao(SystemStateDao.class);
+                    systemStateDao.copySystemStates(newProgram.getId(), selectedProgramId);
+                }
+
+                if ((specialdata != null) && "ON".equals(specialdata.toUpperCase())) {
+                    dataDao.copySpecialData(newProgram.getId(), selectedProgramId);
+                }
 
                 // ----------------------------------------------------------
                 request.setAttribute("error", false);

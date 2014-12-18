@@ -134,6 +134,14 @@ public class AlarmDaoImpl implements AlarmDao {
                 + "order by alarmbylanguage.langid , alarmbylanguage.alarmid ";
         return jdbcTemplate.query(sqlQuery, RowMappers.alarm());
     }
+
+    @Override
+    public void copyAlarms(Long newProgramId, Long selectedProgramId) {
+        logger.debug("Insert alarms ");
+        final String sqlQuery = "insert into programalarms (DataID,DigitNumber,Text,ProgramID,AlarmNumber,AlarmTextID) "
+                + " (select DataID,DigitNumber,Text,?,AlarmNumber,AlarmTextID from programalarms where programid=?)";
+        jdbcTemplate.update(sqlQuery, new Object[]{newProgramId, selectedProgramId});
+    }
 }
 
 

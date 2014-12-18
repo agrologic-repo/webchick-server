@@ -1,8 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 
 <%@ include file="language.jsp" %>
 
+<%@ page import="com.agrologic.app.dao.LanguageDao" %>
+<%@ page import="com.agrologic.app.model.Language" %>
 <%@ page import="com.agrologic.app.model.User" %>
 
 
@@ -11,6 +15,9 @@
         response.sendRedirect("./index.htm");
         return;
     }
+    LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
+    Collection<Language> languages = languageDao.geAll();
+    session.setAttribute("languages", languages);
 %>
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
@@ -163,14 +170,6 @@
                             <form id="addForm" name="addForm" action="./addprogram.html" method="post">
                                 <table width="auto" align="left">
                                     <tr>
-                                        <td align="left">Select Program *</td>
-                                        <td colspan="2">
-                                            <input id="program" name="program" style="width:100px"/>
-                                            <input id="Selectedprogramid" type="hidden" name="Selectedprogramid"
-                                                   style="width:100px"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
                                         <td align="left">Program ID *</td>
                                         <td>
                                             <input id="Nprogramid" type="text" name="Nprogramid" style="width:120px"
@@ -184,6 +183,34 @@
                                         <td><input id="Nname" type="text" name="Nname" style="width:120px"></td>
                                         <td id="msgName"></td>
                                     </tr>
+                                    <tr>
+                                        <td align="left">Select Program *</td>
+                                        <td colspan="2">
+                                            <input id="program" name="program" style="width:120px"/>
+                                            <input id="Selectedprogramid" type="hidden" name="Selectedprogramid"
+                                                   style="width:100px"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            &nbsp;
+                                        </td>
+
+                                        <td>
+                                            <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
+                                                <legend>Options to add </legend>
+                                                <input type="checkbox" name="relays">Relays<br>
+                                                <input type="checkbox" name="alarms">Alarms<br>
+                                                <input type="checkbox" name="systemstates">System States<br>
+                                                <hr>
+                                                <input type="checkbox" name="specialdata" onclick="check()">Special data<br>
+                                            </fieldset>
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+
                                     <tr>
                                         <td>
                                             <button id="btnCancel" name="btnCancel"

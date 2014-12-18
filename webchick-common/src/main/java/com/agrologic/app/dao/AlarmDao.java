@@ -107,6 +107,15 @@ public interface AlarmDao {
      * @throws java.sql.SQLException if failed to retrieve all alarm from the database
      */
     Collection<Alarm> getAllWithTranslation() throws SQLException;
+
+    /**
+     * Copy alarms of selected program
+     *
+     * @param newProgramId the id of added program
+     * @param selectedProgramId the id of selected program to get data data from it
+     * @throws java.sql.SQLException if failed to execute the query
+     */
+    void copyAlarms(Long newProgramId, Long selectedProgramId);
 }
 
 

@@ -276,6 +276,15 @@ public interface DataDao {
      * @throws java.sql.SQLException if failed to retrieve data from the database
      */
     Collection<Data> getSpecialData(Long programId, Long langId) throws SQLException;
+
+    /**
+     * Copy special data states of selected program
+     *
+     * @param newProgramId the id of added program
+     * @param selectedProgramId the id of selected program to get data data from it
+     * @throws java.sql.SQLException if failed to execute the query
+     */
+    void copySpecialData(Long newProgramId, Long selectedProgramId);
 }
 
 

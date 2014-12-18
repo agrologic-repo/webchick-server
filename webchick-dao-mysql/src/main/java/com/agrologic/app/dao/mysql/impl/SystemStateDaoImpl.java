@@ -120,4 +120,12 @@ public class SystemStateDaoImpl implements SystemStateDao {
         return jdbcTemplate.query(sqlQuery, RowMappers.systemState());
 
     }
+
+    @Override
+    public void copySystemStates(Long newProgramId, Long selectedProgramId) {
+        logger.debug("Insert system states ");
+        final String sqlQuery = "insert into programsysstates (DataID,Number,Text,ProgramID,SystemStateNumber,SystemStateTextID) " +
+                " (select DataID,Number,Text,?,SystemStateNumber,SystemStateTextID from programsysstates where programid=?)";
+        jdbcTemplate.update(sqlQuery, new Object[]{newProgramId, selectedProgramId});
+    }
 }

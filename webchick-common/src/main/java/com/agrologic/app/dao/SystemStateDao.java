@@ -97,4 +97,13 @@ public interface SystemStateDao {
      * @throws java.sql.SQLException if failed to retrieve all system state from the database
      */
     Collection<SystemState> getAllWithTranslation() throws SQLException;
+
+    /**
+     * Copy system states of selected program
+     *
+     * @param newProgramId the id of added program
+     * @param selectedProgramId the id of selected program to get data data from it
+     * @throws java.sql.SQLException if failed to execute the query
+     */
+    void copySystemStates(Long newProgramId, Long selectedProgramId);
 }

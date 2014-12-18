@@ -36,12 +36,18 @@ public class RelayDaoImpl implements RelayDao {
         jdbcInsert.execute(valuesToInsert);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void update(Relay relay) throws SQLException {
         logger.debug("Update relay with id [{}]", relay.getId());
         jdbcTemplate.update("update relaynames set Name=? where ID=?", new Object[]{relay.getText(), relay.getId()});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void remove(Long id) throws SQLException {
         Validate.notNull(id, "ID can not be null");
@@ -49,6 +55,9 @@ public class RelayDaoImpl implements RelayDao {
         jdbcTemplate.update("delete from relaynames where ID=?", new Object[]{id});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insert(Collection<Relay> relayList) throws SQLException {
         Collection<Relay> relayCollection = Util.getUniqueElements(relayList);
@@ -57,6 +66,9 @@ public class RelayDaoImpl implements RelayDao {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insertTranslation(Long relayId, Long langId, String translation) throws SQLException {
         String sqlQuery =
@@ -64,6 +76,9 @@ public class RelayDaoImpl implements RelayDao {
         jdbcTemplate.update(sqlQuery, new Object[]{relayId, langId, translation});
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void insertTranslation(Collection<Relay> relays) throws SQLException {
         List<Relay> relayList = new ArrayList(relays);
@@ -78,6 +93,9 @@ public class RelayDaoImpl implements RelayDao {
         jdbcTemplate.batchUpdate("insert into relaybylanguage values (?,?,?) ", batch);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Relay getById(Long id) throws SQLException {
         String sqlQuery = "select * from relaynames where ID=?";
@@ -88,12 +106,18 @@ public class RelayDaoImpl implements RelayDao {
         return relays.get(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Relay> getAll() throws SQLException {
         logger.debug("Get all relay names ");
         return jdbcTemplate.query("select * from relaynames order by id,name", RowMappers.relay());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Relay> getAll(Long langId) throws SQLException {
         String sqlQuery = "select r1.id, r1.name, r2.relayid, r2.langid, r2.unicodetext from relaynames r1 "
@@ -101,7 +125,9 @@ public class RelayDaoImpl implements RelayDao {
         logger.debug("Get all relay names with given language id [{}] ", langId);
         return jdbcTemplate.query(sqlQuery, RowMappers.relay());
     }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Relay> getAllWithTranslation() throws SQLException {
         String sqlQuery = "select * from relaynames "
@@ -109,5 +135,16 @@ public class RelayDaoImpl implements RelayDao {
                 + "order by relaybylanguage.langid , relaybylanguage.relayid";
         logger.debug("Get all relay names with translation to all languages ");
         return jdbcTemplate.query(sqlQuery, RowMappers.relay());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void copyRelays(Long newProgramId, Long selectedProgramId) {
+        logger.debug("Insert relays ");
+        final String sqlQuery = "insert into programrelays (DataID,BitNumber,Text,ProgramID,RelayNumber,RelayTextID) "
+                + " (select DataID,BitNumber,Text,? ,RelayNumber,RelayTextID from programrelays where programid=?)";
+        jdbcTemplate.update(sqlQuery, new Object[]{newProgramId, selectedProgramId});
     }
 }
