@@ -32,18 +32,14 @@ public class RCActionSetServlet extends AbstractServlet {
             long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             long controllerId = Long.parseLong(request.getParameter("controllerId"));
             long screenId = Long.parseLong(request.getParameter("screenId"));
-            String lang = request.getParameter("lang");
-            if ((lang == null) || lang.equals("")) {
-                lang = "en";
-            }
+            long langId = getInSessionLanguageId(request);
+
 
             try {
                 CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                 Cellink cellink = cellinkDao.getById(cellinkId);
                 cellinkDao.update(cellink);
 
-                LanguageDao languageDao = DbImplDecider.use(DaoType.MYSQL).getDao(LanguageDao.class);
-                long langId = languageDao.getLanguageId(lang);
                 ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 Controller controller = controllerDao.getById(controllerId);
                 ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
