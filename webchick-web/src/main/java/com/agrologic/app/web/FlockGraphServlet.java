@@ -36,9 +36,6 @@ public class FlockGraphServlet extends AbstractServlet {
                 request.setAttribute("flock", flock);
 
                 DayParam growDayParam = new DayParam(request.getParameter("growDay"));
-//                request.getRequestDispatcher("./rmctrl-flock-graphs.jsp?cellinkId=" + cellinkId + "&growDay="
-//                        + growDayParam.getGrowDay()).forward(request, response);
-
                 request.getRequestDispatcher("./rmctrl-flock-graphs-main.jsp?cellinkId=" + cellinkId + "&growDay="
                         + growDayParam.getGrowDay()).forward(request, response);
 

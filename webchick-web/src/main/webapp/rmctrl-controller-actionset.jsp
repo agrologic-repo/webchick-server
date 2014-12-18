@@ -24,7 +24,7 @@
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
     Locale currLocal = (Locale) session.getAttribute("currLocale");
     if (!oldLocal.equals(currLocal)) {
-        response.sendRedirect("./rmtctrl-actionset.html?lang=" + currLocal.getLanguage() + "&userId=" + userId + "&cellinkId=" + cellinkId + "&screenId=" + screenId + "&controllerId=" + controllerId);
+        response.sendRedirect("./rmtctrl-actionset.html?lang=" + lang + "&userId=" + userId + "&cellinkId=" + cellinkId + "&screenId=" + screenId + "&controllerId=" + controllerId);
     }
 %>
 <!DOCTYPE html>
@@ -181,10 +181,8 @@
                             <form name="actionForm">
                                 <table border="0" cellPadding="2" cellSpacing="2" align="center">
                                     <% int column = 0;%>
-                                    <%
-                                        for (ProgramActionSet pasd : programactionsets) {
-                                            if ((column % 5) == 0) {
-                                    %>
+                                    <% for (ProgramActionSet pasd : programactionsets) {
+                                        if ((column % 5) == 0) { %>
                                     <tr>
                                         <%}%>
                                         <td align="center">
