@@ -93,7 +93,9 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
                             if (df.getId().equals(entry.getKey())) {
                                 df.setValue(entry.getValue());
                                 // check alarm data
-                                if (entry.getKey().compareTo(Long.valueOf(3154)) == 0) {
+                                if (entry.getKey().compareTo(Long.valueOf(3154)) == 0 ||
+                                        entry.getKey().compareTo(Long.valueOf(3170)) == 0 ||
+                                        entry.getKey().compareTo(Long.valueOf(3780)) == 0) {
                                     int val = (entry.getValue().intValue());
                                     if (val > 0) {
                                         try {
@@ -271,7 +273,7 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
         while (componentCounter < maxComponentCounter) {
             JTextField text = new JTextField("");
             text.setOpaque(false);
-            text.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+            text.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 2));
             text.setEditable(false);
             text.setComponentOrientation(currentOrientation);
             gridBagConstraints.gridy++;
@@ -304,7 +306,6 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
     }
 
     /**
-     *
      * @param firstScrollPane
      */
     public void setFirstScrollPane(JScrollPane firstScrollPane) {
