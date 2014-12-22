@@ -251,7 +251,7 @@ table {
 }
 
 .table-screens th {
-    /*text-align: center;*/
+    text-align: center;
     font-size: 12pt;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
@@ -259,6 +259,7 @@ table {
     background-color: #FFFF99;
     height: 12pt;
     vertical-align: bottom;
+    min-width: 250px;
 
 }
 
