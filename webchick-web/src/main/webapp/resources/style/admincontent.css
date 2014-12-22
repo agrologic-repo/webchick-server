@@ -41,6 +41,13 @@ a {
     font-size: 15px;
 }
 
+a.popup-link {
+    color: #0000CC;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 12px;
+}
+
 a:hover {
     text-decoration: none;
 }
@@ -627,4 +634,45 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 
 #filter {
     cursor: pointer;
+}
+
+.popup {
+    margin:auto;
+    width:200px;
+    height:350px;
+    font-family:verdana;
+    font-size:13px;
+    padding:10px;
+    background-color:white;
+    border:2px solid #848C96;
+    z-index:100000000000000000;
+}
+
+.cancel {
+    display:relative;
+    cursor:pointer;
+    margin:0;
+    float:right;
+    height:10px;
+    width:14px;
+    padding:0 0 5px 0;
+    background-color:green;
+    text-align:center;
+    font-weight:bold;
+    font-size:11px;
+    color:white;
+    border-radius:3px;
+    z-index:100000000000000000;
+}
+
+.cancel:hover {
+    background-color: #ef0c0d;
+}
+
+.alarm-on {
+    color:#ff0000;
+}
+
+.alarm-off {
+    color: #000000;
 }

@@ -116,6 +116,7 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                             Collection<Data> controllerDataList = dataDao.getOnlineTableDataList(controller.getId(),
                                     program.getId(), screen.getId(), table.getId(), langId);
 
+
                             table.setDataList(controllerDataList);
 
                             out.println("<td valign='top'  style='min-width:200px;'>");
@@ -223,7 +224,9 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
         boolean result = false;
 
         for (Data d : onScreenData) {
-            if (d.getId().compareTo(Long.valueOf(3154)) == 0) {
+            if (d.getId().compareTo(Long.valueOf(3154)) == 0 ||
+                    d.getId().compareTo(Long.valueOf(3170)) == 0  ||
+                    d.getId().compareTo(Long.valueOf(3708)) == 0) {
                 try {
                     int val = (d.getValue().intValue());
                     if (val > 0) {
@@ -234,6 +237,23 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                 }
             }
         }
+        return result;
+    }
+
+    private Boolean isDigitIsAlarmOnController(Integer digit, Data data) {
+        Boolean result = false;
+        Integer value = data.getValue().intValue();
+
+        while ((value / 10) > 0) {
+            if (digit.equals(value % 10)) {
+                result = true;
+            }
+            value = value / 10;
+        }
+        if (digit.equals(value % 10)) {
+            result = true;
+        }
+
         return result;
     }
 
@@ -281,66 +301,30 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                     break;
 
                 case Data.ALARM:
-                    List<ProgramAlarm> alarms = controller.getProgram().getProgramAlarmsByData(data.getId());
-                    StringBuilder toolTip = new StringBuilder();
-
-                    for (ProgramAlarm a : alarms) {
-                        toolTip.append("<p>").append(a.getDigitNumber()).append(" - ").append(a.getText()).append("</p>");
-                    }
-
                     out.println("<tr class='' onmouseover=\"this.className='selected'\" onmouseout=\"this.className=''\">");
                     out.println("<td class='label' nowrap>");
                     out.println(data.getUnicodeLabel());
                     out.println("</td>");
-                    out.println("<div id='helpBox" + controller.getId() + data.getId() + "'");
-                    out.println(" style=\"background-color:#F0EFFF; ");
-                    out.println("color: #0000FF; ");
-                    out.println("overflow: hidden; ");
-                    out.println("z-index:999; ");
-                    out.println("position:absolute; ");
-                    out.println("margin:auto; ");
-                    out.println("width:250px; ");
-                    out.println("height:250px; ");
-                    out.println("padding-left:0px;");
-                    out.println("border: 2px solid black;");
-                    out.println("display:none;");
-                    out.println("font-weight:bold;");
-                    out.println("font-size:12px;\">");
-                    out.println("<div style='padding:1px;margin: 0px 0px 0px 0px;'>");
-                    out.println(data.getUnicodeLabel() + "&nbsp;&nbsp;&nbsp;");
-                    out.println("<a style='padding-right:1px; cursor:hand;' href='javascript:HideHelp(\""
-                            + controller.getId() + data.getId() + "\")'>");
-                    out.println(request.getSession().getAttribute("button.close"));
-                    out.println("X");
-                    out.println("</a>");
-                    out.println("</div>");
-                    out.println("<div id='helpBoxInner" + controller.getId() + data.getId() + "'");
-                    out.println("style=\"position: relative;");
-                    out.println("color:Black;");
-                    out.println("background-color:#ffffff;");
-                    out.println("left: 0px;");
-                    out.println("top: 0px;");
-                    out.println("overflow: auto;");
-                    out.println("width:250px;");
-                    out.println("height:338px;");
-                    out.println("border: 0px;");
-                    out.println("padding: 5px;");
-                    out.println("margin: 0px;");
-                    out.println("font-size:11x;\">");
-                    out.println("</div>");
-                    out.println("</div>");
                     out.println("<td class='value'>");
-                    out.println(
-                            "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' "
-                                    + "style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
-                                    + data.getFormattedValue() + "'>");
-                    out.println(
-                            "<span class=\"formHelpLink\" style=\"color : #0000FF;font-weight: "
-                                    + "bold;font-size:1px;padding:0px 0px 0px 1px;margin:0px;cursor:help;\"");
-                    out.println("valign='middle' align='left' onclick=\"ShowHelp(event, \'  " + toolTip.toString()
-                            + " \' , HLP_SHOW_POS_MOUSE ,200,350,'" + controller.getId() + data.getId() + "')\">");
-                    out.println("<img src='resources/images/help.gif'>");
-                    out.println("</span>");
+                    out.println("<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0'" +
+                            " size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; " +
+                            " vertical-align: middle;border:0;' value='" + data.getFormattedValue() + "'>");
+                    out.println("<img src='resources/images/help.gif' onClick=\"openPopup('" + controller.getId() + data.getId() + "',event);\">");
+                    out.println("<div id=" + controller.getId() + data.getId() + " class=\"popup\" style=\"display:none;\">");
+                    out.println(data.getUnicodeLabel());
+                    out.println("<span class=\"cancel\" onclick=\"closePopup();\">X</span>");
+                    out.println("</br>");
+                    List<ProgramAlarm> alarms = controller.getProgram().getProgramAlarmsByData(data.getId());
+                    StringBuilder toolTip = new StringBuilder();
+                    for (ProgramAlarm a : alarms) {
+                        if (isDigitIsAlarmOnController(a.getDigitNumber(), data)) {
+                            toolTip.append("<p class='alarm-on'>").append(a.getDigitNumber()).append(" - ").append(a.getText()).append("</p>");
+                        } else {
+                            toolTip.append("<p class='alarm-off'>").append(a.getDigitNumber()).append(" - ").append(a.getText()).append("</p>");
+                        }
+                    }
+                    out.println(toolTip.toString());
+                    out.println("</div>");
                     out.println("</td>");
                     out.println("</tr>");
 
@@ -450,7 +434,7 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                         out.println(
                                 "<input type='text' name='test' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeypress=\"keyPress(event, this, "
                                         + controller.getId() + "," + data.getId() + " );\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'" + data.getFormat()
-                                        + "')\" size='8' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value="+ data.getFormattedValue() + ">");
+                                        + "')\" size='8' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value=" + data.getFormattedValue() + ">");
                     } else {
                         out.println(
                                 "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='8'"

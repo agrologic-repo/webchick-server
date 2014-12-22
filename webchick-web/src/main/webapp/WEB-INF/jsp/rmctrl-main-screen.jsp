@@ -25,8 +25,7 @@
 %>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-<title><spring:message code='main.screen.page.title'/>
-</title>
+<title><spring:message code='main.screen.page.title'/></title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <link rel="shortcut icon" type="image/x-icon" href="img/favicon5.ico" title="AgroLogic Ltd."/>
 <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
@@ -313,7 +312,6 @@
         }
         doDecPoint(event, val, type);
     }
-
     function doDecPoint(event, val, type) {
         var txt = "";
         if (keyCode == 16) {
@@ -356,7 +354,6 @@
             }
         }
     }
-
     function getFixFormat(txt, t, changed) {
         var type = parseInt(t);
         switch (type) {
@@ -509,17 +506,28 @@
                 break;
         }
     }
-
     function closeWindow() {
         self.close();
         window.opener.location.reload(true);
     }
-
     function keyDown(val) {
         if (doClearOld) {
             val.value = "";
             doClearOld = false;
         }
+    }
+
+    function openPopup(el, event) {
+        $('.popup').hide();
+        event.preventDefault();
+        $('#' + el).css( 'position', 'absolute' );
+        $('#' + el).css( 'top', event.pageY );
+        $('#' + el).css( 'left', event.pageX );
+        $('#' + el).fadeIn(100);
+    }
+
+    function closePopup() {
+        $('.popup').fadeOut(100);
     }
 
     </script>

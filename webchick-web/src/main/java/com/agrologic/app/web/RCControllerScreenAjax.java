@@ -79,6 +79,11 @@ public class RCControllerScreenAjax extends AbstractServlet {
                 List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId(), langId);
                 program.setProgramRelays(programRelays);
 
+                // get program alarms
+                final ProgramAlarmDao programAlarmDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramAlarmDao.class);
+                program.setProgramAlarms(programAlarmDao.getAllProgramAlarms(program.getId(), langId));
+
+
                 out.println();
                 out.println("<table style=\"font-size:90%;\" width=\"100%\" border=\"0\">");
                 out.println("<tr>");
@@ -110,9 +115,6 @@ public class RCControllerScreenAjax extends AbstractServlet {
                         out.println("<a class='" + cssClass + "' href='./rmctrl-main-screen.html?userId=" + userId
                                 + "&cellinkId=" + controller.getCellinkId() + "&screenId="
                                 + MAIN_SCREEN + "' id=" + screen.getId() + " >");
-//                        out.println("<a class='" + cssClass + "' href='./rmctrl-main-screen.html?lang=" + lang
-//                                + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId() + "&screenId="
-//                                + MAIN_SCREEN + "' id=" + screen.getId() + " >");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
                         out.println("</td>");
@@ -123,12 +125,6 @@ public class RCControllerScreenAjax extends AbstractServlet {
                                 + controller.getId() + "&programId=" + controller.getProgram().getId()
                                 + "&screenId=" + screen.getId() + "' id=" + screen.getId()
                                 + " onclick='document.body.style.cursor=wait'>");
-
-//                        out.println("<a class='" + cssClass + "' href='./rmtctrl-graph.html?lang=" + lang + "&userId="
-//                                + userId + "&cellinkId=" + controller.getCellinkId() + "&controllerId="
-//                                + controller.getId() + "&programId=" + controller.getProgram().getId()
-//                                + "&screenId=" + screen.getId() + "' id=" + screen.getId()
-//                                + " onclick='document.body.style.cursor=wait'>");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
                         out.println("</td>");
@@ -140,13 +136,6 @@ public class RCControllerScreenAjax extends AbstractServlet {
                                 + controller.getProgram().getId() + "&screenId=" + screen.getId()
                                 + "' id=" + screen.getId()
                                 + " onclick='document.body.style.cursor=wait'>");
-
-//                        out.println("<a class='" + cssClass + "' href='./rmtctrl-actionset.html?lang=" + lang
-//                                + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId()
-//                                + "&controllerId=" + controller.getId() + "&programId="
-//                                + controller.getProgram().getId() + "&screenId=" + screen.getId()
-//                                + "' id=" + screen.getId()
-//                                + " onclick='document.body.style.cursor=wait'>");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
                         out.println("</td>");
@@ -157,11 +146,6 @@ public class RCControllerScreenAjax extends AbstractServlet {
                                 + "&controllerId=" + controller.getId() + "&programId="
                                 + controller.getProgram().getId() + "&screenId=" + screen.getId()
                                 + "' onclick='document.body.style.cursor=wait'>");
-//                        out.println("<a class='" + cssClass + "' href='./rmctrl-controller-screens-ajax.jsp?lang="
-//                                + lang + "&userId=" + userId + "&cellinkId=" + controller.getCellinkId()
-//                                + "&controllerId=" + controller.getId() + "&programId="
-//                                + controller.getProgram().getId() + "&screenId=" + screen.getId()
-//                                + "' onclick='document.body.style.cursor=wait'>");
                         out.println(screen.getUnicodeTitle());
                         out.println("</a>");
                         out.println("</td>");
@@ -201,7 +185,7 @@ public class RCControllerScreenAjax extends AbstractServlet {
                                 int special = data.getSpecial();
 
                                 switch (special) {
-                                    case 0:
+                                    case Data.STATUS:
                                         out.println(
                                                 "<tr class=unselected onmouseover=this.className='selected' onmouseout=this.className='unselected'>");
                                         out.println("<td class='label'>");
@@ -211,6 +195,36 @@ public class RCControllerScreenAjax extends AbstractServlet {
                                         out.println(
                                                 "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
                                                         + data.getFormattedValue() + "'>");
+                                        out.println("</td>");
+                                        out.println("</tr>");
+
+                                        break;
+
+                                    case Data.ALARM:
+                                        out.println("<tr class='' onmouseover=\"this.className='selected'\" onmouseout=\"this.className=''\">");
+                                        out.println("<td class='label' nowrap>");
+                                        out.println(data.getUnicodeLabel());
+                                        out.println("</td>");
+                                        out.println("<td class='value'>");
+                                        out.println("<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0'" +
+                                                " size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; " +
+                                                " vertical-align: middle;border:0;' value='" + data.getFormattedValue() + "'>");
+                                        out.println("<img src='resources/images/help.gif' onClick=\"openPopup('" + controller.getId() + data.getId() + "',event);\">");
+                                        out.println("<div id=" + controller.getId() + data.getId() + " class=\"popup\" style=\"display:none;\">");
+                                        out.println(data.getUnicodeLabel());
+                                        out.println("<span class=\"cancel\" onclick=\"closePopup();\">X</span>");
+                                        out.println("</br>");
+                                        List<ProgramAlarm> alarms = controller.getProgram().getProgramAlarmsByData(data.getId());
+                                        StringBuilder toolTip = new StringBuilder();
+                                        for (ProgramAlarm a : alarms) {
+                                            if (isDigitIsAlarmOnController(a.getDigitNumber(), data)) {
+                                                toolTip.append("<p class='alarm-on'>").append(a.getDigitNumber()).append(" - ").append(a.getText()).append("</p>");
+                                            } else {
+                                                toolTip.append("<p class='alarm-off'>").append(a.getDigitNumber()).append(" - ").append(a.getText()).append("</p>");
+                                            }
+                                        }
+                                        out.println(toolTip.toString());
+                                        out.println("</div>");
                                         out.println("</td>");
                                         out.println("</tr>");
 
@@ -289,6 +303,23 @@ public class RCControllerScreenAjax extends AbstractServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
+    private Boolean isDigitIsAlarmOnController(Integer digit, Data data) {
+        Boolean result = false;
+        Integer value = data.getValue().intValue();
+
+        while ((value / 10) > 0) {
+            if (digit.equals(value % 10)) {
+                result = true;
+            }
+            value = value / 10;
+        }
+        if (digit.equals(value % 10)) {
+            result = true;
+        }
+
+        return result;
+    }
 
     /**
      * Handles the HTTP
