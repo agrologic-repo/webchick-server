@@ -354,6 +354,7 @@
             }
         }
     }
+
     function getFixFormat(txt, t, changed) {
         var type = parseInt(t);
         switch (type) {
@@ -516,7 +517,11 @@
             doClearOld = false;
         }
     }
-
+    /**
+     * Open popup to show alarm list foreach alarm type
+     * @param el the name of element
+     * @param event the mouse event
+     */
     function openPopup(el, event) {
         $('.popup').hide();
         event.preventDefault();
@@ -524,12 +529,15 @@
         $('#' + el).css( 'top', event.pageY );
         $('#' + el).css( 'left', event.pageX );
         $('#' + el).fadeIn(100);
+        blockAjax()
     }
-
+    /**
+     * Close popup
+     */
     function closePopup() {
         $('.popup').fadeOut(100);
+        unblockAjax();
     }
-
     </script>
     <script type="text/javascript" src="resources/javascript/fhelp.js"></script>
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>

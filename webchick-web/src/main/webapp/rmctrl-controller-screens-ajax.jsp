@@ -553,12 +553,14 @@
         $('#' + el).css( 'top', event.pageY );
         $('#' + el).css( 'left', event.pageX );
         $('#' + el).fadeIn(100);
+        blockAjax()
     }
     /**
      * Close popup
      */
     function closePopup() {
         $('.popup').fadeOut(100);
+        unblockAjax();
     }
 
 </script>
