@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,6 +47,10 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
 
                     if (cellink.getState() == CellinkState.STATE_ONLINE) {
                         cellink.setState(CellinkState.STATE_START);
+                        cellink.setTime(new Timestamp(System.currentTimeMillis()));
+                        cellinkDao.update(cellink);
+                    } else {
+                        cellink.setTime(new Timestamp(System.currentTimeMillis()));
                         cellinkDao.update(cellink);
                     }
 
@@ -312,7 +317,7 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                     out.println("<img src='resources/images/help.gif' onClick=\"openPopup('" + controller.getId() + data.getId() + "',event);\">");
                     out.println("<div id=" + controller.getId() + data.getId() + " class=\"popup\" style=\"display:none;\">");
                     out.println(data.getUnicodeLabel());
-                    out.println("<span class=\"cancel\" onclick=\"closePopup();\">X</span>");
+                    out.println("<p class=\"cancel\" onclick=\"closePopup();\">X</p>");
                     out.println("</br>");
                     List<ProgramAlarm> alarms = controller.getProgram().getProgramAlarmsByData(data.getId());
                     StringBuilder toolTip = new StringBuilder();

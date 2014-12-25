@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -44,11 +45,13 @@ public class RCControllerScreenAjax extends AbstractServlet {
                 Cellink cellink = cellinkDao.getById(cellinkId);
 
                 if (cellink.getState() == CellinkState.STATE_ONLINE) {
+                    cellink.setTime(new Timestamp(System.currentTimeMillis()));
                     cellink.setState(CellinkState.STATE_START);
                     cellinkDao.update(cellink);
+                } else {
+                    cellink.setTime(new Timestamp(System.currentTimeMillis()));
+                    cellinkDao.update(cellink);
                 }
-
-                cellinkDao.update(cellink);
 
                 final ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 final Controller controller = controllerDao.getById(controllerId);
