@@ -336,6 +336,17 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
         return special == 3;
     }
 
+    public boolean isAlarmOn() {
+        boolean on = false;
+        if(isAlarm()) {
+            long val = getValue();
+            if(val > 0) {
+                on = true;
+            }
+        }
+        return on;
+    }
+
     /**
      * Return true if newValue of this data are 32 bit.
      * <p/>

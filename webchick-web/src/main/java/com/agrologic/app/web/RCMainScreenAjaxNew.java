@@ -10,11 +10,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class RCMainScreenAjaxNew extends AbstractServlet {
+    private HashMap<Long,Boolean> alarmMap;
+
+    public RCMainScreenAjaxNew() {
+        super();
+        alarmMap = new HashMap<Long, Boolean>();
+    }
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -226,20 +230,18 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
     }
 
     private boolean isAlarmOnController(Collection<Data> onScreenData) {
-        boolean result = false;
-
         for (Data d : onScreenData) {
-            if (d.getId().compareTo(Long.valueOf(3154)) == 0 ||
-                    d.getId().compareTo(Long.valueOf(3170)) == 0  ||
-                    d.getId().compareTo(Long.valueOf(3708)) == 0) {
-                try {
-                    int val = (d.getValue().intValue());
-                    if (val > 0) {
-                        result = true;
-                    }
-                } catch (Exception e) {
-                    return result;
-                }
+            if (d.isAlarmOn()) {
+                alarmMap.put(d.getId(), true);
+            } else {
+                alarmMap.put(d.getId(), false);
+            }
+        }
+
+        boolean result = false;
+        for(Map.Entry<Long,Boolean> entry:alarmMap.entrySet()) {
+            if(entry.getValue()== true) {
+                result = true;
             }
         }
         return result;

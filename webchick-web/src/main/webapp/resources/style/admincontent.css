@@ -236,7 +236,6 @@ table {
 }
 
 .table-screens td.label {
-    /*text-align: left;*/
     height: 20px;
     border: 1px solid #C6CFE7;
     border-collapse: collapse;
@@ -244,6 +243,7 @@ table {
     color: #000000;
     font-weight: normal;
     font-size: small;
+    min-width: 180px;
 }
 
 .table-screens td.value {
@@ -654,15 +654,15 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
     cursor:pointer;
     margin:0;
     float:right;
-    height:10px;
+    height:14px;
     width:14px;
-    padding:0 0 5px 0;
+    padding: 0 0 0 0;
     background-color:green;
     text-align:center;
     font-weight:bold;
     font-size:11px;
     color:white;
-    border-radius:3px;
+    border-radius:2px;
     z-index:100000000000000000;
 }
 

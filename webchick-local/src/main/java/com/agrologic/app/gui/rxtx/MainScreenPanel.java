@@ -14,10 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +24,7 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
     private static Logger logger = LoggerFactory.getLogger(MainScreenPanel.class);
     private static int maxComponentCounter = 0;
     private int componentCounter = 0;
+    private int alarmCounter = 0;
     private JButton btnHouse;
     private GridBagConstraints gridBagConstraints;
     private DataComponent prevComponent;
@@ -42,6 +41,7 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
     private List<ProgramRelay> programRelays;
     private List<ProgramSystemState> programSystemStates;
     private List<DataController> controllerDataList;
+    private HashMap<Long,Boolean> alarmMap;
 
     private DatabaseManager dbManager;
     private ScheduledExecutorService executor;
@@ -62,6 +62,7 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
         loadControllerData();
         loadAndInitControllerData();
         initScreenComponents();
+        alarmMap = new HashMap<Long, Boolean>();
         try {
             image = ImageIO.read(getClass().getResource("/images/alarm.gif"));
         } catch (IOException e) {
@@ -93,19 +94,21 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
                             if (df.getId().equals(entry.getKey())) {
                                 df.setValue(entry.getValue());
                                 // check alarm data
-                                if (entry.getKey().compareTo(Long.valueOf(3154)) == 0 ||
-                                        entry.getKey().compareTo(Long.valueOf(3170)) == 0 ||
-                                        entry.getKey().compareTo(Long.valueOf(3780)) == 0) {
-                                    int val = (entry.getValue().intValue());
-                                    if (val > 0) {
-                                        try {
-                                            btnHouse.setIcon(new ImageIcon(image));
-                                        } catch (Exception e) {
-                                            logger.error("Cannot load alarm.gif");
-                                        }
+                                if (df.isAlarm()){
+                                    if (df.isAlarmOn()) {
+                                        alarmMap.put(df.getId(),true);
                                     } else {
-                                        btnHouse.setIcon(null);
+                                        alarmMap.put(df.getId(), false);
                                     }
+                                }
+                                if(isAlarmOn()) {
+                                    try {
+                                        btnHouse.setIcon(new ImageIcon(image));
+                                    } catch (Exception e) {
+                                        logger.error("Cannot load alarm.gif");
+                                    }
+                                } else {
+                                    btnHouse.setIcon(null);
                                 }
                             }
                         }
@@ -118,6 +121,16 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
 
         executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
+    }
+
+    public boolean isAlarmOn() {
+        boolean result = false;
+        for(Map.Entry<Long,Boolean> entry:alarmMap.entrySet()) {
+            if(entry.getValue()== true) {
+                result = true;
+            }
+        }
+        return result;
     }
 
     public void loadControllerData() {
