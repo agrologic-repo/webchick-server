@@ -88,7 +88,7 @@
 <table border="0" align="center">
     <tr>
         <td valign="top" width="160px" style="padding: 0px; margin: 0px">
-            <img src="<%=logoString%>" title="<%=company%>" style="border-color:white;">
+            <a href="http://www.agrologic.com"><img src="<%=logoString%>" title="<%=company%>" style="border-color:white;"></a>
         </td>
         <td valign="top" width="800px">
             <%@include file="toplang.jsp" %>
