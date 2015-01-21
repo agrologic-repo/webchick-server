@@ -151,8 +151,6 @@
                 event.returnValue = false;
                 document.editForm.title.focus();
                 valid = false;
-            } else {
-                document.editForm.title.value = encode(document.editForm.title);
             }
 
             if (document.editForm.spinner.value == "") {

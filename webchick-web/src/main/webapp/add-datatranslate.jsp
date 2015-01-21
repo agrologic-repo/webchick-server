@@ -1,3 +1,4 @@
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ page import="com.agrologic.app.dao.DaoType" %>
 <%@ page import="com.agrologic.app.dao.DbImplDecider" %>
 <%@ page import="com.agrologic.app.dao.LanguageDao" %>
@@ -24,7 +25,6 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
     <script language="javascript" type="text/javascript">
         function reset() {
@@ -38,9 +38,10 @@
                 document.getElementById("msgTranslation").style.color = "RED";
                 document.addForm.Ntranslate.focus();
                 valid = false;
-            } else {
-                document.addForm.Ntranslate.value = encode();
+//            } else {
+//                document.addForm.Ntranslate.value = encode();
             }
+            alert(document.addForm.Ntranslate.value);
             if (!valid) {
                 return false;
             }
@@ -60,30 +61,26 @@
         }
 
 
-        function encode() {
-            if (document.addForm.Ntranslate.value != '') {
-                var vText = document.addForm.Ntranslate.value;
-                // if it is english we don't have
-                // to add encoding .
-                if (<%=langId%> !=
-                1
-            )
-                {
-                    return convertToUnicode(vText);
-                }
-            else
-                {
-                    return vText;
-                }
-            }
-        }
+        <%--function encode() {--%>
+            <%--if (document.addForm.Ntranslate.value != '') {--%>
+                <%--var vText = document.addForm.Ntranslate.value;--%>
+                <%--// if it is english we don't have--%>
+                <%--// to add encoding .--%>
+                <%--if (<%=langId%> != 1)--%>
+                <%--{--%>
+                    <%--return convertToUnicode(vText);--%>
+                <%--} else {--%>
+                    <%--return vText;--%>
+                <%--}--%>
+            <%--}--%>
+        <%--}--%>
 
-        function convertToUnicode(source) {
-            result = '';
-            for (i = 0; i < source.length; i++)
-                result += '&#' + source.charCodeAt(i) + ';';
-            return result;
-        }
+//        function convertToUnicode(source) {
+//            result = '';
+//            for (i = 0; i < source.length; i++)
+//                result += '&#' + source.charCodeAt(i) + ';';
+//            return result;
+//        }
     </script>
     <title>Add Translation</title>
 </head>

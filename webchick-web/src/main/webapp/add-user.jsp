@@ -1,7 +1,6 @@
-<%@ page import="com.agrologic.app.model.User" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="com.agrologic.app.model.User" %>
 <%@ page errorPage="anerrorpage.jsp" %>
-
 <%@ include file="language.jsp" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
@@ -108,6 +107,8 @@
                 document.addForm.Nusername.focus();
                 valid = false;
             }
+
+            alert(document.addForm.Nusername.value);
             valid = validateEmail(document.addForm.Nemail);
             if (!valid) {
                 return false;

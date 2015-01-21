@@ -24,7 +24,6 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
     private static Logger logger = LoggerFactory.getLogger(MainScreenPanel.class);
     private static int maxComponentCounter = 0;
     private int componentCounter = 0;
-    private int alarmCounter = 0;
     private JButton btnHouse;
     private GridBagConstraints gridBagConstraints;
     private DataComponent prevComponent;
@@ -103,7 +102,9 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
                                 }
                                 if(isAlarmOn()) {
                                     try {
-                                        btnHouse.setIcon(new ImageIcon(image));
+                                        if(btnHouse.getIcon() == null) {
+                                            btnHouse.setIcon(new ImageIcon(image));
+                                        }
                                     } catch (Exception e) {
                                         logger.error("Cannot load alarm.gif");
                                     }
@@ -160,16 +161,18 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
         gridBagConstraints = createGridBagConstraint();
         btnHouse = new JButton("<html>" + controller.getTitle() + "</html>");
         btnHouse.setToolTipText("<html>" + controller.getProgram().getName() + "</html>");
-
         btnHouse.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
                 firstScrollPane.setVisible(false);
                 secondMainPanel = new JPanel(new BorderLayout());
                 secondScreenPanel = new SecondScreenPanel(dbManager, controller, getComponentOrientation());
                 secondScreenPanel.setFirstScrollPane(firstScrollPane);
                 secondScreenPanel.setParent(parent);
+                parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 secondScreenPanel.setMainScreenPanel(MainScreenPanel.this);
                 secondMainPanel.add(secondScreenPanel);
                 secondScrollPane = new JScrollPane(secondMainPanel);

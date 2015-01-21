@@ -167,8 +167,6 @@
                 event.returnValue = false;
                 document.addForm.title.focus();
                 valid = false;
-            } else {
-                document.addForm.title.value = encode(document.addForm.title);
             }
 
 

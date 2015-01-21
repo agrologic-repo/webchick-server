@@ -1,3 +1,5 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.dao.DaoType" %>
 <%@ page import="com.agrologic.app.dao.DbImplDecider" %>
@@ -58,30 +60,6 @@
                 document.addForm.langListBox.disabled = true;
             }
         }
-
-        function encode() {
-            if (document.addForm.Ntranslate.value != '') {
-                var vText = document.addForm.Ntranslate.value;
-                // if it is english we don't have
-                // to add encoding .
-                if (<%=langId%> !=
-                1
-            )
-                {
-                    return convertToUnicode(vText);
-                }
-            else
-                {
-                    return vText;
-                }
-            }
-        }
-        function convertToUnicode(source) {
-            result = '';
-            for (i = 0; i < source.length; i++)
-                result += '&#' + source.charCodeAt(i) + ';';
-            return result;
-        }
     </script>
     <title>Add Translation</title>
 </head>
@@ -90,11 +68,8 @@
     <tr>
         <td>
             <h1>Add Translation</h1>
-
             <p>
-
             <h2>add table translation </h2>
-
             <form id="addForm" name="addForm" action="./addtabletranslate.html" method="post"
                   onsubmit="return validate();">
                 <table width="100%" align="left" border="0">

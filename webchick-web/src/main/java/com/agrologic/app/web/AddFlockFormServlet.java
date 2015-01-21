@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 
-
 public class AddFlockFormServlet extends AbstractServlet {
 
 
@@ -30,6 +29,7 @@ public class AddFlockFormServlet extends AbstractServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        request.setCharacterEncoding("UTF-8");
 
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");

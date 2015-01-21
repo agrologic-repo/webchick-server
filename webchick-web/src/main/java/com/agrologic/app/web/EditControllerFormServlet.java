@@ -25,8 +25,11 @@ public class EditControllerFormServlet extends AbstractServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         response.setContentType("text/html;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
+
         logger.error("Unauthorized access!");
         PrintWriter out = response.getWriter();
         try {
@@ -38,6 +41,7 @@ public class EditControllerFormServlet extends AbstractServlet {
                 Long userId = Long.parseLong(request.getParameter("userId"));
                 Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
                 Long controllerId = Long.parseLong(request.getParameter("controllerId"));
+
 
                 String title = request.getParameter("title");
                 String netName = request.getParameter("netname");

@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%--
     Document   : add-screentranslate.jsp
     Created on : Sep 29, 2010, 12:26:21 PM
@@ -46,8 +47,6 @@
                 document.addForm.Ntranslate.focus();
                 valid = false;
             }
-            //document.addForm.Ntranslate.value = encode();
-
             if (!valid) {
                 return false;
             }
@@ -62,29 +61,6 @@
             } else {
                 document.addForm.langListBox.disabled = true;
             }
-        }
-        function encode() {
-            if (document.addForm.Ntranslate.value != '') {
-                var vText = document.addForm.Ntranslate.value;
-                // if it is english we don't have
-                // to add encoding .
-                if (<%=langId%> !=
-                1
-            )
-                {
-                    return convertToUnicode(vText);
-                }
-            else
-                {
-                    return vText;
-                }
-            }
-        }
-        function convertToUnicode(source) {
-            result = '';
-            for (i = 0; i < source.length; i++)
-                result += '&#' + source.charCodeAt(i) + ';';
-            return result;
         }
     </script>
     <title>Add Translation</title>

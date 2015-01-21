@@ -3,6 +3,7 @@
 <%@ include file="language.jsp" %>
 
 <%
+    request.setCharacterEncoding("UTF-8");
     Long userId = Long.parseLong(request.getParameter("userId"));
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     Long flockId = Long.parseLong(request.getParameter("flockId"));
@@ -34,8 +35,7 @@
                     <tr>
                         <td wdith="90%" align="center">
                             <h1 style="text-align: center;"><span><%=session.getAttribute("history.graph.page.title")%>
-                                <h2 style="text-align: center;"><%=flock%>
-                                </h2></span>
+                                <h2 style="text-align: center;"><%=flock%></h2></span>
                             </h1>
 
                         </td>
