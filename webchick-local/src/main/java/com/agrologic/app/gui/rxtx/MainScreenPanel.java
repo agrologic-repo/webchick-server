@@ -236,9 +236,11 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
                     dataComponent = ComponentFactory.createSystemStateComponent(data, getComponentOrientation(), programSystemStates);
                     componentCounter++;
                     gridBagConstraints.gridy++;
+                    // system state to long this for i only show the value without label of system state
+//                    gridBagConstraints.gridx = 0;
+//                    add(dataComponent.getLabel(), gridBagConstraints);
                     gridBagConstraints.gridx = 0;
-                    add(dataComponent.getLabel(), gridBagConstraints);
-                    gridBagConstraints.gridx = 1;
+                    gridBagConstraints.gridwidth = 2;
                     add(dataComponent.getComponent(), gridBagConstraints);
                 } else {
                     dataComponent = ComponentFactory.createDataComponent(data, getComponentOrientation(), controller, dbManager.getDatabaseGeneralService());
@@ -289,7 +291,7 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
         while (componentCounter < maxComponentCounter) {
             JTextField text = new JTextField("");
             text.setOpaque(false);
-            text.setBorder(BorderFactory.createEmptyBorder(1, 2, 2, 2));
+            text.setBorder(BorderFactory.createEmptyBorder(1, 2, 5, 2));
             text.setEditable(false);
             text.setComponentOrientation(currentOrientation);
             gridBagConstraints.gridy++;

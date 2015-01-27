@@ -109,7 +109,7 @@ public class DataComponentPanel extends JPanel {
                     gridBagConstraints.gridy++;
                     gridBagConstraints.gridx = 0;
                     add(dataComponent.getLabel(), gridBagConstraints);
-                    gridBagConstraints.gridx = 1;
+                    gridBagConstraints.gridx = 0;
                     add(dataComponent.getComponent(), gridBagConstraints);
                     componentCounter++;
                 } else {

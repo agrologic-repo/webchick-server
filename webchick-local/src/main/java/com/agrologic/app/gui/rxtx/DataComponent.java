@@ -71,6 +71,7 @@ public class DataComponent {
         }
         label = new JLabel("<html>" + data.getUnicodeLabel() + "</html>");
         label.setOpaque(true);
+        label.setVisible(false);
         component = createComponent();
         ((DataLabel) component).setText(text);
     }
