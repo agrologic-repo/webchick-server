@@ -1,6 +1,5 @@
-LOAD DATA INFILE 'D:/MyWork/Documents/Specifications/Webchick/updateddata.txt' INTO TABLE datatable FIELDS TERMINATED BY ','  LINES TERMINATED BY '\r\n';
-
-<!-------------------------------------------------updateddata.txt content-------------------------------------------->
+LOAD DATA INFILE 'D:/MyWork/Documents/Specifications/Webchick/updateddataids1.txt' REPLACE  INTO TABLE datatable FIELDS TERMINATED BY ','  LINES TERMINATED BY '\r\n';
+<!-------------------------------------------------updateddataids1.txt content-------------------------------------------->
 1557,1557,0,0,Water_Overflow_Add_Absolute,0,Water Overflow Add Absolute,0,0,,
 1558,1558,0,0,Water1_Overflow_Add_Absolute,0,Water1 Overflow Add Absolute,0,0,,
 1559,1559,0,0,Water2_Overflow_Add_Absolute,0,Water2 Overflow Add Absolute,0,0,,
