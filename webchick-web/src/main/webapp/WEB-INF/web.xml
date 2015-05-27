@@ -669,6 +669,18 @@
         <servlet-class>com.agrologic.app.web.SaveDataOnTable</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>MoveDataRowPosition</servlet-name>
+        <servlet-class>com.agrologic.app.web.MoveDataRowPosition</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MoveTableRowPosition</servlet-name>
+        <servlet-class>com.agrologic.app.web.MoveTableRowPosition</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MoveScreenRowPosition</servlet-name>
+        <servlet-class>com.agrologic.app.web.MoveScreensRowPosition</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>RemoveScreenServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.RemoveScreenServlet</servlet-class>
     </servlet>
@@ -767,6 +779,18 @@
     <servlet-mapping>
         <servlet-name>SaveDataOnTable</servlet-name>
         <url-pattern>/save-datalist.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MoveDataRowPosition</servlet-name>
+        <url-pattern>/movedata.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MoveTableRowPosition</servlet-name>
+        <url-pattern>/movetable.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MoveScreenRowPosition</servlet-name>
+        <url-pattern>/movescreen.html</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>RemoveScreenServlet</servlet-name>

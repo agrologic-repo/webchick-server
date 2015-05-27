@@ -13,15 +13,15 @@ import java.awt.event.ActionListener;
  * To change this template use File | Settings | File Templates.
  */
 public class ToolBar extends JToolBar {
-    private JButton start;
-    private JButton stop;
-    private JButton settings;
-    private JButton log;
-    private JButton exit;
-    private JButton dbwizard;
+    private JButton btnStart;
+    private JButton btnStop;
+    private JButton btnSettings;
+    private JButton btnLogFile;
+    private JButton btnExit;
+    private JButton btnWizardDB;
 
 
-    private ToolBar() {
+    public ToolBar() {
         super(SwingConstants.HORIZONTAL);
         setRollover(true);
         setFloatable(false);
@@ -30,12 +30,19 @@ public class ToolBar extends JToolBar {
         setMaximumSize(new java.awt.Dimension(250, 25));
         setMinimumSize(new java.awt.Dimension(250, 25));
         setPreferredSize(new java.awt.Dimension(250, 25));
-        start = createButton("Start", ApplicationUtil.getIcon("play.png"));
-        stop = createButton("Stop", ApplicationUtil.getIcon("stop.png"));
-        settings = createButton("Settings", ApplicationUtil.getIcon("settings.png"));
-        log = createButton("Log", ApplicationUtil.getIcon("note.png"));
-        exit = createButton("Exit", ApplicationUtil.getIcon("logout.png"));
-        dbwizard = createButton("Database Wizard", ApplicationUtil.getIcon("database.png"));
+        // create buttons
+        btnStart = createButton("Start", ApplicationUtil.getIcon("play.png"));
+        add(btnStart);
+        btnStop = createButton("Stop", ApplicationUtil.getIcon("stop.png"));
+        add(btnStop);
+        btnSettings = createButton("Settings", ApplicationUtil.getIcon("settings.png"));
+        add(btnSettings);
+        btnLogFile = createButton("Log", ApplicationUtil.getIcon("note.gif"));
+        add(btnLogFile);
+        btnExit = createButton("Exit", ApplicationUtil.getIcon("logout.png"));
+        add(btnExit);
+        btnWizardDB = createButton("Database Wizard", ApplicationUtil.getIcon("database.png"));
+        add(btnWizardDB);
 
     }
 
@@ -61,20 +68,37 @@ public class ToolBar extends JToolBar {
 
     public void setStartActionListener(ActionListener actionListener) {
 
-        start.addActionListener(actionListener);
+        btnStart.addActionListener(actionListener);
     }
 
     public void setStopActionListener(ActionListener actionListener) {
-        stop.addActionListener(actionListener);
+        btnStop.addActionListener(actionListener);
     }
 
     public void setSettingsActionListener(ActionListener actionListener) {
-        settings.addActionListener(actionListener);
+        btnSettings.addActionListener(actionListener);
     }
 
     public void setLogActionListener(ActionListener actionListener) {
-        settings.addActionListener(actionListener);
+        btnLogFile.addActionListener(actionListener);
     }
 
+    public void setExitActionListener(ActionListener actionListener) {
+        btnExit.addActionListener(actionListener);
+    }
 
+    public void doStopClick() {
+        btnStop.doClick();
+    }
+
+    public void setStartedEnabled() {
+        btnStart.setEnabled(false);
+        btnStop.setEnabled(true);
+    }
+
+    public void setStoppedEnabled() {
+        btnStart.setEnabled(true);
+        btnStop.setEnabled(false);
+
+    }
 }

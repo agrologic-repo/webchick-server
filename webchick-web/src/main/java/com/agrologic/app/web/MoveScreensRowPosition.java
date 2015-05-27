@@ -1,9 +1,9 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.ProgramDao;
+import com.agrologic.app.dao.ScreenDao;
 import com.agrologic.app.model.Program;
 import com.agrologic.app.util.DateLocal;
 
@@ -13,20 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
 
-public class SaveDataOnTable extends AbstractServlet {
 
+public class MoveScreensRowPosition extends AbstractServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws javax.servlet.ServletException if a servlet-specific error occurs
+     * @throws java.io.IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -40,48 +37,34 @@ public class SaveDataOnTable extends AbstractServlet {
             } else {
                 Long programId = Long.parseLong(request.getParameter("programId"));
                 Long screenId = Long.parseLong(request.getParameter("screenId"));
-                Long tableId = Long.parseLong(request.getParameter("tableId"));
-                String showDataMapStr = request.getParameter("showDataMap");
-                String posDataMapStr = request.getParameter("posDataMap");
-                String[] showTablePairs = showDataMapStr.split(";");
-                Map<Long, String> showTableMap = new HashMap<Long, String>();
-
-                for (String s : showTablePairs) {
-                    StringTokenizer st = new StringTokenizer(s, ",");
-                    Long dataId = Long.parseLong(st.nextToken());
-                    String show = st.nextToken();
-                    showTableMap.put(dataId, show);
-                }
-
-                String[] posDataPairs = posDataMapStr.split(";");
-                Map<Long, Integer> posDataMap = new HashMap<Long, Integer>();
-
-                for (String s : posDataPairs) {
-                    StringTokenizer st = new StringTokenizer(s, ",");
-                    Long dataId = Long.parseLong(st.nextToken());
-                    Integer pos = Integer.parseInt(st.nextToken());
-                    posDataMap.put(dataId, pos);
-                }
+                Integer position = Integer.parseInt(request.getParameter("position"));
+                String movedir = request.getParameter("movedir");
 
                 try {
-                    DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                    dataDao.saveChanges(programId, screenId, tableId, showTableMap, posDataMap);
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+
+                    if (movedir.equals("up")) {
+                        screenDao.moveUp(programId, screenId, position);
+                    }
+                    if (movedir.equals("down")) {
+                        screenDao.moveDown(programId, screenId, position);
+                    }
 
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     Program program = programDao.getById(programId);
+
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
-
-                    request.setAttribute("message", "Changes successfully saved !");
-                    request.setAttribute("error", false);
-                    request.getRequestDispatcher("./all-tabledata.html?programId=" + programId + "&screenId=" +
-                            screenId + "&tableId=" + tableId).forward(request, response);
+                    request.setAttribute("message", "Screens successfully saved !");
+                    request.setAttribute("error", Boolean.FALSE);
+                    request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
+                            response);
                 } catch (SQLException ex) {
-                    logger.error("Error occurs while updating program !");
-                    request.setAttribute("message", "Error occurs while saving changes !");
-                    request.setAttribute("error", true);
-                    request.getRequestDispatcher("./all-tabledata.html?programId=" + programId + "&screenId=" +
-                            screenId + "&tableId=" + tableId).forward(request, response);
+                    logger.error("Error occurs while updating screen!");
+                    request.setAttribute("message", "Error occurs while updating screen !");
+                    request.setAttribute("error", Boolean.TRUE);
+                    request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
+                            response);
                 }
             }
         } finally {
@@ -96,8 +79,8 @@ public class SaveDataOnTable extends AbstractServlet {
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws javax.servlet.ServletException if a servlet-specific error occurs
+     * @throws java.io.IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -110,8 +93,8 @@ public class SaveDataOnTable extends AbstractServlet {
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws javax.servlet.ServletException if a servlet-specific error occurs
+     * @throws java.io.IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

@@ -39,7 +39,7 @@ public class Application extends JFrame implements Observer, ServerUI {
      * @throws StartProgramException
      */
     public Application() throws StartProgramException {
-
+        logger.info("Start Server 1");
         try {
             ProgramInstanceLocker.lockFile();
         } catch (RuntimeException ex) {
@@ -49,6 +49,7 @@ public class Application extends JFrame implements Observer, ServerUI {
             System.exit(0);
         }
 
+        logger.info("Start Server 2");
         initComponents();
 
         JScrollPane cellinkTableScrolPane = new JScrollPane();
@@ -60,32 +61,47 @@ public class Application extends JFrame implements Observer, ServerUI {
         Windows.centerOnScreen(Application.this);
         Windows.setIconImage(Application.this, "/images/server.png");
 
+        logger.info("Start Server 3");
+
         // start running network communication
-        ActionListener start = new ActionListener() {
+        toolBar.setStartActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
+                logger.info("Start server...");
                 startNetwork();
             }
-        };
-        btnStart.addActionListener(start);
+        });
 
         // stop running network communication
-        ActionListener stop = new ActionListener() {
+        toolBar.setStopActionListener( new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 stopNetwork();
             }
-        };
-        btnStop.addActionListener(stop);
+        });
 
         // create show log file action listener
-        ActionListener showLogFile = new ActionListener() {
+        toolBar.setLogActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 showLogFile();
             }
-        };
-        btnLogFile.addActionListener(showLogFile);
+        });
+
+
+        toolBar.setSettingsActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openConfiguration();
+            }
+        });
+
+        toolBar.setExitActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                exitProgram();
+            }
+        });
+
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         WindowListener closeWindow = new WindowAdapter() {
@@ -96,14 +112,6 @@ public class Application extends JFrame implements Observer, ServerUI {
             }
         };
         addWindowListener(closeWindow);
-
-        ActionListener closeProgram = new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                exitProgram();
-            }
-        };
-        btnExit.addActionListener(closeProgram);
 
         hookIntoLogging();
 
@@ -125,6 +133,7 @@ public class Application extends JFrame implements Observer, ServerUI {
         this.serverSocketThread.addObserver(serverInfo);
 
         if (configuration.runOnWindowsStart() == Boolean.TRUE) {
+            logger.info("init server socket 2.1");
             this.serverSocketThread.setServerActivityState(ServerActivityStates.START);
             serverThread = new Thread(this.serverSocketThread, "ServerThread");
             serverThread.start();
@@ -134,13 +143,12 @@ public class Application extends JFrame implements Observer, ServerUI {
                         "Error", JOptionPane.ERROR_MESSAGE);
                 serverSocketThread.setServerActivityState(ServerActivityStates.STOPPED);
             } else {
-                btnStart.setEnabled(false);
-                btnStop.setEnabled(true);
+                toolBar.setStartedEnabled();
                 cellinkTable.startMonitoring();
             }
         } else {
             this.serverSocketThread.setServerActivityState(ServerActivityStates.IDLE);
-            this.btnStop.doClick();
+            this.toolBar.doStopClick();
         }
     }
 
@@ -163,6 +171,7 @@ public class Application extends JFrame implements Observer, ServerUI {
             @Override
             public void run() {
                 try {
+                    logger.info("Start server activity...");
                     serverSocketThread.setServerActivityState(ServerActivityStates.START);
                     if (!serverThread.isAlive()) {
                         serverThread.start();
@@ -177,8 +186,7 @@ public class Application extends JFrame implements Observer, ServerUI {
                                 SOCKET_ALREADY_IN_USE, "Error", JOptionPane.ERROR_MESSAGE);
                         serverSocketThread.setServerActivityState(ServerActivityStates.STOPPED);
                     } else {
-                        btnStart.setEnabled(false);
-                        btnStop.setEnabled(true);
+                        toolBar.setStartedEnabled();
                         cellinkTable.startMonitoring();
                     }
                     setCursor(Cursor.getDefaultCursor());
@@ -199,18 +207,15 @@ public class Application extends JFrame implements Observer, ServerUI {
             public void run() {
                 try {
                     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                    btnStart.setEnabled(true);
-                    btnStop.setEnabled(false);
+
+                    toolBar.setStoppedEnabled();
+
                     serverSocketThread.setServerActivityState(ServerActivityStates.STOPPING);
                     serverSocketThread.shutdownServer();
-
-                    while (serverSocketThread.getServerState() != ServerActivityStates.IDLE) {
-
-                    }
+                    cellinkTable.stopMonitoring();
                     if (clock.isRunning()) {
                         clock.stop();
                     }
-                    //cellinkTable.stopMonitoring();
                 } finally {
                     setCursor(Cursor.getDefaultCursor());
                 }
@@ -250,8 +255,8 @@ public class Application extends JFrame implements Observer, ServerUI {
         String message = "Do you really want to close program ?";
         int result = JOptionPane.showConfirmDialog(Application.this, message, title, JOptionPane.YES_NO_OPTION);
         if (result == JOptionPane.YES_OPTION) {
-            btnStop.doClick();
-            if (serverThread.isAlive()) {
+            toolBar.doStopClick();
+            if (serverThread != null && serverThread.isAlive()) {
                 serverThread.interrupt();
             }
 
@@ -274,19 +279,11 @@ public class Application extends JFrame implements Observer, ServerUI {
                 }
             }
         }
-        setServerInfoPanel();
-    }
-
-    private void setServerInfoPanel() {
-        lblOnOff.setText(serverInfo.getServerStatus());
-        lblTimeOn.setText(serverInfo.getTime());
-        lblTotalCellinks.setText(serverInfo.getTotalCellinks().toString());
-        lblConnectedCellinks.setText(serverInfo.getActiveCellinks().toString());
+        pnlServer.setServerInfo(serverInfo);
     }
 
     private void setEnableToolBarButtons(boolean enable) {
-        btnStart.setEnabled(enable);
-        btnStop.setEnabled(!enable);
+        toolBar.setStoppedEnabled();
     }
 
     public void openConfiguration() {
@@ -313,23 +310,7 @@ public class Application extends JFrame implements Observer, ServerUI {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
-        ToolBar = new javax.swing.JToolBar();
-        btnStart = new javax.swing.JButton();
-        btnStop = new javax.swing.JButton();
-        btnSetting = new javax.swing.JButton();
-        btnLogFile = new javax.swing.JButton();
-        btnExit = new javax.swing.JButton();
-        btnWizardDB = new javax.swing.JButton();
-        pnlServer = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        lblOnOff = new javax.swing.JLabel();
-        lblTimeOn = new javax.swing.JLabel();
-        lblConnectedCellinks = new javax.swing.JLabel();
-        lblTotalCellinks = new javax.swing.JLabel();
+        pnlServer = new ServerStatusPanel();
         paneServer = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -346,154 +327,9 @@ public class Application extends JFrame implements Observer, ServerUI {
         setTitle("Webchick Server");
         setMinimumSize(new java.awt.Dimension(692, 546));
 
-        ToolBar.setFloatable(false);
-        ToolBar.setToolTipText("Tool Bar");
-        ToolBar.setBorderPainted(false);
-        ToolBar.setMaximumSize(new java.awt.Dimension(250, 25));
-        ToolBar.setMinimumSize(new java.awt.Dimension(250, 25));
-        ToolBar.setPreferredSize(new java.awt.Dimension(250, 25));
-
-        btnStart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/play.png"))); // NOI18N
-        btnStart.setToolTipText("Run");
-        btnStart.setFocusable(false);
-        btnStart.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnStart.setMaximumSize(new java.awt.Dimension(32, 32));
-        btnStart.setMinimumSize(new java.awt.Dimension(32, 32));
-        btnStart.setPreferredSize(new java.awt.Dimension(32, 32));
-        btnStart.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        ToolBar.add(btnStart);
-
-        btnStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/stop.png"))); // NOI18N
-        btnStop.setToolTipText("Stop");
-        btnStop.setFocusable(false);
-        btnStop.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnStop.setMaximumSize(new java.awt.Dimension(32, 32));
-        btnStop.setMinimumSize(new java.awt.Dimension(32, 32));
-        btnStop.setPreferredSize(new java.awt.Dimension(32, 32));
-        btnStop.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        ToolBar.add(btnStop);
-
-        btnSetting.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/settings.png"))); // NOI18N
-        btnSetting.setToolTipText("Setting");
-        btnSetting.setFocusable(false);
-        btnSetting.setMaximumSize(new java.awt.Dimension(32, 32));
-        btnSetting.setMinimumSize(new java.awt.Dimension(32, 32));
-        btnSetting.setPreferredSize(new java.awt.Dimension(32, 32));
-        btnSetting.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                openConfiguration();
-            }
-        });
-        ToolBar.add(btnSetting);
-
-        btnLogFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/note.gif"))); // NOI18N
-        btnLogFile.setToolTipText("Log");
-        btnLogFile.setFocusable(false);
-        btnLogFile.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnLogFile.setMaximumSize(new java.awt.Dimension(32, 32));
-        btnLogFile.setMinimumSize(new java.awt.Dimension(32, 32));
-        btnLogFile.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        ToolBar.add(btnLogFile);
-
-        btnExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/logout.png"))); // NOI18N
-        btnExit.setToolTipText("Exit");
-        btnExit.setFocusable(false);
-        btnExit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnExit.setMaximumSize(new java.awt.Dimension(32, 32));
-        btnExit.setMinimumSize(new java.awt.Dimension(32, 32));
-        btnExit.setPreferredSize(new java.awt.Dimension(32, 32));
-        btnExit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        ToolBar.add(btnExit);
-
-        btnWizardDB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/database.png"))); // NOI18N
-        btnWizardDB.setToolTipText(" Database Wizard");
-        btnWizardDB.setFocusable(false);
-        btnWizardDB.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnWizardDB.setMaximumSize(new java.awt.Dimension(32, 32));
-        btnWizardDB.setMinimumSize(new java.awt.Dimension(32, 32));
-        btnWizardDB.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-
-        ToolBar.add(btnWizardDB);
+        toolBar = new ToolBar();
 
         pnlServer.setBorder(javax.swing.BorderFactory.createTitledBorder("Server Info"));
-
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel3.setText("On/Off");
-
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel4.setText("Time on");
-
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel5.setText("Alive cellinks");
-
-        jLabel6.setText("Total cellinks");
-
-        lblOnOff.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        lblOnOff.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblOnOff.setText("Stopped");
-
-        lblTimeOn.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        lblTimeOn.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblTimeOn.setText("00:00:00");
-
-        lblConnectedCellinks.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        lblConnectedCellinks.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblConnectedCellinks.setText("0");
-
-        lblTotalCellinks.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        lblTotalCellinks.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblTotalCellinks.setText("0");
-
-        javax.swing.GroupLayout pnlServerLayout = new javax.swing.GroupLayout(pnlServer);
-        pnlServer.setLayout(pnlServerLayout);
-        pnlServerLayout.setHorizontalGroup(
-                pnlServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(pnlServerLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(pnlServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(16, 16, 16)
-                                .addGroup(pnlServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(lblTotalCellinks, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lblOnOff, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblTimeOn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lblConnectedCellinks, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(25, Short.MAX_VALUE))
-        );
-
-        pnlServerLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{jLabel3, jLabel4, jLabel5, jLabel6});
-
-        pnlServerLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{lblConnectedCellinks, lblOnOff, lblTimeOn, lblTotalCellinks});
-
-        pnlServerLayout.setVerticalGroup(
-                pnlServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(pnlServerLayout.createSequentialGroup()
-                                .addGroup(pnlServerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addGroup(pnlServerLayout.createSequentialGroup()
-                                                .addComponent(jLabel3)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel4)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel5)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel6))
-                                        .addGroup(pnlServerLayout.createSequentialGroup()
-                                                .addComponent(lblOnOff)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(lblTimeOn)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(lblConnectedCellinks, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(lblTotalCellinks)))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        pnlServerLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{lblConnectedCellinks, lblOnOff, lblTimeOn, lblTotalCellinks});
-
-        pnlServerLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{jLabel3, jLabel4, jLabel5, jLabel6});
 
         btnShowOpendSockets.setText("Opened Socket List");
         btnShowOpendSockets.addActionListener(new java.awt.event.ActionListener() {
@@ -579,7 +415,7 @@ public class Application extends JFrame implements Observer, ServerUI {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jSeparator1)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(ToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE))
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
@@ -592,7 +428,7 @@ public class Application extends JFrame implements Observer, ServerUI {
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(ToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(paneServer)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -655,31 +491,17 @@ public class Application extends JFrame implements Observer, ServerUI {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToolBar ToolBar;
+    private ToolBar toolBar;
     private javax.swing.JButton btnCloseUnused;
-    private javax.swing.JButton btnExit;
-    private javax.swing.JButton btnLogFile;
-    private javax.swing.JButton btnSetting;
     private javax.swing.JButton btnShowOpendSockets;
-    private javax.swing.JButton btnStart;
-    private javax.swing.JButton btnStop;
-    private javax.swing.JButton btnWizardDB;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
+    private ServerStatusPanel pnlServer;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JLabel lblConnectedCellinks;
-    private javax.swing.JLabel lblOnOff;
-    private javax.swing.JLabel lblTimeOn;
-    private javax.swing.JLabel lblTotalCellinks;
     private javax.swing.JTabbedPane paneServer;
-    private javax.swing.JPanel pnlServer;
     private javax.swing.JTextPane statusConsole;
     private javax.swing.JTextPane trafficLog;
     // End of variables declaration//GEN-END:variables

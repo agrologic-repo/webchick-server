@@ -108,7 +108,6 @@
                 valid = false;
             }
 
-            alert(document.addForm.Nusername.value);
             valid = validateEmail(document.addForm.Nemail);
             if (!valid) {
                 return false;

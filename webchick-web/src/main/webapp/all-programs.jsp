@@ -85,9 +85,9 @@
             // These are detected by default,
             // but you can change or disable them
             headers: {
-                1: { sorter: "dateTimeFormat" },
                 2: { sorter: "dateTimeFormat" },
-                3: { sorter: false }
+                3: { sorter: "dateTimeFormat" },
+                4: { sorter: false }
             }
         });
     });
@@ -126,7 +126,7 @@
 <div id="main-shell">
     <table border="0" cellPadding=1 cellSpacing=1 width="100%">
         <tr>
-            <td colspan="4">
+            <td>
                 <h1><%=session.getAttribute("maintenance.page.header")%>
                 </h1>
 
@@ -136,46 +136,40 @@
             </td>
         </tr>
         <tr bgcolor="#D5EFFF">
-            <td align="justify">
+            <td align="">
                 <input type="text" id="searchText" value="<%=searchText%>"/>
-            </td>
-            <td align="justify">
                 <img id="search" src="resources/images/search.png" border="0" redirectUrl="./all-programs.html"/>
-            </td>
-            <td align="justify">
                 <img id="refresh" src="resources/images/refresh.png" border="0"
                      onclick="redirect('./all-programs.html')"/>
-            </td>
-
             <% if (user.getRole() == UserRole.ADMIN) {%>
-            <td width="80%">
-                <button type="button" onclick="redirect('./add-program.jsp')">
-                    &nbsp;<%=session.getAttribute("button.add.program")%>
-                </button>
-                <button type="button" onclick="redirect('./all-relays.html')">
-                    <%=session.getAttribute("button.add.relay")%>
-                </button>
-                <button type="button" onclick="redirect('./all-alarms.html')">
-                    <%=session.getAttribute("button.add.alarm")%>
-                </button>
-                <button type="button" onclick="redirect('./all-systemstates.html')">
-                    <%=session.getAttribute("button.add.system-state")%>
-                </button>
+                    <button type="button" onclick="redirect('./add-program.jsp')">
+                        &nbsp;<%=session.getAttribute("button.add.program")%>
+                    </button>
+                    <button type="button" onclick="redirect('./all-relays.html')">
+                        <%=session.getAttribute("button.add.relay")%>
+                    </button>
+                    <button type="button" onclick="redirect('./all-alarms.html')">
+                        <%=session.getAttribute("button.add.alarm")%>
+                    </button>
+                    <button type="button" onclick="redirect('./all-systemstates.html')">
+                        <%=session.getAttribute("button.add.system-state")%>
+                    </button>
+                <%}%>
             </td>
-            <%}%>
         </tr>
         <tr>
-            <td colspan="4">
+            <td>
                 <jsp:include page="paging.jsp"/>
             </td>
         </tr>
         <tr>
-            <td colspan="5">
+            <td colspan="">
                 <form id="formPrograms" name="formPrograms">
                     <table id="table-programs" class="tablesorter">
                         <thead>
                         <tr>
                             <th><%=session.getAttribute("table.col.program.id")%></th>
+                            <th><%=session.getAttribute("table.col.program.name")%></th>
                             <th><%=session.getAttribute("table.col.program.created")%></th>
                             <th><%=session.getAttribute("table.col.program.modified")%></th>
                             <th colspan="3"><%=session.getAttribute("table.col.program.action")%></th>
@@ -184,12 +178,8 @@
                         <tbody>
                         <%int rawCount = 0;%>
                         <%for (Program program : programs) {%>
-                        <%--<% if ((rawCount % 2) == 0) {%>--%>
-                        <%--<tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">--%>
-                                <%--<%} else {%>--%>
-                        <%--<tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">--%>
-                            <%--<%}%>--%>
                         <tr>
+                            <td><%=program.getId()%></td>
                             <td><a href="./all-screens.html?programId=<%=program.getId()%>"><%=program.getName()%></a></td>
                             <td><%=program.getCreatedDate()%></td>
                             <td><%=program.getModifiedDate()%></td>

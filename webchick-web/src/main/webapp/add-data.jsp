@@ -275,7 +275,7 @@
                                 <button type="button" onclick="getTranslation(5);">French</button>
                                 <button type="button" onclick="getTranslation(6);">German</button>
                                 <button type="button" onclick="getTranslation(7);">Turkish</button>
-                                <button type="button" onclick="getTranslation(8);">Plish</button>
+                                <button type="button" onclick="getTranslation(8);">Polish</button>
                             </td>
                         </tr>
                         <tr>

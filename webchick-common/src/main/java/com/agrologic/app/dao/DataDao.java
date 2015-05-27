@@ -158,6 +158,19 @@ public interface DataDao {
     void saveChanges(Long programId, Long screenId, Long tableId, Map<Long, String> showOnTableMap,
                      Map<Long, Integer> posOnTableMap) throws SQLException;
 
+    /**
+     * Move data position up .
+     *
+     * @param programId the program id
+     * @param screenId the screen id
+     * @param tableId the table id
+     * @param dataId the data id
+     * @throws SQLException if failed to change the data position
+     */
+    void moveUp(Long programId, Long screenId, Long tableId,Long dataId, Integer position)  throws SQLException;
+
+    void moveDown(Long programId, Long screenId, Long tableId,Long dataId, Integer position)  throws SQLException;
+
     void clearControllerData(Long controllerId) throws SQLException;
 
     void moveData(Long screenId, Long programId, Long tableId) throws SQLException;

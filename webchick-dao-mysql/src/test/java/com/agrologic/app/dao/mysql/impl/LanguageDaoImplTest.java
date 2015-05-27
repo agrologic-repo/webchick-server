@@ -21,7 +21,7 @@ public class LanguageDaoImplTest extends AbstractDaoTest {
     public Language createLanguage() {
         Language language = new Language();
         language.setId(1L);
-        language.setLanguage("Eglish");
+        language.setLanguage("English");
         language.setShortLang("en");
         return language;
     }

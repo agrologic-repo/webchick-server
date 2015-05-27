@@ -29,7 +29,6 @@
     <title>Screen Manager - Screens</title>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
-
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
@@ -37,16 +36,35 @@
     <script type="text/javascript" src="resources/javascript/jquery.tablesorter.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery.tablesorter.min.js">;</script>
     <script language="Javascript">
+        $.tablesorter.addParser({
+            id: "input",
+            is: function(s) {
+                return false;
+            },
+            format: function(s, table, cell) {
+                return $('input', cell).val();
+            },
+            type: "numeric"
+        });
+
         $(function () {
             $('#table-screens').tablesorter({
-                widgets: ['zebra'],
+                sortList: [[0, 0]], widgets: ['zebra'],
 
                 headers: {
-                    1: { sorter: false },
+                    1: { sorter: 'text' },
                     2: { sorter: false },
-                    4: { sorter: false }
+                    3: { sorter: false },
+                    4: { sorter : 'input' }
                 }
             });
+        });
+
+        var $rows = $('table tbody tr');
+        $rows.hover(function () {
+            $(this).addClass("rowHover");
+        }, function() {
+            $(this).removeClass("rowHover");
         });
 
         /**
@@ -75,6 +93,17 @@
             redirect("./all-screens.html?programId=" + programId);
             return false;
         }
+
+        function moveUp(programId, screenId, position) {
+            redirect("./movescreen.html?programId=" + programId + "&screenId=" + screenId +
+                    "&position=" + position + "&movedir=up");
+        }
+
+        function moveDown(programId, screenId, position) {
+            redirect("./movescreen.html?programId=" + programId + "&screenId=" + screenId +
+                    "&position=" + position + "&movedir=down");
+        }
+
         /**
          * Save changes for all screens position and display chackboxes
          */
@@ -120,7 +149,9 @@
                 return;
             }
             var cid = controllerId();
-            redirect("./uncheck-unused-data.html?programId=" + programId + "&controllerId=" + cid);
+            if(cid != null) {
+                redirect("./uncheck-unused-data.html?programId=" + programId + "&controllerId=" + cid);
+            }
         }
 
         function accept() {
@@ -230,7 +261,7 @@
                         onclick="redirect('./program-systemstates.html?programId=<%=program.getId()%>');">
                     <img src="resources/images/system.gif" style="cursor: pointer" hspace="5" border="0"/>System States
                 </button>
-                <button id="btnUnchickUnusedData" name="btnUnchickUnusedData"
+                <button id="btnUncheckUnusedData" name="btnUncheckUnusedData"
                         onclick="return uncheckUnusedData(<%=program.getId()%>);">
                     <img src="resources/images/check.png" style="cursor: pointer" hspace="5" border="0"/>Clear Unused
                     Data
@@ -244,6 +275,7 @@
                     <table id="table-screens" class="tablesorter" style="border:1px, solid, #C6C6C6">
                         <thead>
                         <tr>
+                            <th width="50">ID</th>
                             <th>Title</th>
                             <td>
                                 <span>
@@ -257,36 +289,43 @@
                                 </span>
                             </td>
                             <th>Description</th>
-                            <th>
+                            <th width="50">
                                 <input type="checkbox" id="listall" name="listall" title="Show"
                                        onclick="checkedAll();"/></th>
                             </th>
                             <th>Position</th>
-                            <th colspan="2">Action</th>
+                            <th width="350" colspan="4">Action</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <% int cnt = 0;%>
                         <%for (Screen screen : screens) {%>
-                        <% if ((cnt % 2) == 0) {%>
-                        <tr class="odd" onMouseOver="changeOdd(this);" onmouseout="changeOdd(this)">
-                                <%} else {%>
-                        <tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">
-                            <%}%>
+                        <tr>
+                            <td><%=screen.getId()%></td>
                             <td>
                                 <a href="./all-tables.html?programId=<%=screen.getProgramId()%>&screenId=<%=screen.getId()%>&translateLang=<%=translateLang%>"><%=screen.getTitle()%>
                                 </a></td>
                             <td
                                     ondblclick="window.open('add-screentranslate.jsp?screenId=<%=screen.getId()%>&langId=<%=translateLang%>&screenName=<%=screen.getTitle()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');"><%=screen.getUnicodeTitle()%>
                             </td>
-                            <td><%=screen.getDescript()%>
-                            </td>
+                            <td><%=screen.getDescript()%></td>
                             <td align="center">&nbsp;&nbsp;
                                 <input type="checkbox" class="list" name="list" <%=screen.isChecked()%>
                                        value="<%=screen.getId()%>"/>
                                 &nbsp;&nbsp;</td>
                             <td>
-                                <input type="text" name="position" value="<%=screen.getPosition()%>" size="5"/>
+                                <input type="text" name="position" value="<%=screen.getPosition()%>" size="4"/>
+                            </td>
+                            <td align="center">
+                                <img src="resources/images/up.gif" title="Move Up" border="0"/>
+                                <a href="javascript:moveUp(<%=screen.getProgramId() %>,<%=screen.getId() %>,<%=screen.getPosition()%>);">
+                                    <%=session.getAttribute("button.up")%>
+                                </a>
+                            </td>
+                            <td align="center">
+                                <img src="resources/images/down.gif"  title="Move Down" border="0"/>
+                                <a href="javascript:moveDown(<%=screen.getProgramId() %>,<%=screen.getId() %>,<%=screen.getPosition()%>);">
+                                    <%=session.getAttribute("button.down")%>
+                                </a>
                             </td>
                             <td>
                                 <img src="resources/images/edit.gif" style="cursor: pointer" hspace="5" border="0"
@@ -303,7 +342,6 @@
                                 </a>
                             </td>
                         </tr>
-                        <%cnt++;%>
                         <%}%>
                         </tbody>
                     </table>

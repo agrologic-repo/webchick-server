@@ -66,7 +66,7 @@ public class ListProgramServlet extends AbstractServlet {
 
                         case DISTRIBUTOR:
                             programs = programDao.getAllByUserCompany(searchText, user.getCompany());
-                            count = programDao.count(searchText);
+                            count = programs.size();
                             setTableParameters(request, index, count);
                             break;
 

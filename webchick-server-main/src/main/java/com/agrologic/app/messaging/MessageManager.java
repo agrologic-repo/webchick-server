@@ -18,6 +18,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Object for collecting messages that occur during the communication
+ *
  * @author Valery Manakhimov
  * @version 1.0 <br>
  */

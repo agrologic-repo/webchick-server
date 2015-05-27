@@ -35,6 +35,14 @@
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
+        function moveUp(programId, screenId, tableId, position) {
+            redirect("./movetable.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId +
+                    "&position=" + position + "&movedir=up");
+        }
+        function moveDown(programId, screenId, tableId, position) {
+            redirect("./movetable.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId +
+                    "&position=" + position + "&movedir=down");
+        }
         function save(programId, screenId) {
             var showTableMap = new Hashtable();
             var posTableMap = new Hashtable();
@@ -156,30 +164,42 @@
                                                 <%}%>
                                             </select>
                                         </th>
-                                        <th class="centerHeader" width="150px">Show All &nbsp;&nbsp;&nbsp;<input
+                                        <th class="centerHeader" width="100px">Show<input
                                                 type="checkbox" id="listall" name="listall" title="Show"
                                                 onclick="checkedAll();"></th>
-                                        <th class="centerHeader" width="150px">Position</th>
-                                        <th class="centerHeader" width="300px" colspan="2">Action</th>
+                                        <th class="centerHeader" width="60px">Position</th>
+                                        <th class="centerHeader" width="440px" colspan="4">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <%
-                                        for (Table table : tables) {%>
+                                    for (Table table : tables) {%>
                                     <tr onmouseover="this.style.background='#CEDEF4'"
                                         onmouseout="this.style.background='white'" title="Click for details">
                                         <td class="leftCell"><a
                                                 href="./all-tabledata.html?programId=<%=screen.getProgramId()%>&screenId=<%=table.getScreenId() %>&tableId=<%=table.getId()%>&translateLang=<%=translateLang%>"><%=table.getTitle()%>
                                         </a></td>
-                                        <td class="leftCell" width="150px"
+                                        <td class="leftCell"
                                             ondblclick="window.open('add-tabletranslate.jsp?tableId=<%=table.getId()%>&langId=<%=translateLang%>&tableName=<%=table.getTitle()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');"><%=table.getUnicodeTitle() %>
                                         </td>
-                                        <td class="centerCell" width="150px">
+                                        <td class="centerCell" >
                                             <input type="checkbox" name="list" <%=table.isChecked()%>
                                                    value="<%=table.getId()%>" onclick="check(<%=table.getId()%>);"></td>
-                                        <td class="centerCell" width="150px">
-                                            <input type="text" name="position" value="<%=table.getPosition() %>"
-                                                   size="5"></td>
+                                        <td class="centerCell">
+                                            <input type="text" name="position" value="<%=table.getPosition() %>" size="4">
+                                        </td>
+                                        <td align="center">
+                                            <img src="resources/images/up.gif" title="Move Up" border="0"/>
+                                            <a href="javascript:moveUp(<%=table.getProgramId() %>,<%=table.getScreenId() %>,<%=table.getId()%>,<%=table.getPosition()%>);">
+                                                <%=session.getAttribute("button.up")%>
+                                            </a>
+                                        </td>
+                                        <td align="center">
+                                            <img src="resources/images/down.gif"  title="Move Down" border="0"/>
+                                            <a href="javascript:moveDown(<%=table.getProgramId() %>,<%=table.getScreenId() %>,<%=table.getId()%>,<%=table.getPosition()%>);">
+                                                <%=session.getAttribute("button.down")%>
+                                            </a>
+                                        </td>
                                         <td class="centerCell">
                                             <img src="resources/images/edit.gif" style="cursor: pointer" border="0"
                                                  title='Edit This Table'/>

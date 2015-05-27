@@ -31,6 +31,7 @@
                 document.addForm.NrelayText.focus();
                 valid = false;
             }
+
             if (!valid) {
                 return false;
             }

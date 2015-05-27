@@ -155,6 +155,8 @@
                                 <option value="fr">French</option>
                                 <option value="de">German</option>
                                 <option value="tr">Turkish</option>
+                                <option value="pl">Polish</option>
+                                <option value="es">Spanish</option>
                             </select>
                         </td>
                     </tr>
@@ -195,8 +197,8 @@
         window.location = "<%=url%>?lang=" + lang;
     }
     function onLoad() {
-        if (window.location != window.parent.location) {
-            parent.location.replace(window.location)
+        if (window.location.href != window.parent.location.href) {
+            parent.location.replace(window.location.href)
         }
     }
 </script>

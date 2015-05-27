@@ -191,11 +191,50 @@ public class TableDaoImpl implements TableDao {
                 ps.setLong(5, programId);
             }
 
+
             @Override
             public int getBatchSize() {
                 return showMap.size();
             }
         });
+    }
+
+    @Override
+    public void moveUp(Long programId, Long screenId, Long tableId, Integer position) throws SQLException {
+        String sqlPrevTable = "select * from screentable where programid=? and screenid=? and position=?";
+
+        List<Table> result = jdbcTemplate.query(sqlPrevTable, new Object[]{programId, screenId, position - 1},
+                RowMappers.table());
+        if (result.size() > 0) {
+            Table prevPosTable = result.get(0);
+            String sqlChangePosPrevTable = "update screentable set position=? where programid=? and screenid=? and " +
+                    "tableid=?";
+            jdbcTemplate.update(sqlChangePosPrevTable, new Object[]{position, programId, screenId, prevPosTable.getId()});
+
+            String sqlChangePosActualTable = "update screentable set position=? where programid=? and screenid=? and " +
+                    "tableid=?";
+            jdbcTemplate.update(sqlChangePosActualTable, new Object[]{position - 1, programId, screenId, tableId});
+
+        }
+    }
+
+    @Override
+    public void moveDown(Long programId, Long screenId, Long tableId, Integer position) throws SQLException {
+        String sqlNextTable = "select * from screentable where programid=? and screenid=? and position=?";
+
+        List<Table> result = jdbcTemplate.query(sqlNextTable, new Object[]{programId, screenId, position + 1},
+                RowMappers.table());
+        if (result.size() > 0) {
+            Table nextPosTable = result.get(0);
+            String sqlChangePosNextData = "update screentable set position=? where programid=? and screenid=? and " +
+                    "tableid=?";
+            jdbcTemplate.update(sqlChangePosNextData, new Object[]{position, programId, screenId, nextPosTable.getId()});
+
+            String sqlChangePosActualTable = "update screentable set position=? where programid=? and screenid=? and " +
+                    "tableid=?";
+            jdbcTemplate.update(sqlChangePosActualTable, new Object[]{position + 1, programId, screenId, tableId});
+
+        }
     }
 
     @Override

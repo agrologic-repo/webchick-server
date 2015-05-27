@@ -236,6 +236,40 @@ public class ScreenDaoImpl implements ScreenDao {
     }
 
     @Override
+    public void moveUp(Long programId, Long screenId, Integer position) throws SQLException {
+        String sqlPrevScreen = "select * from screens where programid=? and position=?";
+
+        List<Screen> result = jdbcTemplate.query(sqlPrevScreen, new Object[]{programId, position - 1},
+                RowMappers.screen());
+        if (result.size() > 0) {
+            Screen prevPosScreen = result.get(0);
+            String sqlChangePosPrevScreen = "update screens set position=? where programid=? and screenid=?";
+            jdbcTemplate.update(sqlChangePosPrevScreen, new Object[]{position, programId, prevPosScreen.getId()});
+
+            String sqlChangePosActualScreen = "update screens set position=? where programid=? and screenid=?";
+            jdbcTemplate.update(sqlChangePosActualScreen, new Object[]{position - 1, programId, screenId});
+        }
+    }
+
+    @Override
+    public void moveDown(Long programId, Long screenId, Integer position) throws SQLException {
+        String sqlPrevScreen = "select * from screens where programid=? and position=?";
+
+        List<Screen> result = jdbcTemplate.query(sqlPrevScreen, new Object[]{programId, position + 1},
+                RowMappers.screen());
+        if (result.size() > 0) {
+            Screen prevPosScreen = result.get(0);
+
+            String sqlChangePosPrevScreen = "update screens set position=? where programid=? and screenid=?";
+            jdbcTemplate.update(sqlChangePosPrevScreen, new Object[]{position, programId, prevPosScreen.getId()});
+
+            String sqlChangePosActualScreen = "update screens set position=? where programid=? and screenid=?";
+            jdbcTemplate.update(sqlChangePosActualScreen, new Object[]{position + 1, programId, screenId});
+        }
+
+    }
+
+    @Override
     public int getNextScreenPosByProgramId(final Long programId) throws SQLException {
         logger.debug("Calculate position for new screen ");
         String sqlQuery = "select max(Position) as NextPos from screens where ProgramID=?";

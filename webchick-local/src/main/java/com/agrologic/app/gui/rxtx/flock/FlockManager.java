@@ -32,11 +32,8 @@ public class FlockManager extends JFrame {
     private DateField d2;
 
     enum FlockStatus {
-
         Open, Close
-    }
-
-    ;
+    };
 
     private EnumComboBoxModel<FlockStatus> statusModel = new EnumComboBoxModel<FlockStatus>(FlockStatus.class);
     private Flock selectedFlock;

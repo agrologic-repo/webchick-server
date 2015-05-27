@@ -32,7 +32,6 @@ public class OverviewController {
     private final CellinkDao cellinkDao;
     private final ControllerDao controllerDao;
 
-
     @Autowired
     public OverviewController(CellinkDao cellinkDao, ControllerDao controllerDao) {
         this.cellinkDao = cellinkDao;

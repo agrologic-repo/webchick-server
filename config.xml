@@ -16,15 +16,15 @@
         <entry key="database.user" value="client"/>
         <entry key="database.password" value="pass123$"/>
         <entry key="com.baud" value="2400"/>
-        <entry key="com.sot" value="10000"/>
+        <entry key="com.sot" value="25000"/>
         <entry key="com.eot" value="2000"/>
         <entry key="com.next" value="1000"/>
         <entry key="com.maxerr" value="3"/>
         <entry key="runatstartup" value="true"/>
         <entry key="access" value="regular"/>
         <entry key="webchick.uri" value="http://localhost:8080/webchick/startpage.html"/>
-        <entry key="cellink.id" value="264"/>
-        <entry key="user.id" value="248"/>
+        <entry key="cellink.id" value="76"/>
+        <entry key="user.id" value="71"/>
         <entry key="pc.comm" value="1"/>
         <entry key="server.comport" value="COM5"/>
         <entry key="role" value="1"/>

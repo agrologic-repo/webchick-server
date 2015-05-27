@@ -47,6 +47,16 @@
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
+        function moveUp(programId, screenId, tableId, dataId, position) {
+            redirect("./movedata.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId +
+                    "&dataId=" + dataId + "&position=" + position + "&movedir=up");
+        }
+
+        function moveDown(programId, screenId, tableId, dataId, position) {
+            redirect("./movedata.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId +
+                    "&dataId=" + dataId + "&position=" + position + "&movedir=down");
+        }
+
         function validate() {
             if (document.editForm.Nprogramname.value == "") {
                 alert('Enter user name');
@@ -164,14 +174,17 @@
                     </tr>
                     <tr>
                         <td>
-                            <button id="btnAdd" name="btnAdd"
-                                onclick="window.open('add-data.jsp?programId=<%=programId%>&screenId=<%=screenId%>&tableId=<%=table.getId()%>&position=<%=lastPos%>','mywindow','status=yes,width=550,height=450,left=350,top=400,screenX=100,screenY=100');">
-                                <%--onclick="window.open('autocomplete.html','mywindow','status=yes,width=550,height=450,left=350,top=400,screenX=100,screenY=100');">--%>
-                                <%=session.getAttribute("button.add.data") %>
-                            </button>
                             <button id="btnCancel" style="float:left" name="btnCancel"
                                     onclick='return back("./all-tables.html?programId=<%=screen.getProgramId() %>&screenId=<%=table.getScreenId()%>&translateLang=<%=translateLang%>");'>
                                 <%=session.getAttribute("button.back") %>
+                            </button>
+                            <button id="btnSave" style="float:left" name="btnSave"
+                                    onclick='return save(<%=programId %>,<%=screenId %>,<%=table.getId()%>);'>
+                                <%=session.getAttribute("button.save") %>
+                            </button>
+                            <button id="btnAdd" name="btnAdd"
+                                onclick="window.open('add-data.jsp?programId=<%=programId%>&screenId=<%=screenId%>&tableId=<%=table.getId()%>&position=<%=lastPos%>','mywindow','status=yes,width=550,height=450,left=350,top=400,screenX=100,screenY=100');">
+                                <%=session.getAttribute("button.add.data") %>
                             </button>
                         </td>
                     </tr>
@@ -185,7 +198,7 @@
                             <form id="formTable" name="formTable">
                                 <table class="table-list" border="1" >
                                     <thead>
-                                    <th class="centerHeader" width="100px">ID</th>
+                                    <th class="centerHeader" width="50px">ID</th>
                                     <th class="centerHeader" width="200px">Title</th>
                                     <th class="leftHeader" width="240px">Text
                                         <select id="Lang_Filter" name="Lang_Filter"
@@ -196,14 +209,14 @@
                                             <%}%>
                                         </select>
                                     </th>
-                                    <th class="centerHeader" width="140px">Show All &nbsp;<input type="checkbox"
+                                    <th class="centerHeader" width="100px">Show All &nbsp;<input type="checkbox"
                                                                                                  id="listall"
                                                                                                  name="listall"
                                                                                                  title="Show"
                                                                                                  onclick="checkedAll();">
                                     </th>
-                                    <th class="centerHeader" width="100px">Position</th>
-                                    <th class="centerHeader" width="300px">Action</th>
+                                    <th class="centerHeader" width="60px">Position</th>
+                                    <th class="centerHeader" colspan="3" width="400px">Action</th>
                                     </thead>
                                     <% int cnt = 0;%>
                                     <%for (Data data : dataList) {%>
@@ -212,7 +225,7 @@
                                             <%} else {%>
                                     <tr class="even" onMouseOver="changeEven(this);" onmouseout="changeEven(this)">
                                         <%}%>
-                                        <td align="center" width="100px"><%=data.getType()%>
+                                        <td align="center"><%=data.getType()%>
                                         </td>
                                         <td>
                                             <% if (data.getIsRelay()) {%>
@@ -224,18 +237,33 @@
                                         </td>
                                         <td ondblclick="window.open('add-datatranslate.jsp?dataId=<%=data.getId()%>&langId=<%=translateLang%>&dataName=<%=data.getLabel()%>','mywindow','status=yes,width=300,height=250,left=350,top=400,screenX=100,screenY=100');"><%=data.getUnicodeLabel() %>
                                         </td>
-                                        <td align="center" width="100px"><input type="checkbox" id="list"
+                                        <td align="center"><input type="checkbox" id="list"
                                                                                 name="list" <%=data.isChecked()%>
                                                                                 value="<%=data.getId()%>"
                                                                                 onclick="check(<%=data.getId()%>);">
                                         </td>
-                                        <td align="center" width="100px"><input type="text" name="position"
+                                        <td align="center"><input type="text" name="position"
                                                                                 value="<%=data.getPosition()%>"
-                                                                                size="5"></td>
-                                        <td align="center" width="200px">
+                                                                                size="4">
+                                        </td>
+                                        <td align="center">
+                                            <img src="resources/images/up.gif" title="Move Up" border="0"/>
+                                            <a href="javascript:moveUp(<%=programId %>,<%=screenId %>,<%=tableId%>,<%=data.getId()%>, <%=data.getPosition()%>);">
+                                                <%=session.getAttribute("button.up")%>
+                                            </a>
+                                        </td>
+                                       <td align="center">
+                                            <img src="resources/images/down.gif"  title="Move Down" border="0"/>
+                                           <a href="javascript:moveDown(<%=programId %>,<%=screenId %>,<%=tableId%>,<%=data.getId()%>, <%=data.getPosition()%>);">
+                                               <%=session.getAttribute("button.down")%>
+                                           </a>
+                                       </td>
+                                       <td align="center">
                                             <img src="resources/images/close.png" title="Delete This Data" border="0"/>
-                                            <a href="javascript:removeData(<%=programId %>,<%=screenId %>,<%=tableId%>,<%=data.getId()%>);"><%=session.getAttribute("button.delete")%>
-                                            </a></td>
+                                           <a href="javascript:removeData(<%=programId %>,<%=screenId %>,<%=tableId%>,<%=data.getId()%>);">
+                                               <%=session.getAttribute("button.delete")%>
+                                           </a>
+                                       </td>
                                     </tr>
                                     <%cnt++;%>
                                     <%}%>

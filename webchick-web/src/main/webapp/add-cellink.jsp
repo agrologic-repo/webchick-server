@@ -1,10 +1,15 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 
 <%@ include file="language.jsp" %>
 
 <%@ page import="com.agrologic.app.model.Cellink" %>
 <%@ page import="com.agrologic.app.model.User" %>
+
+<c:set var="CELLINK_TYPES" value="<%=Cellink.getTypeList()%>"/>
+
 
 <% User user = (User) request.getSession().getAttribute("user");
 
@@ -13,6 +18,7 @@
         return;
     }
     Long userId = Long.parseLong(request.getParameter("userId"));
+    request.setAttribute("userId",userId);
 %>
 
 <!DOCTYPE html>
@@ -74,12 +80,11 @@
                                     <p style="color:red;">Boxes with an asterisk next to them are required</p>
                                 </div>
                                 <input id="Nuserid" readonly type="hidden" name="Nuserid" class=rightTitles
-                                       value="<%=userId%>">
+                                       value="<c:out value="${userId}"/>">
                                 <table>
                                     <tr>
                                         <td class="">Cellink name *</td>
-                                        <td><input id="Ncellinkname" type="text" name="Ncellinkname"
-                                                   style="width:100px"></td>
+                                        <td><input id="Ncellinkname" type="text" name="Ncellinkname" style="width:100px"></td>
                                         <td id="msgCellinkName"></td>
                                     </tr>
                                     <tr>
@@ -96,16 +101,16 @@
                                         <td>
                                             <select id="Ntype" name="Ntype" style="width:120px">
                                                 <option value="" selected></option>
-                                                <% for (String type : Cellink.getTypeList()) {%>
-                                                <option value="<%=type %>"><%=type %>
-                                                </option>
-                                                <%}%>
+                                                <c:forEach items="${CELLINK_TYPES}" var="type">
+                                                    <option value="${type}"> ${type}
+                                                    </option>
+                                                </c:forEach>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="">Version</td>
-                                        <td><input id="Nversion" type="text" name="Nversion" style="width:100px"></td>
+                                        <td>Version</td>
+                                        <td><input id='Nversion' type='text' name='Nversion' style='width:100px'></td>
                                     </tr>
                                 </table>
                             </td>

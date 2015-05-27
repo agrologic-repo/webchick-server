@@ -81,7 +81,7 @@
                     <input type="hidden" id="screenId" name="screenId" value="<%=screenId%>">
                     <input type="hidden" id="langId" name="langId" value="<%=langId%>">
                     <tr>
-                        <td align="left">Insert &nbsp;<%=screenName%> in <%=lang.getLanguage() %>
+                        <td align="left">Insert &nbsp; <%=screenName%> in <%=lang.getLanguage() %>
                     </tr>
                     <tr>
                         <td align="left"><input id="Ntranslate" type="text" name="Ntranslate">&nbsp;</td>

@@ -100,6 +100,26 @@ public interface ScreenDao {
     void saveChanges(Map<Long, String> showMap, Map<Long, Integer> positionMap, Long programId) throws SQLException;
 
     /**
+     * Move screen up by changing the position .
+     *
+     * @param programId
+     * @param screenId
+     * @param position
+     * @throws SQLException
+     */
+    void moveUp(Long programId, Long screenId, Integer position) throws SQLException;
+
+    /**
+     * Move screen down by change the position .
+     *
+     * @param programId
+     * @param screenId
+     * @param position
+     * @throws SQLException
+     */
+    void moveDown(Long programId, Long screenId, Integer position) throws SQLException;
+
+    /**
      * Return the next position for new screen.
      *
      * @param programId the program id

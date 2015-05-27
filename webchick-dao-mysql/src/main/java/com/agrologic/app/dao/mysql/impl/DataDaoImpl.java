@@ -405,8 +405,7 @@ public class DataDaoImpl implements DataDao {
     @Override
     public Collection<Data> getHistoryDataListByCriteria(String criteria, Long langId) throws SQLException {
         String sql = "select * from datatable  as dt " +
-                "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? " +
-                "where historyopt like ?";
+                "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? where historyopt like ?";
         return jdbcTemplate.query(sql, new Object[]{langId, "%" + criteria + "%"}, RowMappers.data());
     }
 
@@ -583,6 +582,40 @@ public class DataDaoImpl implements DataDao {
                 return showMap.size();
             }
         });
+    }
+
+    @Override
+    public void moveUp(Long programId, Long screenId, Long tableId, Long dataId, Integer position) throws SQLException {
+        String sqlPrevData = "select * from tabledata td join datatable  dt on td.dataid=dt.dataid " +
+                "where td.programid=? and td.screenid=? and td.tableid=? and td.position=?;";
+
+        List<Data> result = jdbcTemplate.query(sqlPrevData, new Object[]{programId, screenId, tableId, position - 1}, RowMappers.data());
+        if (result.size() > 0) {
+            Data prevPosData = result.get(0);
+
+            String sqlChangePosActualData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+            jdbcTemplate.update(sqlChangePosActualData, new Object[]{position - 1, programId, screenId, tableId, dataId});
+
+            String sqlChangePosPrevData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+            jdbcTemplate.update(sqlChangePosPrevData, new Object[]{position, programId, screenId, tableId, prevPosData.getId()});
+        }
+    }
+
+    @Override
+    public void moveDown(Long programId, Long screenId, Long tableId, Long dataId, Integer position) throws SQLException {
+        String sqlPrevData = "select * from tabledata  td join datatable  dt on td.dataid=dt.dataid " +
+                "where td.programid=? and td.screenid=? and td.tableid=? and td.position=?;";
+
+        List<Data> result = jdbcTemplate.query(sqlPrevData, new Object[]{programId, screenId, tableId, position + 1}, RowMappers.data());
+        if (result.size() > 0) {
+            Data nextPosData = result.get(0);
+            String sqlChangePosNextData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+            jdbcTemplate.update(sqlChangePosNextData, new Object[]{position, programId, screenId, tableId, nextPosData.getId()});
+
+            String sqlChangePosActualData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+            jdbcTemplate.update(sqlChangePosActualData, new Object[]{position + 1, programId, screenId, tableId, dataId});
+
+        }
     }
 
     /**

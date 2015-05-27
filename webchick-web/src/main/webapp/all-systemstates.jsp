@@ -59,6 +59,15 @@
             redirect("./all-systemstates.html?translateLang=" + langId);
             return false;
         }
+
+        function accept() {
+            var pass = window.prompt("Please enter your password:", "Your password")
+            if (pass == '1212') {
+                return true;
+            }
+            return false;
+        }
+
     </script>
 </head>
 <body>

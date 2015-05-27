@@ -539,6 +539,11 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
     background-color: #8dbdd8;
 }
 
+.even.rowHover,
+.odd.rowHover {
+    background-color: #F0F0F0;
+}
+
 .ac_results {
     padding: 0px;
     border: 1px solid #84a10b;

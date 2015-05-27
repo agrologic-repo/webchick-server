@@ -44,9 +44,9 @@ public final class SocketThread extends Observable implements Runnable, Network 
     private boolean DEBUG = false;
     private Logger logger = Logger.getLogger(SocketThread.class);
 
-    public SocketThread(ApplicationLocal app, DatabaseManager dbManager) throws NumberFormatException,
-            SerialPortControlFailure {
+    public SocketThread(ApplicationLocal app, DatabaseManager dbManager) throws NumberFormatException, SerialPortControlFailure {
         super();
+        logger.info("Socket thread constructor");
         this.app = app;
         this.networkState = NetworkState.STATE_STARTING;
         this.dbManager = dbManager;
@@ -57,15 +57,19 @@ public final class SocketThread extends Observable implements Runnable, Network 
 
         // sets network attributes
         Configuration configuration = new Configuration();
+        logger.info("Read configuration file ");
         this.sotDelay = Integer.parseInt(configuration.getSotDelay());
         this.eotDelay = Integer.parseInt(configuration.getEotDelay());
         this.nxtDelay = Integer.parseInt(configuration.getNextDelay());
         this.maxError = Integer.parseInt(configuration.getMaxErrors());
 
+
         // trying to open comport
         if (com == null) {
+
             final String comport = configuration.getComPort();
             try {
+                logger.info("Start opening communication port");
                 com = new SerialPortControl(comport, this);
                 logger.info("Communication port opened successfully!");
             } catch (SerialPortControlFailure e) {

@@ -101,6 +101,28 @@ public interface TableDao {
             throws SQLException;
 
     /**
+     * Move table row position up .
+     *
+     * @param programId the program id
+     * @param screenId the screen id
+     * @param tableId the table id
+     * @param position the position
+     * @throws SQLException if failed to move table row position
+     */
+    void moveUp(Long programId,Long screenId,Long tableId,Integer position) throws SQLException;
+
+    /**
+     * Move table row position down .
+     *
+     * @param programId the program id
+     * @param screenId the screen id
+     * @param tableId the table id
+     * @param position the position
+     * @throws SQLException if failed to move table row position
+     */
+    void moveDown(Long programId,Long screenId,Long tableId,Integer position) throws SQLException;
+
+    /**
      * Insert table list into screen tables
      *
      * @param tableList the table list

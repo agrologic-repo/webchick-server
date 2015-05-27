@@ -13,11 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
 
-public class SaveDataOnTable extends AbstractServlet {
+public class MoveDataRowPosition extends AbstractServlet {
 
 
     /**
@@ -25,8 +22,8 @@ public class SaveDataOnTable extends AbstractServlet {
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws javax.servlet.ServletException if a servlet-specific error occurs
+     * @throws java.io.IOException            if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -41,39 +38,27 @@ public class SaveDataOnTable extends AbstractServlet {
                 Long programId = Long.parseLong(request.getParameter("programId"));
                 Long screenId = Long.parseLong(request.getParameter("screenId"));
                 Long tableId = Long.parseLong(request.getParameter("tableId"));
-                String showDataMapStr = request.getParameter("showDataMap");
-                String posDataMapStr = request.getParameter("posDataMap");
-                String[] showTablePairs = showDataMapStr.split(";");
-                Map<Long, String> showTableMap = new HashMap<Long, String>();
-
-                for (String s : showTablePairs) {
-                    StringTokenizer st = new StringTokenizer(s, ",");
-                    Long dataId = Long.parseLong(st.nextToken());
-                    String show = st.nextToken();
-                    showTableMap.put(dataId, show);
-                }
-
-                String[] posDataPairs = posDataMapStr.split(";");
-                Map<Long, Integer> posDataMap = new HashMap<Long, Integer>();
-
-                for (String s : posDataPairs) {
-                    StringTokenizer st = new StringTokenizer(s, ",");
-                    Long dataId = Long.parseLong(st.nextToken());
-                    Integer pos = Integer.parseInt(st.nextToken());
-                    posDataMap.put(dataId, pos);
-                }
+                Long dataId = Long.parseLong(request.getParameter("dataId"));
+                Integer position = Integer.parseInt(request.getParameter("position"));
+                String movedir = request.getParameter("movedir");
 
                 try {
                     DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
-                    dataDao.saveChanges(programId, screenId, tableId, showTableMap, posDataMap);
+                    if (movedir.equals("up")) {
+                        dataDao.moveUp(programId, screenId, tableId, dataId, position);
+                    }
+                    if (movedir.equals("down")) {
+                        dataDao.moveDown(programId, screenId, tableId, dataId, position);
+                    }
 
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
                     Program program = programDao.getById(programId);
+
                     program.setModifiedDate(DateLocal.currentDate());
                     programDao.update(program);
-
-                    request.setAttribute("message", "Changes successfully saved !");
+                    request.setAttribute("message", "Position of data with id " +  dataId + " was successfully changed!");
                     request.setAttribute("error", false);
+
                     request.getRequestDispatcher("./all-tabledata.html?programId=" + programId + "&screenId=" +
                             screenId + "&tableId=" + tableId).forward(request, response);
                 } catch (SQLException ex) {
@@ -96,8 +81,8 @@ public class SaveDataOnTable extends AbstractServlet {
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws javax.servlet.ServletException if a servlet-specific error occurs
+     * @throws java.io.IOException            if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -110,8 +95,8 @@ public class SaveDataOnTable extends AbstractServlet {
      *
      * @param request  servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
+     * @throws javax.servlet.ServletException if a servlet-specific error occurs
+     * @throws java.io.IOException            if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

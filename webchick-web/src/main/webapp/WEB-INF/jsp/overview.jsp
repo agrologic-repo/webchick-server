@@ -4,7 +4,6 @@
 <%@ page errorPage="../../anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.CellinkState" %>
 <%@ page import="com.agrologic.app.model.User" %>
-<%@ page import="java.util.Set" %>
 
 <%@ include file="../../language.jsp" %>
 
@@ -20,6 +19,8 @@
 <c:set var="STATE_RUNNING" value="<%=com.agrologic.app.model.CellinkState.STATE_RUNNING%>"/>
 <c:set var="STATE_START" value="<%=com.agrologic.app.model.CellinkState.STATE_START%>"/>
 <c:set var="STATE_ONLINE" value="<%=com.agrologic.app.model.CellinkState.STATE_ONLINE%>"/>
+
+<c:set var="cellinkStates" value="<%= CellinkState.listState().entrySet()%>"/>
 
 <%  User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
@@ -43,6 +44,11 @@
 <table border="0" cellPadding=1 cellSpacing=1 width="100%">
     <tr>
         <td style="vertical-align: top" width="20%">
+            <h1><%=session.getAttribute("overview.page.header")%>
+            </h1>
+
+            <h2><%=session.getAttribute("overview.page.title")%>
+            </h2>
         </td>
         <td colspan="2" width="50%">
             <jsp:include page="../../messages.jsp"/>
@@ -101,13 +107,12 @@
                 <spring:message code="cellink.states"/> :
                 <select id="filterStatus">
                     <option value="-1"></option>
-                    CellinkState.listState()
-                    <% Set<Map.Entry<String, Integer>> states = CellinkState.listState().entrySet();%>
-                    <% for (Map.Entry<String, Integer> ss : states) {%>
-                    <option value='<%=ss.getValue()%>'>
-                        <%=session.getAttribute("cellink.state." + ss.getKey())%>
-                    </option>
-                    <%}%>
+                    <c:forEach var="cellinkstate" items="${cellinkStates}">
+                        <c:set var="statelabel" value="cellink.state.${cellinkstate.key}"/>
+                            <option value='<c:out value="${cellinkstate.value}"/>'>
+                                <spring:message code="${statelabel}"/>
+                            </option>
+                    </c:forEach>
                 </select>
                 &nbsp;
                 <img id="filter" src="resources/images/filter.png" border="0"/>
@@ -127,7 +132,6 @@
     </tr>
 </table>
 <table border="0" cellPadding=1 cellSpacing=1 width="100%">
-    <%--<%cellinks = getCellinksByState(cellinks, state);%>--%>
     <tr>
         <td colspan="4" width="100%">
             <form id="formFarms" name="formFarms" style="display:inline">

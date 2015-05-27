@@ -16,28 +16,28 @@ public class HistoryServiceT {
 
     @Test
     public void testHistoryData() throws Exception {
-        int expected = 567;
+        int expected = 565;
         int actual = historyService.getHistoryData().size();
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testPerDayHistoryData() throws Exception {
-        int expected = 532;
+        int expected = 509;
         int actual = historyService.getPerDayHistoryData(1L).size();
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testPerHourHistoryData() throws Exception {
-        int expected = 57;
+        int expected = 68;
         int actual = historyService.getPerHourHistoryData(1L).size();
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testDayAndHourHistoryData() throws Exception {
-        int expected = 22;
+        int expected = 24;
         int actual = historyService.getPerDayAndHourHistoryData(1L).size();
         Assert.assertEquals(expected, actual);
     }

@@ -155,6 +155,12 @@ public final class CellinkTable extends JTable {
         }
     }
 
+    public void stopMonitoring() {
+        if (executor != null) {
+            executor.shutdownNow();
+        }
+    }
+
     /**
      * Retrieves all cellinks from database
      *

@@ -47,7 +47,9 @@ public class ServerThread extends Observable implements Runnable {
     private boolean startServer() {
         try {
             Configuration configuration = new Configuration();
+            logger.info("IP address : ", configuration.getIp());
             InetAddress ia = InetAddress.getByName(configuration.getIp());
+            logger.info("Port : ", configuration.getPort());
             Integer port = configuration.getPort();
             logger.info("Try to open server on port : " + port);
             server = new ServerSocket(port, MAX_NUM_SOCKET, ia);
@@ -152,7 +154,6 @@ public class ServerThread extends Observable implements Runnable {
 
         // change cellink state to offline
         Logger log = LoggerFactory.getLogger(ServerThread.class);
-
         if ((server != null) && !server.isClosed()) {
             try {
                 if (cellinkDao != null) {
@@ -166,7 +167,10 @@ public class ServerThread extends Observable implements Runnable {
                 e.printStackTrace();
             }
         }
-        executor.shutdown();
+
+        if (executor != null) {
+            executor.shutdownNow();
+        }
     }
 
     /**

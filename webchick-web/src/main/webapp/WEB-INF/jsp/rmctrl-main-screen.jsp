@@ -6,6 +6,7 @@
 <%@ page errorPage="../../anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="com.agrologic.app.model.UserRole" %>
+
 <jsp:useBean id="userId" scope="request" type="java.lang.Long"/>
 <jsp:useBean id="cellink" scope="request" type="com.agrologic.app.model.Cellink"/>
 

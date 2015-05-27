@@ -78,7 +78,7 @@
                     <table>
                         <tr>
                             <% for (Data dataSysState : dataSystemStates) {%>
-                            <td valign="top"
+                            <td valign="top">
                             <h3><%=dataSysState.getLabel()%>
                             </h3>
                             <input type="hidden" id="dataid" name="dataid" value="<%=dataSysState.getId()%>">
@@ -91,8 +91,7 @@
                                 </thead>
                                 <tbody>
                                 <% int numbers = 30;%>
-                                <%
-                                    Collection<ProgramSystemState> programSystemStates = program.getProgramSystemStateByData(dataSysState.getId());%>
+                                <% Collection<ProgramSystemState> programSystemStates = program.getProgramSystemStateByData(dataSysState.getId());%>
                                 <% for (int number = 1; number <= numbers; number++) {%>
                                 <% ProgramSystemState systemState = findSystemState(programSystemStates, dataSysState.getId(), number);%>
                                 <tr>

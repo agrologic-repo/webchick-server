@@ -87,7 +87,7 @@ public class ProgramDaoImpl implements ProgramDao {
     @Override
     public Collection<Program> getAll() throws SQLException {
         logger.debug("Get all programs  ");
-        String sqlQuery = "select * from programs";
+        String sqlQuery = "select * from programs order by programid";
         return jdbcTemplate.query(sqlQuery, RowMappers.program());
     }
 
@@ -123,7 +123,7 @@ public class ProgramDaoImpl implements ProgramDao {
     @Override
     public Collection<Program> getAll(String searchText, String index) throws SQLException {
         logger.debug("Get all programs belongs to specified company with given search text " + searchText);
-        String sqlQuery = "select * from programs where name like ? limit ? ,25 ";
+        String sqlQuery = "select * from programs where name like ? order by programid limit ? ,25 ";
         Object[] objects = new Object[]{(searchText == null ? "%%" : "%" + searchText + "%"),
                 index == null ? 0 : Integer.valueOf(index)};
         return jdbcTemplate.query(sqlQuery, objects, RowMappers.program());

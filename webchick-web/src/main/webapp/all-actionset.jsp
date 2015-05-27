@@ -35,20 +35,6 @@
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
-        function validate() {
-            if (document.editForm.Nprogramname.value == "") {
-                alert('Enter user name');
-                document.editForm.Nprogramname.focus();
-                return false;
-            } else {
-                document.editForm.submit();
-            }
-        }
-        function removeData(programId, screenId, tableId, dataId) {
-            if (confirm("This action will remove tabledata from database.\n Do you want to continue?") == true) {
-                redirect("./removedata.html?programId=" + programId + "&screenId=" + screenId + "&tableId=" + tableId + "&dataId=" + dataId);
-            }
-        }
         function save(programId, screenId) {
             var showActionsetMap = new Hashtable();
             var posActionsetMap = new Hashtable();

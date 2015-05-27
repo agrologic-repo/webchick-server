@@ -4,6 +4,7 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.dao.UserDao;
 import com.agrologic.app.model.User;
+import com.agrologic.app.model.UserRole;
 import com.agrologic.app.service.UserManagerService;
 import com.agrologic.app.service.impl.UserManagerServiceImpl;
 import com.agrologic.app.util.Base64;
@@ -91,6 +92,7 @@ public class UserLoginFormServlet extends AbstractServlet {
                         break;
 
                     default:
+                        user.setUserRole(UserRole.ADMIN);// TODO: test if role not defined need to delete in release
                         response.sendRedirect(getURLWithContextPath(request) + OVERVIEW_URL);
                         break;
                 }

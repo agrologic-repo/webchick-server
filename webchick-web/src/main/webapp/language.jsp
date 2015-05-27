@@ -31,6 +31,12 @@
     } else if (lang.equals("tr")) {
         locale = new Locale("tr", "TR");
         request.getSession().setAttribute("dir", "ltr");
+    } else if (lang.equals("pl")) {
+        locale = new Locale("pl", "PL");
+        request.getSession().setAttribute("dir", "ltr");
+    } else if (lang.equals("es")) {
+        locale = new Locale("es", "ES");
+        request.getSession().setAttribute("dir", "ltr");
     } else {
         locale = Locale.US;
         request.getSession().setAttribute("dir", "ltr");

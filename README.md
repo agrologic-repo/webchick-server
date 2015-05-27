@@ -13,7 +13,7 @@ Current project state: https://github.com/val100/webchick-server
   3.	Role based access control
   4.	Changes in the database table relationships, constraints in accordance with the above paragraphs
   5.	Dashboard page
-  6.	Android dvelopment
+  6.	Android development
 
 
 •	https://github.com/val100/WebchickServer 

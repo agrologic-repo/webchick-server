@@ -175,51 +175,45 @@ public class CellinkDaoImpl implements CellinkDao {
 
     @Override
     public int count(CellinkCriteria criteria) throws SQLException {
-        logger.debug("Count all cellinks ");
-        String sqlQuery = "select count(*) from cellinks where name like ? and (state = ? or ? is null)";
-        Object[] objects = new Object[]{criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%",
-                criteria.getState(), criteria.getState()};
-//        String sqlQuery;
-//        Object[] objects;
-//
-//        if (criteria.getRole() != null) {
-//            UserRole userRole = UserRole.get(criteria.getRole());
-//            switch (userRole) {
-//                default:
-//                case USER:
-//                    sqlQuery = "select count(*) cellinks where userid=? ";
-//                    objects = new Object[]{criteria.getUserId()};
-//                    break;
-//                case ADMIN:
-//                    sqlQuery = "select count(*) from cellinks where "
-//                            + "(state = ? or ? is null) and "
-//                            + "type like ? and "
-//                            + "name like ?  "
-//                            + "limit ?  , 25 ";
-//
-//                    objects = new Object[]{
-//                            criteria.getState(), criteria.getState(),
-//                            criteria.getType() == null ? "%%" : "%" + criteria.getType() + "%",
-//                            criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%",
-//                            criteria.getIndex() == null ? 0 : criteria.getIndex()};
-//                    break;
-//                case DISTRIBUTOR:
-//                    sqlQuery = "select count(*) from cellinks where userid in (select userid from users where company=?) ";
-//                    objects = new Object[]{criteria.getCompany()};
-//                    break;
-//            }
-//        } else {
-//            sqlQuery = "select count(*) from cellinks where  "
-//                    + "(state = ? or ? is null) and "
-//                    + "type like ? and "
-//                    + "name like ? limit ?  , 25 ";
-//            objects = new Object[]{
-//                    criteria.getState(), criteria.getState(),
-//                    criteria.getType() == null ? "%%" : "%" + criteria.getType() + "%",
-//                    criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%",
-//                    criteria.getIndex() == null ? 0 : criteria.getIndex()};
-//        }
-        return jdbcTemplate.queryForObject(sqlQuery, objects, Integer.class);
+        logger.debug("Count all cellink units by criteria ");
+        String sqlQuery;
+        Object[] objects = null;
+
+        if (criteria.getRole() != null) {
+            UserRole userRole = UserRole.get(criteria.getRole());
+            switch (userRole) {
+                default:
+                case USER:
+                    sqlQuery = "select count(*) from cellinks where userid=? ";
+                    objects = new Object[]{criteria.getUserId()};
+                    break;
+                case ADMIN:
+                    sqlQuery = "select count(*) from cellinks ";
+                    break;
+                case DISTRIBUTOR:
+                    sqlQuery = "select count(*) from cellinks where userid in (select userid from users where company=?) and " +
+                            "name like ?  ";
+                    objects = new Object[]{criteria.getCompany(),
+                            criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%"};
+                    break;
+            }
+        } else {
+            sqlQuery = "select count(*) from cellinks where  "
+                    + "(state = ? or ? is null) and "
+                    + "type like ? and "
+                    + "name like ? limit ?  , 25 ";
+            objects = new Object[]{
+                    criteria.getState(), criteria.getState(),
+                    criteria.getType() == null ? "%%" : "%" + criteria.getType() + "%",
+                    criteria.getName() == null ? "%%" : "%" + criteria.getName() + "%",
+                    criteria.getIndex() == null ? 0 : criteria.getIndex()};
+        }
+
+        if (objects == null ) {
+            return jdbcTemplate.queryForObject(sqlQuery, objects , Integer.class);
+        } else {
+            return jdbcTemplate.queryForObject(sqlQuery, objects , Integer.class);
+        }
     }
 
     @Override

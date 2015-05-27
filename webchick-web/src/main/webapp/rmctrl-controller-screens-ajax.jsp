@@ -566,7 +566,7 @@
 </script>
 <script type="text/javascript" src="resources/javascript/fhelp.js"></script>
 </head>
-<body onload="javascript:setAutoLoad()">
+<body onload="setAutoLoad()">
 <div id="loading"></div>
 <table width="100%">
     <tr>

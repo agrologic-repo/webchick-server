@@ -1,4 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ include file="language.jsp" %>
 
@@ -35,19 +37,6 @@
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
     <script type="text/javascript" language="javascript">
-        //        $(document).ready(function () {
-        //            var availableHouseType = [
-        //                "Broiler",
-        //                "Layers"
-        //            ];
-        //            $( "input#houseType" ).autocomplete({
-        //                delay: 0,
-        //                minLength: 0,
-        //                autoFocus: false,
-        //                cacheLength: 0,
-        //                source: availableHouseType
-        //            });
-        //        }).focus(function () {$(this).autocomplete("search","")});
         $(document).ready(function () {
             $("input#controllerType").autocomplete({
                 width: 300,
