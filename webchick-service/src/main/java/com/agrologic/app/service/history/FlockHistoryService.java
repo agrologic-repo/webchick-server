@@ -56,8 +56,21 @@ public interface FlockHistoryService {
      * @return collection of titles
      * @throws java.sql.SQLException if failed to get strings from database
      */
-    public Collection<String> getFlockPerHourReportsTitlesUsingGraphObjects(Long flockId, Integer growDay, Long langId)
-            throws SQLException;
+    public Collection<String> getFlockPerHourReportsTitlesUsingGraphObjects(Long flockId, Integer growDay, Long langId) throws SQLException;
+
+    /**
+     * Get collection of strings that used for creating per hour report graphs. These titles are sorted in the same
+     * manner in which these data are transmitted when requesting data charts with controllers .Getting reports titles
+     * specified by flock , grow day and in specified language.
+     *
+     * @param flockId the ID of flock
+     * @param growDay the grow day
+     * @param langId  the ID of language
+     * @return collection of titles
+     * @throws java.sql.SQLException if failed to get strings from database
+     */
+
+    public Collection<String> getFlockPerHourReportsTitlesUsingGraphObjectsSpecial(Long flockId, Integer growDay, Long langId) throws SQLException;
 
     /**
      * Get per day reports strings of specified flock. The reports string is not parsed. Result contains Integer keys,

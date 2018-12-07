@@ -12,6 +12,8 @@
     request.getSession().setAttribute("lang", lang);
     request.setAttribute("lang", lang);
 
+
+
     Locale locale = null;
     if (lang.equals("ru")) {
         locale = new Locale("ru", "RU");

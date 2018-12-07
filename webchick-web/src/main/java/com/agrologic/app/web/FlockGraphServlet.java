@@ -1,5 +1,6 @@
 package com.agrologic.app.web;
 
+import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.history.DayParam;
 import com.agrologic.app.service.history.FlockHistoryService;
@@ -8,6 +9,7 @@ import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -20,26 +22,35 @@ public class FlockGraphServlet extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        HttpSession session;
+        Long cellinkId;
+        Long flockId;
+        Long controllerId;
+        FlockHistoryService flockHistoryService;
+        Flock flock;
+        DayParam growDayParam;
+        PrintWriter out;
 
-        PrintWriter out = response.getWriter();
+        session = request.getSession();
+        out = response.getWriter();
 
         try {
-            Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-            Long flockId = Long.parseLong(request.getParameter("flockId"));
-
+            cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+            flockId = Long.parseLong(request.getParameter("flockId"));
+            controllerId = Long.parseLong(request.getParameter("controllerId"));////
+            Long programId = Long.parseLong(request.getParameter("programId"));///////////////////////////
+//            request.setAttribute("progID", programId);////
+            session.setAttribute("progID", programId);////
             try {
-                FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
-                Flock flock = flockHistoryService.getFlock(flockId);
+                flockHistoryService = new FlockHistoryServiceImpl();
+                flock = flockHistoryService.getFlock(flockId);
                 request.setAttribute("flock", flock);
 
-                DayParam growDayParam = new DayParam(request.getParameter("growDay"));
-                request.getRequestDispatcher("./rmctrl-flock-graphs-main.jsp?cellinkId=" + cellinkId + "&growDay="
-                        + growDayParam.getGrowDay()).forward(request, response);
-
+                growDayParam = new DayParam(request.getParameter("growDay"));
+                request.getRequestDispatcher("./rmctrl-flock-graphs-main.jsp?cellinkId=" + cellinkId + "&growDay=" + growDayParam.getGrowDay()).forward(request, response);
             } catch (Exception ex) {
                 logger.trace("Fail save management setting", ex);
             }
@@ -59,8 +70,7 @@ public class FlockGraphServlet extends AbstractServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -73,8 +83,7 @@ public class FlockGraphServlet extends AbstractServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 

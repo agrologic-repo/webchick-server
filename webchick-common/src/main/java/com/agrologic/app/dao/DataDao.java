@@ -187,6 +187,8 @@ public interface DataDao {
 
     Data getGrowDay(Long controllerId) throws SQLException;
 
+    Data getResetTime(Long controllerId) throws SQLException; //01/03/2018
+
     Data getChangedDataValue(Long controllerId) throws SQLException;
 
     Collection<Data> find(Long type) throws SQLException;
@@ -234,12 +236,13 @@ public interface DataDao {
 
     Collection<Data> getControllerDataValues(Long controllerId) throws SQLException;
 
+    int removeControllerDataValues(Long controllerId) throws SQLException; // added 13/09/2017
+
     Collection<Data> getPerHourHistoryDataByControllerValues(Long controllerId) throws SQLException;
 
     Map<Long, Long> getUpdatedControllerDataValues(Long controllerId) throws SQLException;
 
-    Collection<Data> getOnlineTableDataList(Long controllerId, Long programId, Long screenId, Long tableId, Long langId)
-            throws SQLException;
+    Collection<Data> getOnlineTableDataList(Long controllerId, Long programId, Long screenId, Long tableId, Long langId) throws SQLException;
 
     /**
      * Return collection of data objects .

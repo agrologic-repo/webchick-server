@@ -19,8 +19,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Edit Program</title>
-
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
     <script type="text/javascript" src="resources/javascript/general.js">;</script>

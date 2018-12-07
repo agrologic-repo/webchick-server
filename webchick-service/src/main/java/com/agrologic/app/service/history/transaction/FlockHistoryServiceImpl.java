@@ -55,27 +55,79 @@ public class FlockHistoryServiceImpl implements FlockHistoryService {
      * {@inheritDoc}
      */
     @Override
-    public Collection<String> getFlockPerHourReportsTitlesUsingGraphObjects(Long flockId, Integer growDay, Long langId)
-            throws SQLException {
-        String defaultValues = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
+    public Collection<String> getFlockPerHourReportsTitlesUsingGraphObjects(Long flockId, Integer growDay, Long langId)throws SQLException {
+        String defaultValues;
+        Map<Integer, Long> tableForSortingValues;
+        Map<Integer, String> historyList;
+        Collection<Data> perHourHistoryDataList;
+        String values;
+//        defaultValues = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
+        defaultValues = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
         //Todo: should find more good solution for this hard coded
-        Map<Integer, Long> tableForSortingValues = new TreeMap<Integer, Long>();
-        tableForSortingValues.put(0, 3122L);
-        tableForSortingValues.put(1, 3107L);
-        tableForSortingValues.put(2, 3142L);
-        tableForSortingValues.put(3, 1301L);
-        tableForSortingValues.put(4, 1302L);
-
-        Map<Integer, String> historyList = new TreeMap<Integer, String>();
+        tableForSortingValues = new TreeMap<Integer, Long>();
+        tableForSortingValues.put(0, 3122L);//temp aver(in)
+        tableForSortingValues.put(1, 3107L);////sensor_7
+        tableForSortingValues.put(2, 3142L);//Humidity
+        tableForSortingValues.put(3, 1301L);// Feed_consump
+        tableForSortingValues.put(4, 1302L);//Water_consump
+        tableForSortingValues.put(5, 1328L);//Feed 2 consump
+        tableForSortingValues.put(6, 1329L);//Water 2 consump
+        tableForSortingValues.put(7, 3567L);//Water per bird
+        tableForSortingValues.put(8, 3566L);//Feed per bird
+        tableForSortingValues.put(9, 2190L);//Water sum
+        historyList = new TreeMap<Integer, String>();
         // put default values
         for (Map.Entry<Integer, Long> entry : tableForSortingValues.entrySet()) {
             historyList.put(entry.getKey(), defaultValues);
-
         }
-
-        Collection<Data> perHourHistoryDataList = getFlockPerHourReportsData(flockId, growDay, langId);
+        perHourHistoryDataList = getFlockPerHourReportsData(flockId, growDay, langId);
         for (Data data : perHourHistoryDataList) {
-            String values = flockDao.getHistory24(flockId, growDay, data.getHistoryHourDNum());
+            values = flockDao.getHistory24(flockId, growDay, data.getHistoryHourDNum());
+            if (values == null || values.equals("-1") || values.equals("")) {
+                values = defaultValues;
+            }
+            //Todo: should find more good solution for this hard coded
+            for (Map.Entry<Integer, Long> entry : tableForSortingValues.entrySet()) {
+                if (data.getId().equals(entry.getValue())) {
+                    historyList.put(entry.getKey(), values);
+                }
+            }
+        }
+        return new ArrayList<String>(historyList.values());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<String> getFlockPerHourReportsTitlesUsingGraphObjectsSpecial(Long flockId, Integer growDay, Long langId)throws SQLException {
+        String defaultValues;
+        Map<Integer, Long> tableForSortingValues;
+        Map<Integer, String> historyList;
+        Collection<Data> perHourHistoryDataList;
+        String values;
+//        defaultValues = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
+        defaultValues = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+        //Todo: should find more good solution for this hard coded
+        tableForSortingValues = new TreeMap<Integer, Long>();
+        tableForSortingValues.put(0, 3122L);//temp aver(in)
+        tableForSortingValues.put(1, 3107L);////sensor_7
+        tableForSortingValues.put(2, 3142L);//Humidity
+        tableForSortingValues.put(3, 1358L);// Feed_consump
+        tableForSortingValues.put(4, 1302L);//Water_consump
+        tableForSortingValues.put(5, 1328L);//Feed 2 consump
+        tableForSortingValues.put(6, 1329L);//Water 2 consump
+        tableForSortingValues.put(7, 3567L);//Water per bird
+        tableForSortingValues.put(8, 3566L);//Feed per bird
+        tableForSortingValues.put(9, 2190L);//Water sum
+        historyList = new TreeMap<Integer, String>();
+        // put default values
+        for (Map.Entry<Integer, Long> entry : tableForSortingValues.entrySet()) {
+            historyList.put(entry.getKey(), defaultValues);
+        }
+        perHourHistoryDataList = getFlockPerHourReportsData(flockId, growDay, langId);
+        for (Data data : perHourHistoryDataList) {
+            values = flockDao.getHistory24(flockId, growDay, data.getHistoryHourDNum());
             if (values == null || values.equals("-1") || values.equals("")) {
                 values = defaultValues;
             }

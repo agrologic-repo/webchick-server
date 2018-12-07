@@ -48,7 +48,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<link rel="shortcut icon" href="resources/images/favicon.ico">
 <title><%=session.getAttribute("change.value") %>
 </title>
 <%--

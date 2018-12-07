@@ -47,9 +47,9 @@ public class ServerThread extends Observable implements Runnable {
     private boolean startServer() {
         try {
             Configuration configuration = new Configuration();
-            logger.info("IP address : ", configuration.getIp());
+            logger.info("IP address : " +  configuration.getIp());
             InetAddress ia = InetAddress.getByName(configuration.getIp());
-            logger.info("Port : ", configuration.getPort());
+            logger.info("Port : " + configuration.getPort());
             Integer port = configuration.getPort();
             logger.info("Try to open server on port : " + port);
             server = new ServerSocket(port, MAX_NUM_SOCKET, ia);
@@ -72,6 +72,7 @@ public class ServerThread extends Observable implements Runnable {
         ShutdownHook shutdownHook = new ShutdownHook(clientSessions.getSessions());
         Runtime.getRuntime().addShutdownHook(shutdownHook);
         boolean running = true;
+        int counterMRP = 0; // added 15/06/2017
 
         LOOP:
         while (running) {
@@ -97,7 +98,10 @@ public class ServerThread extends Observable implements Runnable {
                     try {
                         //start client session
                         Socket socket = server.accept();
-                        SocketThread newThread = clientSessions.createSessionWithClient(socket);
+                        if (socket != null && counterMRP <= 2) {
+                            counterMRP++; // added 15/06/2017
+                        }
+                        SocketThread newThread = clientSessions.createSessionWithClient(socket, counterMRP); //added 15/06/2017
                         setChanged();
                         notifyObservers(newThread);
                     } catch (SocketException ex) {

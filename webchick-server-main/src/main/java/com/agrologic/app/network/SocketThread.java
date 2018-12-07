@@ -1,15 +1,10 @@
 package com.agrologic.app.network;
 
 import com.agrologic.app.config.Configuration;
-import com.agrologic.app.dao.CellinkDao;
-import com.agrologic.app.dao.ControllerDao;
-import com.agrologic.app.dao.DaoType;
-import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.*;
 import com.agrologic.app.gui.ServerUI;
 import com.agrologic.app.messaging.*;
-import com.agrologic.app.model.Cellink;
-import com.agrologic.app.model.CellinkState;
-import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.*;
 import com.agrologic.app.util.ApplicationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +14,9 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;// added 29/05/2017
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class SocketThread implements Runnable {
@@ -31,6 +25,7 @@ public class SocketThread implements Runnable {
     private Cellink cellink;
     private CellinkDao cellinkDao;
     private ControllerDao controllerDao;
+    private FlockDao flockDao; // added 28/05/2017
     private Message sendMessage;
     private ResponseMessage responseMessage;
     private ResponseMessageMap responseMessageMap;
@@ -42,20 +37,27 @@ public class SocketThread implements Runnable {
     private int nxtDelay;
     private int maxError;
     private int keepAliveTimeout;
+    private int mrpTimeout;// added 28/05/2017
     private RequestIndex reqIndex;
     private long keepAliveTime;
+    private long mrpTime;// added 28/05/2017
     private boolean stopThread = false;
     private Logger logger = LoggerFactory.getLogger(SocketThread.class);
     private NetworkState networkState = NetworkState.STATE_ACCEPT_KEEP_ALIVE;
+    private int runTimeMinMRP; // added 29/05/2017
+    private long startRunTimeMRP; // added 29/05/2017
+    private int counterMrp;
+    private boolean flagMrp; //added 23/08/2017
 
     public SocketThread(Cellink cellink) {
         this.cellink = cellink;
         this.clientSessions = null;
     }
 
-    public SocketThread(ClientSessions clientSessions, Socket socket) throws IOException {
+    public SocketThread(ClientSessions clientSessions, Socket socket, int counterMrp) throws IOException { // added 15/06/2017
         this.cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
         this.controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+        this.flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class); // added 28/05/2017
         this.commControl = new CommControl(socket);
         this.requestQueue = new RequestMessageQueue();
         this.responseMessageMap = new ResponseMessageMap();
@@ -67,6 +69,11 @@ public class SocketThread implements Runnable {
         this.nxtDelay = Integer.parseInt(configuration.getNextDelay());
         this.maxError = Integer.parseInt(configuration.getMaxErrors());
         this.keepAliveTimeout = configuration.getKeepalive();
+//        this.mrpTimeout = 120; //added 28/05/2017;
+        this.mrpTimeout = 2; //added 28/05/2017
+        this.mrpTime = System.currentTimeMillis(); // added 28/05/2017
+        this.counterMrp = counterMrp; // added 15/06/2017
+        this.flagMrp = false; //added 23.08.2017
 
         this.clientSessions = clientSessions;
         this.messageManagers = new ArrayList<MessageManager>();
@@ -82,6 +89,7 @@ public class SocketThread implements Runnable {
     @Override
     public void run() {
 
+//        int mrpCount = 0;
         int errCount = 0;
         try {
             while (!stopThread) {
@@ -95,6 +103,7 @@ public class SocketThread implements Runnable {
 
                         case STATE_KEEP_ALIVE_TIMEOUT:
                             waitKeepAlive();
+                            waitMrpTimeout();// added 28/05/2017
                             break;
 
                         case STATE_STARTING:
@@ -110,7 +119,7 @@ public class SocketThread implements Runnable {
                             break;
 
                         case STATE_READ:
-                            errCount = receiveResponseHandler(errCount);
+                            errCount = receiveResponseHandler(errCount);/////
                             break;
 
                         case STATE_DELAY:
@@ -146,9 +155,13 @@ public class SocketThread implements Runnable {
                 } catch (SQLException ex) {
                     logger.error("Database action failed.\nUpdate cellink " + cellink.getId() + " was failed.");
                     networkState = NetworkState.STATE_ABORT;
+                } catch (NullPointerException ex) { //added 17/09/2017
+                    logger.debug("Connection to cellink [{}] stoped ", cellink);// added 17/09/2017
+                    networkState = NetworkState.STATE_STOP; // added 17/09/2017
                 } catch (Exception ex) {
                     networkState = NetworkState.STATE_DELAY;
                 }
+
             }
         } finally {
             if (cellink != null) {
@@ -211,7 +224,8 @@ public class SocketThread implements Runnable {
             if (allControllersOff()) {
                 setControllersOn();
             }
-            setThreadState(NetworkState.STATE_STOP);
+//            setThreadState(NetworkState.STATE_STOP);//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            setThreadState(NetworkState.STATE_DELAY);
             if (withLogger) {
                 logger.error("Connection to cellink " + cellink.getName() + " is lost . ");
             }
@@ -300,45 +314,126 @@ public class SocketThread implements Runnable {
                 }
 
                 commControl.clearInputStreamWithDelayForSilence();
-                setThreadState(NetworkState.STATE_ERROR);
+//                setThreadState(NetworkState.STATE_ERROR);
+                setThreadState(NetworkState.STATE_DELAY);
             }
         }
         return errCount;
     }
 
     private void sendRequestHandler() throws SQLException, IOException, Exception {
-        if (isCellinkTimedOut()) {
-            logger.info("Disconnecting cellink [" + cellink + "], user activity timeout .");
-            networkState = NetworkState.STATE_STOP;
-        } else if (isCellinkStopped()) {
-            logger.info("Disconnecting cellink [" + cellink + "], user disconnected .");
-            networkState = NetworkState.STATE_STOP;
-        } else {
-            try {
-                sendMessage = requestQueue.getRequest();
-                sendMessage.setIndex(reqIndex.getIndex());
-                commControl.write("V" + reqIndex.getIndex(), sendMessage);
-                boolean withLogger = getWithLogging();
-                if (withLogger) {
-                    logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
+        if(cellink.getType().toLowerCase().contains("MRP".toLowerCase())){ //added 29/05/2017
+//            if (isRunTimeTimedOut() && cellink.getState() == 3 ) { // added 29/05/2017 // added 16/08/2017
+                if (isRunTimeTimedOut() && cellink.getState() == 3 && flagMrp == true) { // added 29/05/2017 // added 16/08/2017
+                logger.info("Disconnecting cellink [" + cellink + "], mrp timeout .");
+                flagMrp = false;
+                networkState = NetworkState.STATE_STOP;
+            } else if (isCellinkStopped()) {
+                logger.info("Disconnecting cellink [" + cellink + "], user mrp disconnected .");
+                networkState = NetworkState.STATE_STOP;
+            } else {
+                try {
+                    sendMessage = requestQueue.getRequest();
+                    sendMessage.setIndex(reqIndex.getIndex());
+                    commControl.write("V" + reqIndex.getIndex(), sendMessage);
+                    boolean withLogger = getWithLogging();
+                    if (withLogger) {
+                        logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
+                    }
+                    setThreadState(NetworkState.STATE_BUSY);
+                } catch (IOException e) {
+                    logger.debug("Connection to cellink [{}] lost .", cellink, e);
+                    throw new IOException(e);
+                } catch (NullPointerException e) { // added 17/09/2017
+                    logger.debug("Connection to cellink [{}] stoped ", cellink);// added 17/09/2017
+                    setThreadState(NetworkState.STATE_STOP); // added 17/09/2017
+                } catch (Exception e) {
+                    logger.debug("Connection to cellink [{}] lost .", cellink, e);
+                    throw new Exception(e);
                 }
-                setThreadState(NetworkState.STATE_BUSY);
-            } catch (IOException e) {
-                logger.debug("Connection to cellink [{}] lost .", cellink, e);
-                throw new IOException(e);
-            } catch (Exception e) {
-                logger.debug("Connection to cellink [{}] lost .", cellink, e);
-                throw new Exception(e);
+                }
+            reqIndex.nextIndex();
+        } else { // added 29/05/2017
+            if (isCellinkTimedOut()) {
+//        if (isCellinkTimedOut()) {
+                logger.info("Disconnecting cellink [" + cellink + "], user activity timeout .");
+                networkState = NetworkState.STATE_STOP;
+            } else if (isCellinkStopped()) {
+                logger.info("Disconnecting cellink [" + cellink + "], user disconnected .");
+                networkState = NetworkState.STATE_STOP;
+            } else {
+                try {
+                    sendMessage = requestQueue.getRequest();
+                    sendMessage.setIndex(reqIndex.getIndex());
+                    commControl.write("V" + reqIndex.getIndex(), sendMessage);
+                    boolean withLogger = getWithLogging();
+                    if (withLogger) {
+                        logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
+                    }
+                    setThreadState(NetworkState.STATE_BUSY);
+                } catch (IOException e) {
+                    logger.debug("Connection to cellink [{}] lost .", cellink, e);
+                    throw new IOException(e);
+                } catch (NullPointerException ex) { //added 17/09/2017
+                    logger.debug("Connection to cellink [{}] stoped ", cellink);
+                    networkState = NetworkState.STATE_STOP; // added 17/09/2017
+                } catch (Exception e) {
+                    logger.debug("Connection to cellink [{}] lost .", cellink, e);
+                    throw new Exception(e);
+                }
             }
-        }
-        reqIndex.nextIndex();
+            reqIndex.nextIndex();
+        } // 29/05/2017
+
+////        if (isCellinkTimedOut() || isRunTimeTimedOut()) { // added 29/05/2017
+//        if (isCellinkTimedOut()) {
+//            logger.info("Disconnecting cellink [" + cellink + "], user activity timeout .");
+//            networkState = NetworkState.STATE_STOP;
+//        } else if (isCellinkStopped()) {
+//            logger.info("Disconnecting cellink [" + cellink + "], user disconnected .");
+//            networkState = NetworkState.STATE_STOP;
+//        } else {
+//            try {
+//                sendMessage = requestQueue.getRequest();
+//                sendMessage.setIndex(reqIndex.getIndex());
+//                commControl.write("V" + reqIndex.getIndex(), sendMessage);
+//                boolean withLogger = getWithLogging();
+//                if (withLogger) {
+//                    logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
+//                }
+//                setThreadState(NetworkState.STATE_BUSY);
+//            } catch (IOException e) {
+//                logger.debug("Connection to cellink [{}] lost .", cellink, e);
+//                throw new IOException(e);
+//            } catch (Exception e) {
+//                logger.debug("Connection to cellink [{}] lost .", cellink, e);
+//                throw new Exception(e);
+//            }
+//        }
+//        reqIndex.nextIndex();
     }
+
+//    private boolean checkHistoryForMRP(){
+//
+//        return true;
+//    }
 
     private void startingCommunication() throws SQLException {
         cellink.setState(CellinkState.STATE_RUNNING);
         cellinkDao.update(cellink);
 
+        startRunTimeMRP = System.currentTimeMillis(); // added 29/05/2017
+
         Collection<Controller> tempControllers = controllerDao.getActiveCellinkControllers(cellink.getId());
+
+//        runTimeMinMRP = tempControllers.size() * 5;//added 21/08/2017 // 16/11/2017
+
+        if(tempControllers.size() != 0 && tempControllers.size() < 4){ // 16/11/2017
+            runTimeMinMRP = tempControllers.size() * 10;// 16/11/2017
+        } else { // 16/11/2017
+            runTimeMinMRP = tempControllers.size() * 5;// 16/11/2017
+        }// 16/11/2017
+
         // Here we transform each controller into
         // the observer the manager of messages
         for (Controller c : tempControllers) {
@@ -368,6 +463,106 @@ public class SocketThread implements Runnable {
         }
         ApplicationUtil.sleepSeconds(1);
     }
+
+    private void waitMrpTimeout() throws IOException, SQLException, ParseException {// added 28/05/2017
+        Flock flock;
+        Collection<Controller> controllers;
+        Integer updatedGrowDay;
+        boolean flag = false;
+        Date startDate, updatedDate, currentDay;
+        SimpleDateFormat sdf;
+
+
+        controllers = controllerDao.getActiveCellinkControllers(cellink.getId());
+//        if (isMrpTime(mrpTime)) {
+        if (isMrpTime()) {// added 21/08/2017
+            if(cellink.getType().toLowerCase().contains("MRP".toLowerCase())){
+                for(Controller c : controllers){
+                    flock = flockDao.getOpenFlockByController(c.getId());
+                    if(flock != null) {
+                        if (flock.getStatus().toLowerCase().contains("Open".toLowerCase())) {//////////////////////////////////////////////////////////
+                            DataDao dataDao;
+//                            Data reset_time;
+
+                            dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
+//                            reset_time = dataDao.getById(3009L);
+//                            if (reset_time.getValue() != null) {
+                                sdf = new SimpleDateFormat("d/MM/yyyy");
+                                sdf.setLenient(false);
+                                startDate = sdf.parse(flock.getStartTime());
+//                                startDate.setTime(reset_time.getValue());
+                                updatedGrowDay = flockDao.getUpdatedGrowDayHistory(flock.getFlockId());
+                                if (updatedGrowDay != null) {
+                                    updatedDate = addDays(startDate, updatedGrowDay);
+//                                    updatedDate.setTime(reset_time.getValue());
+                                    currentDay = getCurrentDay();
+//                                    currentDay.setTime(reset_time.getValue());
+                                    if (currentDay.compareTo(updatedDate) != 0) {
+                                        mrpTime = System.currentTimeMillis(); // added 28/05/2017
+                                        flag = true;
+                                    } else {
+                                        if (counterMrp == 1) {
+                                            mrpTime = System.currentTimeMillis(); // added 28/05/2017
+                                            flag = true;
+                                        }
+                                    }
+                                } else {
+//                                mrpTime = System.currentTimeMillis(); // added 28/05/2017
+//                                flag = true;
+                                    currentDay = getCurrentDay(); // added 01/11/2017
+//                                    currentDay.setTime(reset_time.getValue());
+                                    updatedDate = addDays(startDate, 0); // added 01/11/2017
+//                                    updatedDate.setTime(reset_time.getValue());
+                                    if (currentDay.compareTo(updatedDate) != 0) { // added 01/11/2017
+                                        mrpTime = System.currentTimeMillis(); // added 01/11/2017
+                                        flag = true;// added  01/11/2017
+                                    } // added 01/11/2017
+                                }
+//                            }
+                        }///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    }
+                }
+                if (flag) {
+                    if(cellink.getState() == CellinkState.STATE_ONLINE) {
+                        runTimeMinMRP = controllers.size() * 5;
+                        setThreadState(NetworkState.STATE_STARTING);
+                        flagMrp = true; // added 23.08.2017
+                    }
+                }
+            }
+        }
+    } // added 28/05/2017
+
+    private Date addDays(Date date, int days) {// added 29/05/2017
+        Calendar cal;
+
+        cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        cal.add(Calendar.DATE, days);//minus number would decrement the days
+        return cal.getTime();
+    } // added 29/05/2017
+
+    private Date getCurrentDay(){ // added 29/05/2017
+        Calendar cal;
+        Date date;
+
+        cal = Calendar.getInstance();
+
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return date = cal.getTime();
+//        return date;
+    } // added 29/05/2017
 
     private void acceptCellink() {
         if (isAccessAllowed()) {
@@ -413,6 +608,7 @@ public class SocketThread implements Runnable {
                 cellink.setVersion(keepAlive.getVersion());
                 cellinkDao.update(cellink);
                 keepAliveTime = System.currentTimeMillis();
+//                mrpTime = System.currentTimeMillis(); // added 28/05/2017
                 clientSessions.openSession(cellink.getId(), this);
                 logger.info("validation cellink ok  [ " + cellink + " ]");
                 return true;
@@ -446,6 +642,20 @@ public class SocketThread implements Runnable {
         return timeSinceLastKeepAlive > keepAliveInterval;
     }
 
+//    private boolean isMrpTime(long mrpTime) { //added 28/05/2017
+      private boolean isMrpTime(){ //added 21/08/2017
+        long timeSinceLastMrp;
+        int mrpInterval;
+        timeSinceLastMrp = System.currentTimeMillis() - mrpTime;
+        mrpInterval = (int) (mrpTimeout * TimeUnit.MINUTES.toMillis(1L));
+        if(timeSinceLastMrp > mrpInterval){
+            return true;
+        } else {
+            return false;
+        }
+//        return true;
+    } // added 28/05/2017
+
     private boolean isCellinkTimedOut() throws SQLException {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         Timestamp updateTime = cellinkDao.getUpdatedTime(cellink.getId());
@@ -453,6 +663,15 @@ public class SocketThread implements Runnable {
         long diff = currentTime.getTime() - updateTime.getTime();
         return (diff > oneHour);
     }
+
+    private boolean isRunTimeTimedOut() { // added 29/05/2017
+        if (startRunTimeMRP + (runTimeMinMRP * 60000) >= System.currentTimeMillis()){
+            return false;
+        } else {
+//            flagMrp = false;
+            return true;
+        }
+    } // added 29/05/2017
 
     private boolean isCellinkStopped() throws SQLException {
         return cellinkDao.getState(cellink.getId()) == CellinkState.STATE_STOP;

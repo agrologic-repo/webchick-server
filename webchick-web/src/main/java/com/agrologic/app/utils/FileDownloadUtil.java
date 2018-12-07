@@ -18,17 +18,17 @@ public class FileDownloadUtil {
      * @param fileExtension the extension of file
      * @throws IOException if failed to read\write the file
      */
-    public static void doDownload(HttpServletResponse response, String outfile, String fileExtension)
-            throws IOException {
-
+    public static void doDownload(HttpServletResponse response, String outfile, String fileExtension)throws IOException {
         // export action
-        String filename = outfile;
-        File fileToDownload = new File(filename);
-        FileInputStream fileInputStream = new FileInputStream(fileToDownload);
+        String filename;
+        File fileToDownload;
+        FileInputStream fileInputStream;
+        filename = outfile;
+        fileToDownload = new File(filename);
+        fileInputStream = new FileInputStream(fileToDownload);
 
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-disposition",
-                "attachment; filename=" + outfile + "." + fileExtension);
+        response.setHeader("Content-disposition", "attachment; filename=" + outfile + "." + fileExtension);
 
         int i;
 

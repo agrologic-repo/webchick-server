@@ -28,6 +28,7 @@
 <head>
     <title><%=session.getAttribute("flock.page.title")%>
     </title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
     <script src="resources/javascript/jquery.js"></script>

@@ -207,14 +207,14 @@ public final class ResponseMessage implements Message {
 
     private int getChecksumFromReceivedBuffer(final String receivedString, final int start, final int end) {
         if (start < 0) {
-            throw new ParsingReceivedChecksumException("Negative SOT index");
+            throw new ParsingReceivedChecksumException("Negative SOT index"); // !negative space (space < 0)
         }
 
-        if (end > receivedString.length()) {
+        if (end > receivedString.length()) { //(eot > receivedString.length())
             throw new ParsingReceivedChecksumException("EOT index size  error : " + end);
         }
 
-        if (start > end) {
+        if (start > end) { //(space > eot)
             throw new ParsingReceivedChecksumException("SOT index " + start + " bigger than EOT index " + end);
         }
 
@@ -239,10 +239,10 @@ public final class ResponseMessage implements Message {
         return checksum;
     }
 
-    public static void checkIfChecksumIdenticalToEachOther(byte[] buffer, int calcCHS, int recvCHS, int sot, int length)
+    public static void checkIfChecksumIdenticalToEachOther(byte[] buffer, int calcCHS, int recvCHS, int sot, int length) //length = space
             throws ChecksumException {
         if (calcCHS != recvCHS) {
-            calcCHS = overFlowErrorCorrectionChecksum(buffer, sot + 1, length);
+            calcCHS = overFlowErrorCorrectionChecksum(buffer, sot + 1, length); //length = space
             if (calcCHS != recvCHS) {
                 throw new ChecksumException(recvCHS, calcCHS);
             }

@@ -33,8 +33,7 @@ public class KeepAliveMessage {
         return username;
     }
 
-    public static KeepAliveMessage parseIncomingBytes(byte[] payload) throws WrongMessageFormatException,
-            IllegalArgumentException {
+    public static KeepAliveMessage parseIncomingBytes(byte[] payload) throws WrongMessageFormatException, IllegalArgumentException {
         Validate.notNull(payload, BUFFER_MUST_NOT_BE_NULL);
         int stx = ByteUtil.indexOf(payload, Message.ProtocolBytes.STX.getValue());
         int etx = ByteUtil.indexOf(payload, Message.ProtocolBytes.ETX.getValue());

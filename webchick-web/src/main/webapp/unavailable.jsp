@@ -10,7 +10,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Server Application Unavailable</title>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <style type="text/css">
         .errmsg {
             margin-top: 12;

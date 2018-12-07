@@ -2,6 +2,8 @@ package com.agrologic.app.gui.rxtx;
 
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.service.DatabaseAccessor;
+import com.agrologic.app.dao.service.DatabaseLoadAccessor;
 import com.agrologic.app.dao.service.impl.DatabaseManager;
 import com.agrologic.app.exception.DatabaseNotFound;
 import com.agrologic.app.exception.RestartApplicationException;
@@ -15,6 +17,7 @@ import com.agrologic.app.model.Controller;
 import com.agrologic.app.network.rxtx.NetworkState;
 import com.agrologic.app.network.rxtx.SocketThread;
 import com.agrologic.app.util.ApplicationUtil;
+import com.agrologic.app.util.ProgramInstanceLocker;
 import com.agrologic.app.util.PropertyFileUtil;
 import com.agrologic.app.util.Windows;
 import com.google.common.collect.Lists;
@@ -27,6 +30,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Random;
@@ -52,6 +56,7 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
     private SingleMainScreenPanel singleMainScreenPanel;
     private ExecutorService threadPool = Executors.newFixedThreadPool(1);
     public static Logger logger = Logger.getLogger(ApplicationLocal.class);
+    private static final String CANNOT_CREATE_LOCK_FILE = "Can't create lock file. Access is denied !"; // added 21/06/2017
 
     private ResourceBundle bundle; // NOI18N
     private ComponentOrientation currentOrientation = orientationRTL;
@@ -62,6 +67,16 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
      * Creates a new {@link ApplicationLocal}.
      */
     public ApplicationLocal() {
+
+        try { // added 21/06/2017
+            ProgramInstanceLocker.lockFile(); // added 21/06/2017
+        } catch (RuntimeException ex) { // added 21/06/2017
+            JOptionPane.showMessageDialog(null, ex.getMessage(), CANNOT_CREATE_LOCK_FILE, JOptionPane.ERROR_MESSAGE); // added 21/06/2017
+            logger.error("Cannot create lock file . Check security configuration in OS "); // added 21/06/2017
+            logger.info("Program exit"); // added 21/06/2017
+            System.exit(0); // added 21/06/2017
+        } // added 21/06/2017
+
         configuration = new Configuration();
         LocaleManager localeManager = new LocaleManager();
         localeManager.setCurrentLanguage(configuration.getLanguage());
@@ -187,13 +202,25 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
         loadingThread.start();
     }
 
+//    private void delOldData() throws SQLException { // added 13/09/2017
+//        Collection<Controller> controllers = dbManager.getDatabaseLoader().getUser().getCellinks().iterator().next().getControllers();
+//        for(Controller c : controllers) {
+//            dbManager.getDatabaseLoader().getDatabaseAccessor().getDataDao().removeControllerDataValues(c.getId());
+//        }
+//    } // added 13/09/2017
+
     /**
      * Create main screen for each controller
      */
-    private synchronized void createControllersScreens() {
+
+    private synchronized void createControllersScreens() throws SQLException {
         logger.info("Get loaded controllers");
-        Collection<Controller> controllers = dbManager.getDatabaseLoader().getUser()
-                .getCellinks().iterator().next().getControllers();
+        Collection<Controller> controllers = dbManager.getDatabaseLoader().getUser().getCellinks().iterator().next().getControllers();
+
+        // clear old data
+        for(Controller c : controllers) {// added 13/09/2017
+            dbManager.getDatabaseLoader().getDatabaseAccessor().getDataDao().removeControllerDataValues(c.getId());
+        }// added 13/09/2017
 
         logger.info("Start creating  main screens ");
         mainPanel = new JPanel(new ModifiedFlowLayout(FlowLayout.CENTER));
@@ -402,8 +429,8 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
      */
     public static void main(String args[]) {
         /*
-         * Set the Nimbus look and feel
-         */
+        * Set the Nimbus look and feel
+        */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /*
          * If Nimbus (introduced in Java SE 6) is not available, stay with the
@@ -461,7 +488,7 @@ public class ApplicationLocal extends JFrame implements PropertyChangeListener {
             setProgress(0);
             try {
                 ApplicationUtil.sleep(100);
-                Process p = Runtime.getRuntime().exec("CDM20814_Setup.exe");
+                Process p = Runtime.getRuntime().exec("CDM21224_Setup.exe");
                 while (progress < 100 && !isCancelled()) {
                     //Sleep for up to one second.
                     ApplicationUtil.sleep(random.nextInt(100));

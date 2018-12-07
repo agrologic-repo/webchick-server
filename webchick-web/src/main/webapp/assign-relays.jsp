@@ -31,7 +31,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Controller Details</title>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <script type="text/javascript" src="resources/javascript/ftabs.js">;</script>
@@ -97,8 +97,7 @@
                                     </thead>
                                     <tbody>
                                     <% int bitNumbers = 16;%>
-                                    <%
-                                        Collection<ProgramRelay> programRelays = program.getProgramRelayByData(dataRelay.getId());%>
+                                    <% Collection<ProgramRelay> programRelays = program.getProgramRelayByData(dataRelay.getId());%>
                                     <% for (int bitNumber = 0; bitNumber < bitNumbers; bitNumber++) {%>
                                     <% ProgramRelay relay = findRelay(programRelays, dataRelay.getId(), bitNumber);%>
                                     <tr>
@@ -127,8 +126,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <button style="float:left" id="btnCancel" name="btnCancel"
-                                        onclick='return back("./all-screens.html?programId=<%=program.getId()%>");'>
+                                <button style="float:left" id="btnCancel" name="btnCancel" onclick='return back("./all-screens.html?programId=<%=program.getId()%>");'>
                                     <%=session.getAttribute("button.back")%>
                                 </button>
                                 <button style="float:left" id="btnSave" name="btnSave" type="submit">

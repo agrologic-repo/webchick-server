@@ -19,7 +19,7 @@
             }
             if (c.getName().equals("password")) {
                 pass = c.getValue();
-                String encpsswd = Base64.encode(pass);
+//                String encpsswd = Base64.encode(pass);
             }
         }
     }
@@ -91,10 +91,10 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("login.page.title")%>
-    </title>
-    <meta name="Author" content="Valery Manakhimov">
-    <link rel="shortcut icon" href="resources/images/favicon5.ico">
+    <title><%=session.getAttribute("login.page.title")%></title>
+    <meta name="Author" content="Agrologic">
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
+    <%--<link rel="shortcut icon" href="/images/favicon.gif" type="image/gif">--%>
     <script language="javascript" src="resources/javascript/menu.js">;</script>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
 </head>
@@ -157,6 +157,8 @@
                                 <option value="tr">Turkish</option>
                                 <option value="pl">Polish</option>
                                 <option value="es">Spanish</option>
+                                <option value="ja">Japanese</option>
+                                <option value="ko">Korean</option>
                             </select>
                         </td>
                     </tr>

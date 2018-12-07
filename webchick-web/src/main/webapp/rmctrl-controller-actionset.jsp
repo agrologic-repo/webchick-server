@@ -32,6 +32,7 @@
 <head>
     <title><%=session.getAttribute("all.screen.page.title")%>
     </title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
@@ -164,7 +165,7 @@
                                     <% } else {%>
                                     <td nowrap>
                                         <a class="<%=cssClass%>"
-                                           href="rmctrl-controller-screens-ajax.jsp?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>"
+                                           href="./rmctrl-controller-screens-ajax.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>"
                                            id="<%=screen.getId()%>"
                                            onclick='document.body.style.cursor = "wait"'><%=screen.getUnicodeTitle()%>
                                         </a>

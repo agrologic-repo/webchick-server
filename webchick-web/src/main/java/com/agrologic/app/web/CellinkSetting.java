@@ -65,8 +65,7 @@ public class CellinkSetting extends AbstractServlet {
 
                     logger.info("retrieve {} controller names", controllernames.size());
 
-                    request.getRequestDispatcher("./all-controllers.jsp?userId=" + userId + "&celinkId=" + cellinkId)
-                            .forward(request, response);
+                    request.getRequestDispatcher("./all-controllers.jsp?userId=" + userId + "&celinkId=" + cellinkId).forward(request, response);
                 } catch (SQLException ex) {
 
                     // error page

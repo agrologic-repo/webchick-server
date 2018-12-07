@@ -6,6 +6,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Download Excel</title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
 </head>
 <body>
 <table style="border:1px solid #ff0000;background-color:#f7f7f7" align="center">

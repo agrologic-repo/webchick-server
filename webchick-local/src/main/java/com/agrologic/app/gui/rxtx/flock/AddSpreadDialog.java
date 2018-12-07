@@ -4,6 +4,7 @@
  */
 package com.agrologic.app.gui.rxtx.flock;
 
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.model.Spread;
 import net.sf.nachocalendar.CalendarFactory;
@@ -19,6 +20,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -30,6 +32,7 @@ public class AddSpreadDialog extends JDialog {
     private Long flockId;
     private DateField d1;
     private FlockManagerService flockService;
+    private ResourceBundle bundle;
 
     /**
      * Creates new form AddSpreadDialog
@@ -40,6 +43,7 @@ public class AddSpreadDialog extends JDialog {
 
     public AddSpreadDialog(Long flockId, Frame owner, boolean modal) {
         super(owner, modal);
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         initComponents();
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
         this.d1 = CalendarFactory.createDateField();
@@ -81,6 +85,7 @@ public class AddSpreadDialog extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         jComboBox1 = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDataTable = new javax.swing.JTable();
@@ -96,10 +101,12 @@ public class AddSpreadDialog extends JDialog {
         txtTotal = new javax.swing.JTextField();
         btnRemove = new javax.swing.JButton();
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+//        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { bundle.getString("add.spread.dialog.item1"), bundle.getString("add.spread.dialog.item2"), bundle.getString("add.spread.dialog.item3"), bundle.getString("add.spread.dialog.item4") }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Add Spread");
+//        setTitle("Add Spread");
+        setTitle(bundle.getString("add.spread.dialog.add.spread"));
         setMinimumSize(new java.awt.Dimension(650, 400));
         getContentPane().setLayout(null);
 
@@ -107,9 +114,12 @@ public class AddSpreadDialog extends JDialog {
             new Object [][] {
 
             },
-            new String [] {
-                "ID", "Amount", "Date", "Price", "Account Number", "Total"
-            }
+//            new String [] {
+//                "ID", "Amount", "Date", "Price", "Account Number", "Total"
+//            }
+                new String [] {
+                        bundle.getString("add.spread.dialog.id"), bundle.getString("add.spread.dialog.amount"), bundle.getString("add.spread.dialog.date"), bundle.getString("add.spread.dialog.price"), bundle.getString("add.spread.dialog.account.number"), bundle.getString("add.spread.dialog.total")
+                }
         ) {
             Class[] types = new Class [] {
                 java.lang.Long.class, java.lang.Integer.class, java.lang.String.class, java.lang.Float.class, java.lang.Integer.class, java.lang.Float.class
@@ -131,7 +141,8 @@ public class AddSpreadDialog extends JDialog {
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(10, 21, 624, 160);
 
-        btnAdd.setText("Add ");
+//        btnAdd.setText("Add ");
+        btnAdd.setText(bundle.getString("add.spread.dialog.add"));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -140,19 +151,23 @@ public class AddSpreadDialog extends JDialog {
         getContentPane().add(btnAdd);
         btnAdd.setBounds(435, 195, 105, 23);
 
-        jLabel2.setText("Amount");
+//        jLabel2.setText("Amount");
+        jLabel2.setText(bundle.getString("add.spread.dialog.amount"));
         getContentPane().add(jLabel2);
         jLabel2.setBounds(20, 198, 140, 20);
 
-        jLabel3.setText("Date");
+//        jLabel3.setText("Date");
+        jLabel3.setText(bundle.getString("add.spread.dialog.date"));
         getContentPane().add(jLabel3);
         jLabel3.setBounds(20, 226, 140, 20);
 
-        jLabel4.setText("Price");
+//        jLabel4.setText("Price");
+        jLabel4.setText(bundle.getString("add.spread.dialog.price"));
         getContentPane().add(jLabel4);
         jLabel4.setBounds(20, 252, 140, 20);
 
-        jLabel5.setText("Account Number");
+//        jLabel5.setText("Account Number");
+        jLabel5.setText(bundle.getString("add.spread.dialog.account.number"));
         getContentPane().add(jLabel5);
         jLabel5.setBounds(20, 278, 140, 20);
 
@@ -189,7 +204,8 @@ public class AddSpreadDialog extends JDialog {
         getContentPane().add(txtAccountNumber);
         txtAccountNumber.setBounds(170, 278, 226, 20);
 
-        jLabel6.setText("Total");
+//        jLabel6.setText("Total");
+        jLabel6.setText(bundle.getString("add.spread.dialog.total"));
         getContentPane().add(jLabel6);
         jLabel6.setBounds(20, 304, 140, 20);
 
@@ -202,7 +218,8 @@ public class AddSpreadDialog extends JDialog {
         getContentPane().add(txtTotal);
         txtTotal.setBounds(170, 304, 226, 20);
 
-        btnRemove.setText("Delete");
+//        btnRemove.setText("Delete");
+        btnRemove.setText(bundle.getString("add.spread.dialog.delete"));
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);

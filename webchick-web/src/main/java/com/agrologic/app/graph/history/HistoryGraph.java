@@ -202,6 +202,8 @@ public class HistoryGraph {
     private Number valueByType(Data data) {
         if (DataFormat.TIME == data.getFormat()) {
             Long value = data.getValue();
+            String sv = Long.toHexString(value);
+            value = Long.parseLong(sv);
             long h = value / 100;
             long m = value % 100;
             long t = h * 60 + m;

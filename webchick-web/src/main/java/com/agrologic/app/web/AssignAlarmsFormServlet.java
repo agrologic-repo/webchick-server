@@ -42,7 +42,7 @@ public class AssignAlarmsFormServlet extends AbstractServlet {
                 SortedMap<Integer, String> digitsTextMap = new TreeMap<Integer, String>();
                 SortedMap<Long, Map<Integer, String>> dataAlarmMap = new TreeMap<Long, Map<Integer, String>>();
                 int digitCount = 0,
-                        maxNumDigits = 10;
+                maxNumDigits = 10;
                 long dataId = 0;
                 StringTokenizer bitsTextToken = new StringTokenizer(dataAlarmMapParam, ";");
 

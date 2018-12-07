@@ -39,7 +39,8 @@ public class GraphFactory {
         for (int i = 0; i < vals.length; i++) {
             String vl = vals[i];
             Long value = Long.parseLong(vl);
-            vl = DataFormat.formatToStringValue(DataFormat.DEC_1, value);
+//            vl = DataFormat.formatToStringValue(DataFormat.DEC_1, value);
+            vl = DataFormat.formatToStringValue(DataFormat.DEC_0, value);
             series.add((double) (i + 1), Double.parseDouble(vl));
         }
         return series;
@@ -52,19 +53,11 @@ public class GraphFactory {
             Entry<Integer, Double> entry = iter.next();
             series.add(entry.getKey(), entry.getValue());
         }
-
         return series;
     }
 
     private static JFreeChart createXYChart(XYDataset xyDataset) {
-        JFreeChart chart = ChartFactory.createXYLineChart("History Graph",
-                "Grow Day",
-                " ",
-                xyDataset,
-                PlotOrientation.VERTICAL,
-                true,
-                true,
-                true);
+        JFreeChart chart = ChartFactory.createXYLineChart("History Graph", "Grow Day", " ", xyDataset, PlotOrientation.VERTICAL, true, true, true);
 
         XYPlot localXYPlot = (XYPlot) chart.getPlot();
         localXYPlot.setForegroundAlpha(0.65F);

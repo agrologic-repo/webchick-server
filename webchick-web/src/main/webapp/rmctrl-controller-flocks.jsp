@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
     <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
@@ -118,10 +118,8 @@
                                     <td>
                                         <div class="ui-widget" id="msg" style="display: none;">
                                             <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
-                                                <p><span class="ui-icon ui-icon-alert"
-                                                         style="float: left; margin-right: .3em;"></span>
-                                                    <strong>Error
-                                                        :</strong> <%=session.getAttribute("label.message.feild.empty")%>
+                                                <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                                                    <strong>Error:</strong> <%=session.getAttribute("label.message.feild.empty")%>
                                                 </p>
                                             </div>
                                         </div>
@@ -276,8 +274,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <button id="btnBack" name="btnBack"
-                                                onclick='return back("./rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1")'>
+                                        <button id="btnBack" name="btnBack" onclick='return back("./rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1")'>
                                         <%=session.getAttribute("button.back") %>
                                         </button>
                                     </td>

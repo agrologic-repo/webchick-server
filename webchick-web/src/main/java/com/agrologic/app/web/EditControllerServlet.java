@@ -45,8 +45,7 @@ public class EditControllerServlet extends AbstractServlet {
                 Program program = programDao.getById(editController.getProgramId());
                 editController.setProgram(program);
 
-                request.getRequestDispatcher("./edit-controller.jsp?userId=" + userId + "&celinkId="
-                        + cellinkId).forward(request, response);
+                request.getRequestDispatcher("./edit-controller.jsp?userId=" + userId + "&celinkId=" + cellinkId).forward(request, response);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

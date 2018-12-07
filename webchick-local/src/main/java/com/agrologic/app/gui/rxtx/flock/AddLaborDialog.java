@@ -5,6 +5,7 @@
 package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.config.Configuration;
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.Labor;
 import com.agrologic.app.model.Worker;
 import net.sf.nachocalendar.CalendarFactory;
@@ -20,6 +21,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -32,6 +34,7 @@ public class AddLaborDialog extends JDialog {
     private Long flockId;
     private DateField d1;
     private FlockManagerService flockService;
+    private ResourceBundle bundle; // 09/01/2018
 
     class WorkerEntry {
 
@@ -103,6 +106,7 @@ public class AddLaborDialog extends JDialog {
 
     public AddLaborDialog(Long flockId, Frame owner, boolean modal) {
         super(owner, modal);
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         initComponents();
         conf = new Configuration();
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
@@ -145,6 +149,7 @@ public class AddLaborDialog extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         jComboBox1 = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDataTable = new javax.swing.JTable();
@@ -159,10 +164,12 @@ public class AddLaborDialog extends JDialog {
         cmbWorkerNames = new javax.swing.JComboBox();
         btnAddFeadType = new javax.swing.JButton();
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+//        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" })); // 09/01/2018
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { bundle.getString("add.labor.dialog.item1"), bundle.getString("add.labor.dialog.item2"), bundle.getString("add.labor.dialog.item3"), bundle.getString("add.labor.dialog.item4") })); // 09/01/2018
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Add Labor");
+//        setTitle("Add Labor"); // 09/01/2018
+        setTitle(bundle.getString("add.labor.dialog.add.labor")); // 09/01/2018
         setMinimumSize(new java.awt.Dimension(650, 400));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
@@ -175,9 +182,12 @@ public class AddLaborDialog extends JDialog {
             new Object [][] {
 
             },
-            new String [] {
-                "ID", "Name", "Date", "Hour", "Salary"
-            }
+//            new String [] {
+//                "ID", "Name", "Date", "Hour", "Salary" // 09/01/2018
+//            }
+                new String [] {
+                        bundle.getString("add.labor.dialog.id"), bundle.getString("add.labor.dialog.name"), bundle.getString("add.labor.dialog.date"), bundle.getString("add.labor.dialog.hour"), bundle.getString("add.labor.dialog.salary") // 09/01/2018
+                }
         ) {
             Class[] types = new Class [] {
                 java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Float.class
@@ -199,7 +209,8 @@ public class AddLaborDialog extends JDialog {
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(10, 11, 624, 170);
 
-        btnAdd.setText("Add ");
+//        btnAdd.setText("Add "); // 09/01/2018
+        btnAdd.setText(bundle.getString("add.labor.dialog.add")); // 09/01/2018
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -208,15 +219,18 @@ public class AddLaborDialog extends JDialog {
         getContentPane().add(btnAdd);
         btnAdd.setBounds(435, 195, 105, 23);
 
-        jLabel2.setText("Name");
+//        jLabel2.setText("Name"); // 09/01/2018
+        jLabel2.setText(bundle.getString("add.labor.dialog.name")); // 09/01/2018
         getContentPane().add(jLabel2);
         jLabel2.setBounds(20, 198, 140, 20);
 
-        jLabel3.setText("Date");
+//        jLabel3.setText("Date"); // 09/01/2018
+        jLabel3.setText(bundle.getString("add.labor.dialog.date")); // 09/01/2018
         getContentPane().add(jLabel3);
         jLabel3.setBounds(20, 226, 140, 20);
 
-        jLabel4.setText("Hour");
+//        jLabel4.setText("Hour"); // 09/01/2018
+        jLabel4.setText(bundle.getString("add.labor.dialog.hour")); // 09/01/2018
         getContentPane().add(jLabel4);
         jLabel4.setBounds(20, 252, 140, 20);
 
@@ -231,7 +245,8 @@ public class AddLaborDialog extends JDialog {
         getContentPane().add(txtHour);
         txtHour.setBounds(170, 250, 220, 20);
 
-        jLabel6.setText("Salary");
+//        jLabel6.setText("Salary"); // 09/01/2018
+        jLabel6.setText(bundle.getString("add.labor.dialog.salary")); // 09/01/2018
         getContentPane().add(jLabel6);
         jLabel6.setBounds(20, 280, 140, 20);
 
@@ -244,7 +259,8 @@ public class AddLaborDialog extends JDialog {
         getContentPane().add(txtSalary);
         txtSalary.setBounds(170, 280, 220, 20);
 
-        btnRemove.setText("Delete");
+//        btnRemove.setText("Delete"); // 09/01/2018
+        jLabel6.setText(bundle.getString("add.labor.dialog.delete")); // 09/01/2018
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);
@@ -257,7 +273,8 @@ public class AddLaborDialog extends JDialog {
         getContentPane().add(cmbWorkerNames);
         cmbWorkerNames.setBounds(170, 200, 220, 20);
 
-        btnAddFeadType.setText("Add Worker");
+//        btnAddFeadType.setText("Add Worker"); // 09/01/2018
+        btnAddFeadType.setText(bundle.getString("add.labor.dialog.add.worker")); // 09/01/2018
         btnAddFeadType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddFeadTypeActionPerformed(evt);

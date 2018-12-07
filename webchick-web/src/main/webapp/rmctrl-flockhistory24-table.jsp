@@ -30,8 +30,8 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title></title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
-
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/multiopt.css"/>
 </head>

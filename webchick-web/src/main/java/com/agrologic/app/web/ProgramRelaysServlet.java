@@ -25,8 +25,7 @@ public class ProgramRelaysServlet extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
@@ -68,8 +67,7 @@ public class ProgramRelaysServlet extends AbstractServlet {
                     RelayDao relayDao = DbImplDecider.use(DaoType.MYSQL).getDao(RelayDao.class);
                     List<Relay> relayNames = (List<Relay>) relayDao.getAll(translateLang);
                     request.setAttribute("relayNames", relayNames);
-                    request.getRequestDispatcher("./assign-relays.jsp?translateLang=" + translateLang).forward(request,
-                            response);
+                    request.getRequestDispatcher("./assign-relays.jsp?translateLang=" + translateLang).forward(request, response);
                 } catch (SQLException ex) {
                     logger.info("Error occurs while retrieve program relays!");
                     request.setAttribute("message", "Error occurs while retrieve program relays!");
@@ -106,8 +104,7 @@ public class ProgramRelaysServlet extends AbstractServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 

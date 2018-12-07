@@ -21,8 +21,7 @@ public class AddRelayFormServlet extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
         Long relayId = Long.parseLong(request.getParameter("NrelayId"));
@@ -36,13 +35,11 @@ public class AddRelayFormServlet extends AbstractServlet {
             relayDao.insert(relay);
             logger.info("Relay " + relay.getText() + "  successfully added");
             relayDao.insertTranslation(relay.getId(), translateLang, relay.getText());
-            request.setAttribute("message", "Relay <b style=\"color:gray\"> " + relay.getText() +
-                    " </b> successfully  added");
+            request.setAttribute("message", "Relay <b style=\"color:gray\"> " + relay.getText() + " </b> successfully  added");
             request.setAttribute("error", false);
         } catch (SQLException ex) {
             logger.error(ex.getMessage() + relay.getText(), ex);
-            request.setAttribute(
-                    "message", "Error occurs during adding relay <b style=\"color:gray\">" + relay.getText() + "</b>");
+            request.setAttribute("message", "Error occurs during adding relay <b style=\"color:gray\">" + relay.getText() + "</b>");
             request.setAttribute("error", true);
         }
     }
@@ -72,8 +69,7 @@ public class AddRelayFormServlet extends AbstractServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 

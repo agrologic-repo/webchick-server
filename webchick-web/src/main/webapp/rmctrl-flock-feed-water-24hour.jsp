@@ -33,6 +33,7 @@
 <head>
     <title><%=session.getAttribute("history.graph.page.title")%>
     </title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/jquery.tablescroll.css"/>
@@ -57,7 +58,6 @@
     <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery.tablescroll.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery.tablesorter.js">;</script>
-
 </head>
 </head>
 <body onload="downLoad()">
@@ -96,12 +96,9 @@
                             <td valign="top">
                                 <button id="showTable"
                                         onclick="window.open('./rmctrl-flockhistory24-table.jsp?flockId=<%=flockId%>&growDay=<%=growDay%>', 'mywindow','width=800,height=600,toolbar=no,location=yes,directories=no,status=no,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes')">
-                                    <%=session.getAttribute("button.table")%><img src="resources/images/table.gif"
-                                                                                  style="cursor: pointer; vertical-align: bottom"
-                                                                                  hspace="5" border="0"/>
+                                    <%=session.getAttribute("button.table")%><img src="resources/images/table.gif" style="cursor: pointer; vertical-align: bottom" hspace="5" border="0"/>
                                 </button>
-                                <button id="exportExcel"><%=session.getAttribute("button.export")%><img
-                                        id="exportToExcel" name="exportToExcel" src="resources/images/excel.gif"
+                                <button id="exportExcel"><%=session.getAttribute("button.export")%><img id="exportToExcel" name="exportToExcel" src="resources/images/excel.gif"
                                         style="cursor: pointer; vertical-align: bottom" hspace="5" border="0"/>
                                 </button>
                                 <div id="loading" style="display:none"></div>
@@ -118,146 +115,6 @@
                                 <td colspan="2" width="80%">
                                     <img src="<%=graphURLWFT%>" usemap="#<%=filenamewft%>">
                                 </td>
-                                <%--<td valign="top" width="20%">--%>
-                                <%--<table id="thetable" class="tablescroll">--%>
-                                <%--<thead>--%>
-                                <%--<tr>--%>
-                                <%--<td>flock id</td>--%>
-                                <%--<td>grow day</td>--%>
-                                <%--<td>feed consumtion</td>--%>
-                                <%--<td>water consumtion</td>--%>
-                                <%--</tr>--%>
-                                <%--</thead>--%>
-                                <%--<tbody>--%>
-                                <%--<tr class="first">--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>1</td>--%>
-                                <%--<td>73</td>--%>
-                                <%--<td>73</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--<tr>--%>
-                                <%--<td>00501</td>--%>
-                                <%--<td>2</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--<td>173</td>--%>
-                                <%--</tr>--%>
-                                <%--</tbody>--%>
-                                <%--</table>--%>
-                                <%--</td>--%>
                             </tr>
                         </table>
                     </div>
@@ -306,24 +163,6 @@
             node = document.getElementById("contentDiv").style.visibility = 'visible';
         }
     }
-
-    <%--$(document).ready(function() {--%>
-    <%--if($('#<%=filenameth%>')) {--%>
-    <%--$('#<%=filenameth%> area').each(function() {--%>
-    <%--var id = $(this).attr('id');--%>
-    <%--$(this).mouseover(function() {--%>
-    <%--$('#overlay'+id).show();--%>
-
-    <%--});--%>
-
-    <%--$(this).mouseout(function() {--%>
-    <%--var id = $(this).attr('id');--%>
-    <%--$('#overlay'+id).hide();--%>
-    <%--});--%>
-
-    <%--});--%>
-    <%--}--%>
-    <%--});--%>
 </script>
 </body>
 </html>

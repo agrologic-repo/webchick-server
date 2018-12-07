@@ -30,8 +30,8 @@ public class ClientSessions {
         this.cellinkDao = cellinkDao;
     }
 
-    public synchronized SocketThread createSessionWithClient(Socket socket) throws IOException {
-        SocketThread newThread = new SocketThread(this, socket);
+    public synchronized SocketThread createSessionWithClient(Socket socket, int counterMRP) throws IOException {
+        SocketThread newThread = new SocketThread(this, socket, counterMRP); // added 15/06/2017
         newThread.setServerFacade(server);
         threadPool.execute(newThread);
         return newThread;

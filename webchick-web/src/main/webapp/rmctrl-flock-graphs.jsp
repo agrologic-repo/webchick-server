@@ -13,6 +13,7 @@
     Locale currLocal = (Locale) session.getAttribute("currLocale");
     Integer fromDay = -1;
     Integer toDay = -1;
+
     try {
         fromDay = Integer.parseInt(request.getParameter("fromDay"));
         if (fromDay == null) {
@@ -24,7 +25,9 @@
         }
     } catch (Exception ex) {
     }
+
     Integer growDay = 1;
+
     try {
         growDay = Integer.parseInt(request.getParameter("growDay"));
         if (growDay == null) {
@@ -32,31 +35,45 @@
         }
     } catch (Exception ex) {
         growDay = 1;
-
     }
 
+
+
+    String filenameth;
+    String graphURLTH;
+    String filenamewft;
+    String graphURLWFT;
+    String filenamefw;
+    String graphURLWF;
+    String filenameaw;
+    String graphURLAW;
+    String filenamehot;
+    String graphURLHOT;
+    String filenamem;
+    String graphURLM;
+    String filenamemmh;
+    String graphURLMMH;
     //////////////////////////////////////////////////Graph 24 hour/////////////////////////////////////////////////////
-    String filenameth = (String) session.getAttribute("filenameth-flockid=" + flockId + "&growday=" + growDay);
+    //////////////////////////////////////////////////Temperature In and Out, Humidity/////////////////////////////////////////////////////
+    filenameth = (String) session.getAttribute("filenameth-flockid=" + flockId + "&growday=" + growDay);
     if (filenameth == null) {
-        filenameth = GenerateGraph.generateChartFlockTempHum(flockId, growDay.toString(), session,
-                new PrintWriter(out), currLocal);
+        filenameth = GenerateGraph.generateChartFlockTempHum(flockId, growDay.toString(), session, new PrintWriter(out), currLocal);
         session.setAttribute("filenameth-flockid=" + flockId + "&growday=" + growDay, filenameth);
     }
 
-    String graphURLTH;
     if (filenameth.contains("public_error")) {
         graphURLTH = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
     } else {
         graphURLTH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameth;
     }
 
-    String filenamewft = (String) session.getAttribute("filenamewft");
+    filenamewft = (String) session.getAttribute("filenamewft");
     if (filenamewft == null) {
         filenamewft = GenerateGraph.generateChartFlockWaterFeedTemp(flockId, growDay.toString(), session, new PrintWriter(out), currLocal);
         session.setAttribute("filenamewft", filenamewft);
     }
 
-    String graphURLWFT;
+
     if (filenamewft.contains("public_error")) {
         graphURLWFT = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
     } else {
@@ -64,70 +81,61 @@
     }
     //////////////////////////////////////////////////Graph Daily///////////////////////////////////////////////////////
 
-    String filenamefw = (String) session.getAttribute("filenamefw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
+    filenamefw = (String) session.getAttribute("filenamefw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
     if (filenamefw == null) {
-        filenamefw = GenerateGraph.generateChartFlockWaterFeed(flockId, fromDay.toString(), toDay.toString(),
-                session, new PrintWriter(out), currLocal);
+        filenamefw = GenerateGraph.generateChartFlockWaterFeed(flockId, fromDay.toString(), toDay.toString(), session, new PrintWriter(out), currLocal);
+//        List <String> filenamesLst = GenerateGraph.generateFlockGraph(flockId, fromDay.toString(), toDay.toString(), new PrintWriter(out), currLocal);//test//*********************
     }
 
-    String graphURLWF;
     if (filenamefw.contains("public_error")) {
         graphURLWF = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
     } else {
         graphURLWF = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamefw;
     }
 
-    String filenameaw = (String) session.getAttribute("filenameaw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
+    filenameaw = (String) session.getAttribute("filenameaw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
     if (filenameaw == null) {
         filenameaw = GenerateGraph.generateChartFlockAverageWeight(flockId, fromDay.toString(), toDay.toString(),
                 session, new PrintWriter(out), currLocal);
         session.setAttribute("filenamefw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamefw);
     }
 
-    String graphURLAW;
     if (filenameaw.contains("public_error")) {
         graphURLAW = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
     } else {
         graphURLAW = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameaw;
     }
 
-    String filenamehot = (String) session.getAttribute("filenameaw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
+    filenamehot = (String) session.getAttribute("filenameaw-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
     if (filenamehot == null) {
-        filenamehot = GenerateGraph.generateChartFlockHeatOnTime(flockId, fromDay.toString(), toDay.toString(),
-                session, new PrintWriter(out), currLocal);
+        filenamehot = GenerateGraph.generateChartFlockHeatOnTime(flockId, fromDay.toString(), toDay.toString(), session, new PrintWriter(out), currLocal);
         session.setAttribute("filenamehot-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamehot);
     }
 
-    String graphURLHOT;
     if (filenamehot.contains("public_error")) {
         graphURLHOT = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
     } else {
         graphURLHOT = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamehot;
     }
 
-
-    String filenamem = (String) session.getAttribute("filenamem-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
+    filenamem = (String) session.getAttribute("filenamem-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
     if (filenamem == null) {
-        filenamem = GenerateGraph.generateChartFlockMortality(flockId, fromDay.toString(), toDay.toString(),
-                session, new PrintWriter(out), currLocal);
+        filenamem = GenerateGraph.generateChartFlockMortality(flockId, fromDay.toString(), toDay.toString(), session, new PrintWriter(out), currLocal);
         session.setAttribute("filenamem-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamem);
     }
 
-    String graphURLM;
     if (filenamem.contains("public_error")) {
         graphURLM = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
     } else {
         graphURLM = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamem;
     }
 
-
-    String filenamemmh = (String) session.getAttribute("filenamemmh-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
+    filenamemmh = (String) session.getAttribute("filenamemmh-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay);
     if (filenamemmh == null) {
-        filenamemmh = GenerateGraph.generateChartFlockMinMaxTemperatureHumidity(flockId, fromDay.toString(), toDay.toString(),
-                session, new PrintWriter(out), currLocal);
+        filenamemmh = GenerateGraph.generateChartFlockMinMaxTemperatureHumidity(flockId, fromDay.toString(), toDay.toString(), session, new PrintWriter(out), currLocal);
         session.setAttribute("filenamemmh-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filenamemmh);
     }
-    String graphURLMMH;
+
     if (filenamefw.contains("public_error")) {
         graphURLMMH = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
     } else {
@@ -141,6 +149,7 @@
 <head>
     <title><%=session.getAttribute("history.graph.page.title")%>
     </title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
@@ -161,20 +170,14 @@
             <table width="85%">
                 <tr>
                     <td width="65%">
-                        <h1 style="text-align: center;"><%=session.getAttribute("history.graph.page.title")%>
-                            <%=flock.getFlockName()%>
-                        </h1>
-
+                        <h1 style="text-align: center;"><%=session.getAttribute("history.graph.page.title")%><%=flock.getFlockName()%></h1>
                     </td>
                     <td width="20%">
                         <a href="rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1">
                             <img src="resources/images/display.png" style="cursor: pointer" hspace="5"
-                                 border="0"/><%=session.getAttribute("button.screens")%>
-                        </a>
+                                 border="0"/><%=session.getAttribute("button.screens")%></a>
                         <a href="flocks.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>">
-                            <img src="resources/images/chicken-icon.png" style="cursor: pointer" hspace="5"
-                                 border="0"/><%=session.getAttribute("main.screen.page.flocks")%>
-                        </a>
+                            <img src="resources/images/chicken-icon.png" style="cursor: pointer" hspace="5" border="0"/><%=session.getAttribute("main.screen.page.flocks")%></a>
                     </td>
                 </tr>
             </table>
@@ -252,8 +255,7 @@
                                     //                                    String graphURLTH;
 //                                    String filenameth = (String)session.getAttribute("filenameth-flockid="+flockId+"&growday="+growDay);
                                     if (filenameth == null) {
-                                        filenameth = GenerateGraph.generateChartFlockTempHum(flockId, growDay.toString(), session,
-                                                new PrintWriter(out), currLocal);
+                                        filenameth = GenerateGraph.generateChartFlockTempHum(flockId, growDay.toString(), session, new PrintWriter(out), currLocal);
                                         session.setAttribute("filenameth-flockid=" + flockId + "&growday=" + growDay, filenameth);
                                     }
 
@@ -340,18 +342,13 @@
                 <tr>
                     <td>
                         <div id="accordion-hourly-graph">
-                            <h3><%=session.getAttribute("history.graph.page.panel.ioh24.label")%>
-                            </h3>
-
+                            <h3><%=session.getAttribute("history.graph.page.panel.ioh24.label")%></h3>
                             <div>
                                 <img src="<%=graphURLTH%>" width=800 height=600 border=0 usemap="#<%=filenameth%>">
                             </div>
-                            <h3><%=session.getAttribute("history.graph.page.panel.fwt24.label")%>
-                            </h3>
-
+                            <h3><%=session.getAttribute("history.graph.page.panel.fwt24.label")%></h3>
                             <div>
-                                <img src="<%= graphURLWFT %>" width=800 height=600 border=0
-                                     usemap="#<%= filenamewft %>">
+                                <img src="<%= graphURLWFT %>" width=800 height=600 border=0 usemap="#<%= filenamewft %>">
                             </div>
                         </div>
                     </td>

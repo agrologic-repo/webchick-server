@@ -38,8 +38,7 @@ public class ViewTableHistoryData extends AbstractServlet {
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
                 long langId = getInSessionLanguageId(request);
-                FromDayToDay fromDayToDay = new FromDayToDay(request.getParameter("fromDay"),
-                        request.getParameter("toDay"));
+                FromDayToDay fromDayToDay = new FromDayToDay(request.getParameter("fromDay"), request.getParameter("toDay"));
                 String htmlTable = tableService.toHtmlTablePerDayReports(flockId, fromDayToDay, langId);
                 out.println(htmlTable);
             }

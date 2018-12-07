@@ -95,8 +95,7 @@ public class ControllerDaoImpl implements ControllerDao {
      * {@inheritDoc}
      */
     @Override
-    public void insertControllerDataValues(Long controllerId, Iterator<Map.Entry<Long, Data>> dataValues)
-            throws SQLException {
+    public void insertControllerDataValues(Long controllerId, Iterator<Map.Entry<Long, Data>> dataValues) throws SQLException {
         String sql = "insert into controllerdata (dataid,controllerid,value) VALUES(?,?,-1) ";
         List<Object[]> batch = new ArrayList<Object[]>();
         while (dataValues.hasNext()) {
@@ -156,6 +155,26 @@ public class ControllerDaoImpl implements ControllerDao {
             }
         });
     }
+
+    @Override
+    public Long getControllerDataValue(Long dataId, Long controllerId) throws SQLException {
+
+        String sql = "select * from controllerdata where ControllerID=? and DataID=?";
+        Data data = jdbcTemplate.queryForObject(sql, new Object[]{controllerId, dataId}, RowMappers.controllerData());
+
+        return data.getValue();
+    }
+
+//    @Override
+//    public Long getParsedControllerDataValue(Long dataId, Long controllerId) throws SQLException {
+//
+//        String sql = "select * from controllerdata where ControllerID=? and DataID=?";
+////        List<Data> result = jdbcTemplate.query(sql, new Object[]{controllerId, dataId}, RowMappers.controllerData());
+//        Data data = jdbcTemplate.queryForObject(sql, new Object[]{controllerId, dataId}, RowMappers.controllerData());
+//
+//        return data.getValue();
+//    }
+
 
     /**
      * {@inheritDoc}

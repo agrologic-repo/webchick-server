@@ -11,7 +11,7 @@ public interface Message {
         STX((byte) 2),
         ETX((byte) 3),
         ERROR((byte) 25),
-        SOINDX((byte) 24),
+        SOINDX((byte) 24), //// start of index
         SPACE((byte) 32),
         RS((byte) 30);
 

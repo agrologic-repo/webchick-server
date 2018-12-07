@@ -18,6 +18,7 @@
     <title><%=session.getAttribute("controller.page.edit.title")%>
     </title>
     <meta http-equiv="Content-type" value="text/html; charset=utf-8">
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/jquery-ui.css"/>

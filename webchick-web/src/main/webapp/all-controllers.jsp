@@ -24,6 +24,7 @@
     <title><%=session.getAttribute("label.cellink.setting.title")%>
     </title>
     <meta http-equiv="Content-type" value="text/html; charset=utf-8">
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
@@ -196,7 +197,8 @@
                                                     <td align="center"><%=controller.getNetName()%>
                                                     </td>
                                                     <td align="center">
-                                                        <%if (user.getRole() != UserRole.USER) {%>
+                                                        <%--<%if (user.getRole() != UserRole.USER) {%>--%>
+                                                            <%if ((user.getRole() != UserRole.USER) && (user.getRole() != UserRole.DISTRIBUTOR) && (user.getRole() != UserRole.READONLYUSER)){%>
                                                         <a href="./all-screens.html?programId=<%=controller.getProgramId() %>">
                                                             <%=controller.getProgram().getName() %>
                                                         </a>
@@ -221,7 +223,7 @@
                                                             <%=session.getAttribute("button.edit")%>
                                                         </a>
                                                     </td>
-                                                    <% if (user.getRole() != UserRole.USER) {%>
+                                                    <% if (user.getRole() != UserRole.USER || user.getRole() != UserRole.READONLYUSER) {%>
                                                     <td align="center">
                                                         <img src="resources/images/close.png" style="cursor: pointer"
                                                              border="0"
@@ -240,7 +242,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <%if (user.getRole() == UserRole.USER) {%>
+                                            <%if (user.getRole() == UserRole.USER || user.getRole() == UserRole.READONLYUSER) {%>
                                             <button name="btnCancel" type="button"
                                                     onclick='return back("./my-farms.html?userId=<%=editCellink.getUserId() %>");'>
                                                 <%=session.getAttribute("button.cancel") %>

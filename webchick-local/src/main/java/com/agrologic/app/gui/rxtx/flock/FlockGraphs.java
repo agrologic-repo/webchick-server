@@ -2,6 +2,7 @@ package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.gui.rxtx.FileChooser;
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.service.excel.ExcelService;
 import com.agrologic.app.service.excel.ExportToExcelException;
@@ -25,35 +26,41 @@ import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.io.File;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author Administrator
  */
 public class FlockGraphs extends JFrame implements ChangeListener, ChartProgressListener {
 
-    private int currFlockGrowDay = 1;
-    private static final String TITLE = "Flock graphs";
-    private static final int ONE_CLICK = 1;
-    private static final int DOUBLE_CLICK = 2;
+//    private int currFlockGrowDay = 1;
+//    private static final String TITLE = "Flock graphs";
+//    private static final int ONE_CLICK = 1;
+//    private static final int DOUBLE_CLICK = 2;
     private JSlider slider;
     private FlockEntry currFlockEntry;
     private List<Flock> flocks;
     private FlockEntry[] flockEntries;
     private FlockManagerService flockService;
     private ExcelService excelService;
+    private ResourceBundle bundle; // NOI18N //08/01/2018
+//    Long flockIdd;
 
     /**
      * Creates new form FlockGraphs
      */
     public FlockGraphs() {
         initComponents();
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // NOI18N //08/01/2018
         Windows.centerOnScreen(this);
         Windows.setWindowsLAF(this);
-        setTitle(TITLE);
+        setTitle(bundle.getString("flock.graphs"));
         flockService = new FlockManagerService();
         excelService = new ExcelService(DaoType.DERBY);
+//        flocks = flockService.getFlocks();/////////////////////////
         loadFlocks(null);
-        excel.addActionListener(new ActionListener() {
+//        excel.addActionListener(new ActionListener() {
+        jButton3.addActionListener(new ActionListener() { //07/07/2018
             @Override
             public void actionPerformed(ActionEvent e) {
                 FileChooser fileChooser = new FileChooser();
@@ -64,19 +71,34 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
                 if (result == JFileChooser.APPROVE_OPTION) {
                     filePath = fileChooser.getSelectedFile();
                     if (filePath.exists()) {
-                        int response = JOptionPane.showConfirmDialog(null, "Override existing file ?", "",
+//                        int response = JOptionPane.showConfirmDialog(null, "Override existing file ?", "", // 08/01/2018
+                        int response = JOptionPane.showConfirmDialog(null, bundle.getString("flock.graphs.override.existing.file"), "",
                                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
                         if (response == JOptionPane.CANCEL_OPTION) {
                             return;
                         }
                     }
                     try {
-                        if (rdo24HourHistory.isSelected()) {
-                            Integer growDay = (Integer) spnGrowday.getModel().getValue();
-                            excelService.writeHistoryPerHourToExcelFile(filePath.getAbsolutePath(),
-                                    currFlockEntry.getId(), growDay, 1L);
-                        } else {
+////                        if (rdo24HourHistory.isSelected()) {
+////                        if (true) {
+////                            Integer growDay = (Integer) spnGrowday.getModel().getValue();
+////                            excelService.writeHistoryPerHourToExcelFile(filePath.getAbsolutePath(),currFlockEntry.getId(), growDay, 1L);
+////                        } else {
+//                        excelService.writeHistoryPerDayToExcelFile(filePath.getAbsolutePath(), currFlockEntry.getId(), 1L);
+////                        }
+                        //////////////////////////////////////
+//                        excelService.writeHistoryPerDayToExcelFile(filePath.getAbsolutePath(), currFlockEntry.getId(), 1L);
+                        /////////////////////////////////////
+                        if (rdoGrowDayHistory.isSelected() && !(rdo24HourHistory.isSelected())) {
                             excelService.writeHistoryPerDayToExcelFile(filePath.getAbsolutePath(), currFlockEntry.getId(), 1L);
+                        } else {
+                            if (rdo24HourHistory.isSelected() && !(rdoGrowDayHistory.isSelected())) {
+                                Integer growDay = null;
+                                growDay = (Integer) spnGrowday.getModel().getValue();
+                                if (growDay != null) {
+                                    excelService.writeHistoryPerHourToExcelFile(filePath.getAbsolutePath(), currFlockEntry.getId(), growDay, 1L);
+                                }
+                            }
                         }
                     } catch (ExportToExcelException e1) {
                         JOptionPane.showMessageDialog(FlockGraphs.this, e1.getMessage());
@@ -110,12 +132,24 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
 
         if (flockId != null) {
             Integer growDays = flockService.getLastUpdatedGrowDay(flockId);
-            ((SpinnerNumberModel) spnGrowday.getModel()).setMinimum(1);
-            ((SpinnerNumberModel) spnGrowday.getModel()).setMaximum(growDays);
+//            ((SpinnerNumberModel) spnGrowday.getModel()).setMinimum(1);
+//            ((SpinnerNumberModel) spnGrowday.getModel()).setMaximum(growDays);
         }
 
-        List<HistoryEntry> historyList = flockService.createHistoryEntryList(flockId);
-        lstHistoryList.setListData(historyList.toArray());
+//        List<HistoryEntry> historyList = flockService.createHistoryEntryList(flockId);
+//        lstHistoryList.setListData(historyList.toArray());
+
+//        List<HistoryEntry> historyList = flockService.createHistoryEntryList(2L);
+
+        if(rdo24HourHistory.isSelected() && !(rdoGrowDayHistory.isSelected())){
+            List<HistoryEntry> historyList = flockService.createHistoryEntry24List(flockId, (Integer) spnGrowday.getModel().getValue(), null);
+            lstHistoryList.setListData(historyList.toArray());
+        } else {
+            if (rdoGrowDayHistory.isSelected() && !(rdo24HourHistory.isSelected())){
+                List<HistoryEntry> historyList = flockService.createHistoryEntryList(flockId);
+                lstHistoryList.setListData(historyList.toArray());
+            }
+        }
     }
 
     /**
@@ -123,9 +157,10 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
      * this method is always regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // NOI18N //08/01/2018
         historyGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         tabPaneHistory = new javax.swing.JTabbedPane();
@@ -135,7 +170,8 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         pnlStandard = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         cmbFlockHouses = new javax.swing.JComboBox();
-        btnClear = new javax.swing.JButton();
+        btnView = new javax.swing.JButton();
+//        btnClear = new javax.swing.JButton();
         spnGrowday = new javax.swing.JSpinner();
         jLabel1 = new javax.swing.JLabel();
         rdoGrowDayHistory = new javax.swing.JRadioButton();
@@ -152,7 +188,7 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         jCheckBox2 = new javax.swing.JCheckBox();
         jPanel8 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
-        excel = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         pnlGraph = new javax.swing.JPanel();
         pnlSlider = new javax.swing.JPanel();
         textRect1 = new com.agrologic.app.gui.rxtx.flock.TextRect();
@@ -162,15 +198,10 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         lstHistoryList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = {"Feed", "Water"};
-
-            public int getSize() {
-                return strings.length;
-            }
-
-            public Object getElementAt(int i) {
-                return strings[i];
-            }
+//            String[] strings = { "Feed", "Water" }; // 08/01/2018
+            String[] strings = { bundle.getString("flock.graphs.feed"), bundle.getString("flock.graphs.water") };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
         });
         lstHistoryList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -196,7 +227,28 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
                                 .addContainerGap())
         );
 
-        tabPaneHistory.addTab("Current", pnlCurrent);
+//        tabPaneHistory.addTab("Current", pnlCurrent); // 08/01/2018
+        tabPaneHistory.addTab(bundle.getString("flock.graphs.current"), pnlCurrent); // 08/01/2018
+//        jButton1.setText("Add Standard");
+//
+//        javax.swing.GroupLayout pnlStandardLayout = new javax.swing.GroupLayout(pnlStandard);
+//        pnlStandard.setLayout(pnlStandardLayout);
+//        pnlStandardLayout.setHorizontalGroup(
+//                pnlStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//                        .addGroup(pnlStandardLayout.createSequentialGroup()
+//                                .addGap(35, 35, 35)
+//                                .addComponent(jButton1)
+//                                .addContainerGap(52, Short.MAX_VALUE))
+//        );
+//        pnlStandardLayout.setVerticalGroup(
+//                pnlStandardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//                        .addGroup(pnlStandardLayout.createSequentialGroup()
+//                                .addContainerGap()
+//                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+//                                .addContainerGap(290, Short.MAX_VALUE))
+//        );
+//
+//        tabPaneHistory.addTab("Standard", pnlStandard);
 
         cmbFlockHouses.setFocusable(false);
         cmbFlockHouses.addActionListener(new java.awt.event.ActionListener() {
@@ -205,12 +257,21 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
             }
         });
 
-        btnClear.setText("Clear");
-        btnClear.addActionListener(new java.awt.event.ActionListener() {
+//        btnView.setText("View");
+//        btnView.setText("Clear"); // 08/01/2018
+        btnView.setText(bundle.getString("flock.graphs.view")); // 08/01/2018
+        btnView.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearActionPerformed(evt);
+                btnViewActionPerformed(evt);
             }
         });
+
+//        btnClear.setText("Clear");
+//        btnClear.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                btnClearActionPerformed(evt);
+//            }
+//        });
 
         spnGrowday.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
         spnGrowday.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -219,11 +280,13 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
             }
         });
 
-        jLabel1.setText("Grow day ");
+//        jLabel1.setText("Grow day "); // 08/01/2018
+        jLabel1.setText(bundle.getString("flock.graphs.grow.day")); // 08/01/2018
 
         historyGroup.add(rdoGrowDayHistory);
         rdoGrowDayHistory.setSelected(true);
-        rdoGrowDayHistory.setText("Show by grow day");
+//        rdoGrowDayHistory.setText("Show by grow day"); // 08/01/2018
+        rdoGrowDayHistory.setText(bundle.getString("flock.graphs.show.by.grow.day")); // 08/01/2018
         rdoGrowDayHistory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rdoGrowDayHistoryActionPerformed(evt);
@@ -231,7 +294,8 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         });
 
         historyGroup.add(rdo24HourHistory);
-        rdo24HourHistory.setText("Show by 24 hour");
+//        rdo24HourHistory.setText("Show by 24 hour"); // 08/01/2018
+        rdo24HourHistory.setText(bundle.getString("flock.graphs.show.by.24.hours")); // 08/01/2018
         rdo24HourHistory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rdo24HourHistoryActionPerformed(evt);
@@ -250,8 +314,10 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
                                                 .addComponent(jLabel1)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(spnGrowday)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(btnClear))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)///
+                                                .addComponent(btnView))
+//                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+//                                                .addComponent(btnClear))
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                                 .addComponent(rdoGrowDayHistory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(rdo24HourHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -265,9 +331,11 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
                                 .addComponent(cmbFlockHouses, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(btnClear)
+                                        .addComponent(btnView)
                                         .addComponent(spnGrowday, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel1))
+//                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)///
+//                                        .addComponent(btnClear))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(rdoGrowDayHistory)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -279,96 +347,97 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        lblRange.setText("<html>\nRange <p>\n(days)\n</html>");
-
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("From");
-        jLabel2.setMaximumSize(new java.awt.Dimension(12, 14));
-        jLabel2.setMinimumSize(new java.awt.Dimension(12, 14));
-        jLabel2.setPreferredSize(new java.awt.Dimension(12, 14));
-
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("To");
-        jLabel3.setToolTipText("");
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(lblRange, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtFrom)
-                                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtTo)
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel6Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{jLabel2, jLabel3});
-
-        jPanel6Layout.setVerticalGroup(
-                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(lblRange, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(jPanel6Layout.createSequentialGroup()
-                                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                        .addComponent(txtFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(txtTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addContainerGap())
-        );
-
-        jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{jLabel2, jLabel3});
-
-        jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        chbPuton.setText("Put on");
-        chbPuton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chbPutonActionPerformed(evt);
-            }
-        });
-
-        jCheckBox2.setText("Legend");
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-                jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jCheckBox2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(chbPuton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel7Layout.setVerticalGroup(
-                jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(chbPuton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jCheckBox2)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+//        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+//
+//        lblRange.setText("<html>\nRange <p>\n(days)\n</html>");
+//
+//        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+//        jLabel2.setText("From");
+//        jLabel2.setMaximumSize(new java.awt.Dimension(12, 14));
+//        jLabel2.setMinimumSize(new java.awt.Dimension(12, 14));
+//        jLabel2.setPreferredSize(new java.awt.Dimension(12, 14));
+//
+//        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+//        jLabel3.setText("To");
+//        jLabel3.setToolTipText("");
+//
+//        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+//        jPanel6.setLayout(jPanel6Layout);
+//        jPanel6Layout.setHorizontalGroup(
+//                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//                        .addGroup(jPanel6Layout.createSequentialGroup()
+//                                .addContainerGap()
+//                                .addComponent(lblRange, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+//                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+//                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+//                                        .addComponent(txtFrom)
+//                                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
+//                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+//                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+//                                        .addComponent(txtTo)
+//                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
+//                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+//        );
+//
+//        jPanel6Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel2, jLabel3});
+//
+//        jPanel6Layout.setVerticalGroup(
+//                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//                        .addGroup(jPanel6Layout.createSequentialGroup()
+//                                .addContainerGap()
+//                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+//                                        .addComponent(lblRange, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+//                                        .addGroup(jPanel6Layout.createSequentialGroup()
+//                                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//                                                        .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+//                                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+//                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+//                                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+//                                                        .addComponent(txtFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+//                                                        .addComponent(txtTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+//                                .addContainerGap())
+//        );
+//
+//        jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel2, jLabel3});
+//
+//        jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+//
+//        chbPuton.setText("Put on");
+//        chbPuton.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+////                chbPutonActionPerformed(evt);
+//            }
+//        });
+//
+//        jCheckBox2.setText("Legend");
+//
+//        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+//        jPanel7.setLayout(jPanel7Layout);
+//        jPanel7Layout.setHorizontalGroup(
+//                jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                .addContainerGap()
+//                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+//                                        .addComponent(jCheckBox2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+//                                        .addComponent(chbPuton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+//                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+//        );
+//        jPanel7Layout.setVerticalGroup(
+//                jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+//                        .addGroup(jPanel7Layout.createSequentialGroup()
+//                                .addContainerGap()
+//                                .addComponent(chbPuton)
+//                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+//                                .addComponent(jCheckBox2)
+//                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+//        );
 
         jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButton2.setText("Print");
+//        jButton2.setText("Print");
 
-        excel.setText("Excel");
+//        jButton3.setText("Excel"); //08/01/2018
+        jButton3.setText(bundle.getString("flock.graphs.excel")); //08/01/2018
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -377,17 +446,17 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
                         .addGroup(jPanel8Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(excel, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE))
+//                                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE))
                                 .addContainerGap(84, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
                 jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel8Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jButton2)
+//                                .addComponent(jButton2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(excel)
+                                .addComponent(jButton3)
                                 .addContainerGap())
         );
 
@@ -431,7 +500,8 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
 
         pnlSlider.setLayout(new java.awt.BorderLayout());
 
-        textRect1.setBorder(javax.swing.BorderFactory.createTitledBorder("Values on Graph"));
+//        textRect1.setBorder(javax.swing.BorderFactory.createTitledBorder("Values on Graph")); // 08/01/2018
+        textRect1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("flock.graphs.values.on.graphs"))); // 08/01/2018
 
         javax.swing.GroupLayout textRect1Layout = new javax.swing.GroupLayout(textRect1);
         textRect1.setLayout(textRect1Layout);
@@ -479,9 +549,9 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>
 
-    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+    private void btnViewActionPerformed(java.awt.event.ActionEvent evt) {
 
         final ChartPanel cp = GraphFactory.createXYChartPanel();
         Rectangle rect = pnlGraph.getBounds();
@@ -522,87 +592,99 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         pnlGraph.validate();
         repaint();
         textRect1.clearSet();
-    }//GEN-LAST:event_btnClearActionPerformed
+    }
 
-    private void spnGrowdayStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnGrowdayStateChanged
-        if (evt.getSource() instanceof JSpinner) {
-            JSpinner spiner = (JSpinner) evt.getSource();
-            currFlockGrowDay = (Integer) spiner.getModel().getValue();
-        }
-        if (rdo24HourHistory.isSelected()) {
-            ChartPanel cp = (ChartPanel) pnlGraph.getComponent(0);
-            XYPlot plot = (XYPlot) cp.getChart().getPlot();
+    private void spnGrowdayStateChanged(javax.swing.event.ChangeEvent evt) {
+//        if (evt.getSource() instanceof JSpinner) {
+//            JSpinner spiner = (JSpinner) evt.getSource();
+//            currFlockGrowDay = (Integer) spiner.getModel().getValue();
+//        }
+//        if (rdo24HourHistory.isSelected()) {
+//            ChartPanel cp = (ChartPanel) pnlGraph.getComponent(0);
+//            XYPlot plot = (XYPlot) cp.getChart().getPlot();
+//
+//            GraphFactory.setNumberAxis("Hour", plot);
+//            GraphFactory.setRenderer(plot);
+//
+//            XYSeriesCollection xyseries = (XYSeriesCollection) plot.getDataset();
+////            boolean selected = chbPuton.getModel().isSelected(); // chPuton "Check Box "Put On"
+////            if (!selected) {
+////                xyseries.removeAllSeries();
+////            }
+//            slider.setMinimum(1);
+//            slider.setMaximum(24);
+//            slider.setValue(24 / 2);
+//
+//            /////////////////////////////////////////////////////
+//
+//            ///////////////////////////////////////////////////////
+//
+//            int i = lstHistoryList.getSelectedIndex();
+//            ListModel model = lstHistoryList.getModel();
+//            if (model.getSize() >= i) {
+//                HistoryEntry entry = (HistoryEntry) lstHistoryList.getModel().getElementAt(i);
+//                Integer growDay = (Integer) spnGrowday.getModel().getValue();
+//                entry.getValues24ByGrowDay(growDay);
+//
+//                GraphFactory.setRangeAxis(entry.getTitle(), plot);
+//                XYSeries xySeries = GraphFactory.createXYDataset(entry.getTitle(), entry.getValues24ByGrowDay(growDay));
+//                xyseries.addSeries(xySeries);
+//            }
+//        }
+    }
 
-            GraphFactory.setNumberAxis("Hour", plot);
-            GraphFactory.setRenderer(plot);
-
-            XYSeriesCollection xyseries = (XYSeriesCollection) plot.getDataset();
-            boolean selected = chbPuton.getModel().isSelected();
-            if (!selected) {
-                xyseries.removeAllSeries();
-            }
-            slider.setMinimum(1);
-            slider.setMaximum(24);
-            slider.setValue(24 / 2);
-            int i = lstHistoryList.getSelectedIndex();
-            ListModel model = lstHistoryList.getModel();
-            if (model.getSize() >= i) {
-                HistoryEntry entry = (HistoryEntry) lstHistoryList.getModel().getElementAt(i);
-                Integer growDay = (Integer) spnGrowday.getModel().getValue();
-                entry.getValues24ByGrowDay(growDay);
-
-                GraphFactory.setRangeAxis(entry.getTitle(), plot);
-                XYSeries xySeries = GraphFactory.createXYDataset(entry.getTitle(), entry.getValues24ByGrowDay(growDay));
-                xyseries.addSeries(xySeries);
-            }
-        }
-    }//GEN-LAST:event_spnGrowdayStateChanged
-
-    private void lstHistoryListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstHistoryListMouseClicked
+    private void lstHistoryListMouseClicked(java.awt.event.MouseEvent evt) {
         // if no graphs there does not do nothing
         if (pnlGraph.getComponents().length == 0) {
-            btnClear.doClick();
+            btnView.doClick();
+//            btnClear.doClick();
         } else if (pnlGraph.getComponents().length > 1) {
             System.out.println();
         }
 
 
-        if (evt.getClickCount() == ONE_CLICK && rdo24HourHistory.isSelected()) {
+//        if (evt.getClickCount() == ONE_CLICK && rdo24HourHistory.isSelected()) {
+//        if (evt.getClickCount() == ONE_CLICK) {
+        if (rdo24HourHistory.isSelected() && !(rdoGrowDayHistory.isSelected())) {
             ChartPanel cp = (ChartPanel) pnlGraph.getComponent(0);
             XYPlot plot = (XYPlot) cp.getChart().getPlot();
 
-            GraphFactory.setNumberAxis("Hour", plot);
+            GraphFactory.setNumberAxis("Hour", plot); // 08/01/2017
+//            GraphFactory.setNumberAxis(bundle.getString("flock.graphs.hour"), plot); // 08/01/2017
             GraphFactory.setRenderer(plot);
 
-            XYSeriesCollection xyseries = (XYSeriesCollection) plot.getDataset();
-            boolean selected = chbPuton.getModel().isSelected();
-            if (!selected) {
-                xyseries.removeAllSeries();
-            }
+            XYSeriesCollection seriesCollection = (XYSeriesCollection) plot.getDataset();
+//            boolean selected = chbPuton.getModel().isSelected();
+//            if (!selected) {
+//                xyseries.removeAllSeries();
+//            }
             slider.setMinimum(1);
             slider.setMaximum(24);
             slider.setValue(24 / 2);
             int i = lstHistoryList.getSelectedIndex();
-            HistoryEntry entry = (HistoryEntry) lstHistoryList.getModel().getElementAt(i);
+            HistoryEntry entry = (HistoryEntry) lstHistoryList.getModel().getElementAt(i); // IndexOfBoundException -1
             Integer growDay = (Integer) spnGrowday.getModel().getValue();
-            entry.getValues24ByGrowDay(growDay);
+//            entry.getValues24ByGrowDay(growDay);
             //entry.setValues24(generateHistory24Values());
             GraphFactory.setRangeAxis(entry.getTitle(), plot);
             XYSeries xySeries = GraphFactory.createXYDataset(entry.getTitle(), entry.getValues24ByGrowDay(growDay));
-            xyseries.addSeries(xySeries);
-        } else if (evt.getClickCount() == DOUBLE_CLICK && rdoGrowDayHistory.isSelected()) {
+            seriesCollection.addSeries(xySeries);
+//            xyseries.addSeries(xySeries);
+//        } else if (evt.getClickCount() == DOUBLE_CLICK && rdoGrowDayHistory.isSelected()) {
+        } else if (rdoGrowDayHistory.isSelected() && !(rdo24HourHistory.isSelected())) {
             ChartPanel cp = (ChartPanel) pnlGraph.getComponent(0);
             XYPlot plot = (XYPlot) cp.getChart().getPlot();
             int index = lstHistoryList.getSelectedIndex();
 
-            GraphFactory.setNumberAxis("Grow Day", plot);
+            GraphFactory.setNumberAxis("Grow Day", plot); // 08/01/2018
+//            GraphFactory.setNumberAxis(bundle.getString("flock.graphs.grow.day"), plot); // 08/01/2018
             GraphFactory.setRenderer(plot);
 
             XYSeriesCollection seriesCollection = (XYSeriesCollection) plot.getDataset();
-            boolean selected = chbPuton.getModel().isSelected();
-            if (!selected) {
-                seriesCollection.removeAllSeries();
-            }
+//            boolean selected = chbPuton.getModel().isSelected();
+//            if (!selected) {
+//                seriesCollection.removeAllSeries();
+//            }
 
             HistoryEntry historyEntry = (HistoryEntry) lstHistoryList.getModel().getElementAt(index);
             int maxSize = historyEntry.getValues().size();
@@ -614,34 +696,35 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
             XYSeries xySeries = GraphFactory.createXYDataset(historyEntry.getTitle(), historyEntry.getValues());
             seriesCollection.addSeries(xySeries);
         }
-    }//GEN-LAST:event_lstHistoryListMouseClicked
+    }
 
-    private void chbPutonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbPutonActionPerformed
-        boolean selected = chbPuton.getModel().isSelected();
-        if (selected) {
-            System.out.println("selected");
-        }
-    }//GEN-LAST:event_chbPutonActionPerformed
-
-    private void cmbFlockHousesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbFlockHousesActionPerformed
+    private void cmbFlockHousesActionPerformed(java.awt.event.ActionEvent evt) {
         JComboBox comboBox = (JComboBox) evt.getSource();
         FlockEntry entry = (FlockEntry) comboBox.getSelectedItem();
         if (entry != null && !entry.equals(currFlockEntry)) {
             currFlockEntry = entry;
             loadFlocks(currFlockEntry.getId());
         }
-    }//GEN-LAST:event_cmbFlockHousesActionPerformed
+    }
 
-    private void rdoGrowDayHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdoGrowDayHistoryActionPerformed
+    private void rdoGrowDayHistoryActionPerformed(java.awt.event.ActionEvent evt) {
         FlockEntry entry = (FlockEntry) cmbFlockHouses.getSelectedItem();
         currFlockEntry = entry;
         loadFlocks(currFlockEntry.getId());
-    }//GEN-LAST:event_rdoGrowDayHistoryActionPerformed
+    }
 
-    private void rdo24HourHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdo24HourHistoryActionPerformed
-        List<HistoryEntry> historyList = flockService.createHistoryEntry24List(currFlockEntry.getId());
+    private void rdo24HourHistoryActionPerformed(java.awt.event.ActionEvent evt){
+//        List<HistoryEntry> historyList = flockService.createHistoryEntry24List(currFlockEntry.getId());
+        List<HistoryEntry> historyList = flockService.createHistoryEntry24List(currFlockEntry.getId(), (Integer) spnGrowday.getModel().getValue(), null);
         lstHistoryList.setListData(historyList.toArray());
-    }//GEN-LAST:event_rdo24HourHistoryActionPerformed
+    }
+
+//    private void chbPutonActionPerformed(java.awt.event.ActionEvent evt) {
+        //        boolean selected = chbPuton.getModel().isSelected();
+        //        if (selected) {
+        //            System.out.println("selected");
+        //        }
+//    }
 
     public void showDialog(Long flockId) {
         loadFlocks(flockId);
@@ -771,14 +854,15 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnClear;
+    // Variables declaration - do not modify
+//    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnView;
     private javax.swing.JCheckBox chbPuton;
     private javax.swing.JComboBox cmbFlockHouses;
     private javax.swing.ButtonGroup historyGroup;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton excel;
+    private javax.swing.JButton jButton3;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -802,5 +886,5 @@ public class FlockGraphs extends JFrame implements ChangeListener, ChartProgress
     private com.agrologic.app.gui.rxtx.flock.TextRect textRect1;
     private javax.swing.JTextField txtFrom;
     private javax.swing.JTextField txtTo;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }

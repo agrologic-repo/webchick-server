@@ -23,6 +23,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><spring:message code="myfarms.page.title"/></title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
@@ -122,6 +123,14 @@
                                                                         <spring:message code="button.refresh"/>
                                                                     </a>
                                                                 </td>
+                                                                <!----------------------------------------------------------------------------------------------------------->
+                                                                <%--<td>--%>
+                                                                    <%--<a href="./editcellinkrequest.html?userId=<c:out value="${cellink.userId}"/>&cellinkId=<c:out value="${cellink.id}"/>">--%>
+                                                                        <%--<img src="resources/images/edit.gif" style="cursor: pointer" border="0" hspace="5"/>--%>
+                                                                        <%--<%=session.getAttribute("button.edit")%>--%>
+                                                                    <%--</a>--%>
+                                                                <%--</td>--%>
+                                                                <!--------------------------------------------------------------------------------------------------------------->
                                                             </tr>
                                                         </table>
                                                     </td>

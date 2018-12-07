@@ -96,7 +96,6 @@ TH.housesHeader {
     font-weight: bold;
     color: blue;
     background-color: #FFFF99;
-    /*background-color:#599;*/
     height: 12pt;
     width: 250px;
 }
@@ -169,6 +168,7 @@ TD.greenValues {
     background: green;
     font-weight: bold;
     color: white;
+
 }
 
 TD.redValues {

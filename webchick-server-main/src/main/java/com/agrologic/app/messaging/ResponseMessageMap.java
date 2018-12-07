@@ -2,15 +2,15 @@ package com.agrologic.app.messaging;
 
 import com.agrologic.app.network.CommandType;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Set;
+import java.util.*;
 
 public class ResponseMessageMap extends Observable {
     /**
      * The map of request response
      */
+////טבלה שמכילה את הבקשות ואת התשובות לבקשות לכל הבקרים
+////כל תשובה שמתקבלת נשמרת בתוך טבלה הזאת
+//// וCLASS מודיע לכל מי שמתצפת אחריו
     private Map<RequestMessage, ResponseMessage> responseMap;
 
     public ResponseMessageMap() {

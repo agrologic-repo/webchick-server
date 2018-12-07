@@ -5,6 +5,7 @@
 package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.config.Configuration;
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.model.FeedType;
 
@@ -14,6 +15,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -24,12 +26,14 @@ public class AddFeedTypeDialog extends JDialog {
     private Long cellinkId;
     private FeedType currFeedType;
     private FlockManagerService flockService;
+    private ResourceBundle bundle; // 09/01/2018
 
     /**
      * Creates new form AddSpreadDialog
      */
     public AddFeedTypeDialog(Frame parent, boolean modal) {
         super(parent, modal);
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         initComponents();
         flockService = new FlockManagerService();
         conf = new Configuration();
@@ -67,6 +71,7 @@ public class AddFeedTypeDialog extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         jComboBox1 = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDataTable = new javax.swing.JTable();
@@ -77,10 +82,12 @@ public class AddFeedTypeDialog extends JDialog {
         btnRemove = new javax.swing.JButton();
         txtFeedTypePrice = new javax.swing.JTextField();
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+//        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" })); // 09/01/2018
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { bundle.getString("add.feed.type.dialog.item1"), bundle.getString("add.feed.type.dialog.item2"), bundle.getString("add.feed.type.dialog.item3"), bundle.getString("add.feed.type.dialog.item4") })); // 09/01/2018
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Add Feed Type");
+//        setTitle("Add Feed Type"); // 09/01/2018
+        setTitle(bundle.getString("add.feed.type.dialog.add.feed.type")); // 09/01/2018
         setMinimumSize(new java.awt.Dimension(390, 300));
         getContentPane().setLayout(null);
 
@@ -88,9 +95,12 @@ public class AddFeedTypeDialog extends JDialog {
             new Object [][] {
 
             },
-            new String [] {
-                "ID", "Feed Type", "Price"
-            }
+//            new String [] {
+//                "ID", "Feed Type", "Price" // 09/01/2018
+//            }
+                new String [] {
+                        bundle.getString("add.feed.type.dialog.id"), bundle.getString("add.feed.type.dialog.feed.type"), bundle.getString("add.feed.type.dialog.price") // 09/01/2018
+                }
         ) {
             Class[] types = new Class [] {
                 java.lang.Long.class, java.lang.Integer.class, java.lang.Float.class
@@ -112,7 +122,8 @@ public class AddFeedTypeDialog extends JDialog {
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(10, 11, 360, 170);
 
-        btnAdd.setText("Add ");
+//        btnAdd.setText("Add "); // 09/01/2018
+        btnAdd.setText(bundle.getString("add.feed.type.dialog.add")); // 09/01/2018
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -121,17 +132,20 @@ public class AddFeedTypeDialog extends JDialog {
         getContentPane().add(btnAdd);
         btnAdd.setBounds(260, 200, 105, 23);
 
-        jLabel2.setText("Feed Type");
+//        jLabel2.setText("Feed Type"); // 09/01/2018
+        jLabel2.setText(bundle.getString("add.feed.type.dialog.feed.type")); // 09/01/2018
         getContentPane().add(jLabel2);
         jLabel2.setBounds(20, 200, 65, 20);
 
-        jLabel4.setText("Price");
+//        jLabel4.setText("Price"); // 09/01/2018
+        jLabel4.setText(bundle.getString("add.feed.type.dialog.price")); // 09/01/2018
         getContentPane().add(jLabel4);
         jLabel4.setBounds(20, 230, 65, 20);
         getContentPane().add(txtFeedType);
         txtFeedType.setBounds(100, 200, 140, 20);
 
-        btnRemove.setText("Delete");
+//        btnRemove.setText("Delete"); // 09/01/2018
+        btnRemove.setText(bundle.getString("add.feed.type.dialog.delete")); // 09/01/2018
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);

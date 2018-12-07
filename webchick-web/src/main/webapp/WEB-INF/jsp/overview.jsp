@@ -15,8 +15,8 @@
 <jsp:useBean id="cellinks" scope="request" type="java.util.Collection"/>
 
 <c:set var="STATE_OFFLINE" value="<%=com.agrologic.app.model.CellinkState.STATE_OFFLINE%>"/>
-<c:set var="STATE_STOP" value="<%=com.agrologic.app.model.CellinkState.STATE_STOP%>"/>
 <c:set var="STATE_RUNNING" value="<%=com.agrologic.app.model.CellinkState.STATE_RUNNING%>"/>
+<c:set var="STATE_STOP" value="<%=com.agrologic.app.model.CellinkState.STATE_STOP%>"/>
 <c:set var="STATE_START" value="<%=com.agrologic.app.model.CellinkState.STATE_START%>"/>
 <c:set var="STATE_ONLINE" value="<%=com.agrologic.app.model.CellinkState.STATE_ONLINE%>"/>
 
@@ -35,6 +35,7 @@
 <head>
     <title>Webchick overview</title>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
 </head>
 <body>
 <div id="header">
@@ -53,7 +54,8 @@
         <td colspan="2" width="50%">
             <jsp:include page="../../messages.jsp"/>
         </td>
-        <% if (user.getRole() == UserRole.ADMIN) {%>
+        <%--<% if (user.getRole() == UserRole.ADMIN || user.getRole() == userRole.READONLYADMIN){%>--%>
+        <% if (user.getRole() == UserRole.ADMIN){%>
         <td>
             <fieldset>
                 <legend class="chart-legend-label"><spring:message code="cellink.states"/></legend>
@@ -109,9 +111,9 @@
                     <option value="-1"></option>
                     <c:forEach var="cellinkstate" items="${cellinkStates}">
                         <c:set var="statelabel" value="cellink.state.${cellinkstate.key}"/>
-                            <option value='<c:out value="${cellinkstate.value}"/>'>
-                                <spring:message code="${statelabel}"/>
-                            </option>
+                        <option value='<c:out value="${cellinkstate.value}"/>'>
+                            <spring:message code="${statelabel}"/>
+                        </option>
                     </c:forEach>
                 </select>
                 &nbsp;
@@ -198,6 +200,7 @@
                                     <c:when test="${cellink.cellinkState.value == STATE_ONLINE
                                        || cellink.cellinkState.value == STATE_RUNNING || cellink.cellinkState.value == STATE_START}">
                                         <a href="rmctrl-main-screen.html?userId=${cellink.userId}&cellinkId=${cellink.id}"> ${cellink.name}</a>
+                                        <%--<a href="./my-farms.html?userId=${cellink.userId}">${cellink.name}</a>--%>
                                     </c:when>
                                     <c:otherwise>
                                         ${cellink.name}

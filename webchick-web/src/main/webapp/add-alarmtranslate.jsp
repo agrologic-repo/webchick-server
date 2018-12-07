@@ -25,6 +25,7 @@
 <head>
     <title>Add Translation</title>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <script language="Javascript">
         function reset() {
             document.getElementById("msgTranslation").innerHTML = "";

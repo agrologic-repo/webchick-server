@@ -205,24 +205,27 @@ public class MessageParser {
 
         public DataValueParser invoke(StringTokenizer token, int receivedValue) {
             String valueString;
+            int highValue;
+            int lowValue;
+
             token.nextToken();// skip this key
 
-            int highValue = receivedValue;
-            boolean negative = ((highValue & HIGH_16BIT_ON_MASK) == 0) ? false : true;
-            if (negative) {
-                // two's compliment action
-                highValue = twosCompliment(highValue);
-            }
-            highValue <<= SHIFT_16_BIT;
+            highValue = receivedValue;
+//            boolean negative = ((highValue & HIGH_16BIT_ON_MASK) == 0) ? false : true;
+//            if (negative) {
+//                // two's compliment action
+//                highValue = twosCompliment(highValue);
+//            }
+//            highValue <<= SHIFT_16_BIT;
             valueString = token.nextToken();// get low value
-
-            int lowValue = Integer.parseInt(valueString);
-            negative = ((lowValue & HIGH_16BIT_ON_MASK) == 0) ? false : true;
-            if (negative) {
-                // two's compliment action
-                lowValue = twosCompliment(lowValue);
-            }
-            this.receivedValue = highValue + lowValue;
+            lowValue = Integer.parseInt(valueString);
+//            negative = ((lowValue & HIGH_16BIT_ON_MASK) == 0) ? false : true;
+//            if (negative) {
+//                // two's compliment action
+//                lowValue = twosCompliment(lowValue);
+//            }
+//            this.receivedValue = highValue&0xFFFF0000 + lowValue&0x0000FFFF;
+            this.receivedValue = ((highValue << 16)&0xFFFF0000) | (lowValue&0x0000FFFF);
             return this;
         }
     }

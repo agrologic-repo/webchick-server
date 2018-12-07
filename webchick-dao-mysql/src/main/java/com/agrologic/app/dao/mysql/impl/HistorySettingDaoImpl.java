@@ -77,8 +77,7 @@ public class HistorySettingDaoImpl implements HistorySettingDao {
 
     @Override
     public void saveHistorySetting(List<HistorySetting> hsl) throws SQLException {
-        String sqlQuery = "insert into historysetting" + " (ProgramID,DataID,Checked)"
-                + " values (?,?,?) on duplicate key update Checked=values(Checked)";
+        String sqlQuery = "insert into historysetting" + " (ProgramID,DataID,Checked)" + " values (?,?,?) on duplicate key update Checked=values(Checked)";
         jdbcTemplate.execute(sqlQuery);
 //        PreparedStatement prepstmt = null;
 //        Connection con = null;

@@ -16,7 +16,8 @@ public class MessageFactory {
      * @return a set of messages to be used to get interactive controller state
      */
     public static List<RequestMessage> createRealTimeRequests(String netname) {
-        return Lists.newArrayList(new RequestMessage(MessageType.REQUEST_PANEL, netname),
+        return Lists.newArrayList(
+                new RequestMessage(MessageType.REQUEST_PANEL, netname),
                 new RequestMessage(MessageType.REQUEST_CONTROLLER, netname),
                 new RequestMessage(MessageType.REQUEST_CHICK_SCALE, netname),
                 new RequestMessage(MessageType.REQUEST_EGG_COUNT, netname),

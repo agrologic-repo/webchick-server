@@ -37,6 +37,10 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor {
         this.dba = dba;
     }
 
+    public DatabaseAccessor getDatabaseAccessor() { // added 13/09/2017
+        return dba;
+    } // added 13/09/2017
+
     @Override
     public void loadControllersAndProgramsByUserAndCellink(Long userId, Long cellinkId) throws WrongDatabaseException,
             DatabaseNotFound {
@@ -63,9 +67,9 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor {
         try {
             // load common data that not depend on user id and cellink id .
             languages = dba.getLanguageDao().geAll();
-            dataTable = dba.getDataDao().getAllWithTranslation();
+            dataTable = dba.getDataDao().getAllWithTranslation();//
             alarms = dba.getAlarmDao().getAllWithTranslation();
-            relays = dba.getRelayDao().getAllWithTranslation();
+            relays = dba.getRelayDao().getAllWithTranslation(); //
             systemStates = dba.getSystemStateDao().getAllWithTranslation();
             // it should run also with old version of database
             // that for this try and catch used for
@@ -160,7 +164,7 @@ public class DatabaseLoader implements DatabaseLoadable, DatabaseLoadAccessor {
                     Collection<Data> dataList = dba.getDataDao().getControllerDataValues(controller.getId());
                     Map<Long, Data> dataValues = new HashMap<Long, Data>();
                     for (Data d : dataList) {
-                        dataValues.put(d.getId(), d);
+                        dataValues.put(d.getId(), d);//////////////////////////////////////////////////////////////////////////////////////////////////
                     }
                     controller.initOnlineData(dataValues);
                 }

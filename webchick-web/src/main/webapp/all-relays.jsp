@@ -27,6 +27,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Relay Collection</title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
@@ -82,7 +83,7 @@
                     <%=session.getAttribute("button.back") %>
                 </button>
                 <button id="btnAdd" name="btnAdd"
-                        onclick="window.open('./add-relay.jsp?translateLang=<%=translateLang %>&relayId=<%=relayNames.size() %>','mywindow','status=yes, resize=yes, width=250,height=180,left=350,top=400,screenX=100,screenY=100');">
+                        onclick="window.open('./add-relay.jsp?translateLang=<%=translateLang %>&relayId=<%=(relayNames.size() + 2)%>','mywindow','status=yes, resize=yes, width=250,height=180,left=350,top=400,screenX=100,screenY=100');">
                     <%=session.getAttribute("button.add") %>
                 </button>
             </td>
@@ -144,8 +145,7 @@
         </tr>
         <tr>
             <td>
-                <button style="float:left" id="btnCancel" name="btnCancel"
-                        onclick='return back("./all-programs.html");'>
+                <button style="float:left" id="btnCancel" name="btnCancel" onclick='return back("./all-programs.html");'>
                     <%=session.getAttribute("button.back") %>
                 </button>
             </td>

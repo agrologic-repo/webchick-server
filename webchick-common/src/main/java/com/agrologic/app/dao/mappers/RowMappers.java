@@ -129,6 +129,8 @@ public class RowMappers {
         return new EggsMapper();
     }
 
+    public static ControllerDataMapper controllerData() {return new ControllerDataMapper();}
+
     private static class LanguageMapper implements RowMapper<Language> {
 
         @Override
@@ -217,17 +219,17 @@ public class RowMappers {
             ProgramAlarm programAlarm = new ProgramAlarm();
             programAlarm.setDataId(rs.getLong("DataID"));
             programAlarm.setDigitNumber(rs.getInt("DigitNumber"));
-            programAlarm.setText(rs.getString("Text"));
+            programAlarm.setText(rs.getString("Text").trim());
             programAlarm.setProgramId(rs.getLong("ProgramID"));
             programAlarm.setAlarmTextId(rs.getLong("AlarmTextID"));
             try {
                 if (rs.getString("UnicodeName") != null) {
-                    programAlarm.setText(rs.getString("UnicodeName"));
+                    programAlarm.setText(rs.getString("UnicodeName").trim());
                 }
             } catch (SQLException ex) {    /*
                  * ignore
                  */
-                programAlarm.setText(programAlarm.getText());
+                programAlarm.setText(programAlarm.getText().trim());
             }
             return programAlarm;
         }
@@ -961,6 +963,17 @@ public class RowMappers {
             eggs.setWaterConsump(rs.getLong("WaterConsump"));
             eggs.setDailyMortal(rs.getLong("DailyMortal"));
             return eggs;
+        }
+    }
+
+    private static class ControllerDataMapper implements RowMapper<Data> {
+
+        @Override
+        public Data mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Data data = new Data();
+            data.setId(rs.getLong("DataID"));
+            data.setValue(rs.getLong("Value"));
+            return data;
         }
     }
 }

@@ -53,23 +53,23 @@ public class ExcelService {
      */
     private HistoryContent createPerDayHistoryTableContent(Long flockId, Long langId) throws HistoryContentException {
         try {
-            List<Data> defaultPerDayHistoryList = historyService.getPerDayHistoryData(langId);
+//            List<Data> defaultPerDayHistoryList = historyService.getPerDayHistoryData(langId);
             // if grow day data not the first in array so find it and swap with first
-            if (!defaultPerDayHistoryList.get(0).getId().equals(800L)) {
-                int growDayIndex = -1;
-                int counter = 0;
-                for (Data data : defaultPerDayHistoryList) {
-                    if (data.getId().equals(800L)) {
-                        growDayIndex = counter;
-                        break;
-                    }
-                    counter++;
-                }
-                Collections.swap(defaultPerDayHistoryList, 0, growDayIndex);
-            }
-            Map<Integer, String> flockPerDayNotParsedReports = flockHistoryService.getFlockPerDayNotParsedReports(flockId);
-            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayNotParsedReports,
-                    defaultPerDayHistoryList);
+//            if (!defaultPerDayHistoryList.get(0).getId().equals(800L)) {
+//                int growDayIndex = -1;
+//                int counter = 0;
+//                for (Data data : defaultPerDayHistoryList) {
+//                    if (data.getId().equals(800L)) {
+//                        growDayIndex = counter;
+//                        break;
+//                    }
+//                    counter++;
+//                }
+//                Collections.swap(defaultPerDayHistoryList, 0, growDayIndex);
+//            }
+            Map<Integer, String> flockPerDayNotParsed = flockHistoryService.getFlockPerDayNotParsedReports(flockId);
+//            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayNotParsedReports, defaultPerDayHistoryList);
+            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayNotParsed);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new HistoryContentException(e.getMessage(), e);
@@ -84,11 +84,12 @@ public class ExcelService {
      * @return HistoryContent the content with history data
      * @throws HistoryContentException if failed to create history content
      */
-    private HistoryContent createPerHourHistoryTableContent(Long flockId, Integer growDay, Long langId)
-            throws HistoryContentException {
+    private HistoryContent createPerHourHistoryTableContent(Long flockId, Integer growDay, Long langId)throws HistoryContentException {
         try {
-            Collection<Data> perHourHistoryList = flockHistoryService.getFlockPerHourReportsData(flockId, growDay,
-                    langId);
+            Collection<Data> perHourHistoryList;
+
+            perHourHistoryList = flockHistoryService.getFlockPerHourReportsData(flockId, growDay, langId);
+
             return HistoryContentCreator.createPerHourHistoryContent(growDay, perHourHistoryList);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
@@ -104,16 +105,19 @@ public class ExcelService {
      * @return outputFile the name of outputFile
      * @throws ExportToExcelException if failed to write to excel file
      */
-    public String writeHistoryPerHourToExcelFile(Long flockId, Integer growDay, Long langId)
-            throws ExportToExcelException {
+    public String writeHistoryPerHourToExcelFile(Long flockId, Integer growDay, Long langId)throws ExportToExcelException {
+        HistoryContent historyContent;
+        Flock flock;
+        String outputFile;
         try {
-            HistoryContent historyContent = createPerHourHistoryTableContent(flockId, growDay, langId);
-            Flock flock = flockHistoryService.getFlock(flockId);
-            String outputFile = flock.getFlockName();
+            historyContent = createPerHourHistoryTableContent(flockId, growDay, langId);
+            flock = flockHistoryService.getFlock(flockId);
+            outputFile = flock.getFlockName();
             excelFileWriter.setTitleList(historyContent.getTitlesForExcelPerHour());
             excelFileWriter.setCellDataList(historyContent.getExcelDataColumnsPerHour());
             excelFileWriter.setOutputFile(outputFile);
-            excelFileWriter.write();
+//            excelFileWriter.write();
+            excelFileWriter.writeH(flock); ////
             return outputFile;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -129,14 +133,19 @@ public class ExcelService {
      * @return true if data was successful saved
      * @throws ExportToExcelException if failed to write to excel file
      */
-    public Boolean writeHistoryPerHourToExcelFile(String filename, Long flockId, Integer growDay, Long langId)
-            throws ExportToExcelException {
+    public Boolean writeHistoryPerHourToExcelFile(String filename, Long flockId, Integer growDay, Long langId) throws ExportToExcelException {
         try {
-            HistoryContent historyContent = createPerHourHistoryTableContent(flockId, growDay, langId);
+            HistoryContent historyContent;
+            Flock flock;
+
+            historyContent = createPerHourHistoryTableContent(flockId, growDay, langId);
+            flock = flockHistoryService.getFlock(flockId);
             excelFileWriter.setTitleList(historyContent.getTitlesForExcelPerHour());
             excelFileWriter.setCellDataList(historyContent.getExcelDataColumnsPerHour());
             excelFileWriter.setOutputFile(filename);
-            excelFileWriter.write();
+//            excelFileWriter.write();
+            excelFileWriter.writeH(flock);
+
             return true;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -157,9 +166,11 @@ public class ExcelService {
             Flock flock = flockHistoryService.getFlock(flockId);
             String outputFile = flock.getFlockName();
             excelFileWriter.setTitleList(historyContent.getTitlesForExcel());
-            excelFileWriter.setCellDataList(historyContent.getExcelDataColumns());
+//            excelFileWriter.setCellDataList(historyContent.getExcelDataColumns();
+            excelFileWriter.setCellDataList(historyContent.getExcelDataColumns(excelFileWriter.getTitlesList().size()));
             excelFileWriter.setOutputFile(outputFile);
-            excelFileWriter.write();
+//            excelFileWriter.write();
+            excelFileWriter.write(flock); ////
             return outputFile;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -178,10 +189,13 @@ public class ExcelService {
             throws ExportToExcelException {
         try {
             HistoryContent historyContent = createPerDayHistoryTableContent(flockId, langId);
+            Flock flock = flockHistoryService.getFlock(flockId); ////
             excelFileWriter.setTitleList(historyContent.getTitlesForExcel());
-            excelFileWriter.setCellDataList(historyContent.getExcelDataColumns());
+//            excelFileWriter.setCellDataList(historyContent.getExcelDataColumns());
+            excelFileWriter.setCellDataList(historyContent.getExcelDataColumns(excelFileWriter.getTitlesList().size()));
             excelFileWriter.setOutputFile(filename);
-            excelFileWriter.write();
+//            excelFileWriter.write();
+            excelFileWriter.write(flock);
             return true;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

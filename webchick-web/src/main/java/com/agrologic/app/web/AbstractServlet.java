@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 public class AbstractServlet extends HttpServlet {
     protected MessageLocaleService messageLocaleService;
     protected LocaleService localeService;
+
     /**
      * Logger for class and subclasses
      */

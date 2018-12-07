@@ -14,6 +14,7 @@
 %>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <style type="text/css">
         .menuFarme {
             border-style: 1px solid #1B213B;
@@ -35,6 +36,7 @@
             <frameset cols="13.5%, *">
                 <frame class="menuFarme"
                        src="./rmctrl-flock-graphs-left.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>"
+                       <%--src="./rmctrl-flock-graphs-left-new.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>"--%>
                        name="leftPage">
                 <frame src="dashboard.jsp" name="rightPage">
             </frameset>
@@ -48,6 +50,7 @@
                 <frame src="dashboard.jsp" name="leftPage">
                 <frame class="menuFarme"
                        src="./rmctrl-flock-graphs-left.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>"/>
+                    <%--src="./rmctrl-flock-graphs-left-new.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>"/>--%>
                 " name="rightPage">
             </frameset>
         </frameset>

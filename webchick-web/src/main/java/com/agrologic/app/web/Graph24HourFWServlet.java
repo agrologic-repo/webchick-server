@@ -1,7 +1,7 @@
 package com.agrologic.app.web;
 
 import com.agrologic.app.graph.daily.EmptyGraph;
-import com.agrologic.app.graph.daily.FeedWaterConsumpTemp;
+import com.agrologic.app.graph.daily.FeedWaterConsumpTempGraph;
 import com.agrologic.app.graph.daily.PerHourReportGraph;
 import com.agrologic.app.model.history.DayParam;
 import com.agrologic.app.service.history.FlockHistoryService;
@@ -46,7 +46,7 @@ public class Graph24HourFWServlet extends AbstractServlet {
                 chainedHistoryValues.append(historyValues);
             }
             Long resetTime = flockHistoryService.getResetTime(flockId, growDayParam.getGrowDay());
-            PerHourReportGraph perHourReportGraph = new FeedWaterConsumpTemp(chainedHistoryValues.toString(), resetTime
+            PerHourReportGraph perHourReportGraph = new FeedWaterConsumpTempGraph(chainedHistoryValues.toString(), resetTime
                     , locale);
 
             ChartUtilities.writeChartAsPNG(out, perHourReportGraph.createChart(), 800, 600);

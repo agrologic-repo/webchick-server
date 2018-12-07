@@ -98,8 +98,7 @@ public class InsideOutsideHumidityGraph extends PerHourReportGraph {
             plot.setDataset(1, humDataset);
             plot.mapDatasetToRangeAxis(1, 1);
 
-            StandardXYItemRenderer renderer2 = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg,
-                    urlg);
+            StandardXYItemRenderer renderer2 = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg, urlg);
 
             renderer2.setShapesFilled(true);
             renderer2.setBaseShapesVisible(true);

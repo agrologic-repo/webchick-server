@@ -40,13 +40,42 @@ public class FlockDaoImpl implements FlockDao {
     }
 
     @Override
-    public void update(Flock flock) throws SQLException {
+         public void update(Flock flock) throws SQLException {
         String sql = "update flocks set ControllerId=?, Name=?, Status=?,StartDate=?,EndDate=?, Currency=?  where FlockID=?";
         logger.debug("Update flock with id [{}]", flock.getFlockId());
-        jdbcTemplate.update(sql,
-                new Object[]{flock.getControllerId(), flock.getFlockName(), flock.getStatus(), flock.getStartTime(),
-                        flock.getEndTime(), flock.getCurrency(), flock.getFlockId()});
+        jdbcTemplate.update(sql, new Object[]{flock.getControllerId(), flock.getFlockName(), flock.getStatus(), flock.getStartTime(), flock.getEndTime(), flock.getCurrency(), flock.getFlockId()});
     }
+
+    @Override
+    public void updateFlockStartDay(Flock flock) throws SQLException { // 14/06/2017
+        String sql = "update flocks set StartDate=? where FlockID=?";
+        logger.debug("Update flock start day with id [{}]", flock.getFlockId());
+        jdbcTemplate.update(sql, new Object[]{flock.getStartTime(), flock.getFlockId()});
+    } // 14/06/2017
+
+    @Override
+    public void updateFlockEndDay(Flock flock) throws SQLException { // 14/06/2017
+        String sql = "update flocks set EndDate=? where FlockID=?";
+        logger.debug("Update flock end day with id [{}]", flock.getFlockId());
+        jdbcTemplate.update(sql, new Object[]{flock.getEndTime(), flock.getFlockId()});
+    } // 14/06/2017
+
+    @Override
+    public void updateFlockStatus(Flock flock) throws SQLException { // 14/06/2017
+        String sql = "update flocks set Status=? where FlockID=?";
+        logger.debug("Update flock status with id [{}]", flock.getFlockId());
+        jdbcTemplate.update(sql, new Object[]{flock.getStatus(), flock.getFlockId()});
+    } // 14/06/2017
+
+    public Integer getMaxFlockId(){ // 27/11/2017
+        String sql = "select max(flockid) from flocks";
+        logger.debug("Get max flockId");
+        List<Integer> result = jdbcTemplate.queryForList(sql, new Object[]{}, Integer.class);
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result.get(0);
+    }// 27/11/2017
 
     @Override
     public void remove(Long flockId) throws SQLException {
@@ -68,48 +97,14 @@ public class FlockDaoImpl implements FlockDao {
 
         logger.debug("Update flock details with id [{}]", flock.getFlockId());
         jdbcTemplate.update(sql,
-                new Object[]{
-                        flock.getQuantityMale(),
-                        flock.getQuantityFemale(),
-                        flock.getQuantityElect(),
-                        flock.getQuantitySpread(),
-                        flock.getQuantityWater(),
-                        flock.getElectBegin(),
-                        flock.getElectEnd(),
-                        flock.getFuelBegin(),
-                        flock.getFuelEnd(),
-                        flock.getGasBegin(),
-                        flock.getGasEnd(),
-                        flock.getWaterBegin(),
-                        flock.getWaterEnd(),
-                        flock.getCostChickMale(),
-                        flock.getCostChickFemale(),
-                        flock.getCostElect(),
-                        flock.getCostFuel(),
-                        flock.getCostFuelEnd(),
-                        flock.getCostGas(),
-                        flock.getCostGasEnd(),
-                        flock.getCostWater(),
-                        flock.getCostSpread(),
-                        flock.getCostMaleKg(),
-                        flock.getFuelAdd(),
-                        flock.getGasAdd(),
-                        flock.getFeedAdd(),
-                        flock.getSpreadAdd(),
-                        flock.getExpenses(),
-                        flock.getRevenues(),
-                        flock.getTotalElect(),
-                        flock.getTotalFuel(),
-                        flock.getTotalGas(),
-                        flock.getTotalWater(),
-                        flock.getTotalSpread(),
-                        flock.getTotalMedic(),
-                        flock.getTotalChicks(),
-                        flock.getTotalLabor(),
-                        flock.getTotalFeed(),
-                        flock.getCurrency(),
-                        flock.getFlockId()
-
+                new Object[]{flock.getQuantityMale(), flock.getQuantityFemale(), flock.getQuantityElect(), flock.getQuantitySpread(), flock.getQuantityWater(),
+                        flock.getElectBegin(), flock.getElectEnd(), flock.getFuelBegin(), flock.getFuelEnd(), flock.getGasBegin(), flock.getGasEnd(),
+                        flock.getWaterBegin(), flock.getWaterEnd(), flock.getCostChickMale(), flock.getCostChickFemale(), flock.getCostElect(),
+                        flock.getCostFuel(), flock.getCostFuelEnd(), flock.getCostGas(), flock.getCostGasEnd(), flock.getCostWater(),
+                        flock.getCostSpread(), flock.getCostMaleKg(), flock.getFuelAdd(), flock.getGasAdd(), flock.getFeedAdd(),
+                        flock.getSpreadAdd(), flock.getExpenses(), flock.getRevenues(), flock.getTotalElect(), flock.getTotalFuel(),
+                        flock.getTotalGas(), flock.getTotalWater(), flock.getTotalSpread(), flock.getTotalMedic(), flock.getTotalChicks(),
+                        flock.getTotalLabor(), flock.getTotalFeed(), flock.getCurrency(), flock.getFlockId()
                 });
     }
 
@@ -223,6 +218,11 @@ public class FlockDaoImpl implements FlockDao {
         historyNums.put("D20", "Humidity");
         historyNums.put("D21", "Water");
         historyNums.put("D72", "Feed");
+        historyNums.put("D73", "Feed 2");
+        historyNums.put("D71", "Water 2");
+        historyNums.put("D163", "Water per bird");
+        historyNums.put("D164", "Feed per bird");
+        historyNums.put("D169", "Water sum");
         return historyNums;
     }
 
@@ -295,8 +295,7 @@ public class FlockDaoImpl implements FlockDao {
     @Override
     public Flock getOpenFlockByController(Long controllerId) throws SQLException {
         logger.debug("Get open flock that belongs to controller with id [{}]", controllerId);
-        List<Flock> flocks = jdbcTemplate.query("select * from flocks where ControllerID=? and Status='Open'",
-                new Object[]{controllerId}, RowMappers.flock());
+        List<Flock> flocks = jdbcTemplate.query("select * from flocks where ControllerID=? and Status='Open'", new Object[]{controllerId}, RowMappers.flock());
         if (flocks.isEmpty()) {
             return null;
         }

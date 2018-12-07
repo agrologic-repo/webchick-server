@@ -39,7 +39,7 @@ public class DerbyProgramSystemStateDaoImpl extends ProgramSystemStateDaoImpl im
 
     private void createTableSystemStateByProgram() throws SQLException {
         String sql = "CREATE TABLE PROGRAMSYSSTATES " + "(" + "DATAID INT NOT NULL , " + "NUMBER INT NOT NULL , "
-                + "TEXT VARCHAR(200) NOT NULL, " + "PROGRAMID INT NOT NULL , "
+                + "TEXT VARCHAR(500) NOT NULL, " + "PROGRAMID INT NOT NULL , "
                 + "SYSTEMSTATENUMBER INT NOT NULL , " + "SYSTEMSTATETEXTID INT NOT NULL , "
                 + "PRIMARY KEY (DATAID,NUMBER,PROGRAMID)" + ")";
         jdbcTemplate.execute(sql);

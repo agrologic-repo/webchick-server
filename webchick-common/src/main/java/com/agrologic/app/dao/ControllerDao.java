@@ -90,6 +90,8 @@ public interface ControllerDao {
      */
     void updateControllerData(Long controllerId, Collection<Data> onlineData) throws SQLException;
 
+    Long getControllerDataValue(Long dataId, Long controllerId) throws SQLException;
+
     /**
      * Update an existing controller graphs rows in table graph24hours .
      *

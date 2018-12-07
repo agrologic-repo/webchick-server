@@ -21,6 +21,7 @@ public class Configuration extends Observable {
     public static final String DATABASE_URL_FIELD = "database.url";
     public static final String DATABASE_USER_FIELD = "database.user";
     public static final String KEEP_ALIVE_TIMEOUT_FIELD = "keepalive.timeout";
+    public static final String RUN_TIME_TIMEOUT_FIELD = "runtime.timeout"; // added 29/05/2017
     public static final String MAX_ERRORS_FIELD = "com.maxerr";
     public static final String DELAY_NEXT_FIELD = "com.next";
     public static final String DELAY_SOT_FIELD = "com.sot";
@@ -28,7 +29,9 @@ public class Configuration extends Observable {
     public static final String RUN_AT_STARTUP_FIELD = "runatstartup";
     public static final String COMPORT_FIELD = "com.port";
     public static final String SERVER_IP_FIELD = "server.ip";
+//public static final String SERVER_IP_FIELD = "192.168.1.22";
     public static final String SERVER_PORT_FIELD = "server.port";
+//    public static final String SERVER_PORT_FIELD = "5501";
     public static final String USER_ID_FIELD = "user.id";
     public static final String CELLINK_ID_FIELD = "cellink.id";
     public static final String VERSION_FIELD = "version";
@@ -51,12 +54,13 @@ public class Configuration extends Observable {
     public static final Integer DEFAULT_KEEP_ALIVE_TIMEOUT = 3;
     public static final String DEFAULT_MAX_ERRORS = "3";
     public static final String DEFAULT_SERVER_IP = "192.168.1.1";
+//    public static final String DEFAULT_SERVER_IP = "192.168.1.22";
     public static final Integer DEFAULT_SERVER_PORT = 8080;
     public static final String DEFAULT_USER_ID = "1";
     public static final String DEFAULT_CELLINK_ID = "1";
     public static final String DEFAULT_WEBCHICK_URI = "http://localhost:8080/webchick/startpage.html";
     public static final Boolean DEFAULT_RUN_AT_STARTUP = Boolean.FALSE;
-    public static final String DEFAULT_VERSION = "6.7.9";
+    public static final String DEFAULT_VERSION = "6.7.32";
     private String language;
 
     /**

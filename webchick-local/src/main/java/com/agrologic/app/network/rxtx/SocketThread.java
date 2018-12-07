@@ -44,7 +44,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
     private boolean DEBUG = false;
     private Logger logger = Logger.getLogger(SocketThread.class);
 
-    public SocketThread(ApplicationLocal app, DatabaseManager dbManager) throws NumberFormatException, SerialPortControlFailure {
+    public SocketThread(ApplicationLocal app, DatabaseManager dbManager) throws NumberFormatException, SerialPortControlFailure, SQLException {
         super();
         logger.info("Socket thread constructor");
         this.app = app;
@@ -80,7 +80,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
         initControllerMessageManagers();
     }
 
-    private void initControllerMessageManagers() {
+    private void initControllerMessageManagers() throws SQLException {
         DatabaseLoadAccessor dla = dbManager.getDatabaseLoader();
         Collection<Controller> controllers = dla.getUser().getCellinks().iterator().next().getControllers();
         // Here we transform each controller into
@@ -122,12 +122,10 @@ public final class SocketThread extends Observable implements Runnable, Network 
                     case STATE_STARTING:
                         clearAllChangedDataInControllers();
                         startingCommunication();
-
                         break;
 
                     case STATE_SEND:
                         sendRequestHandler();
-
                         break;
 
                     case STATE_BUSY:
@@ -146,6 +144,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                     case STATE_READ:
 
                         // check if there is a data to change
+
                         responseMessage = (ResponseMessage) com.read();
                         logger.info(responseMessage);
                         statusBar.setReceiveMsg(responseMessage.getIndex() + " " + responseMessage);
@@ -156,9 +155,7 @@ public final class SocketThread extends Observable implements Runnable, Network 
                                 responseMessage.setMessageType(MessageType.SKIP_RESPONSE_TO_WRITE);
                                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
                                 setThreadState(NetworkState.STATE_DELAY);
-                            } else if (sendMessageType == MessageType.REQUEST_EGG_COUNT
-                                    || sendMessageType == MessageType.REQUEST_CHICK_SCALE
-                                    || sendMessageType == MessageType.REQUEST_CHANGED) {
+                            } else if (sendMessageType == MessageType.REQUEST_EGG_COUNT || sendMessageType == MessageType.REQUEST_CHICK_SCALE || sendMessageType == MessageType.REQUEST_CHANGED) {
                                 responseMessage.setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
                                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
                                 setThreadState(NetworkState.STATE_DELAY);
@@ -166,11 +163,9 @@ public final class SocketThread extends Observable implements Runnable, Network 
                                 setThreadState(NetworkState.STATE_ERROR);
                             }
                         } else {
-                            if (sendMessage.getIndex().equals(responseMessage.getIndex())
-                                    || sendMessage.getIndex().equals("100")) {
+                            if (sendMessage.getIndex().equals(responseMessage.getIndex()) || sendMessage.getIndex().equals("100")) {
                                 errCount = 0;
-                                if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY
-                                        || sendMessage.getMessageType() == MessageType.REQUEST_PER_HOUR_REPORTS) {
+                                if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY || sendMessage.getMessageType() == MessageType.REQUEST_PER_HOUR_REPORTS) {
                                     responseMessage.setMessageType(MessageType.RESPONSE_DATA);
                                 }
                                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
@@ -267,6 +262,8 @@ public final class SocketThread extends Observable implements Runnable, Network 
         } else {
             logger.debug(sendMessage);
             logger.debug(reqIndex);
+//            logger.info(sendMessage);
+//            logger.info(reqIndex);
             sendMessage.setIndex(reqIndex.getIndex());
             com.write("V" + reqIndex.getIndex(), sendMessage, sotDelay, eotDelay);
             logger.info("Sent [" + sendMessage + "]");
@@ -364,7 +361,6 @@ public final class SocketThread extends Observable implements Runnable, Network 
                 return false;
             }
         }
-
         return true;
     }
 

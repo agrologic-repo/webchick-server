@@ -17,7 +17,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title><%=session.getAttribute("user.profile") %></title>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
@@ -184,6 +184,8 @@
                                         <%=session.getAttribute("user.role.advanced") %>
                                         <%} else if (user.getRole() == UserRole.USER) {%>
                                         <%=session.getAttribute("user.role.regular") %>
+                                        <%} else if (user.getRole() == UserRole.READONLYUSER) {%>
+                                            Read only user
                                         <%} else {%>
 
                                         <%}%>
@@ -194,7 +196,7 @@
                     </tr>
                     <tr>
                         <td colspan="1">
-                            <%if (user.getRole() == UserRole.USER) {%>
+                            <%if (user.getRole() == UserRole.USER || user.getRole() == UserRole.READONLYUSER) {%>
                             <button id="btnCancel" name="btnCancel"
                                     onclick='return back("./my-farms.html?userId=<%=user.getId() %>");'>
                                 <%=session.getAttribute("button.back") %>
@@ -211,6 +213,5 @@
         </tr>
     </table>
 </div>
-
 </body>
 </html>

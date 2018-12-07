@@ -53,9 +53,7 @@ public class RCGraphServlet extends AbstractServlet {
                 List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId(), langId);
                 program.setProgramRelays(programRelays);
 
-                request.getRequestDispatcher("./rmctrl-controller-graphs.jsp?userId" + userId + "&cellinkId="
-                        + cellinkId + "&screenId=" + screenId).forward(request,
-                        response);
+                request.getRequestDispatcher("./rmctrl-controller-graphs.jsp?userId" + userId + "&cellinkId=" + cellinkId + "&screenId=" + screenId).forward(request,response);
             } catch (SQLException ex) {
                 // error page
                 logger.error("SQLException", ex);

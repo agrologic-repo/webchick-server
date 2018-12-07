@@ -21,7 +21,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Edit User</title>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <script type="text/javascript">
@@ -169,6 +169,7 @@
                                                 <option value="1"><%=session.getAttribute("user.role.admin")%></option>
                                                 <option value="2"><%=session.getAttribute("user.role.regular")%></option>
                                                 <option value="3"><%=session.getAttribute("user.role.advanced")%></option>
+                                                <option value="4">ReadOnlyUser</option>
                                             </select>
                                         </td>
                                     </tr>
@@ -190,8 +191,8 @@
                                                        onblur="this.style.background='white'"/>
                                             </div>
                                         </td>
-                                        <td><input type="checkbox" id="newCompany" name="newCompany"
-                                                   onclick="showNewCompany()">Add Company </input></td>
+                                        <%--<td><input type="checkbox" id="newCompany" name="newCompany" onclick="showNewCompany()">Add Company </input></td>--%>
+                                        <td><input type="checkbox" id="newCompany" name="newCompany" onclick="showNewCompany()">Add Company</td>
                                     </tr>
                                 </table>
                             </form>

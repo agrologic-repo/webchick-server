@@ -69,7 +69,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
         this.netName = netName;
         this.messageType = type;
         initialize();
-    }
+}
 
     public RequestMessage(final MessageType type, final String netName, final Integer growDay) {
         this.netName = netName;
@@ -137,11 +137,13 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
 
             case REQUEST_PANEL:
                 messageString.append("%").append(getNetName()).append("a ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");
+//                messageString.append("%").append(getNetName()).append("h43 ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");
                 setBuffer(messageString.toString().getBytes());
                 break;
 
             case REQUEST_CONTROLLER:
                 messageString.append("%").append(getNetName()).append("b ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");
+//                messageString.append("%").append(getNetName()).append("h ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");
                 setBuffer(messageString.toString().getBytes());
                 break;
 
@@ -168,6 +170,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
                 break;
             case REQUEST_HISTORY:
                 messageString.append("%").append(getNetName()).append("h").append(getGrowDay()).append(" ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");
+//                messageString.append("%").append(getNetName()).append("h").append(" ").append(getGrowDay()).append(" ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");
                 setBuffer(messageString.toString().getBytes());
                 break;
             case REQUEST_PER_HOUR_REPORTS:

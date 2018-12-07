@@ -16,6 +16,11 @@ public abstract class PerHourReportGraph {
     public static final int HUMIDITY_INDEX = 48;
     public static final int FEED_INDEX = 72;
     public static final int WATER_INDEX = 96;
+    public static final int FEED_2_CONS = 120;////
+    public static final int WATER_2_CONS = 144;////
+    public static final int WATER_CONS_PER_BIRD = 168;////
+    public static final int FEED_CONS_PER_BIRD = 192;////
+    public static final int WATER_SUM_CONS = 216;////
 
     protected JFreeChart chart;
     protected Long currentTime;
@@ -27,6 +32,7 @@ public abstract class PerHourReportGraph {
     protected int minY;
 
     public PerHourReportGraph(String values) {
+        values = values.replaceAll("  ", " ");
         this.datasetString = values.split(" ", -1);
         this.minY = Integer.MAX_VALUE;
         this.maxY = Integer.MIN_VALUE;

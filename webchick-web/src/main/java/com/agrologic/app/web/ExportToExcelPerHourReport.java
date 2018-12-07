@@ -26,14 +26,17 @@ public class ExportToExcelPerHourReport extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+        long flockId;
+        long langId;
+        DayParam growDayParam;
+        String outputFile;
         response.setContentType("text/html;charset=UTF-8");
-        long flockId = Long.parseLong(request.getParameter("flockId"));
-        long langId = getInSessionLanguageId(request);
-        DayParam growDayParam = new DayParam(request.getParameter("growDay"));
+        flockId = Long.parseLong(request.getParameter("flockId"));
+        langId = getInSessionLanguageId(request);
+        growDayParam = new DayParam(request.getParameter("growDay"));
         try {
-            String outputFile = excelService.writeHistoryPerHourToExcelFile(flockId, growDayParam.getGrowDay(), langId);
+            outputFile = excelService.writeHistoryPerHourToExcelFile(flockId, growDayParam.getGrowDay(), langId);
             FileDownloadUtil.doDownload(response, outputFile, "xls");
         } catch (Exception e) {
             logger.error("Unknown error. ", e);
@@ -54,8 +57,7 @@ public class ExportToExcelPerHourReport extends AbstractServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -68,8 +70,7 @@ public class ExportToExcelPerHourReport extends AbstractServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 

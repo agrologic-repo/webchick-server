@@ -106,14 +106,10 @@ public class SerialPortControl implements SerialPortEventListener {
             serialPort.setDTR(true);
             serialPort.setRTS(true);
             int boud = 2400;
-            if (protocolType == Protocol.HIGH_ASCII
-                    || protocolType == Protocol.HIGH_BINARY) {
+            if (protocolType == Protocol.HIGH_ASCII || protocolType == Protocol.HIGH_BINARY) {
                 boud = 9600;
             }
-            serialPort.setSerialPortParams(boud,
-                    SerialPort.DATABITS_8,
-                    SerialPort.STOPBITS_1,
-                    SerialPort.PARITY_NONE);
+            serialPort.setSerialPortParams(boud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
             serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
         } catch (UnsupportedCommOperationException ex) {
             logger.debug(ex);
@@ -165,7 +161,7 @@ public class SerialPortControl implements SerialPortEventListener {
      * @param eot     the end of transmission index.
      * @throws IOException if I/O exception occurs.
      */
-    public synchronized void write(String vindex, final Message message, final int sot, final int eot)
+    public synchronized void write(String vindex, final Message message, final int sot, final int eot) //VreqIndex, sendMessage, sotDelay, eotDelay
             throws IOException {
         state = SlipProtocol.SlipStates.WAIT;
         // reset counter
@@ -261,13 +257,11 @@ public class SerialPortControl implements SerialPortEventListener {
                         sotrecieved = true;
                     }
                 }
-                if (protocolType == Protocol.LOW_ASCII
-                        || protocolType == Protocol.HIGH_ASCII) {
+                if (protocolType == Protocol.LOW_ASCII || protocolType == Protocol.HIGH_ASCII) {
                     readASCIIData();
                 }
 
-                if (protocolType == Protocol.LOW_BINARY
-                        || protocolType == Protocol.HIGH_BINARY) {
+                if (protocolType == Protocol.LOW_BINARY || protocolType == Protocol.HIGH_BINARY) {
                     readBinaryData();
                 }
                 break;

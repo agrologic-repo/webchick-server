@@ -26,14 +26,14 @@ public class RCControllerScreenAjax extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         response.setContentType("text/xml;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
 
         try {
+
             long userId = Long.parseLong(request.getParameter("userId"));
             long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
             long controllerId = Long.parseLong(request.getParameter("controllerId"));
@@ -61,19 +61,16 @@ public class RCControllerScreenAjax extends AbstractServlet {
                 controller.setProgram(program);
 
                 final ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(program.getId(),
-                        langId, false);
+                List<Screen> screens = (List<Screen>) screenDao.getAllScreensByProgramAndLang(program.getId(), langId, false);
                 program.setScreens(screens);
                 Screen currScreen = screenDao.getById(program.getId(), screenId, langId);
 
                 final TableDao tableDao = DbImplDecider.use(DaoType.MYSQL).getDao(TableDao.class);
-                List<Table> tables = (List<Table>) tableDao.getScreenTables(program.getId(), currScreen.getId(),
-                        langId, false);
+                List<Table> tables = (List<Table>) tableDao.getScreenTables(program.getId(), currScreen.getId(), langId, false);
 
                 final DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
                 for (Table table : tables) {
-                    Collection<Data> dataList = dataDao.getOnlineTableDataList(controller.getId(), program.getId(),
-                            currScreen.getId(), table.getId(), langId);
+                    Collection<Data> dataList = dataDao.getOnlineTableDataList(controller.getId(), program.getId(), currScreen.getId(), table.getId(), langId);
                     table.setDataList(dataList);
                 }
                 currScreen.setTables(tables);
@@ -144,7 +141,8 @@ public class RCControllerScreenAjax extends AbstractServlet {
                         out.println("</td>");
                     } else {
                         out.println("<td nowrap align=\"center\">");
-                        out.println("<a class='" + cssClass + "' href='./rmctrl-controller-screens-ajax.jsp?userId="
+//                        out.println("<a class='" + cssClass + "' href='./rmctrl-controller-screens-ajax.jap?userId="
+                        out.println("<a class='" + cssClass + "' href='./rmctrl-controller-screens-ajax.html?userId="
                                 + userId + "&cellinkId=" + controller.getCellinkId()
                                 + "&controllerId=" + controller.getId() + "&programId="
                                 + controller.getProgram().getId() + "&screenId=" + screen.getId()
@@ -155,7 +153,9 @@ public class RCControllerScreenAjax extends AbstractServlet {
                     }
                 }
 
+//                out.println("<td><input type=\"submit\" value=\"Send Data\"/></td>");
                 out.println("</tr>");
+                out.println("<td><input type=\"submit\" value=\"Send Data\"/></td>");
                 out.println("</table>");
                 out.println("</td>");
                 out.println("</tr>");
@@ -172,10 +172,8 @@ public class RCControllerScreenAjax extends AbstractServlet {
 
                         out.println("<td valign=top colspan=8>");
                         out.println("<table class=\"table-screens\" border=\"1\" borderColor=\"#848C96\"");
-                        out.println(
-                                "onmouseover=\"this.style.borderColor='orange';this.style.borderWidth='0.1cm';this.style.borderStyle='solid';\"");
-                        out.println(
-                                "onmouseout=\"this.style.borderColor='';this.style.borderWidth='';this.style.borderStyle='';\">");
+                        out.println("onmouseover=\"this.style.borderColor='orange';this.style.borderWidth='0.1cm';this.style.borderStyle='solid';\"");
+                        out.println("onmouseout=\"this.style.borderColor='';this.style.borderWidth='';this.style.borderStyle='';\">");
                         out.println("<thead>");
                         out.println("<th nowrap colspan=2>");
                         out.println(table.getUnicodeTitle());
@@ -189,15 +187,12 @@ public class RCControllerScreenAjax extends AbstractServlet {
 
                                 switch (special) {
                                     case Data.STATUS:
-                                        out.println(
-                                                "<tr class=unselected onmouseover=this.className='selected' onmouseout=this.className='unselected'>");
+                                        out.println("<tr class=unselected onmouseover=this.className='selected' onmouseout=this.className='unselected'>");
                                         out.println("<td class='label'>");
                                         out.println(data.getUnicodeLabel());
                                         out.println("</td>");
                                         out.println("<td class='value' nowrap>");
-                                        out.println(
-                                                "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
-                                                        + data.getFormattedValue() + "'>");
+                                        out.println("<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='" + data.getFormattedValue() + "'>");
                                         out.println("</td>");
                                         out.println("</tr>");
 
@@ -249,25 +244,29 @@ public class RCControllerScreenAjax extends AbstractServlet {
                                         break;
                                 }
                             } else {
-                                out.println(
-                                        "<tr class=unselected onmouseover=this.className='selected' onmouseout=this.className='unselected'>");
-                                out.println(
-                                        "<td class='label' nowrap onmouseover=this.className='tdselected' onmouseout=this.className='label'>");
+                                out.println("<tr class=unselected onmouseover=this.className='selected' onmouseout=this.className='unselected'>");
+                                out.println("<td class='label' nowrap onmouseover=this.className='tdselected' onmouseout=this.className='label'>");
                                 out.println(data.getUnicodeLabel());
                                 out.println("</td>");
                                 out.println("<td class='value'>");
 
+                                User user = (User) request.getSession().getAttribute("user");
+
                                 if (!data.isReadonly()) {
-                                    out.println(
-                                            "<input type='text' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeypress=\"keyPress(event, this, "
-                                                    + controller.getId() + "," + currScreen.getId() + "," + data.getId()
-                                                    + " );\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
-                                                    + data.getFormat()
-                                                    + "')\" size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
-                                                    + data.getFormattedValue() + ">");
+                                    if (user.getRole() == UserRole.READONLYUSER) {
+                                        out.println(
+                                                "<input name='"+controller.getId()+","+currScreen.getId()+"'type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
+                                                        + data.getFormattedValue() + "'>");
+                                    } else {
+                                        out.println(
+                                                "<input name='"+controller.getId()+","+currScreen.getId()+","+data.getId()+"'type='text' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
+                                                        + data.getFormat()
+                                                        + "')\" size='6' style='height:14pt;color:green;background:lightgoldenrodyellow;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
+                                                        + data.getFormattedValue() + ">");
+                                    }
                                 } else {
                                     out.println(
-                                            "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
+                                            "<input name='"+controller.getId()+","+currScreen.getId()+"'type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
                                                     + data.getFormattedValue() + "'>");
                                 }
 
@@ -291,13 +290,13 @@ public class RCControllerScreenAjax extends AbstractServlet {
 
                 // error page
                 logger.info("retrieve program data relay!", ex);
-                request.getRequestDispatcher("./rmctrl-controller-screens-ajax.jsp.jsp?userId" + userId + "&cellinkId="
+                request.getRequestDispatcher("./rmctrl-controller-screens-ajax.html?userId" + userId + "&cellinkId="
                         + cellinkId + "&screenId=" + screenId).forward(request, response);
             } catch (Exception ex) {
 
                 // error page
                 logger.info("retrieve program data relay!", ex);
-                request.getRequestDispatcher("./rmctrl-controller-screens-ajax.jsp.jsp?userId" + userId + "&cellinkId="
+                request.getRequestDispatcher("./rmctrl-controller-screens-ajax.html?userId" + userId + "&cellinkId="
                         + cellinkId + "&screenId=" + screenId).forward(request, response);
             }
         } finally {
@@ -378,6 +377,3 @@ public class RCControllerScreenAjax extends AbstractServlet {
         return null;
     }
 }
-
-
-

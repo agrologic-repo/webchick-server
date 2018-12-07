@@ -130,15 +130,15 @@
                     <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a
                             href="<%=request.getContextPath()%>/overview.html?userId=<%=user.getId()%>"><%=session.getAttribute("menu.overview")%>
                     </a></td>
-                    <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a
-                            href="<%=request.getContextPath()%>/all-users.html"><%=session.getAttribute("menu.users")%>
-                    </a></td>
-                    <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a
-                            href="<%=request.getContextPath()%>/all-programs.html"><%=session.getAttribute("menu.screens")%>
-                    </a></td>
-                    <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a
-                            href="<%=request.getContextPath()%>/database.jsp"><%=session.getAttribute("menu.database")%>
-                    </a></td>
+                    <%--<td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a--%>
+                            <%--href="<%=request.getContextPath()%>/all-users.html"><%=session.getAttribute("menu.users")%>--%>
+                    <%--</a></td>--%>
+                    <%--<td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a--%>
+                            <%--href="<%=request.getContextPath()%>/all-programs.html"><%=session.getAttribute("menu.screens")%>--%>
+                    <%--</a></td>--%>
+                    <%--<td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a--%>
+                            <%--href="<%=request.getContextPath()%>/database.jsp"><%=session.getAttribute("menu.database")%>--%>
+                    <%--</a></td>--%>
                     <%} else {%>
                     <td id="mnu" name="mnu" valign="bottom" nowrap width="20%"><a
                             href="<%=request.getContextPath()%>/my-farms.html?userId=<%=user.getId()%>"><%=session.getAttribute("menu.myfarms")%>

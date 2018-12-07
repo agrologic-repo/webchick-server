@@ -189,10 +189,9 @@ public class ProgramAlarmDaoImpl implements ProgramAlarmDao {
             digIndx--;
             len--;
         }
-
-        String text = alarmText.substring(0, digIndx + 1).trim();
-        text = text.replaceAll("[\n\r]", "");
-        String ids = alarmText.substring(digIndx + 1).trim();
+        String[] splitted  = alarmText.split("\r\n");
+        String text = splitted[0];
+        String ids =  splitted[1].trim();
         Long id = null;
 
         try {

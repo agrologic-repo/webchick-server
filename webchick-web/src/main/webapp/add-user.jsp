@@ -18,6 +18,7 @@
     </title>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function clearForm() {
@@ -184,12 +185,10 @@
                             <td>
                                 <select id="Nrole" name="Nrole" class="dropDownList">
                                     <option value="0"></option>
-                                    <option value="1"><%=session.getAttribute("user.role.admin")%>
-                                    </option>
-                                    <option value="2"><%=session.getAttribute("user.role.regular")%>
-                                    </option>
-                                    <option value="3"><%=session.getAttribute("user.role.advanced")%>
-                                    </option>
+                                    <option value="1"><%=session.getAttribute("user.role.admin")%></option>
+                                    <option value="2"><%=session.getAttribute("user.role.regular")%></option>
+                                    <option value="3"><%=session.getAttribute("user.role.advanced")%></option>
+                                    <option value="4">ReadOnlyUser</option>
                                 </select>
                             </td>
                             <td id="msgRole"></td>

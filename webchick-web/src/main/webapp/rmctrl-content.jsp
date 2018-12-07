@@ -19,7 +19,7 @@
 <head>
     <title><%=cellink.getName()%>
     </title>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="resources/style/rmtstyle.css"/>
 </head>
 <body>

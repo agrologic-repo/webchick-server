@@ -9,7 +9,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <title>Webchick Terms and Conditions</title>
 </head>
 <body>

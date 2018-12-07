@@ -25,6 +25,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Assign System States</title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <script type="text/javascript" src="resources/javascript/ftabs.js">;</script>
@@ -39,7 +40,7 @@
             var k = 0;
             var bitMap = new Hashtable();
             var datavalue = datas.value;
-            for (var j = 0; j < 30; j++) {
+            for (var j = 0; j < 40; j++) {
                 var bitvalue = numbers[j].value;
                 var selected = systemstatenames[j].selectedIndex;
                 var relayText = systemstatenames[j].options[selected].innerHTML + "-" + selected;
@@ -90,9 +91,10 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <% int numbers = 30;%>
+                                <% int numbers = 40;%>
                                 <% Collection<ProgramSystemState> programSystemStates = program.getProgramSystemStateByData(dataSysState.getId());%>
                                 <% for (int number = 1; number <= numbers; number++) {%>
+                                <%--<% for (int number = 0; number <= numbers; number++) {%>--%>
                                 <% ProgramSystemState systemState = findSystemState(programSystemStates, dataSysState.getId(), number);%>
                                 <tr>
                                     <td align="left" width="50px">
@@ -101,8 +103,7 @@
                                     <td align="left" width="80px">
                                         <select id="systemstatenames" name="systemstatenames" style="width:auto;">
                                             <% for (SystemState systemStateName : systemStateNames) {%>
-                                            <% if (systemState != null && systemState.getText()
-                                                    .equals(systemStateName.getText())) {%>
+                                            <% if (systemState != null && systemState.getText().equals(systemStateName.getText())) {%>
                                             <option value="<%=systemStateName.getId()%>"
                                                     selected><%=systemStateName.getText()%>
                                             </option>

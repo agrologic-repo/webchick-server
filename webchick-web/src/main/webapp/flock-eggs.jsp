@@ -11,9 +11,25 @@
 <%@ page import="com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Map" %>
+
+<!--------------------------------------------------------------------------------------------------->
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%--<%@ page errorPage="anerrorpage.jsp" %>--%>
+<%@ include file="language.jsp" %>
+<%
+    Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+    Long flockId = Long.parseLong(request.getParameter("flockId"));
+    Locale currLocal = (Locale) session.getAttribute("currLocale");
+    String pageDir = "rightPage";
+    if (session.getAttribute("dir").equals("rtl")) {
+        pageDir = "leftPage";
+    }
+
+%>
+<!--------------------------------------------------------------------------------------------------->
 <!DOCTYPE html>
 <%
-    Long flockId = Long.parseLong(request.getParameter("flockId"));
+    //    Long flockId = Long.parseLong(request.getParameter("flockId"));     /////////////////////////////////////!!!!!!!!!!!!!!!!!!!!!
     EggDao eggDao = DbImplDecider.use(DaoType.MYSQL).getDao(EggDao.class);
     ArrayList<Eggs> historyList = getEggsList(flockId);
     ArrayList<Eggs> currentList = new ArrayList<Eggs>();
@@ -85,6 +101,64 @@
 %>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
+
+<!------------------------------------------------------------------------------------------------------------------------>
+<title><%=session.getAttribute("history.graph.page.title")%>
+</title>
+<link rel="shortcut icon" href="resources/images/favicon.ico">
+<link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+<link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
+<style type="text/css">
+    label {
+        display: block;
+        margin: 20px 0 0 0;
+    }
+
+    select {
+        width: 100%;
+    }
+    table {
+        font: normal 15px tahoma;
+        margin: 0px;
+    }
+
+    .link-menu {
+        margin: 0px;
+        color: #000000;
+        float: left;
+        text-decoration: none;
+        cursor: pointer display : block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .row-menu {
+        margin: 0px;
+        background-color: #aaaaaa;
+        border-bottom: 1px solid #ffffff;
+        text-decoration: none;
+        text-align: left;
+        display: block;
+        cursor: default;
+        line-height: 30px;
+
+    }
+
+    .row-menu:hover {
+        background-color: #e6e6e6;
+    }
+
+    .selected {
+        background-color: #e6e6e6;
+    }
+</style>
+<script type="text/javascript" src="resources/javascript/util.js">;</script>
+<script type="text/javascript" src="resources/javascript/general.js">;</script>
+<script type="text/javascript" src="resources/javascript/jquery.js">;</script>
+<script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
+<script type="text/javascript" src="resources/javascript/jquery.simplesidebar.js">;</script>
+
+<!------------------------------------------------------------------------------------------------------------------------>
 <style>
     label, input {
         display: block;
@@ -151,6 +225,25 @@
     }
 
 </style>
+
+<!------------------------------>
+<!------------------------------>
+<style type="text/css">
+    .menuFarme {
+        border-style: 1px solid #1B213B;
+
+        border-collapse: collapse;
+    "
+    }
+
+    frame {
+        border: 0px solid #1B213B;;
+    }
+</style>
+<!------------------------------>
+<!------------------------------>
+
+
 <script src="resources/javascript/jquery.tablesorter.js">;</script>
 <script src="resources/javascript/jquery.scrolltable.js">;</script>
 <script>
@@ -369,155 +462,202 @@ $(function () {
 </head>
 <body>
 <div id="egg-tabs">
-    <ul>
-        <li><a href="#tabs-1">Eggs List</a></li>
-        <li><a href="#tabs-2">Eggs Reports</a></li>
-        <li><a href="#tabs-3">Eggs Graphs</a></li>
-    </ul>
-    <div id="tabs-1">
-        <table width="100%">
-            <tr>
-                <td valign="top" width="100%">
-                    <fieldset>
-                        <div id="dialog-form" title="Create new egg">
-                            <p class="validateTips">All form fields are required.</p>
+<ul>
+    <li><a href="#tabs-1">Eggs List</a></li>
+    <li><a href="#tabs-2">Eggs Reports</a></li>
+    <li><a href="#tabs-3">Eggs Graphs</a></li>
+</ul>
+<div id="tabs-1">
+    <table width="100%">
+        <tr>
+            <td valign="top" width="100%">
+                <fieldset>
+                    <div id="dialog-form" title="Create new egg">
+                        <p class="validateTips">All form fields are required.</p>
 
-                            <form>
-                                <fieldset>
-                                    <label for="day"><%=session.getAttribute("table.eggs.day")%>
-                                    </label>
-                                    <input type="text" name="day" id="day" class="text ui-widget-content ui-corner-all">
-                                    <label for="numOfBirds"><%=session.getAttribute("table.eggs.birds")%>
-                                    </label>
-                                    <input type="text" name="numOfBirds" id="numOfBirds"
-                                           class="text ui-widget-content ui-corner-all">
-                                    <label for="eggQuantity"><%=session.getAttribute("table.eggs.egg.quantity")%>
-                                    </label>
-                                    <input type="text" name="eggQuantity" id="eggQuantity"
-                                           class="text ui-widget-content ui-corner-all">
-                                    <label for="softShelled"><%=session.getAttribute("table.eggs.soft.shelled")%>
-                                    </label>
-                                    <input type="text" name="softShelled" id="softShelled" value=""
-                                           class="text ui-widget-content ui-corner-all">
-                                    <label for="cracked"><%=session.getAttribute("table.eggs.cracked")%>
-                                    </label>
-                                    <input type="text" name="cracked" id="cracked" value=""
-                                           class="text ui-widget-content ui-corner-all">
-                                    <label for="feedConsump"><%=session.getAttribute("table.eggs.feed.consump")%>
-                                    </label>
-                                    <input type="text" name="feedConsump" id="feedConsump" value=""
-                                           class="text ui-widget-content ui-corner-all">
-                                    <label for="waterConsump"><%=session.getAttribute("table.eggs.water.consump")%>
-                                    </label>
-                                    <input type="text" name="waterConsump" id="waterConsump" value=""
-                                           class="text ui-widget-content ui-corner-all">
-                                    <label for="dailyMortal"><%=session.getAttribute("table.eggs.daily.mortal")%>
-                                    </label>
-                                    <input type="text" name="dailyMortal" id="dailyMortal" value=""
-                                           class="text ui-widget-content ui-corner-all">
-                                </fieldset>
-                            </form>
-                        </div>
-                        <button id="add-egg"><%=session.getAttribute("button.add")%>
-                        </button>
-                        <div id="eggs-contain" class="ui-widget">
-                            <table id="eggs" class="scrollTable">
-                                <thead>
-                                <tr class="ui-widget-header">
-                                    <th><%=session.getAttribute("table.eggs.day")%>
-                                    </th>
-                                    <th><%=session.getAttribute("table.eggs.birds")%>
-                                    </th>
-                                    <th><%=session.getAttribute("table.eggs.egg.quantity")%>
-                                    </th>
-                                    <th><%=session.getAttribute("table.eggs.soft.shelled")%>
-                                    </th>
-                                    <th><%=session.getAttribute("table.eggs.cracked")%>
-                                    </th>
-                                    <th><%=session.getAttribute("table.eggs.feed.consump")%>
-                                    </th>
-                                    <th><%=session.getAttribute("table.eggs.water.consump")%>
-                                    </th>
-                                    <th><%=session.getAttribute("table.eggs.daily.mortal")%>
-                                    </th>
-                                    <th><%=session.getAttribute("table.eggs.action")%>
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach items="${list}" var="item">
-                                    <tr id="<c:out value="${item.day}"/>">
-                                        <td><c:out value="${item.day}"/></td>
-                                        <td><c:out value="${item.numOfBirds}"/></td>
-                                        <td><c:out value="${item.eggQuantity}"/></td>
-                                        <td><c:out value="${item.softShelled}"/></td>
-                                        <td><c:out value="${item.cracked}"/></td>
-                                        <td><c:out value="${item.feedConsump}"/></td>
-                                        <td><c:out value="${item.waterConsump}"/></td>
-                                        <td><c:out value="${item.dailyMortal}"/></td>
-                                        <td><span class="edit"><a href=""><%=session.getAttribute("button.edit")%>
-                                        </a></span>
+                        <form>
+                            <fieldset>
+                                <label for="day"><%=session.getAttribute("table.eggs.day")%>
+                                </label>
+                                <input type="text" name="day" id="day" class="text ui-widget-content ui-corner-all">
+                                <label for="numOfBirds"><%=session.getAttribute("table.eggs.birds")%>
+                                </label>
+                                <input type="text" name="numOfBirds" id="numOfBirds"
+                                       class="text ui-widget-content ui-corner-all">
+                                <label for="eggQuantity"><%=session.getAttribute("table.eggs.egg.quantity")%>
+                                </label>
+                                <input type="text" name="eggQuantity" id="eggQuantity"
+                                       class="text ui-widget-content ui-corner-all">
+                                <label for="softShelled"><%=session.getAttribute("table.eggs.soft.shelled")%>
+                                </label>
+                                <input type="text" name="softShelled" id="softShelled" value=""
+                                       class="text ui-widget-content ui-corner-all">
+                                <label for="cracked"><%=session.getAttribute("table.eggs.cracked")%>
+                                </label>
+                                <input type="text" name="cracked" id="cracked" value=""
+                                       class="text ui-widget-content ui-corner-all">
+                                <label for="feedConsump"><%=session.getAttribute("table.eggs.feed.consump")%>
+                                </label>
+                                <input type="text" name="feedConsump" id="feedConsump" value=""
+                                       class="text ui-widget-content ui-corner-all">
+                                <label for="waterConsump"><%=session.getAttribute("table.eggs.water.consump")%>
+                                </label>
+                                <input type="text" name="waterConsump" id="waterConsump" value=""
+                                       class="text ui-widget-content ui-corner-all">
+                                <label for="dailyMortal"><%=session.getAttribute("table.eggs.daily.mortal")%>
+                                </label>
+                                <input type="text" name="dailyMortal" id="dailyMortal" value=""
+                                       class="text ui-widget-content ui-corner-all">
+                            </fieldset>
+                        </form>
+                    </div>
+                    <button id="add-egg"><%=session.getAttribute("button.add")%>
+                    </button>
+                    <div id="eggs-contain" class="ui-widget">
+                        <table id="eggs" class="scrollTable">
+                            <thead>
+                            <tr class="ui-widget-header">
+                                <th><%=session.getAttribute("table.eggs.day")%>
+                                </th>
+                                <th><%=session.getAttribute("table.eggs.birds")%>
+                                </th>
+                                <th><%=session.getAttribute("table.eggs.egg.quantity")%>
+                                </th>
+                                <th><%=session.getAttribute("table.eggs.soft.shelled")%>
+                                </th>
+                                <th><%=session.getAttribute("table.eggs.cracked")%>
+                                </th>
+                                <th><%=session.getAttribute("table.eggs.feed.consump")%>
+                                </th>
+                                <th><%=session.getAttribute("table.eggs.water.consump")%>
+                                </th>
+                                <th><%=session.getAttribute("table.eggs.daily.mortal")%>
+                                </th>
+                                <th><%=session.getAttribute("table.eggs.action")%>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:forEach items="${list}" var="item">
+                                <tr id="<c:out value="${item.day}"/>">
+                                    <td><c:out value="${item.day}"/></td>
+                                    <td><c:out value="${item.numOfBirds}"/></td>
+                                    <td><c:out value="${item.eggQuantity}"/></td>
+                                    <td><c:out value="${item.softShelled}"/></td>
+                                    <td><c:out value="${item.cracked}"/></td>
+                                    <td><c:out value="${item.feedConsump}"/></td>
+                                    <td><c:out value="${item.waterConsump}"/></td>
+                                    <td><c:out value="${item.dailyMortal}"/></td>
+                                    <td><span class="edit"><a href=""><%=session.getAttribute("button.edit")%>
+                                    </a></span>
                                             <span class="delete"><a href=""><%=session.getAttribute("button.delete")%>
                                             </a></span>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
-                    </fieldset>
-                </td>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="tabs-2">
+    <%--<jsp:include page="eggs-reports.jsp"/>--%>
+    <div id="eggs-reports-contain" class="ui-widget">
+        <table id="eggs-reports" class="scrollTable">
+            <thead>
+            <tr class="ui-widget-header">
+                <th><%=session.getAttribute("table.eggs.day")%>
+                </th>
+                <th><%=session.getAttribute("table.eggs.birds")%>
+                </th>
+                <th><%=session.getAttribute("table.eggs.egg.quantity")%>
+                </th>
+                <th>Average eggs</th>
+                <th>Actual eggs</th>
+                <th>Cracked eggs (%)</th>
+                <th>Feed per bird</th>
+                <th>Water per bird</th>
+                <th>Feed per egg</th>
+                <th>Water per egg</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach items="${list}" var="item">
+                <tr id="<c:out value="${item.day}"/>">
+                    <td><c:out value="${item.day}"/></td>
+                    <td><c:out value="${item.numOfBirds}"/></td>
+                    <td><c:out value="${item.eggQuantity}"/></td>
+                    <td><c:out value="${(item.eggQuantity/item.numOfBirds)*100}"/></td>
+                    <td><c:out value="${item.eggQuantity - item.softShelled - item.cracked}"/></td>
+                    <td><fmt:formatNumber type="percent" maxIntegerDigits="3" maxFractionDigits="2"
+                                          value="${item.cracked/item.eggQuantity}"/></td>
+                    <td><fmt:formatNumber type="number" maxFractionDigits="3"
+                                          value="${item.feedConsump/item.numOfBirds}"/></td>
+                    <td><fmt:formatNumber type="percent" maxIntegerDigits="3" maxFractionDigits="2"
+                                          value="${item.waterConsump/item.numOfBirds}"/></td>
+                    <td><fmt:formatNumber type="percent" maxIntegerDigits="3" maxFractionDigits="2"
+                                          value="${item.feedConsump/item.eggQuantity}"/></td>
+                    <td><fmt:formatNumber type="percent" maxIntegerDigits="3" maxFractionDigits="2"
+                                          value="${item.waterConsump/item.eggQuantity}"/></td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="tabs-3">
+   <iframe width="100%" height="500px" src="./rmctrl-flock-eggs.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" name="iframe_a" style="border:none"></iframe>
+    <div id="div1" class="drop-down-show-hide" style="width: 100%;">
+        <table id="daily-history-menu" border="0" cellpadding="0" cellspacing="0" border="1" style="border: 0px solid #0084e1; width: 100%">
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggs.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>"  target="iframe_a" class="link-menu"><h3>Eggs</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggstotal.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3>Eggs Total</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-first.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3>Eggs Counter 1</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-second.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3>Eggs Counter 2</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-third.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3>Eggs Counter 3</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-fourth.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3> Eggs Counter 4</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-fifth.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3>Eggs Counter 5</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-sixth.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3>Eggs Counter 6</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-seventh.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3>Eggs Counter 7</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-eighth.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3>Eggs Counter 8</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-ninth.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3>Eggs Counter 9</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-tenth.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu" ><h3>Eggs Counter 10</h3></a></td>
+            </tr>
+            <%--</tr>--%>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-eleventh.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3> Eggs Counter 11</h3></a></td>
+            </tr>
+            <tr class="row-menu ui-widget ui-corner-all">
+                <td><a href="./rmctrl-flock-eggscounter-twelfth.jsp?flockId=<%=flockId%>&currLocal=<%=currLocal%>" target="iframe_a" class="link-menu"><h3>Eggs Counter 12</h3></a></td>
             </tr>
         </table>
     </div>
-    <div id="tabs-2">
-        <%--<jsp:include page="eggs-reports.jsp"/>--%>
-        <div id="eggs-reports-contain" class="ui-widget">
-            <table id="eggs-reports" class="scrollTable">
-                <thead>
-                <tr class="ui-widget-header">
-                    <th><%=session.getAttribute("table.eggs.day")%>
-                    </th>
-                    <th><%=session.getAttribute("table.eggs.birds")%>
-                    </th>
-                    <th><%=session.getAttribute("table.eggs.egg.quantity")%>
-                    </th>
-                    <th>Average eggs</th>
-                    <th>Actual eggs</th>
-                    <th>Cracked eggs (%)</th>
-                    <th>Feed per bird</th>
-                    <th>Water per bird</th>
-                    <th>Feed per egg</th>
-                    <th>Water per egg</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach items="${list}" var="item">
-                    <tr id="<c:out value="${item.day}"/>">
-                        <td><c:out value="${item.day}"/></td>
-                        <td><c:out value="${item.numOfBirds}"/></td>
-                        <td><c:out value="${item.eggQuantity}"/></td>
-                        <td><c:out value="${(item.eggQuantity/item.numOfBirds)*100}"/></td>
-                        <td><c:out value="${item.eggQuantity - item.softShelled - item.cracked}"/></td>
-                        <td><fmt:formatNumber type="percent" maxIntegerDigits="3" maxFractionDigits="2"
-                                              value="${item.cracked/item.eggQuantity}"/></td>
-                        <td><fmt:formatNumber type="number" maxFractionDigits="3"
-                                              value="${item.feedConsump/item.numOfBirds}"/></td>
-                        <td><fmt:formatNumber type="percent" maxIntegerDigits="3" maxFractionDigits="2"
-                                              value="${item.waterConsump/item.numOfBirds}"/></td>
-                        <td><fmt:formatNumber type="percent" maxIntegerDigits="3" maxFractionDigits="2"
-                                              value="${item.feedConsump/item.eggQuantity}"/></td>
-                        <td><fmt:formatNumber type="percent" maxIntegerDigits="3" maxFractionDigits="2"
-                                              value="${item.waterConsump/item.eggQuantity}"/></td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div id="tabs-3">
-        <p>Content for Tab 3</p>
-    </div>
+</div>
 </div>
 </body>
 </html>

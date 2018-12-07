@@ -53,7 +53,7 @@ public class PropertySummaryServlet extends AbstractServlet {
                         }
                         request.setAttribute("users", users);
                         request.getRequestDispatcher("./propertysummary.jsp").forward(request, response);
-                    } else if (user.getRole() == UserRole.USER) {
+                    } else if (user.getRole() == UserRole.USER || user.getRole() == UserRole.READONLYUSER) {
                         logger.info("access denied for user " + user);
                         request.getRequestDispatcher("./access-denied.jsp").forward(request, response);
                     }

@@ -339,7 +339,7 @@ public class ConfigurationDialog extends JDialog implements Observer {
         pnlServerStartup.add(jLabel1);
         jLabel1.setBounds(30, 30, 100, 20);
 
-        cmbLanguage.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"English", "Hebrew", "Chinese", "Russian", "French", "German", "Turkish"}));
+        cmbLanguage.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"English", "Hebrew", "Chinese", "Russian", "French", "German", "Turkish", "Polish", "Spanish", "Japanese", "Korean"}));
         cmbLanguage.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmbLanguageItemStateChanged(evt);

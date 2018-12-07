@@ -17,6 +17,10 @@ public enum UserRole {
      * the role is distributor , role value is 2
      */
     DISTRIBUTOR(3, "DISTRIBUTOR"),
+
+    READONLYUSER(4, "READONLYUSER"),
+
+//    READONLYADMIN(5, "READONLYADMIN"),
     /**
      * the role is administrator , role value is 3a
      */
@@ -62,7 +66,10 @@ public enum UserRole {
 
             case 3:
                 return UserRole.DISTRIBUTOR;
-
+            case 4:
+                return UserRole.READONLYUSER;
+//            case 5:
+//                return UserRole.READONLYADMIN;
             default:
                 return UserRole.UNKNOWN;
         }

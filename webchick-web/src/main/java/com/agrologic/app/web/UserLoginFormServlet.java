@@ -82,18 +82,21 @@ public class UserLoginFormServlet extends AbstractServlet {
                     case USER:
                         response.sendRedirect(getURLWithContextPath(request) + MY_FARMS_URL + "?userId=" + user.getId());
                         break;
-
+                    case READONLYUSER:
+                        response.sendRedirect(getURLWithContextPath(request) + MY_FARMS_URL + "?userId=" + user.getId());
+                        break;
                     case DISTRIBUTOR:
                         response.sendRedirect(getURLWithContextPath(request) + OVERVIEW_URL);
                         break;
-
+//                    case READONLYADMIN:
+//                        response.sendRedirect(getURLWithContextPath(request) + OVERVIEW_URL);
+//                        break;
                     case ADMIN:
                         response.sendRedirect(getURLWithContextPath(request) + OVERVIEW_URL);
                         break;
-
                     default:
-                        user.setUserRole(UserRole.ADMIN);// TODO: test if role not defined need to delete in release
-                        response.sendRedirect(getURLWithContextPath(request) + OVERVIEW_URL);
+                        user.setUserRole(UserRole.USER);// TODO: test if role not defined need to delete in release
+                        response.sendRedirect(getURLWithContextPath(request) + MY_FARMS_URL + "?userId=" + user.getId());
                         break;
                 }
             }

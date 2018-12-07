@@ -1,6 +1,7 @@
 package com.agrologic.app.service.table;
 
 import com.agrologic.app.model.Data;
+import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.history.FromDayToDay;
 import com.agrologic.app.service.history.FlockHistoryService;
 import com.agrologic.app.service.history.HistoryContent;
@@ -13,10 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * This service should have methods which give more abilities in manipulating with showing history data in html page .
@@ -40,29 +39,27 @@ public class HtmlTableService {
      * @param flockId the flock id
      * @return HistoryContent object contain per day reports data
      */
-    private HistoryContent createHistoryPerDayTableContent(Long flockId, FromDayToDay fromDayToDay, Long langId)
-            throws HistoryContentException {
+    private HistoryContent createHistoryPerDayTableContent(Long flockId, FromDayToDay fromDayToDay, Long langId) throws HistoryContentException {
         try {
-            List<Data> defaultPerDayHistoryList = historyService.getPerDayHistoryData(langId);
+//            List<Data> defaultPerDayHistoryList = historyService.getPerDayHistoryData(langId);
 
             // if grow day data not the first in array so find it and swap with first
-            if (!defaultPerDayHistoryList.get(0).getId().equals(800L)) {
-                int growDayIndex = -1;
-                int counter = 0;
-                for (Data data : defaultPerDayHistoryList) {
-                    if (data.getId().equals(800L)) {
-                        growDayIndex = counter;
-                        break;
-                    }
-                    counter++;
-                }
-                Collections.swap(defaultPerDayHistoryList, 0, growDayIndex);
-            }
+//            if (!defaultPerDayHistoryList.get(0).getId().equals(800L)) {
+//                int growDayIndex = -1;
+//                int counter = 0;
+//                for (Data data : defaultPerDayHistoryList) {
+//                    if (data.getId().equals(800L)) {
+//                        growDayIndex = counter;
+//                        break;
+//                    }
+//                    counter++;
+//                }
+//                Collections.swap(defaultPerDayHistoryList, 0, growDayIndex);
+//            }
 
-            Map<Integer, String> flockPerDayHistoryNotParsedList
-                    = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId, fromDayToDay);
-            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayHistoryNotParsedList,
-                    defaultPerDayHistoryList);
+            Map<Integer, String> flockPerDayHistoryNotParsedList = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId, fromDayToDay);
+//            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayHistoryNotParsedList, defaultPerDayHistoryList);
+            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayHistoryNotParsedList);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new HistoryContentException(e.getMessage(), e);
@@ -95,26 +92,70 @@ public class HtmlTableService {
      * @return the html table with history data
      * @throws HistoryContentException if failed to create history data content
      */
-    public String toHtmlTablePerDayReports(Long flockId, FromDayToDay fromDayToDay, Long langId)
-            throws HistoryContentException {
+    public String toHtmlTablePerDayReports(Long flockId, FromDayToDay fromDayToDay, Long langId)throws HistoryContentException {
         try {
             HistoryContent tableContent = createHistoryPerDayTableContent(flockId, fromDayToDay, langId);
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("<p><table class=table-list cellpadding='1' cellspacing='1' border='1'><tr>");
-
             List<Data> test = tableContent.getTitlesForHtml();
+
+            String dateTitle = "Date"; ////
+            stringBuilder.append("<th style=\"font-size: small\">" + StringEscapeUtils.unescapeHtml(dateTitle) + "</th>"); ////test
+            Flock flock = flockHistoryService.getFlock(flockId); ////
+            String startDayFlock = flock.getStartTime(); ////
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy"); ////
+            Date date = formatter.parse(startDayFlock); ////
+            String stringStartDate = formatter.format(date);////
+            String stringDate; ////
+            Calendar calendar = Calendar.getInstance(); ////
+            calendar.setTime(date); ////
+            int counter = 0; ////
+            int count = 0; ////
+
             for (Data data : tableContent.getTitlesForHtml()) {
+//            for (Data data : tableContent.getTitlesForExcel()) {
                 stringBuilder.append("<th style=\"font-size: small\">" +
                         StringEscapeUtils.unescapeHtml(data.getUnicodeLabel()) + "</th>");
             }
             stringBuilder.append("</tr>");
-
             for (Map.Entry<Integer, List<Data>> entry : tableContent.getHistoryContentPerDay().entrySet()) {
-                stringBuilder.append("<tr>");
+                    stringBuilder.append("<tr>");
+
+                if(fromDayToDay.useRange() == false) { ////
+                    if (counter == 0) { ////
+                        stringBuilder.append("<td align=center>" + stringStartDate + "</td>"); ////
+                    } /////
+                    if (counter > 0) { ////
+                        calendar.add(Calendar.DATE, 1); ////
+                        date = calendar.getTime(); ////
+                        stringDate = formatter.format(date); ////
+                        stringBuilder.append("<td align=center>" + stringDate + "</td>"); ////
+                    } ////
+                } ////
+                else{ ////
+                    if(count == 0){////
+                        int from = fromDayToDay.getFromDay();////
+                        from = from - 1;/////
+                        calendar.add(Calendar.DATE, from);/////
+                        date = calendar.getTime();////
+                        stringDate = formatter.format(date); ////
+                        stringBuilder.append("<td align=center>" + stringDate + "</td>"); ////
+                    }////
+                    if (count > 0) { ////
+                        calendar.add(Calendar.DATE, 1); ////
+                        date = calendar.getTime(); ////
+                        stringDate = formatter.format(date); ////
+                        stringBuilder.append("<td align=center>" + stringDate + "</td>"); ////
+                    } ////
+                }////
+
                 for (Data data : entry.getValue()) {
                     stringBuilder.append("<td align=center>" + data.getFormattedValue() + "</td>");
                 }
                 stringBuilder.append("</tr>");
+
+                counter++; ////test
+                count++; ////test
             }
             stringBuilder.append("</table>");
             return stringBuilder.toString();
@@ -137,22 +178,35 @@ public class HtmlTableService {
      */
 
     public String toHtmlTablePerHourReports(Long flockId, Integer growDay, Long langId) throws HistoryContentException {
+        int i;
+        i = 0;
+        int con;
+        HistoryContent tableContent;
+        StringBuilder stringBuilder;
+        List<List<String>> historyContentPerHour;
         try {
-            HistoryContent tableContent = createHistoryPerHourTableContent(flockId, growDay, langId);
-            StringBuilder stringBuilder = new StringBuilder();
+            tableContent = createHistoryPerHourTableContent(flockId, growDay, langId);
+            stringBuilder = new StringBuilder();
             stringBuilder.append("<p><table class=table-list cellpadding='1' cellspacing='1' border='1'><tr>");
-
             for (String title : tableContent.getTitlesPerHourForHtml()) {
+                if (title.equals("Date"))
+                    continue;
                 stringBuilder.append("<th style=\"font-size: small\">" + title + "</th>");
             }
             stringBuilder.append("</tr>");
-
-            List<List<String>> historyContentPerHour = tableContent.getHistoryContentPerHour();
+            historyContentPerHour = tableContent.getHistoryContentPerHour();
             for (List<String> list : historyContentPerHour) {
                 stringBuilder.append("<tr>");
                 for (String content : list) {
-                    stringBuilder.append("<td align=center>" + content + "</td>");
+                    if(i == 0){
+                        i++;
+                        con = Integer.parseInt(content);
+                        con++;
+                        content = String.valueOf(con);
+                    }
+                    stringBuilder.append("<td align=center>" + content + "</td>");/////////////////////
                 }
+                i = 0;
                 stringBuilder.append("</tr>");
             }
             stringBuilder.append("</table>");

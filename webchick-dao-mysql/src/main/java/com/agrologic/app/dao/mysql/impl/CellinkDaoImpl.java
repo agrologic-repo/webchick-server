@@ -27,78 +27,92 @@ import java.util.Map;
  */
 
 public class CellinkDaoImpl implements CellinkDao {
-    protected final Logger logger = LoggerFactory.getLogger(CellinkDaoImpl.class);
-    protected final JdbcTemplate jdbcTemplate;
-    protected final SimpleJdbcInsert jdbcInsert;
+        protected final Logger logger = LoggerFactory.getLogger(CellinkDaoImpl.class);
+        protected final JdbcTemplate jdbcTemplate;
+        protected final SimpleJdbcInsert jdbcInsert;
 
-    public CellinkDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        this.jdbcInsert.setTableName("cellinks");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void insert(Cellink cellink) throws SQLException {
-        logger.debug("Inserting cellink with name [{}]", cellink.getName());
-        Map<String, Object> valuesToInsert = new HashMap<String, Object>();
-        if (cellink.getId() != null) {
-            valuesToInsert.put("cellinkid", cellink.getId());
+        public CellinkDaoImpl(JdbcTemplate jdbcTemplate) {
+            this.jdbcTemplate = jdbcTemplate;
+            this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+            this.jdbcInsert.setTableName("cellinks");
         }
-        valuesToInsert.put("name", cellink.getName());
-        valuesToInsert.put("password", cellink.getPassword());
-        valuesToInsert.put("userid", cellink.getUserId());
-        valuesToInsert.put("sim", cellink.getSimNumber());
-        valuesToInsert.put("type", cellink.getType());
-        valuesToInsert.put("version", cellink.getVersion());
-        valuesToInsert.put("time", cellink.getTime());
-        valuesToInsert.put("state", cellink.getState());
-        valuesToInsert.put("screenid", cellink.getScreenId());
-        valuesToInsert.put("actual", cellink.isActual());
-        jdbcInsert.execute(valuesToInsert);
-    }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void insert(Cellink cellink) throws SQLException {
+            logger.debug("Inserting cellink with name [{}]", cellink.getName());
+            Map<String, Object> valuesToInsert = new HashMap<String, Object>();
+            if (cellink.getId() != null) {
+                valuesToInsert.put("cellinkid", cellink.getId());
+            }
+            valuesToInsert.put("name", cellink.getName());
+            valuesToInsert.put("password", cellink.getPassword());
+            valuesToInsert.put("userid", cellink.getUserId());
+            valuesToInsert.put("sim", cellink.getSimNumber());
+            valuesToInsert.put("type", cellink.getType());
+            valuesToInsert.put("version", cellink.getVersion());
+            valuesToInsert.put("time", cellink.getTime());
+            valuesToInsert.put("state", cellink.getState());
+            valuesToInsert.put("screenid", cellink.getScreenId());
+            valuesToInsert.put("actual", cellink.isActual());
+            jdbcInsert.execute(valuesToInsert);
+        }
+
+//        /**
+//         * {@inheritDoc}
+//         */
+//        @Override
+//        public void update(Cellink cellink) throws SQLException {
+//        logger.debug("Update cellink with id [{}]", cellink.getId());
+//        jdbcTemplate.update("update cellinks set Name=?, Password=?, UserID=?, Time=?,Port=?, SIM=?, Ip=? ,State=?, Version=?,"
+//                        + " Actual=?  where CellinkID=?",
+//                new Object[]{cellink.getName(), cellink.getPassword(), cellink.getUserId(), cellink.getTime(),
+//                        cellink.getPort(), cellink.getSimNumber(), cellink.getIp(), cellink.getState(), cellink.getVersion(), cellink.isActual(),
+//                        cellink.getId()});
+//    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void update(Cellink cellink) throws SQLException {
+    public void update(Cellink cellink) throws SQLException {// changed 28/05/2017
         logger.debug("Update cellink with id [{}]", cellink.getId());
         jdbcTemplate.update("update cellinks set Name=?, Password=?, UserID=?, Time=?,Port=?, SIM=?, Ip=? ,State=?, Version=?,"
-                + " Actual=?  where CellinkID=?",
+                        + " Actual=?, Type=? where CellinkID=?",
                 new Object[]{cellink.getName(), cellink.getPassword(), cellink.getUserId(), cellink.getTime(),
-                        cellink.getPort(), cellink.getSimNumber(), cellink.getIp(), cellink.getState(), cellink.getVersion(), cellink.isActual(),
+                        cellink.getPort(), cellink.getSimNumber(), cellink.getIp(), cellink.getState(), cellink.getVersion(), cellink.isActual(), cellink.getType(),
                         cellink.getId()});
-    }
+    }// changed 28/05/2017
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void remove(Long id) throws SQLException {
-        Validate.notNull(id, "Id can not be null");
-        logger.debug("Delete cellink with id [{}]", id);
-        jdbcTemplate.update("delete from cellinks where CellinkID=?", new Object[]{id});
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void insert(Collection<Cellink> cellinks) throws SQLException {
-        // there is duplicate cellink elements in cellinkList we need only unique elements
-        Collection<Cellink> cellinkCollection = Util.getUniqueElements(cellinks);
-        for (Cellink cellink : cellinkCollection) {
-            insert(cellink);
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void remove(Long id) throws SQLException {
+            Validate.notNull(id, "Id can not be null");
+            logger.debug("Delete cellink with id [{}]", id);
+            jdbcTemplate.update("delete from cellinks where CellinkID=?", new Object[]{id});
         }
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void insert(Collection<Cellink> cellinks) throws SQLException {
+            // there is duplicate cellink elements in cellinkList we need only unique elements
+            Collection<Cellink> cellinkCollection = Util.getUniqueElements(cellinks);
+            for (Cellink cellink : cellinkCollection) {
+                insert(cellink);
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
     public Cellink validate(String name, String password) throws SQLException {
         logger.debug("Get cellink with name [{}]", name);
         String sqlQuery = "select * from cellinks where Name = ? and Password = ?";

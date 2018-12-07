@@ -4,6 +4,7 @@
  */
 package com.agrologic.app.gui.rxtx.flock;
 
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.model.Medicine;
 
@@ -13,6 +14,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -23,6 +25,7 @@ public class AddMedicineDialog extends JDialog {
     private Medicine currMedicine;
     private Long flockId;
     private FlockManagerService flockService;
+    private ResourceBundle bundle;
 
     /**
      * Creates new form AddMedicineDialog
@@ -33,6 +36,7 @@ public class AddMedicineDialog extends JDialog {
 
     public AddMedicineDialog(Long flockId, Frame owner, boolean modal) {
         super(owner, modal);
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         initComponents();
         flockService = new FlockManagerService();
         this.flockId = flockId;
@@ -69,6 +73,7 @@ public class AddMedicineDialog extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDataTable = new javax.swing.JTable();
         btnAdd = new javax.swing.JButton();
@@ -83,7 +88,8 @@ public class AddMedicineDialog extends JDialog {
         btnRemove = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Add  Medicine");
+//        setTitle("Add  Medicine");
+        setTitle(bundle.getString("add.medicine.dialog.add.medicine"));
         setMinimumSize(new java.awt.Dimension(570, 350));
         setModal(true);
         getContentPane().setLayout(null);
@@ -92,9 +98,12 @@ public class AddMedicineDialog extends JDialog {
             new Object [][] {
 
             },
-            new String [] {
-                "ID", "Amount", "Name", "Price", "Total"
-            }
+//            new String [] {
+//                "ID", "Amount", "Name", "Price", "Total"
+//            }
+                new String [] {
+                        bundle.getString("add.medicine.dialog.id"), bundle.getString("add.medicine.dialog.amount"), bundle.getString("add.medicine.dialog.name"), bundle.getString("add.medicine.dialog.price"), bundle.getString("add.medicine.dialog.total")
+                }
         ) {
             Class[] types = new Class [] {
                 java.lang.Long.class, java.lang.Integer.class, java.lang.String.class, java.lang.Float.class, java.lang.Float.class
@@ -116,7 +125,8 @@ public class AddMedicineDialog extends JDialog {
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(10, 11, 540, 170);
 
-        btnAdd.setText("Add ");
+//        btnAdd.setText("Add ");
+        btnAdd.setText(bundle.getString("add.medicine.dialog.add"));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -125,15 +135,18 @@ public class AddMedicineDialog extends JDialog {
         getContentPane().add(btnAdd);
         btnAdd.setBounds(435, 195, 105, 23);
 
-        jLabel2.setText("Amount");
+//        jLabel2.setText("Amount");
+        jLabel2.setText(bundle.getString("add.medicine.dialog.amount"));
         getContentPane().add(jLabel2);
         jLabel2.setBounds(20, 198, 140, 20);
 
-        jLabel4.setText("Price");
+//        jLabel4.setText("Price");
+        jLabel4.setText(bundle.getString("add.medicine.dialog.price"));
         getContentPane().add(jLabel4);
         jLabel4.setBounds(20, 252, 140, 20);
 
-        jLabel5.setText("Name");
+//        jLabel5.setText("Name");
+        jLabel5.setText(bundle.getString("add.medicine.dialog.name"));
         getContentPane().add(jLabel5);
         jLabel5.setBounds(20, 225, 140, 20);
 
@@ -161,7 +174,8 @@ public class AddMedicineDialog extends JDialog {
         getContentPane().add(txtName);
         txtName.setBounds(170, 225, 226, 20);
 
-        jLabel6.setText("Total");
+//        jLabel6.setText("Total");
+        jLabel6.setText(bundle.getString("add.medicine.dialog.total"));
         getContentPane().add(jLabel6);
         jLabel6.setBounds(20, 280, 140, 20);
 
@@ -174,7 +188,8 @@ public class AddMedicineDialog extends JDialog {
         getContentPane().add(txtTotal);
         txtTotal.setBounds(170, 280, 226, 20);
 
-        btnRemove.setText("Delete");
+//        btnRemove.setText("Delete");
+        btnRemove.setText(bundle.getString("add.medicine.dialog.delete"));
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);

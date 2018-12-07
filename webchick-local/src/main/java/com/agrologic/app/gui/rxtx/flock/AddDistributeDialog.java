@@ -1,5 +1,6 @@
 package com.agrologic.app.gui.rxtx.flock;
 
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.Distrib;
 import net.sf.nachocalendar.CalendarFactory;
 import net.sf.nachocalendar.components.DateField;
@@ -15,6 +16,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -26,6 +28,7 @@ public class AddDistributeDialog extends JDialog {
     private DateField d1;
     private FlockManagerService flockService;
     private boolean isSaved = true;
+    private ResourceBundle bundle; // 09/01/2018
 
     /**
      * Creates new form AddDistributeDialog
@@ -37,11 +40,14 @@ public class AddDistributeDialog extends JDialog {
     public AddDistributeDialog(Long flockId, Frame owner, boolean modal) {
         super(owner, modal);
         initComponents();
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         // add combobox to column sex
         TableColumn sexColumn = tblDataTable.getColumnModel().getColumn(3);
         JComboBox comboBox = new JComboBox();
-        comboBox.addItem("Male");
-        comboBox.addItem("Female");
+//        comboBox.addItem("Male"); // 09/01/2018
+        comboBox.addItem(bundle.getString("add.distribute.dialog.male")); // 09/01/2018
+//        comboBox.addItem("Female"); // 09/01/2018
+        comboBox.addItem(bundle.getString("add.distribute.dialog.female")); // 09/01/2018
         sexColumn.setCellEditor(new DefaultCellEditor(comboBox));
 
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
@@ -84,6 +90,7 @@ public class AddDistributeDialog extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDataTable = new javax.swing.JTable();
         btnAdd = new javax.swing.JButton();
@@ -150,7 +157,8 @@ public class AddDistributeDialog extends JDialog {
         jTextField16 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Add Distribute ");
+//        setTitle("Add Distribute "); // 09/01/2018
+        setTitle(bundle.getString("add.distribute.dialog.add.distribute")); // 09/01/2018
         setMinimumSize(new java.awt.Dimension(900, 650));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
@@ -163,8 +171,11 @@ public class AddDistributeDialog extends JDialog {
                 new Object[][]{
 
                 },
+//                new String[]{
+//                        "ID", "Date", "No.Account", "Sex", "Target", "Quantity Birds" // 09/01/2018
+//                }
                 new String[]{
-                        "ID", "Date", "No.Account", "Sex", "Target", "Quantity Birds"
+                        bundle.getString("add.distribute.dialog.id"), bundle.getString("add.distribute.dialog.date"), bundle.getString("add.distribute.dialog.No.Account"), bundle.getString("add.distribute.dialog.sex"), bundle.getString("add.distribute.dialog.target"), bundle.getString("add.distribute.dialog.quantity.birds") // 09/01/2018
                 }
         ) {
             Class[] types = new Class[]{
@@ -187,7 +198,8 @@ public class AddDistributeDialog extends JDialog {
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(10, 11, 624, 120);
 
-        btnAdd.setText("Add ");
+//        btnAdd.setText("Add "); // 09/01/2018
+        btnAdd.setText(bundle.getString("add.distribute.dialog.add")); // 09/01/2018
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -196,19 +208,23 @@ public class AddDistributeDialog extends JDialog {
         getContentPane().add(btnAdd);
         btnAdd.setBounds(440, 210, 105, 23);
 
-        jLabel2.setText("Target");
+//        jLabel2.setText("Target"); // 09/01/2018
+        jLabel2.setText(bundle.getString("add.distribute.dialog.target")); // 09/01/2018
         getContentPane().add(jLabel2);
         jLabel2.setBounds(20, 210, 140, 20);
 
-        jLabel3.setText("Date");
+//        jLabel3.setText("Date"); // 09/01/2018
+        jLabel3.setText(bundle.getString("add.distribute.dialog.date")); // 09/01/2018
         getContentPane().add(jLabel3);
         jLabel3.setBounds(20, 235, 140, 20);
 
-        jLabel4.setText("Sex");
+//        jLabel4.setText("Sex"); // 09/01/2018
+        jLabel4.setText(bundle.getString("add.distribute.dialog.sex")); // 09/01/2018
         getContentPane().add(jLabel4);
         jLabel4.setBounds(20, 260, 140, 20);
 
-        jLabel5.setText("Account Number");
+//        jLabel5.setText("Account Number"); // 09/01/2018
+        jLabel5.setText(bundle.getString("add.distribute.dialog.account.number")); // 09/01/2018
         getContentPane().add(jLabel5);
         jLabel5.setBounds(20, 290, 140, 20);
         getContentPane().add(txtTarget);
@@ -216,7 +232,8 @@ public class AddDistributeDialog extends JDialog {
         getContentPane().add(txtAccountNumber);
         txtAccountNumber.setBounds(170, 290, 220, 20);
 
-        jLabel6.setText("Quantity Birds");
+//        jLabel6.setText("Quantity Birds"); // 09/01/2018
+        jLabel6.setText(bundle.getString("add.distribute.dialog.quantity.birds")); // 09/01/2018
         getContentPane().add(jLabel6);
         jLabel6.setBounds(20, 320, 140, 20);
 
@@ -228,7 +245,8 @@ public class AddDistributeDialog extends JDialog {
         getContentPane().add(txtNumberOfBirds);
         txtNumberOfBirds.setBounds(170, 320, 220, 20);
 
-        btnRemove.setText("Delete");
+//        btnRemove.setText("Delete"); // 09/01/2018
+        btnRemove.setText(bundle.getString("add.distribute.dialog.delete")); // 09/01/2018
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);
@@ -237,17 +255,21 @@ public class AddDistributeDialog extends JDialog {
         getContentPane().add(btnRemove);
         btnRemove.setBounds(440, 240, 105, 23);
 
-        cmbSex.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Male", "Female"}));
+//        cmbSex.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Male", "Female"})); // 09/01/2018
+        cmbSex.setModel(new javax.swing.DefaultComboBoxModel(new String[]{bundle.getString("add.distribute.dialog.male"), bundle.getString("add.distribute.dialog.female")})); // 09/01/2018
         getContentPane().add(cmbSex);
         cmbSex.setBounds(170, 260, 220, 20);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
-        jLabel1.setText("Age Distr.");
+//        jLabel1.setText("Age Distr."); // 09/01/2018
+        jLabel1.setText(bundle.getString("add.distribute.dialog.age.distr")); // 09/01/2018
 
-        jLabel7.setText("Avg.Weight");
+//        jLabel7.setText("Avg.Weight"); // 09/01/2018
+        jLabel7.setText(bundle.getString("add.distribute.dialog.avg.weight")); // 09/01/2018
 
-        jLabel8.setText("% Birds");
+//        jLabel8.setText("% Birds"); // 09/01/2018
+        jLabel8.setText(bundle.getString("add.distribute.dialog.%.birds")); // 09/01/2018
 
         jTextField1.setEditable(false);
 
@@ -296,7 +318,8 @@ public class AddDistributeDialog extends JDialog {
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel9.setText("Weight");
+//        jLabel9.setText("Weight"); // 09/01/2018
+        jLabel9.setText(bundle.getString("add.distribute.dialog.weight")); // 09/01/2018
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -322,7 +345,8 @@ public class AddDistributeDialog extends JDialog {
         getContentPane().add(jPanel2);
         jPanel2.setBounds(10, 140, 280, 50);
 
-        btnSave.setText("Save");
+//        btnSave.setText("Save"); // 09/01/2018
+        btnSave.setText(bundle.getString("add.distribute.dialog.save")); // 09/01/2018
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);
@@ -334,13 +358,16 @@ public class AddDistributeDialog extends JDialog {
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel10.setText("Quality A (kg)");
+//        jLabel10.setText("Quality A (kg)"); // 09/01/2018
+        jLabel10.setText(bundle.getString("add.distribute.dialog.quality.a.kg")); // 09/01/2018
         jPanel3.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 16, -1, -1));
 
-        jLabel11.setText("Quality B (kg)");
+//        jLabel11.setText("Quality B (kg)"); // 09/01/2018
+        jLabel11.setText(bundle.getString("add.distribute.dialog.quality.b.kg")); // 09/01/2018
         jPanel3.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 42, -1, -1));
 
-        jLabel12.setText("Quality C (kg)");
+//        jLabel12.setText("Quality C (kg)"); // 09/01/2018
+        jLabel12.setText(bundle.getString("add.distribute.dialog.quality.c.kg")); // 09/01/2018
         jPanel3.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 66, -1, 20));
         jPanel3.add(jTextField8, new org.netbeans.lib.awtextra.AbsoluteConstraints(96, 13, 80, -1));
         jPanel3.add(jTextField9, new org.netbeans.lib.awtextra.AbsoluteConstraints(96, 39, 80, -1));
@@ -352,13 +379,16 @@ public class AddDistributeDialog extends JDialog {
         jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel13.setText("Price A");
+//        jLabel13.setText("Price A"); // 09/01/2018
+        jLabel13.setText(bundle.getString("add.distribute.dialog.price.a")); // 09/01/2018
         jPanel4.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 15, -1, -1));
 
-        jLabel14.setText("Price B");
+//        jLabel14.setText("Price B"); // 09/01/2018
+        jLabel14.setText(bundle.getString("add.distribute.dialog.price.b")); // 09/01/2018
         jPanel4.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, -1));
 
-        jLabel15.setText("Price C");
+//        jLabel15.setText("Price C"); // 09/01/2018
+        jLabel15.setText(bundle.getString("add.distribute.dialog.price.c")); // 09/01/2018
         jPanel4.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
         jPanel4.add(jTextField11, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 10, 94, 20));
         jPanel4.add(jTextField12, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 40, 94, -1));
@@ -370,13 +400,16 @@ public class AddDistributeDialog extends JDialog {
         jPanel5.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel16.setText("Quality A (%)");
+//        jLabel16.setText("Quality A (%)"); // 09/01/2018
+        jLabel16.setText(bundle.getString("add.distribute.dialog.quality.a.%")); // 09/01/2018
         jPanel5.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 13, -1, -1));
 
-        jLabel17.setText("Quality B (%)");
+//        jLabel17.setText("Quality B (%)"); // 09/01/2018
+        jLabel17.setText(bundle.getString("add.distribute.dialog.quality.b.%")); // 09/01/2018
         jPanel5.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 38, -1, -1));
 
-        jLabel18.setText("Quality C (%)");
+//        jLabel18.setText("Quality C (%)"); // 09/01/2018
+        jLabel18.setText(bundle.getString("add.distribute.dialog.quality.c.%")); // 09/01/2018
         jPanel5.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 63, -1, -1));
         jPanel5.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(89, 13, 83, -1));
         jPanel5.add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(89, 39, 83, -1));
@@ -388,13 +421,16 @@ public class AddDistributeDialog extends JDialog {
         jPanel6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
         jLabel24.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel24.setText("Calculated Sum ");
+//        jLabel24.setText("Calculated Sum "); // 09/01/2018
+        jLabel24.setText(bundle.getString("add.distribute.dialog.calculated.sum")); // 09/01/2018
 
         jLabel25.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel25.setText("Hand Sum ");
+//        jLabel25.setText("Hand Sum "); // 09/01/2018
+        jLabel25.setText(bundle.getString("add.distribute.dialog.hand.sum")); // 09/01/2018
 
         jLabel26.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel26.setText("Total");
+//        jLabel26.setText("Total"); // 09/01/2018
+        jLabel26.setText(bundle.getString("add.distribute.dialog.total")); // 09/01/2018
 
         jTextField17.setEditable(false);
 
@@ -451,11 +487,14 @@ public class AddDistributeDialog extends JDialog {
 
         jPanel7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
-        jLabel19.setText("Bad :");
+//        jLabel19.setText("Bad :"); // 09/01/2018
+        jLabel19.setText(bundle.getString("add.distribute.dialog.bad")); // 09/01/2018
 
-        jLabel20.setText("Veterinary (kg)");
+//        jLabel20.setText("Veterinary (kg)"); // 09/01/2018
+        jLabel20.setText(bundle.getString("add.distribute.dialog.veterinary.kg")); // 09/01/2018
 
-        jLabel21.setText("Another (kg)");
+//        jLabel21.setText("Another (kg)"); // 09/01/2018
+        jLabel21.setText(bundle.getString("add.distribute.dialog.another.kg")); // 09/01/2018
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -497,9 +536,11 @@ public class AddDistributeDialog extends JDialog {
 
         jPanel8.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
-        jLabel22.setText("Veterinary %");
+//        jLabel22.setText("Veterinary %"); // 09/01/2018
+        jLabel22.setText(bundle.getString("add.distribute.dialog.veterinary.%")); // 09/01/2018
 
-        jLabel23.setText("Another %");
+//        jLabel23.setText("Another %"); // 09/01/2018
+        jLabel23.setText(bundle.getString("add.distribute.dialog.another.%")); // 09/01/2018
 
         jTextField15.setEditable(false);
 

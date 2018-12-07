@@ -15,8 +15,8 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <title>Add Relay</title>
     <script type="text/javascript">
         function reset() {
@@ -67,8 +67,7 @@
                         <td>
                             <button id="btnAdd" name="btnAdd" type="submit"><%=session.getAttribute("button.ok") %>
                             </button>
-                            <button id="btnBack" name="btnBack" type="button"
-                                    onclick='self.close();'><%=session.getAttribute("button.cancel") %>
+                            <button id="btnBack" name="btnBack" type="button" onclick='self.close();'><%=session.getAttribute("button.cancel") %>
                             </button>
                         </td>
                     </tr>

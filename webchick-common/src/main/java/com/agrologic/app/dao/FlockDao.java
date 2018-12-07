@@ -31,6 +31,14 @@ public interface FlockDao {
      */
     void update(Flock flock) throws SQLException;
 
+    void updateFlockStartDay(Flock flock)throws SQLException;// added 14/06/2017
+
+    void updateFlockEndDay(Flock flock)throws SQLException;// added 14/11/2017
+
+    void updateFlockStatus(Flock flock)throws SQLException;// added 14/11/2017
+
+    Integer getMaxFlockId();// 27/11/2017
+
     /**
      * Removes a data from the flocks database
      *

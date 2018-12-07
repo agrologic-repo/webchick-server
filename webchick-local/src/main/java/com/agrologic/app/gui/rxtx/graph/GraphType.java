@@ -8,6 +8,9 @@ public class GraphType {
     public static final int BLANK_GRAPH = 0;
     public static final int IN_FEED_WATER_GRAPH = 2;
     public static final int IN_OUT_TEMP_HUMID_GRAPH = 1;
+    public static final int FEED_WATER_PER_BIRD_GRAPH = 3;
+    public static final int FEED2_WATER2_GRAPH = 4;
+    public static final int WATER_SUM_GRAPH = 5;
 
     /**
      * Map of Strings to GraphType objects.
@@ -29,11 +32,20 @@ public class GraphType {
      */
     public static final GraphType BLANK = new GraphType(BLANK_GRAPH);
 
+    public static final GraphType FEED_WATER_PER_BIRD = new GraphType(FEED_WATER_PER_BIRD_GRAPH);
+
+    public static final GraphType FEED2_WATER2 = new GraphType(FEED_WATER_PER_BIRD_GRAPH);
+
+    public static final GraphType WATER_SUM = new GraphType(WATER_SUM_GRAPH);
+
     // initialize a String -> GraphType map
     static {
         graphTypeMap.put(BLANK_GRAPH, "Blank Graph (24 hours)");
         graphTypeMap.put(IN_OUT_TEMP_HUMID_GRAPH, "In Temperature Water and Consumption Graph (24 hours)");
         graphTypeMap.put(IN_FEED_WATER_GRAPH, "In Temperature Water and Consumption Graph (24 hours)");
+        graphTypeMap.put(FEED_WATER_PER_BIRD_GRAPH, "Feed and water per bird consumption graph (24 hours)");
+        graphTypeMap.put(FEED2_WATER2_GRAPH, "Feed 2 and water 2 per bird consumption graph (24 hours)");
+        graphTypeMap.put(FEED2_WATER2_GRAPH, "Water sum graph (24 hours)");
     }
 
     private int value;
@@ -101,7 +113,13 @@ public class GraphType {
             return IN_OUT_TEMP_HUMID;
         } else if (i == IN_FEED_WATER_GRAPH) {
             return IN_FEED_WATER;
-        } else {
+        } else if(i == FEED_WATER_PER_BIRD_GRAPH){
+            return FEED_WATER_PER_BIRD;
+        } else if(i == FEED2_WATER2_GRAPH){
+            return FEED2_WATER2;
+        } else if(i == WATER_SUM_GRAPH){
+            return WATER_SUM;
+        }else {
             return BLANK;
         }
     }

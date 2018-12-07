@@ -15,6 +15,7 @@
 <head>
     <title><%=session.getAttribute("history.graph.page.title")%>
     </title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
