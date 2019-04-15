@@ -6,10 +6,12 @@ import com.agrologic.app.dao.mappers.Util;
 import com.agrologic.app.model.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
@@ -26,7 +28,6 @@ public class DataDaoImpl implements DataDao {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         this.jdbcInsert.setTableName("datatable");
-
     }
 
     /**
@@ -80,6 +81,9 @@ public class DataDaoImpl implements DataDao {
         List<Data> dadaList = new ArrayList(uniqueDataList);
         List<Object[]> batch = new ArrayList<Object[]>();
         for (Data data : dadaList) {
+            if (data.getTitle() == null){
+                int test = 0;
+            }
             Object[] values = new Object[]{
                     data.getId(),
                     data.getType(),
@@ -237,8 +241,14 @@ public class DataDaoImpl implements DataDao {
     /**
      * {@inheritDoc}
      */
+//    @Override
+//         public Data getById(Long dataId) throws SQLException, EmptyResultDataAccessException {
+//        String sql = "select * from datatable where dataid=?";
+//        return jdbcTemplate.queryForObject(sql, new Object[]{dataId}, RowMappers.data());
+//    }
+
     @Override
-    public Data getById(Long dataId) throws SQLException {
+    public Data getById(Long dataId) throws SQLException{
         String sql = "select * from datatable where dataid=?";
         return jdbcTemplate.queryForObject(sql, new Object[]{dataId}, RowMappers.data());
     }
@@ -262,7 +272,35 @@ public class DataDaoImpl implements DataDao {
                 " (select DataID, value from controllerdata where ControllerID=?) "
                 + "as cd on d.DataID=cd.DataID and d.DataID=800";
         List<Data> result = jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
-        return result.get(0);
+        if(result.size() != 0){ //added 13/08/2017
+            return result.get(0);
+        } else { //added 13/08/2017
+            return null; //added 13/08/2017
+        }// added 13/08/2017
+    }
+
+    @Override
+    public Data getResetTime(Long controllerId) {
+        String sql = "select * from datatable as d inner join" +
+                " (select DataID, value from controllerdata where ControllerID=?) "
+                + "as cd on d.DataID=cd.DataID and d.DataID=3009";
+        List<Data> result = jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
+        if(result.size() != 0){
+            return result.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Data get_reset_time_by_flock_id(Long flockId) {
+        String sql = "select * from datatable as d inner join (select DataID, value from controllerdata where ControllerID=(SELECT controllerid FROM flocks where flockid=?)) as cd on d.DataID=cd.DataID and d.DataID=3009";
+        List<Data> result = jdbcTemplate.query(sql, new Object[]{flockId}, RowMappers.data());
+        if(result.size() != 0){
+            return result.get(0);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -342,6 +380,7 @@ public class DataDaoImpl implements DataDao {
         return getSpecial("System States");
     }
 
+    //*****************************************************************************************************
     /**
      * {@inheritDoc}
      */
@@ -351,6 +390,7 @@ public class DataDaoImpl implements DataDao {
                 + "(select ID from Special where Text=?)";
         return jdbcTemplate.query(sql, new Object[]{string}, RowMappers.data());
     }
+    //*****************************************************************************************************
 
     /**
      * {@inheritDoc}
@@ -433,11 +473,38 @@ public class DataDaoImpl implements DataDao {
      * {@inheritDoc}
      */
     @Override
+    public int removeControllerDataValues(Long controllerId) throws SQLException { // added 13/09/2017
+        String sql = "delete from controllerdata where controllerid=?";
+        return jdbcTemplate.update(sql, controllerId);
+    }// added 13/09/2017
+
+
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public Collection<Data> getPerHourHistoryDataByControllerValues(Long controllerId) throws SQLException {
+//        String sql = "select * from datatable where dataid in "
+//                + "(select dataid from controllerdata  where controllerid=? )"
+//                + " and historyopt like '%HOUR%' and historydnum <>'' order by type";
+//        return jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
+//    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Collection<Data> getPerHourHistoryDataByControllerValues(Long controllerId) throws SQLException {
         String sql = "select * from datatable where dataid in "
                 + "(select dataid from controllerdata  where controllerid=? )"
                 + " and historyopt like '%HOUR%' and historydnum <>'' order by type";
         return jdbcTemplate.query(sql, new Object[]{controllerId}, RowMappers.data());
+    }
+
+    @Override
+    public Collection<Data> getPerHourHistoryData() throws SQLException {
+        String sql = "select * from datatable where historyopt like '%HOUR%'";
+        return jdbcTemplate.query(sql, RowMappers.data());
     }
 
     /**
@@ -462,8 +529,7 @@ public class DataDaoImpl implements DataDao {
      * {@inheritDoc}
      */
     @Override
-    public Collection<Data> getOnlineTableDataList(Long controllerId, Long programId, Long screenId, Long tableId,
-                                                   Long langId) throws SQLException {
+    public Collection<Data> getOnlineTableDataList(Long controllerId, Long programId, Long screenId, Long tableId, Long langId) throws SQLException {
         String sql = "select * from datatable "
                 + "inner join tabledata on tabledata.programid=? "
                 + " and tabledata.screenid=? "
@@ -476,8 +542,7 @@ public class DataDaoImpl implements DataDao {
                 + " inner join "
                 + " controllerdata on controllerdata.dataid=datatable.dataid and controllerdata.controllerid=? "
                 + " order by position";
-        return jdbcTemplate.query(sql, new Object[]{programId, screenId, tableId, langId, programId, langId, controllerId},
-                RowMappers.data());
+        return jdbcTemplate.query(sql, new Object[]{programId, screenId, tableId, langId, programId, langId, controllerId},RowMappers.data());
     }
 
     /**
@@ -587,18 +652,35 @@ public class DataDaoImpl implements DataDao {
     @Override
     public void moveUp(Long programId, Long screenId, Long tableId, Long dataId, Integer position) throws SQLException {
         String sqlPrevData = "select * from tabledata td join datatable  dt on td.dataid=dt.dataid " +
-                "where td.programid=? and td.screenid=? and td.tableid=? and td.position=?;";
+                " where td.programid=? and td.screenid=? and td.tableid=? and td.position=?;";
 
-        List<Data> result = jdbcTemplate.query(sqlPrevData, new Object[]{programId, screenId, tableId, position - 1}, RowMappers.data());
-        if (result.size() > 0) {
-            Data prevPosData = result.get(0);
+        Integer tempPos = position;
+        while (tempPos > 0) {
+            List<Data> result = jdbcTemplate.query(sqlPrevData, new Object[]{programId, screenId, tableId, tempPos - 1}, RowMappers.data());
+            if (result.size() > 0) {
+                Data prevPosData = result.get(0);
 
-            String sqlChangePosActualData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
-            jdbcTemplate.update(sqlChangePosActualData, new Object[]{position - 1, programId, screenId, tableId, dataId});
+                String sqlChangePosActualData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+                jdbcTemplate.update(sqlChangePosActualData, new Object[]{tempPos - 1, programId, screenId, tableId, dataId});
 
-            String sqlChangePosPrevData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
-            jdbcTemplate.update(sqlChangePosPrevData, new Object[]{position, programId, screenId, tableId, prevPosData.getId()});
+                String sqlChangePosPrevData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+                jdbcTemplate.update(sqlChangePosPrevData, new Object[]{position, programId, screenId, tableId, prevPosData.getId()});
+                break;
+            } else {
+                tempPos--;
+            }
         }
+
+//        List<Data> result = jdbcTemplate.query(sqlPrevData, new Object[]{programId, screenId, tableId, position - 1}, RowMappers.data());
+//        if (result.size() > 0) {
+//            Data prevPosData = result.get(0);
+//
+//            String sqlChangePosActualData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+//            jdbcTemplate.update(sqlChangePosActualData, new Object[]{position - 1, programId, screenId, tableId, dataId});
+//
+//            String sqlChangePosPrevData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+//            jdbcTemplate.update(sqlChangePosPrevData, new Object[]{position, programId, screenId, tableId, prevPosData.getId()});
+//        }
     }
 
     @Override
@@ -606,16 +688,32 @@ public class DataDaoImpl implements DataDao {
         String sqlPrevData = "select * from tabledata  td join datatable  dt on td.dataid=dt.dataid " +
                 "where td.programid=? and td.screenid=? and td.tableid=? and td.position=?;";
 
-        List<Data> result = jdbcTemplate.query(sqlPrevData, new Object[]{programId, screenId, tableId, position + 1}, RowMappers.data());
-        if (result.size() > 0) {
-            Data nextPosData = result.get(0);
-            String sqlChangePosNextData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
-            jdbcTemplate.update(sqlChangePosNextData, new Object[]{position, programId, screenId, tableId, nextPosData.getId()});
+        Integer tempPos = position;
+        while (tempPos > 0) {
+            List<Data> result = jdbcTemplate.query(sqlPrevData, new Object[]{programId, screenId, tableId, tempPos + 1}, RowMappers.data());
+            if (result.size() > 0) {
+                Data nextPosData = result.get(0);
+                String sqlChangePosNextData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+                jdbcTemplate.update(sqlChangePosNextData, new Object[]{position, programId, screenId, tableId, nextPosData.getId()});
 
-            String sqlChangePosActualData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
-            jdbcTemplate.update(sqlChangePosActualData, new Object[]{position + 1, programId, screenId, tableId, dataId});
-
+                String sqlChangePosActualData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+                jdbcTemplate.update(sqlChangePosActualData, new Object[]{tempPos + 1, programId, screenId, tableId, dataId});
+                break;
+            } else {
+                tempPos++;
+            }
         }
+
+//        List<Data> result = jdbcTemplate.query(sqlPrevData, new Object[]{programId, screenId, tableId, position + 1}, RowMappers.data());
+//        if (result.size() > 0) {
+//            Data nextPosData = result.get(0);
+//            String sqlChangePosNextData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+//            jdbcTemplate.update(sqlChangePosNextData, new Object[]{position, programId, screenId, tableId, nextPosData.getId()});
+//
+//            String sqlChangePosActualData = "update tabledata set position=? where programid=? and screenid=? and tableid=? and dataid=? and displayontable='yes'";
+//            jdbcTemplate.update(sqlChangePosActualData, new Object[]{position + 1, programId, screenId, tableId, dataId});
+//
+//        }
     }
 
     /**
@@ -678,5 +776,57 @@ public class DataDaoImpl implements DataDao {
     public Collection<Data> getAllBySpecial(Integer special) throws SQLException {
         String sql = "select * from datatable where isspecial = ?";
         return jdbcTemplate.query(sql, new Object[]{special}, RowMappers.data());
+    }
+
+    @Override
+    public Data get_data_by_d_num(String d_num) throws SQLException {
+
+        String sql = "SELECT * FROM datatable where historydnum LIKE '%;"+ d_num +"%' or historydnum like '%"+ d_num +";%' or historydnum like '"+ d_num +"'";
+
+        List<Data> result = jdbcTemplate.query(sql, new Object[]{}, RowMappers.data());
+        if(result.size() > 1){
+            return null;
+        }
+
+        return result.get(0);
+    }
+
+    @Override
+    public Data get_data_by_d_num_with_unicode_l(String d_num, Long lang_id) throws SQLException {
+
+        String sql = "select * from datatable left join databylanguage on datatable.DataID=databylanguage.DataID " +
+                "and databylanguage.langid="+ lang_id + " where datatable.historydnum LIKE '%;"
+                + d_num +"' or historydnum like '%"+ d_num +";%' or historydnum like '"+ d_num + "'";
+        logger.info(sql);
+        List<Data> result = jdbcTemplate.query(sql, new Object[]{}, RowMappers.data());
+        if(result.size() > 1){
+            return null;
+        }
+
+        return result.get(0);
+    }
+
+//    @Override
+//    public Data getById(Long dataId, Long langId) throws SQLException {
+//        String sql = "select * from datatable inner join databylanguage on datatable.DataID=databylanguage.DataID "
+//                + "and datatable.DataID=? and databylanguage.LangID=?";
+//        return jdbcTemplate.queryForObject(sql, new Object[]{dataId, langId}, RowMappers.data());
+//    }
+
+
+
+    //select * from datatable inner join databylanguage on datatable.DataID=databylanguage.DataID and datatable.DataID=(SELECT dataid FROM datatable where historydnum LIKE '%;D20%' or historydnum like '%D20;%' or historydnum like 'D20') and databylanguage.LangID=1
+
+    public String get_label_by_d_num(String d_num)throws SQLException{
+
+        String sql = "SELECT label FROM datatable where historydnum LIKE '%;"+ d_num +"%' or historydnum like '%"+ d_num +";%' or historydnum like '"+ d_num +"'";
+
+        List<String> result = jdbcTemplate.query(sql, new Object[]{}, RowMappers.data_string());
+
+        if (result.size() == 1){
+            return result.get(0);
+        }
+
+        return null;
     }
 }

@@ -16,8 +16,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Edit Cellink</title>
-
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <style>
@@ -191,9 +190,8 @@
                                             </td>
                                             <td align="center"><%=controller.getNetName()%>
                                             </td>
-                                            <td align="center"><a
-                                                    href="./all-screens.html?programId=<%=controller.getProgramId() %>"><%=((Program) controller.getProgram()).getName() %>
-                                            </a></td>
+                                            <td align="center"><a href="./all-screens.html?programId=<%=controller.getProgramId() %>"><%=((Program) controller.getProgram()).getName() %></a>
+                                            </td>
                                             <td align="center">
                                                 <a href="./editcontrollerrequest.html?userId=<%=editCellink.getId() %>&cellinkId=<%=controller.getCellinkId() %>&controllerId=<%=controller.getId()%>">
                                                     <img src="resources/images/edit.gif" style="cursor: pointer" border="0"

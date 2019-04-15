@@ -5,29 +5,31 @@
     <map/>
     <node name="webchick-config">
       <map>
-        <entry key="protocol" value="0"/>
-        <entry key="language" value="Hebrew"/>
-        <entry key="server.ip" value="192.168.1.101"/>
+        <entry key="protocol" value="3"/>
+        <entry key="language" value="English"/>
+        <entry key="server.ip" value="192.168.1.22"/>
         <entry key="server.port" value="5500"/>
         <entry key="keepalive.timeout" value="3"/>
-        <entry key="com.port" value="COM4"/>
+        <entry key="com.port" value="COM5"/>
         <entry key="database.driver" value="com.mysql.jdbc.Driver"/>
-        <entry key="database.url" value="jdbc:mysql://204.93.160.169:3306/agrodb?autoReconnect=true"/>
-        <entry key="database.user" value="client"/>
-        <entry key="database.password" value="pass123$"/>
-        <entry key="com.baud" value="2400"/>
+        <entry key="database.url" value="jdbc:mysql://farm-view.com:3306/agrodb?autoReconnect=true"/>
+        <entry key="database.user" value="user3"/>
+        <entry key="database.password" value="agro1950"/>
+        <entry key="com.baud" value="9600"/>
         <entry key="com.sot" value="25000"/>
         <entry key="com.eot" value="2000"/>
         <entry key="com.next" value="1000"/>
         <entry key="com.maxerr" value="3"/>
-        <entry key="runatstartup" value="true"/>
+        <entry key="runatstartup" value="false"/>
         <entry key="access" value="regular"/>
         <entry key="webchick.uri" value="http://localhost:8080/webchick/startpage.html"/>
-        <entry key="cellink.id" value="76"/>
-        <entry key="user.id" value="71"/>
+        <entry key="cellink.id" value="600"/>
+        <entry key="user.id" value="420"/>
         <entry key="pc.comm" value="1"/>
-        <entry key="server.comport" value="COM5"/>
+        <entry key="server.comport" value="COM3"/>
         <entry key="role" value="1"/>
+        <entry key="192.168.1.22" value="192.168.1.22"/>
+        <entry key="192.168.1.61" value="192.168.1.61"/>
       </map>
     </node>
   </root>

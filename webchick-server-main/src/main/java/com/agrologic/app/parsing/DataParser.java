@@ -191,6 +191,10 @@ public class DataParser {
             } else {
                 receivedDataId = ((int) receivedDataId & 0xFFFF);
             }
+//            if (receivedDataId < 0){
+//                receivedDataId = receivedDataId + 65536;
+//            }
+
             return this;
         }
 

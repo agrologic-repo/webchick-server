@@ -9,9 +9,6 @@ import com.agrologic.app.service.history.ControllerHistoryService;
 import java.sql.SQLException;
 import java.util.Collection;
 
-/**
- * Created by Valery on 1/15/14.
- */
 public class ControllerHistoryServiceImpl implements ControllerHistoryService {
     private DataDao dataDao;
 

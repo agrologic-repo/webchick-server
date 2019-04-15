@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 
 public class EditControllerFormServlet extends AbstractServlet {
 
@@ -23,8 +24,7 @@ public class EditControllerFormServlet extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         response.setContentType("text/html;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
@@ -53,30 +53,49 @@ public class EditControllerFormServlet extends AbstractServlet {
                 try {
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                     Controller controller = controllerDao.getById(controllerId);
+
                     controller.setNetName(netName);
                     controller.setTitle(title);
                     controller.setCellinkId(cellinkId);
                     controller.setProgramId(programId);
                     controller.setName(controllerType);
                     controller.setHouseType(houseType);
+
                     if ((active != null) && "ON".equals(active.toUpperCase())) {
                         controller.setActive(true);
                     } else {
                         controller.setActive(false);
                     }
-                    controllerDao.update(controller);
+
+                    Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
+
+                    boolean upt = true;
+
+                    for(Controller c : controllers) {
+                        if (c.getNetName().substring(c.getNetName().length() - 2, c.getNetName().length()).equals(controller.getNetName().substring(c.getNetName().length() - 2, c.getNetName().length()))) {
+                            upt = false;
+                        }
+                    }
+
+                    if (upt) {
+                        controllerDao.update(controller);
+                    } else {
+                        controllerDao.update_version(programId, controllerId);
+                    }
 
                     logger.info("Controller " + controller + " successfully updated !");
+
                     request.setAttribute("message", "Controller with ID " + controller.getId() + " successfully updated !");
                     request.setAttribute("error", false);
-                    request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
-                            + cellinkId).forward(request, response);
+                    request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);
+
                 } catch (SQLException ex) {
+
                     logger.error("Error occurs while updating controller !");
                     request.setAttribute("message", "Error occurs while updating controller  .");
                     request.setAttribute("error", true);
-                    request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
-                            + cellinkId).forward(request, response);
+                    request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);
+
                 }
             }
         } finally {

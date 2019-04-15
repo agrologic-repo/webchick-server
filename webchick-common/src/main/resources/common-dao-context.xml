@@ -193,19 +193,19 @@
                 <property name="jdbcUrl" value="${jdbc.url}"/>
                 <property name="user" value="${jdbc.user}"/>
                 <property name="password" value="${jdbc.password}"/>
-                <property name="acquireRetryAttempts" value="1"/>
+                <property name="acquireRetryAttempts" value="5"/>
                 <!--Every hour we'll be hitting DB to make sure MySQL doesn't kill the connection. By default if connection
                     is idle for 8 hrs, MySQL kills it-->
                 <property name="idleConnectionTestPeriod" value="3600"/>
                 <!--This option is useful if threads are waiting for the connection from pool. Without this threads would wait
                 forever and you're risking to get your app down if all the threads stuck.-->
-                <property name="maxPoolSize" value="500"/>
-                <!--<property name="checkoutTimeout" value="0"/>-->
-                <!--<property name="testConnectionOnCheckin" value="true"/>-->
-                <!--<property name="acquireIncrement" value="3"/>-->
-                <!--<property name="initialPoolSize" value="2"/>-->
-                <!--<property name="maxIdleTime" value="18000"/>-->
-                <!--<property name="minPoolSize" value="2"/>-->
+                <property name="maxPoolSize" value="100"/>
+                <property name="checkoutTimeout" value="0"/>
+                <property name="testConnectionOnCheckin" value="true"/>
+                <property name="acquireIncrement" value="3"/>
+                <property name="initialPoolSize" value="2"/>
+                <property name="maxIdleTime" value="18000"/>
+                <property name="minPoolSize" value="2"/>
             </bean>
         </property>
     </bean>

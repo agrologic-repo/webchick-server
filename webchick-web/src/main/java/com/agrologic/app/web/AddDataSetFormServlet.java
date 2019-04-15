@@ -4,6 +4,7 @@ import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DataDao;
 import com.agrologic.app.dao.DbImplDecider;
 import com.agrologic.app.model.Data;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,8 +31,7 @@ public class AddDataSetFormServlet extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -49,6 +49,7 @@ public class AddDataSetFormServlet extends AbstractServlet {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+
                     int type = (int) startDataId;        // type of value (like 4096)
 
                     if ((type & 0xC000) != 0xC000) {
@@ -56,7 +57,13 @@ public class AddDataSetFormServlet extends AbstractServlet {
                     } else {
                         startDataId = (type & 0xFFFF);
                     }
-
+//                    if (startDataId < 0){
+//                        startDataId = startDataId + 65536;
+//                    }
+//
+//                    if (endDataId < 0){
+//                        endDataId = endDataId + 65536;
+//                    }
                     type = (int) endDataId;              // type of value (like 4096)
 
                     if ((type & 0xC000) != 0xC000) {
@@ -65,22 +72,28 @@ public class AddDataSetFormServlet extends AbstractServlet {
                         endDataId = (type & 0xFFFF);
                     }
 
-                    Data data = null;
-
-                    try {
-                        data = dataDao.getById(startDataId);
-                    } catch (SQLException ex) {
-                        data = new Data();
-                        data.setFormat(0);
-                    }
-
                     if (startDataId > endDataId) {
                         return;
                     }
 
                     // stop counter to prevent add over data
                     long stopCount = endDataId - startDataId;
-                    while ((startDataId <= endDataId) || (stopCount == 0)) {
+
+                      while ((startDataId <= endDataId) || (stopCount >= 0)) {
+
+                        Data data = null;
+
+                        try {
+                            data = dataDao.getById(startDataId);
+                        } catch (SQLException ex) {
+                            data = new Data();
+                            data.setFormat(0);
+                        } catch (EmptyResultDataAccessException ex) {
+                            startDataId++;
+                            stopCount--;
+                            continue;
+                        }
+
                         try {
                             dataDao.insertDataToTable(programid, screenid, tableid, startDataId, show, pos);
                         } catch (SQLException ex) {
@@ -97,12 +110,10 @@ public class AddDataSetFormServlet extends AbstractServlet {
                             }
                         }
 
-                        if (data.isLongType()) {
-                            startDataId++;
-                            stopCount--;
-                        }
                         startDataId++;
+                        stopCount--;
                         pos++;
+
                     }
                 }
             });
@@ -124,8 +135,7 @@ public class AddDataSetFormServlet extends AbstractServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -138,8 +148,7 @@ public class AddDataSetFormServlet extends AbstractServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 

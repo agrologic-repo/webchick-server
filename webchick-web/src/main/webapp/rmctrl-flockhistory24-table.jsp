@@ -1,8 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page errorPage="anerrorpage.jsp" %>
+<%--<%@ page errorPage="anerrorpage.jsp" %>--%>
 <%@ page import="com.agrologic.app.model.User" %>
 
-<% User user = (User) request.getSession().getAttribute("user");
+<%
+    User user = (User) request.getSession().getAttribute("user");
 
     if (user == null) {
         response.sendRedirect("./index.htm");
@@ -30,13 +31,13 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title></title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
-
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/multiopt.css"/>
 </head>
 <body>
-<form action="./rmctrl-flockhistory24-table.jsp">
+<form action="./rmctrl-flockhistory24-table.jsp" target="rightPage">
     <input type="hidden" name="flockId" value="<%=flockId%>">
     <table cellpadding="1" cellspacing="1" border="0" width="100%">
         <tr>

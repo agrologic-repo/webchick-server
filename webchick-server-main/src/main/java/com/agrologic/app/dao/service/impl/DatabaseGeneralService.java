@@ -105,9 +105,9 @@ public class DatabaseGeneralService implements DatabaseAccessor, Serializable {
         workerDao = DbImplDecider.use(daoType).getDao(WorkerDao.class);
     }
 
-//    public void closeAll() {
-//        DbImplDecider.use(daoType).getDao(DaoFactory.class).closeAllConnection();
-//    }
+    public void closeAll() {
+        DbImplDecider.use(daoType).getDao(DaoFactory.class).closeAllConnection();
+    }
 
     /**
      * Set database directory folder to the system user home path folder collection.

@@ -35,26 +35,29 @@ public class SocketThreadStarter implements Runnable {
 
     @Override
     public void run() {
-        ClientSessions clientSessions = serverThread.getClientSessions();
-        List<Cellink> cellinks = null;
         try {
-            cellinks = (List<Cellink>) cellinkDao.getAll(criteria);
-        } catch (SQLException e) {
-            logger.debug(e.getMessage(), e);
-        }
-        for (Cellink cellink : cellinks) {
-
-            int state = cellink.getState();
-            if (state == CellinkState.STATE_START) {
-                SocketThread socketThread = clientSessions.getSessions().get(cellink.getId());
-                if (socketThread != null) {
-                    socketThread.setThreadState(NetworkState.STATE_STARTING);
-                    logger.info("Session with cellink ID {} started communication ", cellink.getId());
-                } else {
-                    cellink.setState(CellinkState.STATE_OFFLINE);
-                    logger.info("Session state with cellink ID {} was set offline ", cellink.getId());
+            ClientSessions clientSessions = serverThread.getClientSessions();
+            List<Cellink> cellinks = null;
+            try {
+                cellinks = (List<Cellink>) cellinkDao.getAll(criteria);
+            } catch (SQLException e) {
+                logger.debug(e.getMessage(), e);
+            }
+            for (Cellink cellink : cellinks) {
+                int state = cellink.getState();
+                if (state == CellinkState.STATE_START) {
+                    SocketThread socketThread = clientSessions.getSessions().get(cellink.getId());
+                    if (socketThread != null) {
+                        socketThread.setThreadState(NetworkState.STATE_STARTING);
+                        logger.info("Session with cellink ID {} started communication ", cellink.getId());
+                    } else {
+                        cellink.setState(CellinkState.STATE_OFFLINE);
+                        logger.info("Session state with cellink ID {} was set offline ", cellink.getId());
+                    }
                 }
             }
+        } catch (Exception e) {
+            logger.debug("Error during monitoring cellinks", e);
         }
     }
 }

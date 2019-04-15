@@ -74,6 +74,8 @@ public class DataFormat {
      * @return The String or null
      */
     public static String formatToStringValue(int format, long value) {
+//        format = DEC_3;// for test
+//        value = -1; // for test
         try {
             StringBuilder sb = new StringBuilder();
             String delim;
@@ -91,111 +93,210 @@ public class DataFormat {
                     break;
 
                 case DEC_1:
-                    delim = DOT_DELIMITER;     // xxx.x
-                    if (len < DEC_1 + 1) {
-                        len = DEC_1 - len + 1;
-                        while (len > 0) {
-                            sb.insert(0, "0");
-                            len--;
-                        }
-                    }
 
-                    position = sb.length() - DEC_1;
-                    sb.insert(position, delim);
+                    delim = DOT_DELIMITER;     // xxx.x
+                    if(value < 0){
+//                        if (len < DEC_1 + 2){
+//                            len = sb.length() - DEC_1 - 1;
+//                            if (len <= 0){
+//                                len = DEC_1 + 2 - sb.length();
+//                            }
+//                            while (len > 0){
+//                                sb.insert(1, "0");
+//                                len--;
+//                            }
+//                        }
+//                        position = sb.length() - DEC_1;
+//                        sb.insert(position, delim);
+                    } else {
+//                        delim = DOT_DELIMITER;     // xxx.x
+                        if (len < DEC_1 + 1) {
+                            len = DEC_1 - len + 1;
+                            while (len > 0) {
+                                sb.insert(0, "0");
+                                len--;
+                            }
+                        }
+                        position = sb.length() - DEC_1;
+                        sb.insert(position, delim);
+                    }
 
                     break;
 
                 case DEC_2:
+
                     delim = DOT_DELIMITER;        // xx.xx
+                    if (value < 0){
+//                        if (len < DEC_2 + 2){
+//                            len = sb.length() - DEC_2 - 1;
+//                            if (len <= 0){
+//                                len = DEC_2 + 2 - sb.length();
+//                            }
+//                            while (len > 0){
+//                                sb.insert(1, "0");
+//                                len--;
+//                            }
+//                        }
+//                        position = sb.length() - DEC_2;
+//                        sb.insert(position, delim);
+                    } else {
+//                        delim = DOT_DELIMITER;        // xx.xx
+                        if (len < DEC_2 + 1) {
+                            len = DEC_2 - len + 1;
 
-                    if (len < DEC_2 + 1) {
-                        len = DEC_2 - len + 1;
-
-                        while (len > 0) {
-                            sb.insert(0, "0");
-                            len--;
+                            while (len > 0) {
+                                sb.insert(0, "0");
+                                len--;
+                            }
                         }
+                        position = sb.length() - DEC_2;
+                        sb.insert(position, delim);
                     }
-
-                    position = sb.length() - DEC_2;
-                    sb.insert(position, delim);
 
                     break;
 
                 case DEC_3:
+
                     delim = DOT_DELIMITER;        // xx.xxx
-
-                    if (len < DEC_3 + 1) {
-                        len = DEC_3 - len + 1;
-
-                        while (len > 0) {
-                            sb.insert(0, "0");
-                            len--;
+                    if (value < 0) { // 21/01/2018
+//                        if (len < DEC_3 + 2){
+//                            len = sb.length() - DEC_3 - 1;
+//                            if (len <= 0){
+//                                len = DEC_3 + 2 - sb.length();
+//                            }
+//                            while (len > 0){
+//                                sb.insert(1, "0");
+//                                len--;
+//                            }
+//                        }
+//                        position = sb.length() - DEC_3;
+//                        sb.insert(position, delim);
+                    } else { // 21/01/2018
+//                        delim = DOT_DELIMITER;        // xx.xxx
+                        if (len < DEC_3 + 1) {
+                            len = DEC_3 - len + 1;
+                                while (len > 0) {
+                                    sb.insert(0, "0");
+                                    len--;
+                                }
                         }
-                    }
-
-                    position = sb.length() - DEC_3;
-                    sb.insert(position, delim);
+                        position = sb.length() - DEC_3;
+                        sb.insert(position, delim);
+                    } // 15/01/2018
 
                     break;
+//                case DEC_3:
+//
+//                    delim = DOT_DELIMITER;        // xx.xxx
+//
+//                    if (len < DEC_3 + 1) {
+//                        len = DEC_3 - len + 1;
+//
+//                        while (len > 0) {
+//                            sb.insert(0, "0");
+//                            len--;
+//                        }
+//                    }
+//
+//                    position = sb.length() - DEC_3;
+//                    sb.insert(position, delim);
+//
+//                    break;
 
                 case HUMIDITY:                   // xxx
                     break;
 
                 case TIME:
-                    delim = TIME_DELIMITER;       // hh:mm
-                    while (len < 4) {
-                        sb.insert(0, "0");
-                        len++;
-                    }
 
-                    position = sb.length() - 2;
-                    sb.insert(position, delim);
+                    if (value < 0){
+
+                    } else {
+                        delim = TIME_DELIMITER;       // hh:mm
+                        while (len < 4) {
+                            sb.insert(0, "0");
+                            len++;
+                        }
+                        position = sb.length() - 2;
+                        sb.insert(position, delim);
+                    }
 
                     break;
 
                 case TIME_SEC:
-                    delim = TIME_DELIMITER;    // hh:mm:ss
-                    position = sb.length() - 2;
-                    sb.insert(position, delim).insert(position - 2, delim);
+
+                    if (value < 0){
+
+                    } else {
+                        delim = TIME_DELIMITER;    // hh:mm:ss
+                        position = sb.length() - 2;
+                        sb.insert(position, delim).insert(position - 2, delim);
+                    }
 
                     break;
 
                 case DATE:
-                    int vl = (int) value;
-                    int days = ((vl >> 28) & 0xF) * 10 + ((vl >> 24) & 0xF);
-                    int months = ((vl >> 20) & 0xF) * 10 + ((vl >> 16) & 0xF);
-                    int years = ((vl >> 12) & 0xF) * 1000 + ((vl >> 8) & 0xF) * 100 + ((vl >> 4) & 0xF) * 10 + (vl & 0xF);
 
-                    sb = new StringBuilder();
-                    sb.append(days).append(DATE_DELIMITER).append(months).append(DATE_DELIMITER).append(years);
+                    if (value < 0){
+
+                    } else {
+                        int vl = (int) value;
+                        int days = ((vl >> 28) & 0xF) * 10 + ((vl >> 24) & 0xF);
+                        int months = ((vl >> 20) & 0xF) * 10 + ((vl >> 16) & 0xF);
+                        int years = ((vl >> 12) & 0xF) * 1000 + ((vl >> 8) & 0xF) * 100 + ((vl >> 4) & 0xF) * 10 + (vl & 0xF);
+                        sb = new StringBuilder();
+                        sb.append(days).append(DATE_DELIMITER).append(months).append(DATE_DELIMITER).append(years);
+                    }
 
                     break;
 
                 case DEC_4:
-
                     // XXXXXX
                     break;
 
-                case DEC_5:
+                case DEC_5: // xxxxx
+
+                    if (value < 0 && value != -1) {
+
+                        value = Math.abs(value);
+                        value = 65536 - value;
+
+                        sb = new StringBuilder();
+                        sb.append(Long.toString(value));
+
+                    } else {
+
+                    }
+
                     break;
 
                 case DEC_11:
-                    before_dec = (val / 1000) * 100;
-                    before_dec = before_dec + ((val % 1000) / 100) * 10;
-                    before_dec = before_dec + (((val % 1000) % 100) / 10);
-                    after_dec = (((val % 1000) % 100) % 10);
-                    sb = new StringBuilder();
-                    sb.append(before_dec).append(DOT_DELIMITER).append(after_dec);
+
+                    if(value < 0){
+
+                    } else {
+                        before_dec = (val / 1000) * 100;
+                        before_dec = before_dec + ((val % 1000) / 100) * 10;
+                        before_dec = before_dec + (((val % 1000) % 100) / 10);
+                        after_dec = (((val % 1000) % 100) % 10);
+                        sb = new StringBuilder();
+                        sb.append(before_dec).append(DOT_DELIMITER).append(after_dec);
+                    }
 
                     break;
+
                 case PRICE:
-                    before_dec = (val / 1000) * 100;
-                    before_dec = before_dec + ((val % 1000) / 100) * 10;
-                    before_dec = before_dec + (((val % 1000) % 100) / 10);
-                    after_dec = (((val % 1000) % 100) % 10);
-                    sb = new StringBuilder();
-                    sb.append(before_dec).append(DOT_DELIMITER).append(after_dec);
+
+                    if (value < 0) {
+
+                    } else {
+                        before_dec = (val / 1000) * 100;
+                        before_dec = before_dec + ((val % 1000) / 100) * 10;
+                        before_dec = before_dec + (((val % 1000) % 100) / 10);
+                        after_dec = (((val % 1000) % 100) % 10);
+                        sb = new StringBuilder();
+                        sb.append(before_dec).append(DOT_DELIMITER).append(after_dec);
+                    }
+
 
                     break;
 
@@ -249,6 +350,31 @@ public class DataFormat {
         }
 
         return false;
+    }
+
+    public static Long convertToPositiveValue(Long value){
+
+        if (value < 0 && value != -1) {
+            value = Math.abs(value);
+            value = 65536 - value;
+        }
+
+        return value;
+    }
+
+    public static Long convertDataId(long receivedDataId){
+        if (((int) receivedDataId & 0xC000) != 0xC000) {
+            receivedDataId = ((int) receivedDataId & 0xFFF);   // remove type to get an index 4096&0xFFF -> 0
+        } else {
+            receivedDataId = ((int) receivedDataId & 0xFFFF);
+        }
+        return receivedDataId;
+    }
+
+    public static Long convertHLValue (Long valueH, Long valueL){
+
+        return ((valueH << 16) & 0xFFFF0000) | (valueL & 0x0000FFFF);
+
     }
 }
 

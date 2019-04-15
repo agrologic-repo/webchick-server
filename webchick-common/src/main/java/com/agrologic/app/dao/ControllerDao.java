@@ -33,6 +33,8 @@ public interface ControllerDao {
      */
     void update(Controller controller) throws SQLException;
 
+    void update_version(Long program_id, Long controller_id) throws SQLException;
+
     /**
      * Removes a controller from the database
      *
@@ -89,6 +91,8 @@ public interface ControllerDao {
      * @throws java.sql.SQLException if failed to change value
      */
     void updateControllerData(Long controllerId, Collection<Data> onlineData) throws SQLException;
+
+    Long getControllerDataValue(Long dataId, Long controllerId) throws SQLException;
 
     /**
      * Update an existing controller graphs rows in table graph24hours .

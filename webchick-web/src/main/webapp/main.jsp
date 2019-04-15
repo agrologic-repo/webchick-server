@@ -13,6 +13,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=session.getAttribute("home.page.title")%></title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
 
@@ -63,7 +64,8 @@
                         - <%=session.getAttribute("label.help.descript")%>
                     </li>
                 </ul>
-                <p><%=session.getAttribute("label.version")%></p>
+                <%--<p><%=session.getAttribute("label.version")%></p>--%>
+                <p>version 6.7.57</p>
             </td>
         </tr>
     </table>

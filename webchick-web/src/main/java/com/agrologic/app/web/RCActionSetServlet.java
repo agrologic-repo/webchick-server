@@ -22,8 +22,7 @@ public class RCActionSetServlet extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
@@ -55,10 +54,8 @@ public class RCActionSetServlet extends AbstractServlet {
                 logger.info("retrieve program action set!");
                 request.setAttribute("controller", controller);
                 request.setAttribute("programactionset", programActionSets);
-                request.getRequestDispatcher("./rmctrl-controller-actionset.jsp?userId" + userId + "&cellinkId="
-                        + cellinkId + "&screenId=" + screenId).forward(request, response);
+                request.getRequestDispatcher("./rmctrl-controller-actionset.jsp?userId" + userId + "&cellinkId=" + cellinkId + "&screenId=" + screenId).forward(request, response);
             } catch (SQLException ex) {
-
                 // error page
                 logger.error("SQLException", ex);
             }

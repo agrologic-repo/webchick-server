@@ -28,7 +28,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <title>Add Translation</title>
 </head>
 <body onunload="closeWindow();">

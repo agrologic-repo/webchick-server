@@ -73,9 +73,7 @@ public class RowMappers {
         return new UserMapper();
     }
 
-    public static FlockMapper flock() {
-        return new FlockMapper();
-    }
+    public static FlockMapper flock() {return new FlockMapper();}
 
     public static DistribMapper distrib() {
         return new DistribMapper();
@@ -128,6 +126,20 @@ public class RowMappers {
     public static EggsMapper eggs() {
         return new EggsMapper();
     }
+
+    public static ControllerDataMapper controllerData() {return new ControllerDataMapper();}
+
+    public static HistoryHourMapper history_hour_data() {return new HistoryHourMapper();}
+
+    public static FlockStringMapper flock_string() {return new FlockStringMapper();}
+
+    public static DataStringMapper data_string () {return  new DataStringMapper();}
+
+
+
+
+
+
 
     private static class LanguageMapper implements RowMapper<Language> {
 
@@ -217,17 +229,17 @@ public class RowMappers {
             ProgramAlarm programAlarm = new ProgramAlarm();
             programAlarm.setDataId(rs.getLong("DataID"));
             programAlarm.setDigitNumber(rs.getInt("DigitNumber"));
-            programAlarm.setText(rs.getString("Text"));
+            programAlarm.setText(rs.getString("Text").trim());
             programAlarm.setProgramId(rs.getLong("ProgramID"));
             programAlarm.setAlarmTextId(rs.getLong("AlarmTextID"));
             try {
                 if (rs.getString("UnicodeName") != null) {
-                    programAlarm.setText(rs.getString("UnicodeName"));
+                    programAlarm.setText(rs.getString("UnicodeName").trim());
                 }
             } catch (SQLException ex) {    /*
                  * ignore
                  */
-                programAlarm.setText(programAlarm.getText());
+                programAlarm.setText(programAlarm.getText().trim());
             }
             return programAlarm;
         }
@@ -963,5 +975,57 @@ public class RowMappers {
             return eggs;
         }
     }
+
+    private static class ControllerDataMapper implements RowMapper<Data> {
+
+        @Override
+        public Data mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Data data = new Data();
+            data.setId(rs.getLong("DataID"));
+            data.setValue(rs.getLong("Value"));
+            return data;
+        }
+    }
+
+    private static class HistoryHourMapper implements RowMapper<HistoryHour> {
+
+        @Override
+        public HistoryHour mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+            HistoryHour history_hour = new HistoryHour();
+            history_hour.set_flock_id(rs.getLong("FlockID"));
+            history_hour.set_grow_day(rs.getLong("GrowDay"));
+            history_hour.set_d_num(rs.getString("DNum"));
+            history_hour.set_values(rs.getString("HistoryData"));
+
+            return history_hour;
+        }
+
+    }
+
+    private static class FlockStringMapper implements RowMapper<String> {
+
+        @Override
+        public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+            String str = rs.getString("HistoryData");
+
+            return str;
+        }
+
+    }
+
+    private static class DataStringMapper implements RowMapper<String> {
+
+        @Override
+        public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+            String str = rs.getString("label");
+
+            return str;
+        }
+
+    }
+
 }
 

@@ -69,7 +69,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
         this.netName = netName;
         this.messageType = type;
         initialize();
-    }
+}
 
     public RequestMessage(final MessageType type, final String netName, final Integer growDay) {
         this.netName = netName;
@@ -168,6 +168,7 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
                 break;
             case REQUEST_HISTORY:
                 messageString.append("%").append(getNetName()).append("h").append(getGrowDay()).append(" ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");
+//                messageString.append("%").append(getNetName()).append("h").append(" ").append(getGrowDay()).append(" ").append(calcCheckSumToSend(messageString.toString().getBytes())).append("\r");
                 setBuffer(messageString.toString().getBytes());
                 break;
             case REQUEST_PER_HOUR_REPORTS:
@@ -268,6 +269,11 @@ public class RequestMessage implements Message, Comparable<RequestMessage> {
         } else {
             return (dataType & 0xFFFF);// remove type to get an index -16490&0xFFFF -> 49046
         }
+//        if (dataType < 0){
+//            return dataType = dataType + 65536;
+//        } else {
+//            return dataType;
+//        }
     }
 
     /**

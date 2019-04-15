@@ -135,7 +135,8 @@ public interface ScreenDao {
      * @return the screen id of second screen
      * @throws java.sql.SQLException if failed to get the screen id
      */
-    Long getSecondScreenAfterMain(Long programId) throws SQLException;
+//    Long getSecondScreenAfterMain(Long programId) throws SQLException;
+    Long getSecondScreenAfterMain(Long programId);
 
     /**
      * Get screen by specified program id and screen id .

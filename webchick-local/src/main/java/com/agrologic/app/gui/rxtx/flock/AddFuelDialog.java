@@ -4,6 +4,7 @@
  */
 package com.agrologic.app.gui.rxtx.flock;
 
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.DataFormat;
 import com.agrologic.app.model.Fuel;
 import net.sf.nachocalendar.CalendarFactory;
@@ -19,6 +20,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -31,6 +33,7 @@ public class AddFuelDialog extends JDialog {
     private Long flockId;
     private DateField d1;
     private FlockManagerService flockService;
+    private ResourceBundle bundle; // 09/01/2018
 
     /**
      * Creates new form AddFuelDialog
@@ -41,6 +44,7 @@ public class AddFuelDialog extends JDialog {
 
     public AddFuelDialog(Long flockId, Frame owner, boolean modal) {
         super(owner, modal);
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         initComponents();
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
         this.d1 = CalendarFactory.createDateField();
@@ -83,6 +87,7 @@ public class AddFuelDialog extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDataTable = new javax.swing.JTable();
         btnAdd = new javax.swing.JButton();
@@ -98,7 +103,8 @@ public class AddFuelDialog extends JDialog {
         btnRemove = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Add Fuel");
+//        setTitle("Add Fuel"); // 09/01/2018
+        setTitle(bundle.getString("add.fuel.dialog.add.fuel")); // 09/01/2018
         setMinimumSize(new java.awt.Dimension(650, 400));
         getContentPane().setLayout(null);
 
@@ -106,8 +112,11 @@ public class AddFuelDialog extends JDialog {
             new Object [][] {
 
             },
+//            new String [] {
+//                "ID", "Amount", "Date", "Price", "Account Number", "Total" // 09/01/2018
+//            }
             new String [] {
-                "ID", "Amount", "Date", "Price", "Account Number", "Total"
+                bundle.getString("add.fuel.dialog.id"), bundle.getString("add.fuel.dialog.amount"), bundle.getString("add.fuel.dialog.date"), bundle.getString("add.fuel.dialog.price"), bundle.getString("add.fuel.dialog.account.number"), bundle.getString("add.fuel.dialog.total") // 09/01/2018
             }
         ) {
             Class[] types = new Class [] {
@@ -130,7 +139,8 @@ public class AddFuelDialog extends JDialog {
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(10, 20, 624, 160);
 
-        btnAdd.setText("Add ");
+//        btnAdd.setText("Add "); // 09/01/2018
+        btnAdd.setText(bundle.getString("add.fuel.dialog.add")); // 09/01/2018
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -139,19 +149,23 @@ public class AddFuelDialog extends JDialog {
         getContentPane().add(btnAdd);
         btnAdd.setBounds(435, 195, 105, 23);
 
-        jLabel2.setText("Amount");
+//        jLabel2.setText("Amount"); // 09/01/2018
+        jLabel2.setText(bundle.getString("add.fuel.dialog.amount")); // 09/01/2018
         getContentPane().add(jLabel2);
         jLabel2.setBounds(20, 198, 140, 20);
 
-        jLabel3.setText("Date");
+//        jLabel3.setText("Date"); // 09/01/2018
+        jLabel3.setText(bundle.getString("add.fuel.dialog.date"));
         getContentPane().add(jLabel3);
         jLabel3.setBounds(20, 226, 140, 20);
 
-        jLabel4.setText("Price");
+//        jLabel4.setText("Price"); // 09/01/2018
+        jLabel4.setText(bundle.getString("add.fuel.dialog.price")); // 09/01/2018
         getContentPane().add(jLabel4);
         jLabel4.setBounds(20, 252, 140, 20);
 
-        jLabel5.setText("Account Number");
+//        jLabel5.setText("Account Number"); // 09/01/2018
+        jLabel5.setText(bundle.getString("add.fuel.dialog.account.number")); // 09/01/2018
         getContentPane().add(jLabel5);
         jLabel5.setBounds(20, 278, 140, 20);
 
@@ -188,7 +202,8 @@ public class AddFuelDialog extends JDialog {
         getContentPane().add(txtAccountNumber);
         txtAccountNumber.setBounds(170, 278, 226, 20);
 
-        jLabel6.setText("Total");
+//        jLabel6.setText("Total"); // 09/01/2018
+        jLabel6.setText(bundle.getString("add.fuel.dialog.total")); // 09/01/2018
         getContentPane().add(jLabel6);
         jLabel6.setBounds(20, 304, 140, 20);
 
@@ -201,7 +216,8 @@ public class AddFuelDialog extends JDialog {
         getContentPane().add(txtTotal);
         txtTotal.setBounds(170, 304, 226, 20);
 
-        btnRemove.setText("Delete");
+//        btnRemove.setText("Delete"); // 09/01/2018
+        btnRemove.setText(bundle.getString("add.fuel.dialog.delete")); // 09/01/2018
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);

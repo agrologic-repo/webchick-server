@@ -14,7 +14,7 @@
 %>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
     <style type="text/css">

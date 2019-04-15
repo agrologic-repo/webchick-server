@@ -57,17 +57,28 @@ public class ListProgramServlet extends AbstractServlet {
                             count = programDao.count(searchText);
                             setTableParameters(request, index, count);
                             break;
-
+////////////////////////////////////////////////////////////////////////////////////////////////////test
+                        case READONLYUSER:
+                            count = programDao.count(searchText);
+                            setTableParameters(request, index, count);
+                            break;
+////////////////////////////////////////////////////////////////////////////////////////////////////test
                         case ADMIN:
                             programs = programDao.getAll(searchText, index);
                             count = programDao.count(searchText);
                             setTableParameters(request, index, count);
                             break;
 
+//                        case DISTRIBUTOR:
+//                            programs = programDao.getAllByUserCompany(searchText, user.getCompany());
+//                            count = programs.size();
+//                            setTableParameters(request, index, count);
+//                            break;
                         case DISTRIBUTOR:
-                            programs = programDao.getAllByUserCompany(searchText, user.getCompany());
-                            count = programs.size();
-                            setTableParameters(request, index, count);
+//                            count = programDao.count(searchText);
+//                            setTableParameters(request, index, count);
+                            logger.info("access denied for user " + user);
+                            request.getRequestDispatcher("./access-denied.jsp").forward(request, response);
                             break;
 
                         default:

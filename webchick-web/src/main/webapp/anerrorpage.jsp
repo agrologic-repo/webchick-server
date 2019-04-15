@@ -5,7 +5,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Error</title>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
 </head>
 <body>
 

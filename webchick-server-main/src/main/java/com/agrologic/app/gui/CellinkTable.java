@@ -85,8 +85,7 @@ public final class CellinkTable extends JTable {
     }
 
     /**
-     * This method picks good column sizes. If all column heads are wider than the column's cells' contents, then you
-     * can just use column.sizeWidthToFit().
+     * setPreferredWidth
      */
     public void initColumnSizes() {
         getColumnModel().getColumn(CellinkTableModel.COL_ID).setResizable(false);

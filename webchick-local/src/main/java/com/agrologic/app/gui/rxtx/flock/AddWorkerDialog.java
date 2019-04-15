@@ -5,6 +5,7 @@
 package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.config.Configuration;
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.Worker;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -26,6 +28,7 @@ public class AddWorkerDialog extends JDialog {
     private Worker currWorker;
     private Long cellinkId;
     private FlockManagerService flockService;
+    private ResourceBundle bundle;
 
     /**
      * Creates new form AddWorkerDialog
@@ -36,6 +39,7 @@ public class AddWorkerDialog extends JDialog {
 
     public AddWorkerDialog(Long flockId, Frame owner, boolean modal) {
         super(owner, modal);
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE);
         initComponents();
         conf = new Configuration();
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
@@ -74,6 +78,7 @@ public class AddWorkerDialog extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE);
         jComboBox1 = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDataTable = new javax.swing.JTable();
@@ -88,10 +93,12 @@ public class AddWorkerDialog extends JDialog {
         txtPhone = new javax.swing.JTextField();
         txtDefine = new javax.swing.JTextField();
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+//        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { bundle.getString("add.worker.dialog.item1"), bundle.getString("add.worker.dialog.item2"), bundle.getString("add.worker.dialog.item3"), bundle.getString("add.worker.dialog.item4") }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Add Worker");
+//        setTitle("Add Worker");
+        setTitle(bundle.getString("add.worker.dialog.add.worker"));
         setMinimumSize(new java.awt.Dimension(650, 400));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
@@ -104,9 +111,12 @@ public class AddWorkerDialog extends JDialog {
             new Object [][] {
 
             },
-            new String [] {
-                "ID", "Name", "Define", "Phone", "Hour Cost"
-            }
+//            new String [] {
+//                "ID", "Name", "Define", "Phone", "Hour Cost"
+//            }
+                new String [] {
+                        bundle.getString("add.worker.dialog.id"), bundle.getString("add.worker.dialog.name"), bundle.getString("add.worker.dialog.define"), bundle.getString("add.worker.dialog.phone"), bundle.getString("add.worker.dialog.hour.cost")
+                }
         ) {
             Class[] types = new Class [] {
                 java.lang.Long.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Float.class
@@ -128,7 +138,8 @@ public class AddWorkerDialog extends JDialog {
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(10, 11, 624, 170);
 
-        btnAdd.setText("Add ");
+//        btnAdd.setText("Add ");
+        btnAdd.setText(bundle.getString("add.worker.dialog.add"));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -137,19 +148,23 @@ public class AddWorkerDialog extends JDialog {
         getContentPane().add(btnAdd);
         btnAdd.setBounds(435, 195, 105, 23);
 
-        jLabel2.setText("Name");
+//        jLabel2.setText("Name");
+        jLabel2.setText(bundle.getString("add.worker.dialog.name"));
         getContentPane().add(jLabel2);
         jLabel2.setBounds(20, 198, 140, 20);
 
-        jLabel3.setText("Define");
+//        jLabel3.setText("Define");
+        jLabel3.setText(bundle.getString("add.worker.dialog.define"));
         getContentPane().add(jLabel3);
         jLabel3.setBounds(20, 226, 140, 20);
 
-        jLabel4.setText("Phone");
+//        jLabel4.setText("Phone");
+        jLabel4.setText(bundle.getString("add.worker.dialog.phone"));
         getContentPane().add(jLabel4);
         jLabel4.setBounds(20, 252, 140, 20);
 
-        jLabel5.setText("Hour Cost");
+//        jLabel5.setText("Hour Cost");
+        jLabel5.setText(bundle.getString("add.worker.dialog.hour.cost"));
         getContentPane().add(jLabel5);
         jLabel5.setBounds(20, 278, 140, 20);
         getContentPane().add(txtName);
@@ -166,7 +181,8 @@ public class AddWorkerDialog extends JDialog {
         getContentPane().add(txtHourCost);
         txtHourCost.setBounds(170, 278, 220, 20);
 
-        btnRemove.setText("Delete");
+//        btnRemove.setText("Delete");
+        btnRemove.setText(bundle.getString("add.worker.dialog.delete"));
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);

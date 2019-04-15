@@ -50,6 +50,7 @@ public class Graphs24HourPanel extends JPanel {
             currControllerId = controllerId;
             loadDatasetString();
             createGraph();
+            this.setLayout(new GridLayout(0,2));////
             repaint();
 
             Runnable task = new Runnable() {
@@ -64,7 +65,12 @@ public class Graphs24HourPanel extends JPanel {
                             ((ChartPanel) chartPanels.get(0)).setChart(graph.createChart());
                             graph = new Graph24FWI(GraphType.IN_FEED_WATER, datasetString, value, locale);
                             ((ChartPanel) chartPanels.get(1)).setChart(graph.createChart());
-
+                            graph = new Graph24FWPB(GraphType.FEED_WATER_PER_BIRD, datasetString, value, locale);
+                            ((ChartPanel) chartPanels.get(2)).setChart(graph.createChart());
+                            graph = new Graph24F2W2(GraphType.FEED2_WATER2, datasetString, value, locale);
+                            ((ChartPanel) chartPanels.get(3)).setChart(graph.createChart());
+                            graph = new Graph24WS(GraphType.WATER_SUM, datasetString, value, locale);
+                            ((ChartPanel) chartPanels.get(4)).setChart(graph.createChart());
                         }
                     } catch (SQLException ex) {
                         ex.printStackTrace();
@@ -92,40 +98,67 @@ public class Graphs24HourPanel extends JPanel {
         if (controller.getName().contains("616")) {
             if (datasetString != null) {
                 graph = new Graph24InputTemp(GraphType.IN_OUT_TEMP_HUMID, datasetString, Long.valueOf("0"), locale);
-                ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
-                        false, true, true, true, true, true);
+                ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,false, true, true, true, true, true);
                 chartpanel.setVisible(true);
-                add(chartpanel, BorderLayout.PAGE_START);
+//                add(chartpanel, BorderLayout.PAGE_START);
                 chartPanels.add(chartpanel);
             }
         } else {
             if (datasetString != null && datasetString.length() >= AbstractGraph.LENGHT) {
                 if (setClock == null || setClock.getValue() == null) {
                     graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, datasetString, Long.valueOf("0"), locale);
-                    ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
-                            false, true, true, true, true, true);
+                    ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,false, true, true, true, true, true);
                     chartpanel.setVisible(true);
-                    add(chartpanel, BorderLayout.PAGE_START);
+//                    add(chartpanel, BorderLayout.PAGE_START);
                     chartPanels.add(chartpanel);
                     graph = new Graph24FWI(GraphType.IN_FEED_WATER, datasetString, Long.valueOf("0"), locale);
-                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
-                            false, true, true, true, true, true);
+                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height, false, true, true, true, true, true);
                     chartpanel.setVisible(true);
-                    add(chartpanel, BorderLayout.PAGE_END);
+//                    add(chartpanel, BorderLayout.PAGE_END);
+                    chartPanels.add(chartpanel);
+                    graph = new Graph24FWPB(GraphType.FEED_WATER_PER_BIRD, datasetString, Long.valueOf("0"), locale);
+                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height, false, true, true, true, true, true);
+                    chartpanel.setVisible(true);
+                    add(chartpanel);
+                    chartPanels.add(chartpanel);
+                    graph = new Graph24F2W2(GraphType.FEED2_WATER2, datasetString, Long.valueOf("0"), locale);
+                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height, false, true, true, true, true, true);
+                    chartpanel.setVisible(true);
+                    add(chartpanel);
+                    chartPanels.add(chartpanel);
+                    graph = new Graph24WS(GraphType.WATER_SUM, datasetString, Long.valueOf("0"), locale);
+                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height, false, true, true, true, true, true);
+                    chartpanel.setVisible(true);
+                    add(chartpanel);
                     chartPanels.add(chartpanel);
                 } else {
                     long value = DataFormat.convertToTimeFormat(setClock.getValue());
                     graph = new Graph24IOH(GraphType.IN_OUT_TEMP_HUMID, datasetString, value, locale);
-                    ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
-                            false, true, true, true, true, true);
+                    ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height, false, true, true, true, true, true);
                     chartpanel.setVisible(true);
-                    add(chartpanel, BorderLayout.PAGE_START);
+//                    add(chartpanel, BorderLayout.PAGE_START);
+                    add(chartpanel);
                     chartPanels.add(chartpanel);
                     graph = new Graph24FWI(GraphType.IN_FEED_WATER, datasetString, value, locale);
-                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
-                            false, true, true, true, true, true);
+                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height, false, true, true, true, true, true);
                     chartpanel.setVisible(true);
-                    add(chartpanel, BorderLayout.PAGE_END);
+//                    add(chartpanel, BorderLayout.PAGE_END);
+                    add(chartpanel);
+                    chartPanels.add(chartpanel);
+                    graph = new Graph24FWPB(GraphType.FEED_WATER_PER_BIRD, datasetString, value, locale);
+                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height, false, true, true, true, true, true);
+                    chartpanel.setVisible(true);
+                    add(chartpanel);
+                    chartPanels.add(chartpanel);
+                    graph = new Graph24F2W2(GraphType.FEED2_WATER2, datasetString, value, locale);
+                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height, false, true, true, true, true, true);
+                    chartpanel.setVisible(true);
+                    add(chartpanel);
+                    chartPanels.add(chartpanel);
+                    graph = new Graph24WS(GraphType.WATER_SUM, datasetString, value, locale);
+                    chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height, false, true, true, true, true, true);
+                    chartpanel.setVisible(true);
+                    add(chartpanel);
                     chartPanels.add(chartpanel);
                 }
             }
@@ -150,8 +183,7 @@ public class Graphs24HourPanel extends JPanel {
      * @param graph the created graph
      */
     private void createAndAddChartPanel(AbstractGraph graph) {
-        ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height,
-                false, true, true, true, true, true);
+        ChartPanel chartpanel = new ChartPanel(graph.createChart(), width, height, width, height, width, height, false, true, true, true, true, true);
         chartpanel.setVisible(true);
         chartpanel.getComponent(0);
         chartPanels.add(chartpanel);

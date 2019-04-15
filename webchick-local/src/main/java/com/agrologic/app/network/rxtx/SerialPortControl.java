@@ -106,14 +106,10 @@ public class SerialPortControl implements SerialPortEventListener {
             serialPort.setDTR(true);
             serialPort.setRTS(true);
             int boud = 2400;
-            if (protocolType == Protocol.HIGH_ASCII
-                    || protocolType == Protocol.HIGH_BINARY) {
+            if (protocolType == Protocol.HIGH_ASCII || protocolType == Protocol.HIGH_BINARY) {
                 boud = 9600;
             }
-            serialPort.setSerialPortParams(boud,
-                    SerialPort.DATABITS_8,
-                    SerialPort.STOPBITS_1,
-                    SerialPort.PARITY_NONE);
+            serialPort.setSerialPortParams(boud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
             serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
         } catch (UnsupportedCommOperationException ex) {
             logger.debug(ex);
@@ -165,8 +161,8 @@ public class SerialPortControl implements SerialPortEventListener {
      * @param eot     the end of transmission index.
      * @throws IOException if I/O exception occurs.
      */
-    public synchronized void write(String vindex, final Message message, final int sot, final int eot)
-            throws IOException {
+    public synchronized void write(String vindex, final Message message, final int sot, final int eot)  throws IOException {//VreqIndex, sendMessage, sotDelay, eotDelay
+
         state = SlipProtocol.SlipStates.WAIT;
         // reset counter
         resetCount();
@@ -261,13 +257,11 @@ public class SerialPortControl implements SerialPortEventListener {
                         sotrecieved = true;
                     }
                 }
-                if (protocolType == Protocol.LOW_ASCII
-                        || protocolType == Protocol.HIGH_ASCII) {
+                if (protocolType == Protocol.LOW_ASCII || protocolType == Protocol.HIGH_ASCII) {
                     readASCIIData();
                 }
 
-                if (protocolType == Protocol.LOW_BINARY
-                        || protocolType == Protocol.HIGH_BINARY) {
+                if (protocolType == Protocol.LOW_BINARY || protocolType == Protocol.HIGH_BINARY) {
                     readBinaryData();
                 }
                 break;
@@ -439,7 +433,7 @@ public class SerialPortControl implements SerialPortEventListener {
                 int intc = (int) c & 0x00FF;
                 switch (slipstate) {
                     case WAIT:
-                        if (intc == 0xC0) {
+                        if (intc == 0xC0) {//192
                             rxPtr = 0;
                             CRC.initCrc();
                             slipstate = SlipProtocol.SlipStates.DATA;
@@ -447,7 +441,7 @@ public class SerialPortControl implements SerialPortEventListener {
                         }
                         break;
                     case DATA:
-                        if (intc == 0xC0) {
+                        if (intc == 0xC0) {//192
                             slipstate = SlipProtocol.SlipStates.READY;
                             break;
                         }
@@ -461,7 +455,7 @@ public class SerialPortControl implements SerialPortEventListener {
                             }
                             escFound = false;
                         } else {
-                            if (intc == 0xDB) {
+                            if (intc == 0xDB) {//219
                                 escFound = true;
                                 break;
                             }

@@ -41,7 +41,7 @@ public class AssignSystemStateFormServlet extends AbstractServlet {
                 SortedMap<Integer, String> numbersTextMap = new TreeMap<Integer, String>();
                 SortedMap<Long, Map<Integer, String>> dataSystemStateMap = new TreeMap<Long, Map<Integer, String>>();
                 int numberCount = 0,
-                        maxNumbers = 30;
+                        maxNumbers = 40;
                 long dataId = 0;
                 StringTokenizer numbersTextToken = new StringTokenizer(dataSystemStateMapParam, ";");
 

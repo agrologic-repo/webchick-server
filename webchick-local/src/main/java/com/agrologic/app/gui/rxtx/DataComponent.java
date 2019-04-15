@@ -3,6 +3,7 @@ package com.agrologic.app.gui.rxtx;
 import com.agrologic.app.dao.service.DatabaseAccessor;
 import com.agrologic.app.model.*;
 import com.agrologic.app.model.rxtx.DataController;
+import jxl.format.BoldStyle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -82,8 +83,7 @@ public class DataComponent {
      * @param dataController
      * @param programRelay
      */
-    public DataComponent(DataController dataController, ComponentOrientation componentOrientation,
-                         ProgramRelay programRelay) {
+    public DataComponent(DataController dataController, ComponentOrientation componentOrientation, ProgramRelay programRelay) {
         this.componentOrientation = componentOrientation;
         data = dataController;
         relay = programRelay;
@@ -233,6 +233,11 @@ public class DataComponent {
 
     private JComponent createReadWriteComponent() {
         String formattedValue = "-1";
+//        ////////////////////////////////////////////test
+//        if(data.getFormat() == 7){
+//            int counter = 0;
+//        }
+//        ///////////////////////////////////////////test
         if (data.getValue() != null) {
             formattedValue = DataFormat.formatToStringValue(data.getFormat(), data.getValueToUI());
         }

@@ -25,7 +25,7 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
      */
     public final void onCreateQueue(final Controller controller) {
         requestList = MessageFactory.createRealTimeRequests(netname);
-        if (controller.getName().equals("T911")) {
+        if (controller.getName().equals("T911") || controller.getName().equals("607") || controller.getName().equals("616") || controller.getName().equals("610")) {
             requestList.remove(4);// remove request changed 'f'
         }
         initReaTimeRequest();
@@ -52,7 +52,6 @@ public class RequestPriorityQueue extends PriorityQueue<RequestMessage> {
             return false;
         } else if (msg.isUnusedType()) {
             requestList.remove(msg);
-
             return true;
         } else {
             return false;

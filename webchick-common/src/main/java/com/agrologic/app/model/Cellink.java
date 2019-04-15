@@ -37,7 +37,7 @@ public class Cellink implements Comparable<Cellink>, Serializable {
         CELLINK_TYPES.add("WEB");
         CELLINK_TYPES.add("PC");
         CELLINK_TYPES.add("PC&WEB");
-        CELLINK_TYPES.add("MINSERVER");
+        CELLINK_TYPES.add("MRP");// changed 28/05/2017
     }
 
     public Cellink() {

@@ -8,6 +8,7 @@
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.Program" %>
 <%@ page import="com.agrologic.app.model.User" %>
+<%@ page import="com.agrologic.app.model.Screen" %>
 
 
 <% User user = (User) request.getSession().getAttribute("user");
@@ -27,7 +28,6 @@
     Collection<Program> programs = (Collection<Program>) request.getAttribute("programs");
     request.setAttribute("programs",programs);
 
-
 %>
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
@@ -35,6 +35,7 @@
     <title>Add Screen</title>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function showScreens(object) {
@@ -68,7 +69,12 @@
             var spid = document.addForm1.programs.value;
             var ssid = "screen" + document.addForm1.programs.value;
             document.getElementById("selectedProgramId").value = spid;
-            document.getElementById("selectedScreenId").value = document.getElementById(ssid).value;
+//            document.getElementById("selectedScreenId").value = document.getElementById(ssid).value;
+            document.getElementById("selectedScreenId").value = ssid;
+
+            var xxx1 = document.addForm1.selectedProgramId.value;
+            var xxx2 = document.getElementById("selectedProgramId").value;
+            var xxx3 = document.getElementById("selectedScreenId").value;
         }
         function reset() {
             document.getElementById("msgScreenTitle").innerHTML = "";
@@ -87,6 +93,8 @@
             }
             var spid = document.addForm1.programs.value;
             var ssid = "screen" + document.addForm1.programs.value;
+            alert(ssid);
+            alert(spid);
 
         }
         function IsNumeric(sText) {
@@ -129,8 +137,9 @@
                                 <input type="radio" name="group1" id="es" onclick="optionToAddScreen('es')">&nbsp;Choose
                                 Existing <br>
                             </div>
-                            <form id="addForm1" name="addForm1" action="./add-selected-screen.html" method="post" onsubmit="save()">
-                                <input type="hidden" id="programId" name="programId" value="${programId}">
+                            <form id="addForm1" name="addForm1" action="./add-selected-screen.html" method="post"
+                                  onsubmit="save()">
+                                <input type="hidden" id="programId" name="programId" value="<%=programId%>">
                                 <input type="hidden" id="selectedProgramId" name="selectedProgramId">
                                 <input type="hidden" id="selectedScreenId" name="selectedScreenId">
 
@@ -140,64 +149,54 @@
                                         <tr>
                                             <td>Program Version</td>
                                             <td>
-                                                <c:set var="defaultProgId" value="1L"/>
-                                                <select name="programList" id="programList" onchange="showScreens('programList')">
-                                                <c:forEach items="${programs}" var="p">
-                                                    <c:choose>
-                                                        <c:when test="${p.id} == ${defaultProgId}" >
-                                                            <option value="${p.id}" selected>${p.name}
-                                                        </option>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <option value="${p.id}">${p.name}</option>
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </c:forEach>
+                                                <% Long defaultProgId = new Long(1); %>
+                                                <select name="programs" id="program" onclick="showScreens('program')">
+                                                    <% for (Program p : programs) {%>
+                                                    <% if (p.getId().equals(defaultProgId)) {%>
+                                                    <option value="<%=p.getId() %>" selected><%=p.getName() %>
+                                                            <%} else if(!p.getId().equals(programId)){%>
+                                                    <option value="<%=p.getId() %>"><%=p.getName() %>
+                                                            <%}%>
+                                                            <%}%>
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Choose Screen</td>
                                             <td valign="center">
-                                                    <c:forEach items="${programs}" var="p">
-                                                            <c:choose>
-                                                            <c:when test="${p.id == 1}">
-                                                                <select name="screen${p.getId()}" id="screen${p.getId()}" style="display:block">
-                                                                    <c:forEach items="${p.screens}" var="s">
-                                                                        <option value="${s.id}">${s.title}</option>
-                                                                    </c:forEach>
-                                                                </select>
-                                                            </c:when>
-                                                            <c:when test="${ (p.id != programId) }">
-                                                                <select name="screen${p.getId()}" id="screen${p.getId()}" style="display:none">
-                                                                    <c:forEach items="${p.screens}" var="s">
-                                                                        <option value="${s.id}">${s.title}</option>
-                                                                    </c:forEach>
-                                                                </select>
-                                                            </c:when>
-                                                            </c:choose>
-                                                    </c:forEach>
+                                                <%for (Program p : programs) {%>
+                                                <p>
+                                                        <%if(p.getId()== 1){%>
+                                                            <select name="screen<%=p.getId()%>" id="screen<%=p.getId()%>" style="display:block">
+                                                                <%for (Screen s : p.getScreens()) {%>
+                                                                <option value="<%=s.getId()%>"><%=s.getTitle()%>
+                                                                        <%}%>
+                                                            </select>
+                                                                <%} else if(!p.getId().equals(programId)){%>
+                                                            <select name="screen<%=p.getId()%>" id="screen<%=p.getId()%>" style="display:none">
+                                                                <%for (Screen s : p.getScreens()) {%>
+                                                                <option value="<%=s.getId()%>"><%=s.getTitle()%>
+                                                                        <%}%>
+                                                            </select>
+                                                                <%}%>
+                                                                <%}%>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <button id="btnCancel" name="btnCancel"
-                                                        onclick='return back("./all-screens.html?programId=${programId}");'><%=session.getAttribute("button.cancel") %>
-                                                </button>
-                                                <button id="btnAdd" name="btnAdd"
-                                                        type="submit"><%=session.getAttribute("button.ok") %>
-                                                </button>
+                                                <button id="btnCancel" name="btnCancel" onclick='return back("./all-screens.html?programId=<%=programId%>");'><%=session.getAttribute("button.cancel")%></button>
+                                                <button id="btnAdd" name="btnAdd" type="submit"><%=session.getAttribute("button.ok")%></button>
                                             </td>
                                         </tr>
                                     </table>
                                 </div>
                             </form>
-                            <form id="addForm2" name="addForm2" action="./addscreen.html" method="post"
-                                  onsubmit="return validate();">
+                            <form id="addForm2" name="addForm2" action="./addscreen.html" method="post" onsubmit="return validate();">
                                 <div id="newScreen" style="display:block;">
-                                    <input type="hidden" id="programId" name="programId" value="${programId}">
+                                    <input type="hidden" id="programId" name="programId" value="<%=programId%>">
+
                                     <div><p style="color:red;">Boxes with an asterisk next to them are required</div>
-                                    <p></p>
+                                    <p>
                                     <table width="auto" align="left">
                                         <tr>
                                             <td align="left">Screen Title *</td>
@@ -213,15 +212,13 @@
                                         <tr>
                                             <td>
                                                 <button id="btnCancel" name="btnCancel"
-                                                        onclick='return back("./all-screens.html?programId=${programId}");'><%=session.getAttribute("button.cancel") %>
+                                                        onclick='return back("./all-screens.html?programId=<%=programId%>");'><%=session.getAttribute("button.cancel") %>
                                                 </button>
-                                                <button id="btnAdd" name="btnAdd"
-                                                        type="submit"><%=session.getAttribute("button.ok") %>
+                                                <button id="btnAdd" name="btnAdd" type="submit"><%=session.getAttribute("button.ok") %>
                                                 </button>
                                             </td>
                                         </tr>
                                     </table>
-
                                 </div>
                             </form>
                         </td>

@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
     <script type="text/javascript" src="resources/javascript/calendar.js">;</script>
@@ -104,7 +104,7 @@
             <table width="100%">
                 <tr>
                     <td>
-                        <form name="addform" id="addform" action="./addflock.html" method="post">
+                        <form name="addform" id="addform" action="./addflock.html" method="post"> <!---------------------------------------------------------------------------------------------------------------------------------------------------->
                             <input id="userId" type="hidden" name="userId" value="<%=userId%>"/>
                             <input id="cellinkId" type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
                             <table width="100%">
@@ -118,10 +118,8 @@
                                     <td>
                                         <div class="ui-widget" id="msg" style="display: none;">
                                             <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
-                                                <p><span class="ui-icon ui-icon-alert"
-                                                         style="float: left; margin-right: .3em;"></span>
-                                                    <strong>Error
-                                                        :</strong> <%=session.getAttribute("label.message.feild.empty")%>
+                                                <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                                                    <strong>Error:</strong> <%=session.getAttribute("label.message.feild.empty")%>
                                                 </p>
                                             </div>
                                         </div>
@@ -164,36 +162,68 @@
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td align="center"><input type="text" value="" name="flockName"
-                                                                          id="flockName"></td>
+                                                <td align="center"><input type="text" value="" name="flockName" id="flockName"></td>
                                                 <td align="center">
-                                                    <select style="width:135px" id="house_Filter" name="house_Filter">
-                                                        <%for (Controller c : controllers) { %>
-                                                        <option value="<%=c.getId() %>"><%=c.getTitle()%>
-                                                        </option>
-                                                        <%}%>
-                                                    </select>
+                                                <%--<select style="width:135px" id="house_Filter" name="house_Filter">--%>
+                                                    <%
+                                                        for (Controller c : controllers) {
+                                                            if(c.isActive()){
+                                                    %>
+                                                    <input type = "checkbox" name="house_filter" id="house_filter" value="<%=c.getId()%>"> <%=c.getTitle()%> <br>
+                                                    <%
+                                                            }
+                                                        }
+                                                    %>
+                                                <%--</select>--%>
+                                                </td>
+                                                <%--<td align="center">--%>
+                                                    <%--<select style="width:135px" id="house_Filter" name="house_Filter">--%>
+                                                        <%--<%for (Controller c : controllers) { %>--%>
+                                                        <%--<option value="<%=c.getId() %>"><%=c.getTitle()%>--%>
+                                                        <%--</option>--%>
+                                                        <%--<%}%>--%>
+                                                    <%--</select>--%>
+                                                <%--</td>--%>
+                                                <%--<td align="center">--%>
+                                                    <%--<select id="status_Filter" name="status_Filter">--%>
+                                                        <%--<option value="Open">Open</option>--%>
+                                                        <%--<option value="Close">Close</option>--%>
+                                                    <%--</select>--%>
+                                                <%--</td>--%>
+                                                <td align="center">
+                                                    <%--<%=session.getAttribute("table.flock.status.open")%>--%>
+                                                </td>
+                                                <%--<td align="center"><input type="text" value="" size="10" readonly--%>
+                                                                          <%--name="startDate" id="startDate">--%>
+                                                    <%--<img src="resources/images/calendar.png" border="0"--%>
+                                                         <%--onclick="GetDate('start');"/></td>--%>
+                                                <%--<td align="center"><input type="text" value="" size="10" readonly>--%>
+                                                    <%--<img src="resources/images/calendar.png" border="0"--%>
+                                                         <%--style="filter: alpha(opacity=30);opacity: .30;background-color:#111"/>--%>
+                                                <%--</td>--%>
+                                                <%--<td align="center"><a href="javascript:validate();">--%>
+                                                    <%--<img src="resources/images/plus1.gif" hspace="5"--%>
+                                                         <%--style="cursor: pointer"--%>
+                                                         <%--border="0" space="5"><br/></img>--%>
+                                                    <%--<%=session.getAttribute("button.add")%>--%>
+                                                <%--</a>--%>
+                                                <%--</td>--%>
+                                                <%--<td align="center"><input type="text" value="" size="10" readonly name="startDate" id="startDate">--%>
+
+                                                <%--</td>--%>
+                                                <%--<td align="center"><input type="text" value="" size="10" readonly name="endDate" id="endDate">--%>
+
+                                                <%--</td>--%>
+                                                <td align="center">
+
                                                 </td>
                                                 <td align="center">
-                                                    <select id="status_Filter" name="status_Filter">
-                                                        <option value="Open">Open</option>
-                                                        <option value="Close">Close</option>
-                                                    </select>
+
                                                 </td>
-                                                <td align="center"><input type="text" value="" size="10" readonly
-                                                                          name="startDate" id="startDate">
-                                                    <img src="resources/images/calendar.png" border="0"
-                                                         onclick="GetDate('start');"/></td>
-                                                <td align="center"><input type="text" value="" size="10" readonly>
-                                                    <img src="resources/images/calendar.png" border="0"
-                                                         style="filter: alpha(opacity=30);opacity: .30;background-color:#111"/>
-                                                </td>
-                                                <td align="center"><a href="javascript:validate();">
-                                                    <img src="resources/images/plus1.gif" hspace="5"
-                                                         style="cursor: pointer"
-                                                         border="0" space="5"><br/></img>
-                                                    <%=session.getAttribute("button.add")%>
-                                                </a>
+                                                <%--<td align="center"><a href="javascript:validate();"> <img src="resources/images/plus1.gif" hspace="5" style="cursor: pointer" border="0" space="5"><br/></img>--%>
+                                                    <%--<%=session.getAttribute("button.add")%> </a>--%>
+                                                <%--</td>--%>
+                                                <td align="center"><button hspace="5" style="cursor: pointer" border="0" space="5"><img src="resources/images/plus1.gif"/><%=session.getAttribute("button.add")%></button>
                                                 </td>
                                                 <td align="center">&nbsp;</td>
                                                 <td align="center">&nbsp;</td>
@@ -206,14 +236,23 @@
                                             <% long fid = flock.getFlockId(); %>
                                             <input id="controllerId" type="hidden"
                                                    value="<%=flock.getControllerId() %>"/>
-                                            <input id="programId" type="hidden"
-                                                   value="<%=controller.getProgramId() %>"/>
+                                            <input id="programId" type="hidden" value="<%=controller.getProgramId() %>"/>
                                             <tr>
-                                                <td align="center"><%=flock.getFlockName()%>
+                                                <td align="center">
+                                                    <%=flock.getFlockName()%>
                                                 </td>
-                                                <td align="center"><%=controller.getTitle()%>
+                                                <td align="center">
+                                                    <%=controller.getTitle()%>
                                                 </td>
-                                                <td align="center"><%=flock.getStatus()%>
+                                                <td align="center">
+                                                    <%
+                                                    String status = flock.getStatus();
+                                                        if(status.toLowerCase().equals("Close".toLowerCase())){
+                                                    %>
+                                                    <img src="resources/images/lock.gif" hspace="5" style="cursor: pointer" border="0" space="5">
+                                                      <%
+                                                          }
+                                                      %>
                                                 </td>
                                                 <td align="center"><input type="text" value="<%=flock.getStartTime()%>"
                                                                           size="10" readonly>
@@ -222,13 +261,10 @@
                                                 </td>
                                                 <td align="center">
                                                     <% if (!flock.getStatus().equals("Close")) {%>
-                                                    <input type="text" value="" readonly size="10"
-                                                           name="end<%=fid%>Date" id="end<%=fid%>Date">
-                                                    <img src="resources/images/calendar.png" border="0"
-                                                         onclick="GetDate('end<%=fid%>');"/>
+                                                    <input type="text" value="" readonly size="10" name="end<%=fid%>Date" id="end<%=fid%>Date">
+                                                    <img src="resources/images/calendar.png" border="0" onclick="GetDate('end<%=fid%>');"/>
                                                     <%} else {%>
-                                                    <input type="text" value="<%=flock.getEndTime()%>" size="10"
-                                                           readonly>
+                                                    <input type="text" value="<%=flock.getEndTime()%>" size="10" readonly>
                                                     <img src="resources/images/calendar.png" border="0"
                                                          style="filter: alpha(opacity=30);opacity: .30;background-color:#111"/>
                                                     <%}%>
@@ -276,14 +312,13 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <button id="btnBack" name="btnBack"
-                                                onclick='return back("./rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1")'>
+                                        <button id="btnBack" name="btnBack" onclick='return back("./rmctrl-main-screen.html?userId=<%=userId%>&cellinkId=<%=cellinkId%>&screenId=1")'>
                                         <%=session.getAttribute("button.back") %>
                                         </button>
                                     </td>
                                 </tr>
                             </table>
-                        </form>
+                        </form><!---------------------------------------------------------------------------------------------------------------------------------------------------->
                     </td>
                 </tr>
             </table>

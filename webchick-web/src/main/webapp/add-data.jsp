@@ -33,6 +33,7 @@
 <title>Add New Data</title>
 <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
+<link rel="shortcut icon" href="resources/images/favicon.ico">
 <STYLE TYPE="text/css" media="all">
     .ui-autocomplete {
         position: absolute;
@@ -276,6 +277,7 @@
                                 <button type="button" onclick="getTranslation(6);">German</button>
                                 <button type="button" onclick="getTranslation(7);">Turkish</button>
                                 <button type="button" onclick="getTranslation(8);">Polish</button>
+                                <button type="button" onclick="getTranslation(9);">Spanish</button>
                             </td>
                         </tr>
                         <tr>
@@ -311,8 +313,8 @@
                                     <%=session.getAttribute("button.ok") %>
                                 </button>
                                 <button id="btnBack" name="btnBack" type="button" onclick='self.close();'>
-                                    <%=session.getAttribute("button.cancel") %>
-                                </button>
+                                <%=session.getAttribute("button.cancel") %>
+                            </button>
                             </td>
                         </tr>
                     </table>

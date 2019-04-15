@@ -19,7 +19,7 @@
             }
             if (c.getName().equals("password")) {
                 pass = c.getValue();
-                String encpsswd = Base64.encode(pass);
+//                String encpsswd = Base64.encode(pass);
             }
         }
     }
@@ -55,6 +55,10 @@
             return "sr";
         }
     }
+
+//    public static String getHosting (HttpServletRequest request){
+//        return request.getLocalAddr() + " " + request.getRemoteAddr();
+//    }
 %>
 
 <%! public static String getDomain(HttpServletRequest request) {
@@ -91,10 +95,10 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("login.page.title")%>
-    </title>
-    <meta name="Author" content="Valery Manakhimov">
-    <link rel="shortcut icon" href="resources/images/favicon5.ico">
+    <title><%=session.getAttribute("login.page.title")%></title>
+    <meta name="Author" content="Agrologic">
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
+    <%--<link rel="shortcut icon" href="/images/favicon.gif" type="image/gif">--%>
     <script language="javascript" src="resources/javascript/menu.js">;</script>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
 </head>
@@ -157,6 +161,8 @@
                                 <option value="tr">Turkish</option>
                                 <option value="pl">Polish</option>
                                 <option value="es">Spanish</option>
+                                <option value="ja">Japanese</option>
+                                <option value="ko">Korean</option>
                             </select>
                         </td>
                     </tr>
@@ -171,9 +177,9 @@
                             <button type="submit" id="loginButton" name="loginButton" style="width:120px">
                                 <%=session.getAttribute("button.login")%>
                             </button>
-
                         </td>
-                        <%=hosting%>
+                        <%--<%=hosting%>--%>
+                        <%--<%=domain%>--%>
                     </tr>
                 </table>
             </form>

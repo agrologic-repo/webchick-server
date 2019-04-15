@@ -3,7 +3,8 @@
 <%@ include file="language.jsp" %>
 <%@ page import="com.agrologic.app.model.Controller" %>
 <%@ page import="com.agrologic.app.model.User" %>
-<% User user = (User) request.getSession().getAttribute("user");
+<%
+    User user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
@@ -18,6 +19,7 @@
     <title><%=session.getAttribute("controller.page.edit.title")%>
     </title>
     <meta http-equiv="Content-type" value="text/html; charset=utf-8">
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/jquery-ui.css"/>
@@ -212,41 +214,29 @@
         <table border="0" cellPadding=1 cellSpacing=1 width="100%">
             <tr>
                 <td valign="top" style="padding-top:0px">
-                    <h1><%=session.getAttribute("controller.page.edit.title")%>
-                    </h1>
+                    <h1><%=session.getAttribute("controller.page.edit.title")%></h1>
 
                     <p>
-
-                    <h2><%=session.getAttribute("controller.page.edit.title")%> <%=editController.getId() %>
-                    </h2>
-
+                    <h2><%=session.getAttribute("controller.page.edit.title")%> <%=editController.getId() %></h2>
                     <div><p style="color:red">Boxes with an asterisk next to them are required</p></div>
-
-
                     <p>
 
                     <table>
-                        <input id="userId" type="hidden" name="userId"
-                               value="<%=userId %>">
-                        <input id="cellinkId" type="hidden" name="cellinkId"
-                               value="<%=cellinkId %>">
+                        <input id="userId" type="hidden" name="userId" value="<%=userId %>">
+                        <input id="cellinkId" type="hidden" name="cellinkId" value="<%=cellinkId %>">
                         <tr>
                             <td>House Name *</td>
-                            <td><input id="title" type="text" name="title" style="width:100px"
-                                       value="<%=editController.getTitle()%>"></td>
+                            <td><input id="title" type="text" name="title" style="width:100px" value="<%=editController.getTitle()%>"></td>
                             <td id="msgTitle"></td>
                         </tr>
                         <tr>
                             <td>Net name *</td>
                             <td>
-                                <input id="spinner" name="spinner" style="width:20px"
-                                       value="<%=editController.getNetNumber()%>"/>
-                                <input id="netname" type="hidden" name="netname"
-                                       value="<%=editController.getNetName()%>">
+                                <input id="spinner" name="spinner" style="width:20px" value="<%=editController.getNetNumber()%>"/>
+                                <input id="netname" type="hidden" name="netname" value="<%=editController.getNetName()%>">
                             </td>
                             <td id="msgNetName"></td>
                         </tr>
-
                         <tr>
                             <td>Type *</td>
                             <td>
@@ -258,10 +248,8 @@
                         <tr>
                             <td> Program *</td>
                             <td>
-                                <input id="program" name="program" style="width:100px"
-                                       value="<%=editController.getProgram().getName()%>"/>
-                                <input id="programId" type="hidden" name="programId" style="width:100px"
-                                       value="<%=editController.getProgramId()%>"/>
+                                <input id="program" name="program" style="width:100px" value="<%=editController.getProgram().getName()%>"/>
+                                <input id="programId" type="hidden" name="programId" style="width:100px" value="<%=editController.getProgramId()%>"/>
                             </td>
                             <td id="msgProgramId"></td>
                         </tr>
@@ -305,13 +293,11 @@
             <tr>
                 <td colspan="2">
                     <%if (user.getRole() == UserRole.ADMIN) {%>
-                    <button name="btnCancel"
-                            onclick='return back("./cellink-setting.html?userId=<%=userId %>&cellinkId=<%=cellinkId%>");'>
+                    <button name="btnCancel" onclick='return back("./cellink-setting.html?userId=<%=userId %>&cellinkId=<%=cellinkId%>");'>
                         <%=session.getAttribute("button.cancel") %>
                     </button>
                     <%} else {%>
-                    <button name="btnCancel"
-                            onclick='return back("./cellink-setting.html?userId=<%=userId %>&cellinkId=<%=cellinkId%>");'>
+                    <button name="btnCancel" onclick='return back("./cellink-setting.html?userId=<%=userId %>&cellinkId=<%=cellinkId%>");'>
                         <%=session.getAttribute("button.cancel") %>
                     </button>
                     <%}%>

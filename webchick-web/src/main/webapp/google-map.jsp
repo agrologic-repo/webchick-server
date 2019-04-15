@@ -4,6 +4,7 @@ pageEncoding="EUC-KR"%>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <title>Insert title here</title>
     <script
             src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>

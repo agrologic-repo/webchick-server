@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <style>
         div, input, textarea {
             font-family: Tahoma;

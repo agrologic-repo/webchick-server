@@ -22,8 +22,9 @@ public class DataGraphCreator {
      * @param data    the searching data .
      * @return histDataByGrowDay the map with searched history data per grow day
      */
-    public static Map<Integer, Data> createHistoryDataByGrowDay(final Map<Integer, String> history,
-                                                                final Data data) {
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static Map<Integer, Data> createHistoryDataByGrowDay(final Map<Integer, String> history, final Data data) {
         Map<Integer, Data> histDataByGrowDay = new TreeMap<Integer, Data>();
         Set<Entry<Integer, String>> entries = history.entrySet();
         for (Entry entry : entries) {
@@ -38,8 +39,9 @@ public class DataGraphCreator {
                 }
             }
         }
-        return histDataByGrowDay;
+        return histDataByGrowDay;// time
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Return data object with value from history string.
@@ -51,7 +53,6 @@ public class DataGraphCreator {
      */
     public static Data getDataFromHistory(Data searchData, String histString) {
         StringTokenizer token = new StringTokenizer(histString, " ");
-
         while (token.hasMoreElements()) {
             try {
                 String dataElem = (String) token.nextElement();
@@ -59,10 +60,20 @@ public class DataGraphCreator {
                 if (isNegative(valElem)) {
                     valElem = valElem.replace("-", "");
                 }
-                String dataType = searchData.getType().toString();
-                if (dataElem.equals(dataType)) {
-                    Long value = Long.parseLong(valElem);
-                    searchData.setValue(value);
+                long dataId = Long.parseLong(dataElem);
+                int value = Integer.parseInt(valElem);
+                int type = (int) dataId;// type of value (like 4096)
+                if ((type & 0xC000) != 0xC000) {
+                    dataId = (type & 0xFFF); // remove type to get an index 4096&0xFFF -> 0
+                    } else {
+                        dataId = (type & 0xFFFF);
+                    }
+//                if (dataId < 0){
+//                    dataId = dataId + 65536;
+//                }
+                if(dataId == searchData.getId()){
+                    Long val = Long.parseLong(valElem);
+                    searchData.setValue(val);
                     Data foundData = (Data) searchData.clone();
                     return foundData;
                 }
@@ -119,4 +130,36 @@ public class DataGraphCreator {
         }
         return false;
     }
+
+    //*****************************************************************************************************************
+    public static Map<Integer, Data> createHistoryData(final Map<Integer, List<Data>> history, final Data dataToFind) {
+
+        Map<Integer, Data> histDataByGrowDay = new TreeMap<Integer, Data>();
+
+        Set<Entry<Integer, List<Data>>> historyEntries = history.entrySet();
+
+        for (Entry entry : historyEntries) {
+
+            List<Data> histList = (List<Data>)entry.getValue();
+            for(Data histData : histList){
+
+                if(histData.getValue().equals("-1")){
+
+                    Data data = (Data)dataToFind.clone();
+                    data.setValue(0L);
+                    histDataByGrowDay.put((Integer)entry.getKey(), data);
+
+                } else {
+
+                    if(histData.getId().equals(dataToFind.getId())) {
+
+                        histDataByGrowDay.put((Integer) entry.getKey(), histData);
+
+                    }
+                }
+            }
+        }
+        return histDataByGrowDay;// not time
+    }
+    //*********************************************************************************************************
 }

@@ -99,8 +99,7 @@ public class MessageFactory {
      * @param dataTypes the list of data types that used for request reports
      * @return result a set of messages to be used to grab daily report
      */
-    public static List<RequestMessage> createPerHourReportRequests(String netname, int growDay,
-                                                                   RequestMessageQueueHistory24.DataType... dataTypes) {
+    public static List<RequestMessage> createPerHourReportRequests(String netname, int growDay,  RequestMessageQueueHistory24.DataType... dataTypes) {
         List<RequestMessage> result = new ArrayList<RequestMessage>(dataTypes.length);
         for (RequestMessageQueueHistory24.DataType dataType : dataTypes) {
             result.add(new RequestMessage(MessageType.REQUEST_PER_HOUR_REPORTS, netname, growDay, dataType.name));
@@ -117,12 +116,19 @@ public class MessageFactory {
      * @param dataCollection the list of data types that used for request reports
      * @return result a set of messages to be used to grab daily report
      */
-    public static List<RequestMessage> createPerHourHistoryRequests(String netname, int growDay,
-                                                                    Collection<Data> dataCollection) {
-        List<RequestMessage> result = new ArrayList<RequestMessage>(dataCollection.size());
+    public static List<RequestMessage> createPerHourHistoryRequests(String netname, int growDay, Collection<Data> dataCollection) {
+//        List<RequestMessage> result = new ArrayList<RequestMessage>(dataCollection.size());
+        List<RequestMessage> result = new ArrayList<RequestMessage>();
         for (Data data : dataCollection) {
-            result.add(new RequestMessage(MessageType.REQUEST_PER_HOUR_REPORTS, netname, growDay,
-                    data.getHistoryHourDNum()));
+            result.add(new RequestMessage(MessageType.REQUEST_PER_HOUR_REPORTS, netname, growDay, data.getHistoryHourDNum()));
+        }
+        return result;
+    }
+
+    public static CyclicQueue<RequestMessage> createPerHourHistoryRequests_(String netname, int growDay, Collection<Data> dataCollection) {
+        CyclicQueue<RequestMessage> result = new CyclicQueue<RequestMessage>();
+        for (Data data : dataCollection) {
+            result.add(new RequestMessage(MessageType.REQUEST_PER_HOUR_REPORTS, netname, growDay, data.getHistoryHourDNum()));
         }
         return result;
     }

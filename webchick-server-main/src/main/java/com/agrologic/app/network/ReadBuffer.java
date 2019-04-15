@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
-
+////Read head, Read data (packet?)
 public class ReadBuffer {
     public static final int BUFFER_SIZE = 8000;
     private int byteCounter = 0;
@@ -41,7 +41,7 @@ public class ReadBuffer {
      */
     public synchronized void readHead(InputStream in, String version) throws IOException {
         startTime = System.currentTimeMillis();
-        bufferIsLast = in.read();
+        bufferIsLast = in.read();// is last buffer to read
         bufferIndex = in.read();
         bufferSize = in.read();
         if (CellinkVersion.dataBytesByVersion(version) > 1) {

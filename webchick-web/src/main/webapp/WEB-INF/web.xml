@@ -44,6 +44,7 @@
         <url-pattern>/overview.html</url-pattern>
         <url-pattern>/clear-controller-data.html</url-pattern>
         <url-pattern>/my-farms.html</url-pattern>
+        <url-pattern>/rmctrl-controller-screens-ajax.html</url-pattern>
     </servlet-mapping>
 
 
@@ -219,34 +220,34 @@
         <servlet-name>FlockGraphServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.FlockGraphServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>GraphFeedWaterServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.GraphFeedWaterServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>GraphMinMaxHumidityServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.GraphMinMaxHumidityServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>GraphMortalityServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.GraphMortalityServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>GraphAvgWeightServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.GraphAvgWeightServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>GraphHeatOnTimeServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.GraphHeatOnTimeServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Graph24HourFWServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.Graph24HourFWServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Graph24HourIOHServlet</servlet-name>
-        <servlet-class>com.agrologic.app.web.Graph24HourIOHServlet</servlet-class>
-    </servlet>
+    <!--<servlet>-->
+        <!--<servlet-name>GraphFeedWaterServlet</servlet-name>-->
+        <!--<servlet-class>com.agrologic.app.web.GraphFeedWaterServlet</servlet-class>-->
+    <!--</servlet>-->
+    <!--<servlet>-->
+        <!--<servlet-name>GraphMinMaxHumidityServlet</servlet-name>-->
+        <!--<servlet-class>com.agrologic.app.web.GraphMinMaxHumidityServlet</servlet-class>-->
+    <!--</servlet>-->
+    <!--<servlet>-->
+        <!--<servlet-name>GraphMortalityServlet</servlet-name>-->
+        <!--<servlet-class>com.agrologic.app.web.GraphMortalityServlet</servlet-class>-->
+    <!--</servlet>-->
+    <!--<servlet>-->
+        <!--<servlet-name>GraphAvgWeightServlet</servlet-name>-->
+        <!--<servlet-class>com.agrologic.app.web.GraphAvgWeightServlet</servlet-class>-->
+    <!--</servlet>-->
+    <!--<servlet>-->
+        <!--<servlet-name>GraphHeatOnTimeServlet</servlet-name>-->
+        <!--<servlet-class>com.agrologic.app.web.GraphHeatOnTimeServlet</servlet-class>-->
+    <!--</servlet>-->
+    <!--<servlet>-->
+        <!--<servlet-name>Graph24HourFWServlet</servlet-name>-->
+        <!--<servlet-class>com.agrologic.app.web.Graph24HourFWServlet</servlet-class>-->
+    <!--</servlet>-->
+    <!--<servlet>-->
+        <!--<servlet-name>Graph24HourIOHServlet</servlet-name>-->
+        <!--<servlet-class>com.agrologic.app.web.Graph24HourIOHServlet</servlet-class>-->
+    <!--</servlet>-->
     <servlet>
         <servlet-name>HitCounter</servlet-name>
         <servlet-class>com.agrologic.app.web.HitCounter</servlet-class>
@@ -371,10 +372,14 @@
         <servlet-name>StartPage</servlet-name>
         <servlet-class>com.agrologic.app.web.StartPage</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>MyFarms</servlet-name>
-        <servlet-class>com.agrologic.app.web.MyFarms</servlet-class>
-    </servlet>
+    <!--<servlet>-->
+    <!--<servlet-name>MyFarms</servlet-name>&lt;!&ndash;&ndash;&gt;-->
+    <!--<servlet-class>com.agrologic.app.web.controller.MyFarms</servlet-class>&lt;!&ndash;&ndash;&gt;-->
+    <!--</servlet>&lt;!&ndash;&ndash;&gt;-->
+    <!--<servlet>-->
+    <!--<servlet-name>MyFarms</servlet-name>&lt;!&ndash;&ndash;&gt;-->
+    <!--<servlet-class>com.agrologic.app.web.MyFarms</servlet-class>&lt;!&ndash;&ndash;&gt;-->
+    <!--</servlet>&lt;!&ndash;&ndash;&gt;-->
     <servlet>
         <servlet-name>ListRelays</servlet-name>
         <servlet-class>com.agrologic.app.web.ListRelays</servlet-class>
@@ -423,10 +428,18 @@
         <servlet-name>AddSystemStateFormServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.AddSystemStateFormServlet</servlet-class>
     </servlet>
+    <!--<servlet>-->
+    <!--<servlet-name>AddSiloStateFormServlet</servlet-name>-->
+    <!--<servlet-class>com.agrologic.app.web.AddSiloStateFormServlet</servlet-class>-->
+    <!--</servlet>-->
     <servlet>
         <servlet-name>ListSystemStates</servlet-name>
         <servlet-class>com.agrologic.app.web.ListSystemStates</servlet-class>
     </servlet>
+    <!--<servlet>-->
+    <!--<servlet-name>ListSiloStates</servlet-name>-->
+    <!--<servlet-class>com.agrologic.app.web.ListSiloStates</servlet-class>-->
+    <!--</servlet>-->
     <servlet>
         <servlet-name>DisconnectCelllink</servlet-name>
         <servlet-class>com.agrologic.app.web.DisconnectCelllink</servlet-class>
@@ -439,10 +452,18 @@
         <servlet-name>AddSystemStatetranslationFormServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.AddSystemStatetranslationFormServlet</servlet-class>
     </servlet>
+    <!--<servlet>-->
+    <!--<servlet-name>AddSiloStatetranslationFormServlet</servlet-name>-->
+    <!--<servlet-class>com.agrologic.app.web.AddSiloStatetranslationFormServlet</servlet-class>-->
+    <!--</servlet>-->
     <servlet>
         <servlet-name>RemoveSystemStateServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.RemoveSystemStateServlet</servlet-class>
     </servlet>
+    <!--<servlet>-->
+    <!--<servlet-name>RemoveSiloStateServlet</servlet-name>-->
+    <!--<servlet-class>com.agrologic.app.web.RemoveSiloStateServlet</servlet-class>-->
+    <!--</servlet>-->
     <servlet>
         <servlet-name>RemoveFeedServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.RemoveFeedServlet</servlet-class>
@@ -455,6 +476,10 @@
         <servlet-name>EditSystemStateFormServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.EditSystemStateFormServlet</servlet-class>
     </servlet>
+    <!--<servlet>-->
+    <!--<servlet-name>EditSiloStateFormServlet</servlet-name>-->
+    <!--<servlet-class>com.agrologic.app.web.EditSiloStateFormServlet</servlet-class>-->
+    <!--</servlet>-->
     <servlet>
         <servlet-name>ExpHistoryToExcel</servlet-name>
         <servlet-class>com.agrologic.app.web.ExportToExcelPerDayReport</servlet-class>
@@ -508,8 +533,8 @@
         <servlet-class>com.agrologic.app.web.UncheckUnusedDataServlet</servlet-class>
     </servlet>
     <!--<servlet>-->
-        <!--<servlet-name>ClearControllerData</servlet-name>-->
-        <!--<servlet-class>com.agrologic.app.web.ClearControllerData</servlet-class>-->
+    <!--<servlet-name>ClearControllerData</servlet-name>-->
+    <!--<servlet-class>com.agrologic.app.web.ClearControllerData</servlet-class>-->
     <!--</servlet>-->
     <servlet-mapping>
         <servlet-name>LoginNameServlet</servlet-name>
@@ -627,6 +652,10 @@
         <servlet-name>ProgramSystemStatesServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.ProgramSystemStatesServlet</servlet-class>
     </servlet>
+    <!--<servlet>-->
+    <!--<servlet-name>ProgramSiloStatesServlet</servlet-name>-->
+    <!--<servlet-class>com.agrologic.app.web.ProgramSiloStatesServlet</servlet-class>-->
+    <!--</servlet>-->
     <servlet>
         <servlet-name>EditProgramServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.EditProgramServlet</servlet-class>
@@ -696,6 +725,10 @@
         <servlet-name>AssignSystemStateFormServlet</servlet-name>
         <servlet-class>com.agrologic.app.web.AssignSystemStateFormServlet</servlet-class>
     </servlet>
+    <!--<servlet>-->
+    <!--<servlet-name>AssignSiloStateFormServlet</servlet-name>-->
+    <!--<servlet-class>com.agrologic.app.web.AssignSiloStateFormServlet</servlet-class>-->
+    <!--</servlet>-->
     <servlet>
         <servlet-name>ListTableData</servlet-name>
         <servlet-class>com.agrologic.app.web.ListTableData</servlet-class>
@@ -712,6 +745,19 @@
         <servlet-name>FlockManagment</servlet-name>
         <servlet-class>com.agrologic.app.web.FlockManagement</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GraphFromTo</servlet-name>
+        <servlet-class>com.agrologic.app.web.GraphFromTo</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HistoryGraphAction</servlet-name>
+        <servlet-class>com.agrologic.app.web.HistoryGraphAction</servlet-class>
+    </servlet>
+    <!--<servlet>-->
+        <!--<servlet-name>GenerateGraphServlet</servlet-name>-->
+        <!--<servlet-class>com.agrologic.app.web.GenerateGraphServlet</servlet-class>-->
+    <!--</servlet>-->
+    <!---->
     <servlet-mapping>
         <servlet-name>ListProgramScreens</servlet-name>
         <url-pattern>/all-screens.html</url-pattern>
@@ -740,6 +786,10 @@
         <servlet-name>ProgramSystemStatesServlet</servlet-name>
         <url-pattern>/program-systemstates.html</url-pattern>
     </servlet-mapping>
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>ProgramSiloStatesServlet</servlet-name>-->
+    <!--<url-pattern>/program-silostates.html</url-pattern>-->
+    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>EditProgramServlet</servlet-name>
         <url-pattern>/editprogramrequest.html</url-pattern>
@@ -808,6 +858,10 @@
         <servlet-name>AssignSystemStateFormServlet</servlet-name>
         <url-pattern>/assignsystemstate.html</url-pattern>
     </servlet-mapping>
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>AssignSiloStateFormServlet</servlet-name>-->
+    <!--<url-pattern>/assignsilostate.html</url-pattern>-->
+    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>ListTableData</servlet-name>
         <url-pattern>/all-tabledata.html</url-pattern>
@@ -904,34 +958,34 @@
         <servlet-name>FlockGraphServlet</servlet-name>
         <url-pattern>/rmctrl-flock-graphs.html</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GraphFeedWaterServlet</servlet-name>
-        <url-pattern>/feedwatergraph.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GraphMinMaxHumidityServlet</servlet-name>
-        <url-pattern>/minmaxhumgraph.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GraphMortalityServlet</servlet-name>
-        <url-pattern>/mortalitygraph.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GraphAvgWeightServlet</servlet-name>
-        <url-pattern>/avgweightgraph.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GraphHeatOnTimeServlet</servlet-name>
-        <url-pattern>/heatontimegraph.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Graph24HourFWServlet</servlet-name>
-        <url-pattern>/Graph24HourFWServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Graph24HourIOHServlet</servlet-name>
-        <url-pattern>/Graph24HourIOHServlet</url-pattern>
-    </servlet-mapping>
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>GraphFeedWaterServlet</servlet-name>-->
+        <!--<url-pattern>/feedwatergraph.html</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>GraphMinMaxHumidityServlet</servlet-name>-->
+        <!--<url-pattern>/minmaxhumgraph.html</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>GraphMortalityServlet</servlet-name>-->
+        <!--<url-pattern>/mortalitygraph.html</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>GraphAvgWeightServlet</servlet-name>-->
+        <!--<url-pattern>/avgweightgraph.html</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>GraphHeatOnTimeServlet</servlet-name>-->
+        <!--<url-pattern>/heatontimegraph.html</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>Graph24HourFWServlet</servlet-name>-->
+        <!--<url-pattern>/Graph24HourFWServlet</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>Graph24HourIOHServlet</servlet-name>-->
+        <!--<url-pattern>/Graph24HourIOHServlet</url-pattern>-->
+    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>FlockManagment</servlet-name>
         <url-pattern>/flock-manager.html</url-pattern>
@@ -960,7 +1014,6 @@
         <servlet-name>RemoveEggServlet</servlet-name>
         <url-pattern>/remove-egg.html</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>AddFuelFormServlet</servlet-name>
         <url-pattern>/add-fuel.html</url-pattern>
@@ -1017,12 +1070,10 @@
         <servlet-name>RemoveLaborServlet</servlet-name>
         <url-pattern>/remove-labor.html</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>RemoveFeedServlet</servlet-name>
         <url-pattern>/remove-feed.html</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>RemoveMedicineServlet</servlet-name>
         <url-pattern>/remove-medicine.html</url-pattern>
@@ -1156,10 +1207,18 @@
         <servlet-name>AddSystemStateFormServlet</servlet-name>
         <url-pattern>/addsystemstate.html</url-pattern>
     </servlet-mapping>
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>AddSiloStateFormServlet</servlet-name>-->
+    <!--<url-pattern>/addsilostate.html</url-pattern>-->
+    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>ListSystemStates</servlet-name>
         <url-pattern>/all-systemstates.html</url-pattern>
     </servlet-mapping>
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>ListSiloStates</servlet-name>-->
+    <!--<url-pattern>/all-silostates.html</url-pattern>-->
+    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>DisconnectCelllink</servlet-name>
         <url-pattern>/disconnect-cellink.html</url-pattern>
@@ -1172,19 +1231,30 @@
         <servlet-name>AddSystemStatetranslationFormServlet</servlet-name>
         <url-pattern>/addsystemstatetranslate.html</url-pattern>
     </servlet-mapping>
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>AddSiloStatetranslationFormServlet</servlet-name>-->
+    <!--<url-pattern>/addsilostatetranslate.html</url-pattern>-->
+    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>RemoveSpreadServlet</servlet-name>
         <url-pattern>/remove-spread.html</url-pattern>
     </servlet-mapping>
-
     <servlet-mapping>
         <servlet-name>RemoveSystemStateServlet</servlet-name>
         <url-pattern>/remove-systemstate.html</url-pattern>
     </servlet-mapping>
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>RemoveSiloStateServlet</servlet-name>-->
+    <!--<url-pattern>/remove-silostate.html</url-pattern>-->
+    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>EditSystemStateFormServlet</servlet-name>
         <url-pattern>/edit-systemstate.html</url-pattern>
     </servlet-mapping>
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>EditSiloStateFormServlet</servlet-name>-->
+    <!--<url-pattern>/edit-silostate.html</url-pattern>-->
+    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>ExpHistoryToExcel</servlet-name>
         <url-pattern>/exptoexcelhistory.html</url-pattern>
@@ -1237,9 +1307,25 @@
         <servlet-name>UncheckUnusedDataServlet</servlet-name>
         <url-pattern>/uncheck-unused-data.html</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GraphFromTo</servlet-name>
+        <url-pattern>/graphfromto.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HistoryGraphAction</servlet-name>
+        <url-pattern>/historygraphaction.html</url-pattern>
+    </servlet-mapping>
     <!--<servlet-mapping>-->
-        <!--<servlet-name>ClearControllerData</servlet-name>-->
-        <!--<url-pattern>/clear-controller-data.html</url-pattern>-->
+        <!--<servlet-name>GenerateGraphServlet</servlet-name>-->
+        <!--<url-pattern>/generategraph.html</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>ClearControllerData</servlet-name>-->
+    <!--<url-pattern>/clear-controller-data.html</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <!--<servlet-mapping>-->
+    <!--<servlet-name>MyFarms</servlet-name>-->
+    <!--<url-pattern>/MyFarm</url-pattern>-->
     <!--</servlet-mapping>-->
     <session-config>
         <session-timeout>60</session-timeout>

@@ -16,13 +16,15 @@
     Long controllerId = Long.parseLong(request.getParameter("controllerId"));
     Long screenId = Long.parseLong(request.getParameter("screenId"));
     Controller controller = (Controller) request.getAttribute("controller");
+    Locale oldLocal = (Locale) session.getAttribute("oldLocale");
+    Locale currLocal = (Locale) session.getAttribute("currLocale");
+
     Program program = controller.getProgram();
     Collection<Screen> screens = program.getScreens();
     Integer newConnectionTimeout = (Integer) request.getAttribute("newConnectionTimeout");
 
     Collection<ProgramActionSet> programactionsets = (Collection<ProgramActionSet>) request.getAttribute("programactionset");
-    Locale oldLocal = (Locale) session.getAttribute("oldLocale");
-    Locale currLocal = (Locale) session.getAttribute("currLocale");
+
     if (!oldLocal.equals(currLocal)) {
         response.sendRedirect("./rmtctrl-actionset.html?lang=" + lang + "&userId=" + userId + "&cellinkId=" + cellinkId + "&screenId=" + screenId + "&controllerId=" + controllerId);
     }
@@ -30,11 +32,16 @@
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
-    <title><%=session.getAttribute("all.screen.page.title")%>
+
+    <title>
+        <%=session.getAttribute("all.screen.page.title")%>
     </title>
+
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
+
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         /**logout*/
@@ -90,8 +97,11 @@
             refresh();
         }
     </script>
+
 </head>
+
 <body>
+
 <table width="100%">
     <tr>
         <td align="center">
@@ -164,7 +174,7 @@
                                     <% } else {%>
                                     <td nowrap>
                                         <a class="<%=cssClass%>"
-                                           href="rmctrl-controller-screens-ajax.jsp?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>"
+                                           href="./rmctrl-controller-screens-ajax.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId()%>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>"
                                            id="<%=screen.getId()%>"
                                            onclick='document.body.style.cursor = "wait"'><%=screen.getUnicodeTitle()%>
                                         </a>

@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
-
+////Input Stream and Output Stream  (from and into Cellink)
 public class CommControl {
     private Socket socket;
     private InputStream in;

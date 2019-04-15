@@ -3,7 +3,6 @@ package com.agrologic.app.gui.rxtx.flock;
 import com.agrologic.app.config.Configuration;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.*;
-
 import javax.swing.*;
 import java.sql.SQLException;
 import java.util.*;
@@ -27,7 +26,6 @@ public class FlockManagerService {
     private DataDao dataDao;
     private FlockDao flockDao;
     private ControllerDao controllerDao;
-
     private List<Flock> flocks = new ArrayList<Flock>();
     private Collection<Controller> controllers = new ArrayList<Controller>();
 
@@ -53,10 +51,7 @@ public class FlockManagerService {
         try {
             flockDao.insert(flock);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null,
-                    "Can not add flock because flock for this houses already exist.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Can not add flock because flock for this houses already exist.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -111,6 +106,22 @@ public class FlockManagerService {
     public Integer getLastUpdatedGrowDay(Long flockId) {
         try {
             return flockDao.getUpdatedGrowDayHistory(flockId);
+        } catch (SQLException ex) {
+            return 1;
+        }
+    }
+
+    public Integer getFirstUpdatedGrowDay(Long flockId) {
+        try {
+            return flockDao.getUpdatedGrowDayHistoryMin(flockId);
+        } catch (SQLException ex) {
+            return 1;
+        }
+    }
+
+    public Integer getFirstUpdatedGrowDay24(Long flockId) {
+        try {
+            return flockDao.getUpdatedGrowDayHistory24Min(flockId);
         } catch (SQLException ex) {
             return 1;
         }
@@ -174,58 +185,191 @@ public class FlockManagerService {
         return updatedMap;
     }
 
-    public boolean isExist(Long dataId, String values) {
-        boolean isExist = false;
-        StringTokenizer st = new StringTokenizer(values, " ");
-        int count = st.countTokens();
-        if (count < 2) {
-            return false;
-        }
-        for (int i = 0; i < count; i += 2) {
-            try {
-                String id = st.nextToken();
-                String vl = st.nextToken();
-                Long lid = Long.parseLong(id);
-                if (dataId.equals(lid) && !vl.equals("-1")) {
-                    return true;
-                }
-            } catch (NoSuchElementException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return isExist;
-    }
-
     public List<HistoryEntry> createHistoryEntryList(Long currFlockId) {
-        List<HistoryEntry> allHistoryEntryList = new ArrayList<HistoryEntry>();
-        try {
-            List<Data> dataList = (List<Data>) dataDao.getAllBySpecial(Data.HISTORY);
-            for (Data d : dataList) {
-                allHistoryEntryList.add(new HistoryEntry(d.getType(), d.getLabel(), d.getFormat()));
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        Map<Integer, String> historyDataByGrowDayMap;
+        List<Data> perAllDayHistoryList;
+        String dataIdString;
+        String valueString;
+        long dataId;
+        int value;
+        int type;
+        HistoryEntry historyEntryTest;
+        Map<Integer, Double> valuesTest;
+        List<HistoryEntry> historyListTest = null;
+        List <Data> actualHistData;
+        StringTokenizer token;
+        int count;
+        int highValue;
+        int lowValue;
 
-        Map<Integer, String> flockHistory = getFlockHistoryTable(currFlockId);
-        List<HistoryEntry> historyList = new ArrayList<HistoryEntry>();
-        if (flockHistory.isEmpty() || (getFirstGrowDayWithNotEmptyHistory(flockHistory) == -1)) {
-            allHistoryEntryList.clear();
-            return allHistoryEntryList;
-        } else {
-            Integer firstNotEmpty = getFirstGrowDayWithNotEmptyHistory(flockHistory);
-            for (HistoryEntry historyEntry : allHistoryEntryList) {
-                String values = flockHistory.get(firstNotEmpty);
-                if (historyEntry.getId() instanceof Long) {
-                    Long id = (Long) historyEntry.getId();
-                    if (isExist(id, values)) {
-                        historyEntry.setValues(getHistoryMap(flockHistory, id, historyEntry.getFormat()));
-                        historyList.add(historyEntry);
+        try {
+            historyDataByGrowDayMap = getFlockHistoryTable(currFlockId);
+            perAllDayHistoryList = (List<Data>) dataDao.getAllBySpecial(Data.HISTORY);
+            historyListTest = new ArrayList<HistoryEntry>();
+            actualHistData = new ArrayList<Data>();
+            count = 0;
+
+            for (Map.Entry<Integer, String> entry : historyDataByGrowDayMap.entrySet()) {
+                if (count == 0) {
+                    count++;
+                    if (!entry.getValue().equals("-1")) {
+                        token = new StringTokenizer(entry.getValue(), " ");
+                        while (token.hasMoreElements() && token.countTokens() >= 4) {
+                            dataIdString = (String) token.nextElement();
+                            valueString = (String) token.nextElement();
+                            dataId = Long.parseLong(dataIdString);
+                            value = Integer.parseInt(valueString);
+
+                            type = (int) dataId;
+                            if ((type & 0xC000) == 0) {
+                                dataId = (type & 0xFFFF);
+                            } else if ((type & 0xC000) != 0xC000) {
+                                dataId = (type & 0xFFF);
+                            } else {
+                                dataId = (type & 0xFFFF);
+                            }
+
+//                            if (dataId < 0){
+//                                dataId = dataId + 65536;
+//                            }
+
+                            for (Data data : perAllDayHistoryList) {
+                                if (data.getId().equals(Long.valueOf(dataId)) || data.getType().equals(Long.valueOf(dataId))) {
+                                    actualHistData.add(data);
+                                }
+                            }
+                        }
+                    } else {
+                        count = 0;
+                    }
+                } else {
+                    break;
+                }
+            }
+        for (Map.Entry<Integer, String> entry : historyDataByGrowDayMap.entrySet()) {
+            for (Data data : actualHistData) {
+                if (data.getId() == 800) {
+                    data.setValue(entry.getKey().longValue());
+                } else {
+                    if (!entry.getValue().equals("-1")) {
+                        token = new StringTokenizer(entry.getValue(), " ");
+                        while (token.hasMoreElements() && token.countTokens() >= 4) {
+                            try {
+                                dataIdString = (String) token.nextElement();
+                                valueString = (String) token.nextElement();
+                                dataId = Long.parseLong(dataIdString);
+                                value = Integer.parseInt(valueString);
+
+//                                if (dataId < 0){
+//                                    dataId = dataId + 65536;
+//                                }
+                                type = (int) dataId;
+                                if ((type & 0xC000) == 0) {
+                                    dataId = (type & 0xFFFF);
+                                } else if ((type & 0xC000) != 0xC000) {
+                                    dataId = (type & 0xFFF);
+                                } else {
+                                    dataId = (type & 0xFFFF);
+                                }
+                                if (data.getId().equals(Long.valueOf(dataId)) || data.getType().equals(Long.valueOf(dataId))) {
+                                    if(data.getFormatForLocalGraphs() == 8){
+                                        token.nextToken();
+                                        highValue = value;
+                                        valueString = token.nextToken();
+                                        value = Integer.parseInt(valueString);
+                                        lowValue = value;
+                                        value = ((highValue << 16) & 0xFFFF0000) | (lowValue & 0x0000FFFF);
+                                    }
+                                    data.setValue(Long.valueOf(value));
+//                                            values += String.valueOf(data.getId()) + " " + data.getValue() + " ";
+                                    if (isExistHistoryEntryIdIntoHistoryList(Long.valueOf(data.getId()), historyListTest)) {
+                                        ////////////////////////////////////////////////////////////////////////////////
+                                        double val=0.0;
+                                        if (DataFormat.TIME == data.getFormat()) {
+                                            long h = value / 100;
+                                            long m = value % 100;
+                                            long t = h * 60 + m;
+                                            value = (int)t;
+////                                            table.put(growDay, (double) t);
+                                        } else {
+                                              val = Double.parseDouble(DataFormat.formatToStringValue(data.getFormat(), value));
+//                                            table.put(growDay, Double.parseDouble(vl));
+                                        }
+                                        ////////////////////////////////////////////////////////////////////////////////
+//                                        historyListTest = setValuesToHistoryEntryFromHistoryList(data.getId(), entry.getKey(), value, historyListTest);////
+                                        historyListTest = setValuesToHistoryEntryFromHistoryList(data.getId(), entry.getKey(), val, historyListTest);////
+                                    } else {
+                                        historyEntryTest = new HistoryEntry();
+                                        valuesTest = new HashMap<Integer, Double>();
+                                        historyEntryTest.setId(data.getId());
+                                        historyEntryTest.setTitle(data.getLabel());
+                                        historyEntryTest.setFormat(data.getFormat());
+                                        ////////////////////////////////////////////////////////////////////////////////
+                                        Double vl = 0.0;
+                                        if (DataFormat.TIME == data.getFormat()) {
+                                            long h = value / 100;
+                                            long m = value % 100;
+                                            long t = h * 60 + m;
+                                            value = (int)t;
+//                                            table.put(growDay, (double) t);
+                                        } else {
+                                              vl = Double.parseDouble(DataFormat.formatToStringValue(data.getFormat(), value));
+//                                            table.put(growDay, Double.parseDouble(vl));
+                                        }
+                                        valuesTest.put(entry.getKey(), (double) vl);////
+                                        ////////////////////////////////////////////////////////////////////////////////
+//                                        valuesTest.put(entry.getKey(), (double) value);////
+                                        historyEntryTest.setValues(valuesTest);
+                                        historyListTest.add(historyEntryTest);
+                                        historyEntryTest = null;
+                                        valuesTest = null;
+                                    }
+                                }
+                            } catch (NoSuchElementException e) {
+                            // skip this exception
+                            }
+                        }
                     }
                 }
             }
+//                values = "";
         }
-        return historyList;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return historyListTest;
+    }
+
+    private boolean isExistHistoryEntryIdIntoHistoryList(Long dataId, List<HistoryEntry> historyListTest){
+        boolean returnflag;
+        String str;
+        Long idLong;
+        returnflag = false;
+        for(HistoryEntry hisEnt : historyListTest){
+            str = String.valueOf(hisEnt.getId());
+            idLong = Long.valueOf(str);
+            if(dataId.equals(idLong)) {
+                returnflag = true;
+            }
+        }
+        return returnflag;
+    }
+
+    private List <HistoryEntry> setValuesToHistoryEntryFromHistoryList(Long dataId, int growDay, double value, List<HistoryEntry> histiryListTest){
+        String str;
+        Long idLong;
+        Map <Integer, Double> val;
+
+        for(HistoryEntry he: histiryListTest){
+            str = String.valueOf(he.getId());
+            idLong = Long.valueOf(str);
+            if(idLong.equals(dataId)){
+                val = he.getValues();
+                val.put(growDay, value);
+                he.setValues(val);
+            }
+        }
+        return histiryListTest;
     }
 
     private Map<Integer, Double> getHistoryMap(Map<Integer, String> flockHistory, Long dataId, Integer format) {
@@ -261,33 +405,26 @@ public class FlockManagerService {
         return table;
     }
 
-    private Integer getFirstGrowDayWithNotEmptyHistory(Map<Integer, String> flockHistory) {
-        Set<Entry<Integer, String>> entries = flockHistory.entrySet();
-        Integer firstElement = -1;
-        for (Entry<Integer, String> entry : entries) {
-            if (!entry.getValue().equals("-1")) {
-                firstElement = entry.getKey();
-                break;
-            }
-        }
-        return firstElement;
-    }
+    public List<HistoryEntry> createHistoryEntry24List(Long currFlockId, Integer growDay, Long langId) {
+        List <HistoryEntry> histEntryLst = null;
+        Collection<Data> perHourHistData;
+        Map<Integer, String> values24;
+        HistoryEntry he;
 
-    public List<HistoryEntry> createHistoryEntry24List(Long currFlockId) {
-        List<HistoryEntry> allHistoryEntryList = new ArrayList<HistoryEntry>();
-        Map<String, String> map = flockDao.getHistoryN();
-        Set<Entry<String, String>> entries = map.entrySet();
-        for (Entry e : entries) {
-            try {
-                Map<Integer, String> values24 = flockDao.getAllHistory24ByFlockAndDnum(currFlockId, (String) e.getKey());
-                HistoryEntry he = new HistoryEntry(e.getKey(), (String) e.getValue());
+        try {
+            histEntryLst = new ArrayList<HistoryEntry>();
+            perHourHistData = flockDao.getFlockPerHourHistoryData(currFlockId, growDay, langId);
+            for (Data data : perHourHistData){//3
+                values24 = flockDao.getAllHistory24ByFlockAndDnum(currFlockId, data.getHistoryHourDNum());
+                he = new HistoryEntry(data.getId(), data.getLabel(), data.getFormat());
                 he.setValues24Map(values24);
-                allHistoryEntryList.add(he);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+                histEntryLst.add(he);
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return allHistoryEntryList;
+        return histEntryLst;
     }
 
     public void addGas(Gas gas) {
@@ -643,3 +780,18 @@ public class FlockManagerService {
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//    private static int twosCompliment(int val) {
+//        final int HIGH_32BIT_OFF_MASK = 0x0000FFFF;
+//        int tVal = val;
+//        if (tVal != -1) {
+//            //two's compliment action
+//            tVal = Math.abs(tVal);
+//            tVal = ~tVal;
+//            tVal &= HIGH_32BIT_OFF_MASK;
+//            tVal += 1;
+//        }
+//        return tVal;
+//    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////

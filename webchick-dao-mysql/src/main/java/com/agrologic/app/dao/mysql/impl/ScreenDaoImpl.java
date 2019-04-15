@@ -276,12 +276,23 @@ public class ScreenDaoImpl implements ScreenDao {
         return jdbcTemplate.queryForInt(sqlQuery, new Object[]{programId});
     }
 
+//    @Override
+//         public Long getSecondScreenAfterMain(final Long programId) throws SQLException {
+//        logger.debug("Calculate second screen index ");
+//        String sqlQuery = "select screenid from screens as screnid where programid=? and DisplayOnpage='yes' " +
+//                "and screenid > 1 and position > 1 limit 1";
+//        return jdbcTemplate.queryForLong(sqlQuery, new Object[]{programId});
+//    }
+
     @Override
-    public Long getSecondScreenAfterMain(final Long programId) throws SQLException {
-        logger.debug("Calculate second screen index ");
-        String sqlQuery = "select screenid from screens as screnid where programid=? and DisplayOnpage='yes' " +
-                "and screenid > 1 and position > 1 limit 1";
-        return jdbcTemplate.queryForLong(sqlQuery, new Object[]{programId});
+    public Long getSecondScreenAfterMain(final Long programId) {
+        try {
+            logger.debug("Calculate second screen index ");
+            String sqlQuery = "select screenid from screens as screnid where programid=? and DisplayOnpage='yes' " + "and screenid > 1 and position > 1 limit 1";
+            return jdbcTemplate.queryForLong(sqlQuery, new Object[]{programId});
+        } catch (Exception e){
+            return null;
+        }
     }
 
     @Override

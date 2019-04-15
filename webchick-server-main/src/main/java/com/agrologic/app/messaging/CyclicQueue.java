@@ -1,22 +1,8 @@
 
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
- */
 package com.agrologic.app.messaging;
-
 
 import java.util.LinkedList;
 
-/**
- * Title: CyclicQueue <br>
- * Description: <br>
- * Copyright:   Copyright (c) 2009 <br>
- * Company:     AgroLogic LTD. <br>
- *
- * @author Valery Manakhimov <br>
- * @version 1.0 <br>
- */
 public class CyclicQueue<RequestMessage> {
     private boolean cycleCompleted = false;
     private int head;

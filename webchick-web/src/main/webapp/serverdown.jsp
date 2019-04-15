@@ -10,6 +10,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=windows-1255">
     <title>Server is down </title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
 </head>
 <body>
 <span style="vertical-align: middle">

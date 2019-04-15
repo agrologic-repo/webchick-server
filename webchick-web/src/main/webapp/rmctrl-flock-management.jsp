@@ -28,6 +28,7 @@
 <head>
     <title><%=session.getAttribute("flock.page.title")%>
     </title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
     <script src="resources/javascript/jquery.js"></script>
@@ -84,8 +85,9 @@
         <td align="center" width="85%">
             <div id="tabs">
                 <ul>
-                    <li><a href="#tabs-1"><%=session.getAttribute("manage.page.tab.houses")%>
-                    </a></li>
+                    <li>
+                        <a href="#tabs-1"><%=session.getAttribute("manage.page.tab.houses")%></a>
+                    </li>
                     <li><a href="#tabs-2"><%=session.getAttribute("manage.page.tab.begin")%>
                     </a></li>
                     <li><a href="#tabs-3"><%=session.getAttribute("manage.page.tab.expenses")%>

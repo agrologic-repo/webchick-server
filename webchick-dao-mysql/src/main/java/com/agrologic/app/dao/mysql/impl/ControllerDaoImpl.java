@@ -18,12 +18,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
-/**
- * An implementation of {@link ControllerDao} that is based on JdbcTemplate and working
- * with database.
- *
- * @author Valery Manakhimov
- */
 public class ControllerDaoImpl implements ControllerDao {
     protected final Logger logger = LoggerFactory.getLogger(ControllerDaoImpl.class);
     protected final JdbcTemplate jdbcTemplate;
@@ -69,6 +63,12 @@ public class ControllerDaoImpl implements ControllerDao {
                         controller.getHouseType(), controller.getId()});
     }
 
+    @Override
+    public void update_version(Long program_id, Long controller_id) throws SQLException {
+        logger.debug("Update controller version with id [{}]", controller_id);
+        jdbcTemplate.update("update controllers set ProgramID=? where ControllerID=? ", new Object[]{program_id, controller_id});
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -95,8 +95,7 @@ public class ControllerDaoImpl implements ControllerDao {
      * {@inheritDoc}
      */
     @Override
-    public void insertControllerDataValues(Long controllerId, Iterator<Map.Entry<Long, Data>> dataValues)
-            throws SQLException {
+    public void insertControllerDataValues(Long controllerId, Iterator<Map.Entry<Long, Data>> dataValues) throws SQLException {
         String sql = "insert into controllerdata (dataid,controllerid,value) VALUES(?,?,-1) ";
         List<Object[]> batch = new ArrayList<Object[]>();
         while (dataValues.hasNext()) {
@@ -156,6 +155,26 @@ public class ControllerDaoImpl implements ControllerDao {
             }
         });
     }
+
+    @Override
+    public Long getControllerDataValue(Long dataId, Long controllerId) throws SQLException {
+
+        String sql = "select * from controllerdata where ControllerID=? and DataID=?";
+        Data data = jdbcTemplate.queryForObject(sql, new Object[]{controllerId, dataId}, RowMappers.controllerData());
+
+        return data.getValue();
+    }
+
+//    @Override
+//    public Long getParsedControllerDataValue(Long dataId, Long controllerId) throws SQLException {
+//
+//        String sql = "select * from controllerdata where ControllerID=? and DataID=?";
+////        List<Data> result = jdbcTemplate.query(sql, new Object[]{controllerId, dataId}, RowMappers.controllerData());
+//        Data data = jdbcTemplate.queryForObject(sql, new Object[]{controllerId, dataId}, RowMappers.controllerData());
+//
+//        return data.getValue();
+//    }
+
 
     /**
      * {@inheritDoc}
@@ -314,8 +333,15 @@ public class ControllerDaoImpl implements ControllerDao {
     /**
      * {@inheritDoc}
      */
+//    @Override // for test
+//    public Collection<Controller> getActiveCellinkControllers(Long cellinkId) {
+//        logger.debug("Get all controllers that belongs to active cellink with id [{}]", cellinkId);
+//        String sql = "select * from controllers where cellinkid=? and active=1";
+//        return jdbcTemplate.query(sql, new Object[]{cellinkId}, RowMappers.controller());
+//    } // for test
+
     @Override
-    public Collection<Controller> getActiveCellinkControllers(Long cellinkId) throws SQLException {
+    public Collection<Controller> getActiveCellinkControllers(Long cellinkId) throws SQLException{
         logger.debug("Get all controllers that belongs to active cellink with id [{}]", cellinkId);
         String sql = "select * from controllers where cellinkid=? and active=1";
         return jdbcTemplate.query(sql, new Object[]{cellinkId}, RowMappers.controller());

@@ -23,10 +23,10 @@ public class EditControllerServlet extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
             response.sendRedirect("./login.jsp");
@@ -45,8 +45,7 @@ public class EditControllerServlet extends AbstractServlet {
                 Program program = programDao.getById(editController.getProgramId());
                 editController.setProgram(program);
 
-                request.getRequestDispatcher("./edit-controller.jsp?userId=" + userId + "&celinkId="
-                        + cellinkId).forward(request, response);
+                request.getRequestDispatcher("./edit-controller.jsp?userId=" + userId + "&celinkId=" + cellinkId).forward(request, response);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

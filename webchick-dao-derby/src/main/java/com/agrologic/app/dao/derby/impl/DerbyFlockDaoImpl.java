@@ -195,14 +195,32 @@ public class DerbyFlockDaoImpl extends FlockDaoImpl implements CreatebleDao, Dro
 
     @Override
     public Collection<Data> getFlockPerHourHistoryData(Long flockId, Integer growDay, Long langId) throws SQLException {
-//        String sql = "select * from flockhistory24 as f24 " +
-//                "left join datatable as dt on dt.historydnum like '%' || f24.DNUM || '%' " +
-//                "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? " +
-//                "where f24.flockid=? and f24.growday=? and dt.historyopt like '%HOUR%' order by dt.type ";
-        String sql = "select * from flockhistory24 " +
-                "inner join datatable on datatable.historydnum=flockhistory24.dnum " +
-                "left join databylanguage on databylanguage.dataid=datatable.dataid and databylanguage.langid=? where flockid=? and growday=?";
+        String sql = "select * from flockhistory24 as f24 " +
+                     "left join datatable as dt on dt.historydnum LIKE '%;' || f24.dnum ||'%' or historydnum LIKE '%' || f24.dnum || ';%' or historydnum LIKE f24.dnum " +
+                     "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? " +
+                     "where f24.flockid=? and f24.growday=? and dt.historyopt like '%HOUR%'";
         return jdbcTemplate.query(sql, new Object[]{langId, flockId, growDay}, RowMappers.data());
-
     }
 }
+
+//    @Override
+//    public Collection<Data> getFlockPerHourHistoryData(Long flockId, Integer growDay, Long langId) throws SQLException {
+//        String sql = "select * from flockhistory24 as f24 " +
+//                "left join datatable as dt on dt.historydnum LIKE concat('%;',f24.dnum,'%') or historydnum LIKE concat ('%',f24.dnum,';%') or historydnum LIKE f24.dnum " +
+//                "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? " +
+//                "where f24.flockid=? and f24.growday=? and dt.historyopt like '%HOUR%'" +
+//                "group by f24.dnum order by dt.type";
+//        return jdbcTemplate.query(sql, new Object[]{langId, flockId, growDay}, RowMappers.data());
+
+//    @Override
+//    public Collection<Data> getFlockPerHourHistoryData(Long flockId, Integer growDay, Long langId) throws SQLException {
+////        String sql = "select * from flockhistory24 as f24 " +
+////                "left join datatable as dt on dt.historydnum like '%' || f24.DNUM || '%' " +
+////                "left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=? " +
+////                "where f24.flockid=? and f24.growday=? and dt.historyopt like '%HOUR%' order by dt.type ";
+//        String sql = "select * from flockhistory24 " +
+//                "inner join datatable on datatable.historydnum=flockhistory24.dnum " +
+//                "left join databylanguage on databylanguage.dataid=datatable.dataid and databylanguage.langid=? where flockid=? and growday=?";
+//        return jdbcTemplate.query(sql, new Object[]{langId, flockId, growDay}, RowMappers.data());
+//
+//    }

@@ -31,8 +31,9 @@ import java.util.Locale;
  * @version 1.1 <br>
  */
 public class InsideOutsideHumidityGraph extends PerHourReportGraph {
+
     public InsideOutsideHumidityGraph(String values, Long currentTime, Locale locale) {
-        super(values);
+        super(values, values, 1);////////!
         this.currentTime = currentTime;
         this.locale = locale;
         initLanguage();
@@ -98,8 +99,7 @@ public class InsideOutsideHumidityGraph extends PerHourReportGraph {
             plot.setDataset(1, humDataset);
             plot.mapDatasetToRangeAxis(1, 1);
 
-            StandardXYItemRenderer renderer2 = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg,
-                    urlg);
+            StandardXYItemRenderer renderer2 = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg, urlg);
 
             renderer2.setShapesFilled(true);
             renderer2.setBaseShapesVisible(true);

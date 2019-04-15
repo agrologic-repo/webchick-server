@@ -10,6 +10,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="shortcut icon" href="resources/images/favicon.ico">
 <script type="text/javascript">
 var isChanged = false;
 var DEC_0 = 0;

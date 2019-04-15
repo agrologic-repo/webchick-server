@@ -7,6 +7,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title></title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <style>
         body, p {
             font-family: Tahoma;

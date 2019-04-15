@@ -3,14 +3,8 @@ package com.agrologic.app.service.history;
 import com.agrologic.app.model.Data;
 import org.apache.commons.lang.StringEscapeUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
-/**
- * Created by Valery on 1/7/14.
- */
 public class HistoryContent {
     protected Integer growDay;
     protected Map<Data, List<String>> historyContentPerHour;
@@ -30,19 +24,21 @@ public class HistoryContent {
     }
 
     public List<String> getTitlesForExcel() {
-        int index = 1, maxSizeIndex = 1;
-        int maxSize = 0;
-        for (List<Data> dataList : historyContentPerDay.values()) {
-            if (dataList.size() > maxSize) {
-                maxSize = dataList.size();
-                maxSizeIndex = index;
+
+        List<Data> maxListData = new ArrayList<Data>();
+
+        for (List<Data> dataList : historyContentPerDay.values()){
+            if(maxListData.size() == 0 || dataList.size() > maxListData.size()){
+                maxListData = new ArrayList<Data>(dataList);
             }
-            index++;
         }
+
         List<String> titles = new ArrayList<String>();
-        for (Data data : historyContentPerDay.get(maxSizeIndex)) {
+
+        for (Data data : maxListData) {
             titles.add(StringEscapeUtils.unescapeHtml(data.getUnicodeLabel()));
         }
+
         return titles;
     }
 
@@ -57,11 +53,13 @@ public class HistoryContent {
 
     public List<Data> getTitlesForHtml() {
         int maxSizeIndex = 1;
+//        Long maxSizeIndex = 1L;
         int maxSize = 0;
         for (Map.Entry<Integer, List<Data>> entry : historyContentPerDay.entrySet()) {
+//        for (Map.Entry<Long, List<Data>> entry : historyContentPerDay.entrySet()) {
             if (entry.getValue().size() > maxSize) {
                 maxSize = entry.getValue().size();
-                maxSizeIndex = entry.getKey();
+//                maxSizeIndex = entry.getKey();
             }
         }
         return historyContentPerDay.get(maxSizeIndex);
@@ -69,6 +67,7 @@ public class HistoryContent {
 
     public List<String> getTitlesPerHourForHtml() {
         List<String> titles = new ArrayList<String>();
+//        titles.add("Date"); ////
         titles.add(String.format("Grow day %s Hour(24) ", growDay));
         for (Data data : historyContentPerHour.keySet()) {
             titles.add(StringEscapeUtils.unescapeHtml(data.getUnicodeLabel()));
@@ -80,6 +79,10 @@ public class HistoryContent {
         this.historyContentPerDay.put(day, historyContentPerDay);
     }
 
+//        public void addHistoryContentPerDay(Long day, List<Data> historyContentPerDay) {
+//        this.historyContentPerDay.put(day, historyContentPerDay);
+//    }
+
     public void addHistoryContentPerHour(Data data, List<String> historyContentPerHour) {
         this.historyContentPerHour.put(data, historyContentPerHour);
     }
@@ -87,6 +90,10 @@ public class HistoryContent {
     public Map<Integer, List<Data>> getHistoryContentPerDay() {
         return historyContentPerDay;
     }
+
+//    public Map<Long, List<Data>> getHistoryContentPerDay() {
+//        return historyContentPerDay;
+//    }
 
     public List<List<String>> getHistoryContentPerHour() {
         List<List<String>> lists = new ArrayList<List<String>>();
@@ -105,11 +112,39 @@ public class HistoryContent {
         return lists;
     }
 
-    public List<List<String>> getExcelDataColumns() {
+//    public List<List<Data>> getExcelDataColumns(int size) {
+//
+//        List<List<Data>> lists = new ArrayList<List<Data>>();
+//
+//        for (int i = 0; i < size; i++) {
+//
+//            List<Data> dataList = new ArrayList<Data>();
+//
+//            for (Map.Entry<Integer, List<Data>> entry : historyContentPerDay.entrySet()) {
+//
+//                if (entry.getValue().size() <= i) {
+//                    //
+//                } else {
+//                    Data data = entry.getValue().get(i);
+//                    dataList.add(data);
+//                }
+//            }
+//
+//            lists.add(dataList);
+//        }
+//        return lists;
+//    }
+//-------------------------------------------------------------------------------------------------------
+    public List<List<String>> getExcelDataColumns(int size) {
+
         List<List<String>> lists = new ArrayList<List<String>>();
-        for (int i = 0; i < getTitlesForExcel().size(); i++) {
+
+        for (int i = 0; i < size; i++) {
+
             List<String> dataList = new ArrayList<String>();
+
             for (Map.Entry<Integer, List<Data>> entry : historyContentPerDay.entrySet()) {
+
                 if (entry.getValue().size() <= i) {
                     dataList.add("-1");
                 } else {
@@ -117,15 +152,72 @@ public class HistoryContent {
                     dataList.add(data.getFormattedValue());
                 }
             }
+
             lists.add(dataList);
         }
         return lists;
     }
+//-------------------------------------------------------------------------------------------------------
+
+//    public List<List<Data>> getExcelDataColumns() {
+//
+//        List<List<Data>> lists = new ArrayList<List<Data>>();
+//        int map_size = historyContentPerDay.size();
+//
+//        int index = 0;
+//
+//        while (map_size >= 0) {
+//
+//            List<Data> list = new ArrayList<Data>();
+//
+//            for (Map.Entry<Integer, List<Data>> entry : historyContentPerDay.entrySet()) {
+//                if(index < entry.getValue().size()) {
+//                    Data data = entry.getValue().get(index);
+//                    list.add(data);
+//                }
+//            }
+//
+//            lists.add(list);
+//            index++;
+//            map_size--;
+//        }
+//
+//        return lists;
+//    }
+
+//    public Map<Long, List<Data>> getExcelDataColumns() {
+//
+//        Map<Long, List<Data>> lists = new TreeMap<Long, List<Data>>();
+//        int map_size = historyContentPerDay.size();
+//
+//        int index = 0;
+//
+//        while (map_size >= 0) {
+//
+//            List<Data> list = new ArrayList<Data>();
+//            Long data_id;
+//
+//            for (Map.Entry<Integer, List<Data>> entry : historyContentPerDay.entrySet()) {
+//                if(index < entry.getValue().size()) {
+//                    Data data = entry.getValue().get(index);
+//                    list.add(data);
+//                }
+//            }
+//
+////            lists.put(list);
+//            index++;
+//            map_size--;
+//        }
+//
+//        return lists;
+//    }
 
     public List<List<String>> getExcelDataColumnsPerHour() {
-        List<List<String>> lists = new ArrayList<List<String>>();
-        List<String> hours = new ArrayList<String>();
-        for (int i = 0; i < 24; i++) {
+        List<List<String>> lists;
+        List<String> hours;
+        lists = new ArrayList<List<String>>();
+        hours = new ArrayList<String>();
+        for (int i = 1; i < 25; i++) { // 24 values
             hours.add("" + i);
         }
         lists.add(hours);
@@ -133,5 +225,18 @@ public class HistoryContent {
             lists.add(historyDataList);
         }
         return lists;
+    }
+
+    public List<Data> getLargestDataList() {
+
+        List<Data> maxListData = new ArrayList<Data>();
+
+        for (List<Data> dataList : historyContentPerDay.values()){
+            if(maxListData.size() == 0 || dataList.size() > maxListData.size()){
+                maxListData = new ArrayList<Data>(dataList);
+            }
+        }
+
+        return maxListData;
     }
 }

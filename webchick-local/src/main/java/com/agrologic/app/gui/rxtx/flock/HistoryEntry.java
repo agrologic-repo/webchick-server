@@ -12,6 +12,9 @@ public class HistoryEntry {
     private Map<Integer, Double> values;
     private Map<Integer, String> values24Map;
 
+    public HistoryEntry() {
+    }
+
     public HistoryEntry(Object id, String title) {
         this(id, title, DataFormat.DEC_1);
     }
@@ -21,6 +24,10 @@ public class HistoryEntry {
         this.format = format;
         this.title = title;
     }
+
+    public void setId(Object id){this.id = id;}
+
+    public void setFormat(Integer format){this.format = format;}
 
     public void setTitle(String title) {
         this.title = title;

@@ -24,8 +24,7 @@ public class EditCellinkServlet extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
@@ -48,8 +47,7 @@ public class EditCellinkServlet extends AbstractServlet {
 
                     logger.info("retrieve user and user cellinks to edit");
                     request.setAttribute("edituser", editUser);
-                    request.getRequestDispatcher("./edit-cellink.jsp?userId=" + userId + "&celinkId="
-                            + cellinkId).forward(request, response);
+                    request.getRequestDispatcher("./edit-cellink.jsp?userId=" + userId + "&celinkId=" + cellinkId).forward(request, response);
                 } catch (SQLException ex) {
                     logger.debug("Can not retrieve cellink to edit ", ex);
                 }

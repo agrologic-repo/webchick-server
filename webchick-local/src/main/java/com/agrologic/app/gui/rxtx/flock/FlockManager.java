@@ -1,9 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agrologic.app.gui.rxtx.flock;
 
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.util.Windows;
 import net.sf.nachocalendar.CalendarFactory;
@@ -27,9 +24,10 @@ import java.util.Map.Entry;
  */
 public class FlockManager extends JFrame {
 
-    public static final String FLOCK_ALREADY_EXIST = "Flock exist , select another controller ";
+//    public static final String FLOCK_ALREADY_EXIST = "Flock exist , select another controller ";
     private DateField d1;
     private DateField d2;
+    private ResourceBundle bundle; // NOI18N //08/01/2018
 
     enum FlockStatus {
         Open, Close
@@ -49,8 +47,10 @@ public class FlockManager extends JFrame {
      */
     public FlockManager() {
         initComponents();
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // NOI18N //08/01/2018
         logger.info("Inside FlockManager Constructor ");
-        setTitle("Flock Manager");
+//        setTitle("Flock Manager"); // 08/01/2017
+        setTitle(bundle.getString("flock.manager"));
         Windows.setWindowsLAF(this);
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
         this.d1 = CalendarFactory.createDateField();
@@ -195,10 +195,13 @@ public class FlockManager extends JFrame {
             txtID.setText("" + selectedFlock.getFlockId());
             txtName.setText(selectedFlock.getFlockName());
             cmbHouse.setSelectedItem(selectedFlock.getControllerName());
-            if (selectedFlock.getStatus().equals("Open")) {
-                cmbStatus.setSelectedItem(FlockStatus.Open);
+//            if (selectedFlock.getStatus().equals("Open")) { // 08/01/2018
+            if (selectedFlock.getStatus().equals("Open")) { // 08/01/2018
+//                cmbStatus.setSelectedItem(FlockStatus.Open); // 08/01/2018
+                cmbStatus.setSelectedItem(bundle.getString("flock.manager.status.open"));// 08/01/2018
             } else {
-                cmbStatus.setSelectedItem(FlockStatus.Close);
+//                cmbStatus.setSelectedItem(FlockStatus.Close);// 08/01/2017
+                cmbStatus.setSelectedItem("flock.manager.status.close"); // 08/01/2017
             }
             DateFormat shortDf = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
             Date date = shortDf.parse(selectedFlock.getStartTime());
@@ -226,6 +229,7 @@ public class FlockManager extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // NOI18N //08/01/2018
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblFlocks = new javax.swing.JTable();
@@ -250,14 +254,18 @@ public class FlockManager extends JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(600, 650));
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Select flock from list "));
+//        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Select flock from list ")); // 08/01/2018
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("flock.manager.select.from.list"))); // 08/01/2018
 
         tblFlocks.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{
 
                 },
+//                new String[]{
+//                        "ID", "Name", "House", "Status", "Start Date", "End Date" // 08/01/2018
+//                }
                 new String[]{
-                        "ID", "Name", "House", "Status", "Start Date", "End Date"
+                        bundle.getString("flock.manager.id"), bundle.getString("flock.manager.name"), bundle.getString("flock.manager.house"), bundle.getString("flock.manager.status"), bundle.getString("flock.manager.start.date"), bundle.getString("flock.manager.end.date")
                 }
         ) {
             Class[] types = new Class[]{
@@ -294,37 +302,43 @@ public class FlockManager extends JFrame {
                                 .addContainerGap())
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Add new flock"));
+//        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Add new flock"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("flock.manager.add.new.flock")));
 
-        btnNew.setText("New ");
+//        btnNew.setText("New ");
+        btnNew.setText(bundle.getString("flock.manager.button.new"));
         btnNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNewActionPerformed(evt);
             }
         });
 
-        btnSave.setText("Save");
+//        btnSave.setText("Save");
+        btnSave.setText(bundle.getString("flock.manager.button.save"));
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);
             }
         });
 
-        btnRemove.setText("Remove");
+//        btnRemove.setText("Remove");
+        btnRemove.setText(bundle.getString("flock.manager.button.remove"));
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);
             }
         });
 
-        btnShowGraph.setText("Show Graph");
+//        btnShowGraph.setText("Show Graph");
+        btnShowGraph.setText(bundle.getString("flock.manager.button.show.graph"));
         btnShowGraph.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnShowGraphActionPerformed(evt);
             }
         });
 
-        btnManage.setText("Manage");
+//        btnManage.setText("Manage");
+        btnManage.setText(bundle.getString("flock.manager.manage"));
         btnManage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnManageActionPerformed(evt);
@@ -334,26 +348,32 @@ public class FlockManager extends JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 255)));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setText("ID");
+//        jLabel1.setText("ID");
+        jLabel1.setText(bundle.getString("flock.manager.id"));
         jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 12, 65, 20));
 
         txtID.setEditable(false);
         jPanel2.add(txtID, new org.netbeans.lib.awtextra.AbsoluteConstraints(86, 12, 180, -1));
 
-        jLabel2.setText("Name");
+//        jLabel2.setText("Name");
+        jLabel2.setText(bundle.getString("flock.manager.name"));
         jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 38, 71, 20));
         jPanel2.add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(86, 38, 180, -1));
 
-        lblHouse.setText("House");
+//        lblHouse.setText("House");
+        lblHouse.setText(bundle.getString("flock.manager.house"));
         jPanel2.add(lblHouse, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 64, 65, 20));
 
-        jLabel3.setText("Start Date");
+//        jLabel3.setText("Start Date");
+        jLabel3.setText(bundle.getString("flock.manager.start.date"));
         jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 116, 65, 20));
 
-        jLabel4.setText("End Date");
+//        jLabel4.setText("End Date"); /
+        jLabel4.setText(bundle.getString("flock.manager.end.date"));
         jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 142, 65, 20));
 
-        jLabel5.setText("Status");
+//        jLabel5.setText("Status");
+        jLabel5.setText(bundle.getString("flock.manager.status"));
         jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(11, 90, 65, 20));
         jPanel2.add(cmbHouse, new org.netbeans.lib.awtextra.AbsoluteConstraints(86, 64, 180, -1));
 
@@ -434,8 +454,8 @@ public class FlockManager extends JFrame {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         if (!validateForm()) {
             JOptionPane.showMessageDialog(FlockManager.this,
-                    "Fields can not be empty ",
-                    "Error",
+                    bundle.getString("flock.manager.fields.can.not.be.empty"),
+                    bundle.getString("flock.manager.error"),
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -457,9 +477,11 @@ public class FlockManager extends JFrame {
         flock.setControllerId(controlId);
         flock.setStartDate(d1.getFormattedTextField().getText());
         if (cmbStatus.getSelectedItem() == FlockStatus.Open) {
-            flock.setStatus(FlockStatus.Open.toString());
+//            flock.setStatus(FlockStatus.Open.toString()); // 08/01/2018
+            flock.setStatus(bundle.getString("flock.manager.status.open")); // 08/01/2018
         } else {
-            flock.setStatus(FlockStatus.Close.toString());
+//            flock.setStatus(FlockStatus.Close.toString()); // 08/01/2018
+            flock.setStatus(bundle.getString("flock.manager.status.close")); // 08/01/2018
             flock.setEndDate(d2.getFormattedTextField().getText());
         }
         if (newFlock) {
@@ -471,8 +493,10 @@ public class FlockManager extends JFrame {
                 }
             }
             if (flockExist) {
-                JOptionPane.showMessageDialog(FlockManager.this, FLOCK_ALREADY_EXIST, "Error", JOptionPane.ERROR_MESSAGE);
+//                JOptionPane.showMessageDialog(FlockManager.this, FLOCK_ALREADY_EXIST, "Error", JOptionPane.ERROR_MESSAGE); // 08/01/2018
+                JOptionPane.showMessageDialog(FlockManager.this, bundle.getString("flock.manager.flock.already.exist"), bundle.getString("flock.manager.error"), JOptionPane.ERROR_MESSAGE); // 08/01/2018
             } else {
+                //
                 flockService.addFlock(flock);
             }
             newFlock = false;
@@ -490,6 +514,8 @@ public class FlockManager extends JFrame {
         loadData();
         disableEditing();
     }//GEN-LAST:event_btnSaveActionPerformed
+
+
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         if (selectedFlock == null) {

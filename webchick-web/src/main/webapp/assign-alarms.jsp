@@ -30,10 +30,9 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Add alarms</title>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
-
     <script type="text/javascript" src="resources/javascript/ftabs.js">;</script>
     <script type="text/javascript" src="resources/javascript/util.js">;</script>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
@@ -89,8 +88,7 @@
 
                             <h2> Add Alarms to <%=program.getName()%>
                             </h2></p>
-                            <form id="addForm" name="addForm" action="./assignalarms.html" method="post"
-                                  onsubmit="return save();">
+                            <form id="addForm" name="addForm" action="./assignalarms.html" method="post" onsubmit="return save();">
                                 <input type="hidden" id="programId" name="programId" value="<%=program.getId() %>">
                                 <table>
                                     <tr>
@@ -101,8 +99,7 @@
                                             </h3>
                                             <input type="hidden" id="dataid" name="dataid" value="<%=dataAlarm.getId() %>">
                                             <input type="hidden" id="datamap" name="datamap">
-                                            <table class="table-list" border="0" cellPadding=1 cellSpacing=1
-                                                   width="100%">
+                                            <table class="table-list" border="0" cellPadding=1 cellSpacing=1 width="100%">
                                                 <thead>
                                                 <tr>
                                                     <th align="left" width="20px">Digit</th>

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Collection;
 
 
 public class AddControllerFormServlet extends AbstractServlet {
@@ -23,8 +24,7 @@ public class AddControllerFormServlet extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
@@ -42,6 +42,7 @@ public class AddControllerFormServlet extends AbstractServlet {
         String controllerType = request.getParameter("controllerType");
         String active = request.getParameter("active");
         String houseType = request.getParameter("houseType");
+
         Controller controller = new Controller();
         controller.setId(null);
         controller.setNetName(netName);
@@ -58,20 +59,36 @@ public class AddControllerFormServlet extends AbstractServlet {
         }
 
         try {
+
             ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-            controllerDao.insert(controller);
-            logger.info("Cellink " + controller + " successfully added !");
+
+            Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
+
+            boolean ins = true;
+//
+            for(Controller c : controllers) {
+                if (c.getNetName().substring(c.getNetName().length() - 2, c.getNetName().length()).equals(controller.getNetName().substring(c.getNetName().length() - 2, c.getNetName().length()))) {
+                    ins = false;
+                }
+            }
+
+            if (ins) {
+                controllerDao.insert(controller);
+            }
+
+            logger.info("Controller " + controller + " successfully added !");
+
             request.setAttribute("message", "Controller successfully added !");
             request.setAttribute("error", false);
-            request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request,
-                    response);
+            request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);
+
         } catch (SQLException ex) {
             // error page
             logger.error("Error occurs while adding cellink !");
             request.setAttribute("message", "Error occurs while adding controller !");
             request.setAttribute("error", true);
-            request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request,
-                    response);
+            request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);
+
         } finally {
             out.close();
         }
@@ -88,8 +105,7 @@ public class AddControllerFormServlet extends AbstractServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -102,8 +118,7 @@ public class AddControllerFormServlet extends AbstractServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 

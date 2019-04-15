@@ -2,9 +2,11 @@ package com.agrologic.app.dao;
 
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.Flock;
+import com.agrologic.app.model.HistoryHour;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +32,14 @@ public interface FlockDao {
      * @throws java.sql.SQLException if failed to update the data in the database
      */
     void update(Flock flock) throws SQLException;
+
+    void updateFlockStartDay(Flock flock)throws SQLException;// added 14/06/2017
+
+    void updateFlockEndDay(Flock flock)throws SQLException;// added 14/11/2017
+
+    void updateFlockStatus(Flock flock)throws SQLException;// added 14/11/2017
+
+    Integer getMaxFlockId();// 27/11/2017
 
     /**
      * Removes a data from the flocks database
@@ -57,9 +67,17 @@ public interface FlockDao {
 
     Integer getResetTime(Long flockId, Integer growDay) throws SQLException;
 
+    Integer getUpdatedGrowDay(Long flockId) throws SQLException;
+
     Integer getUpdatedGrowDayHistory(Long flockId) throws SQLException;
 
+    Integer getUpdatedGrowDayHistoryMin (Long flockId) throws SQLException;
+
     Integer getUpdatedGrowDayHistory24(Long flockId) throws SQLException;
+
+    Integer getUpdatedGrowDayHistory24Min(Long flockId) throws SQLException;
+
+    Integer getUpdatedGrowDayHistory24MinWithData (Long flockId) throws SQLException;
 
     Integer getFlockTotalFeedConsumption(Long flockId) throws SQLException;
 
@@ -67,13 +85,15 @@ public interface FlockDao {
 
     Flock getOpenFlockByController(Long controllerId) throws SQLException;
 
+    Boolean open_flock_is_exist(Long controllerId) throws SQLException;
+
     Collection<Flock> getAll() throws SQLException;
 
     Collection<Flock> getAllFlocksByController(Long controllerId) throws SQLException;
 
     Collection<Data> getFlockPerDayHistoryData(Long flockId) throws SQLException;
 
-    Collection<Data> getFlockPerHourHistoryData(Long flockId, Integer growDay, Long langId) throws SQLException;
+    Collection<Data> getFlockPerHourHistoryData(Long flockId, Integer growDay, Long langId) throws SQLException;//!
 
     Map<String, String> getHistoryN();
 
@@ -82,4 +102,14 @@ public interface FlockDao {
     Map<Integer, String> getFlockPerDayNotParsedReports(Long flockId, int fromDay, int toDay) throws SQLException;
 
     Map<Integer, String> getAllHistory24ByFlockAndDnum(Long flockId, String dnum) throws SQLException;
+
+    String get_history_of_max_grow_day(Long flock_id) throws SQLException;
+
+    Collection<HistoryHour> get_history_hour(Long flockId, Long gr_day) throws SQLException;
+
+    String get_history_of_grow_day(Long flock_id, Integer gr_day) throws SQLException;
+
+    Integer get_max_grow_day(Long flockId) throws SQLException;
+
+    Integer getNamberOfRowsFromHist24(Long flockId, Integer growDay) throws SQLException;
 }

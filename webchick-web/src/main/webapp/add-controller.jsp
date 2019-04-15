@@ -6,7 +6,8 @@
 
 <%@ page import="com.agrologic.app.model.User" %>
 
-<% User user = (User) request.getSession().getAttribute("user");
+<%
+    User user = (User) request.getSession().getAttribute("user");
 
     if (user == null) {
         response.sendRedirect("./index.htm");
@@ -25,6 +26,7 @@
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/jquery-ui.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <style>
         .ui-autocomplete {
             max-height: 200px;

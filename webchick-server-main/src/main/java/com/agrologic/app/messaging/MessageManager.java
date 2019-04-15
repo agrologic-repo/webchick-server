@@ -1,6 +1,3 @@
-/**
- * To change this template, choose Tools | Templates and open the template in the editor.
- */
 package com.agrologic.app.messaging;
 
 import com.agrologic.app.dao.*;
@@ -14,21 +11,17 @@ import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Object for collecting messages that occur during the communication
- *
- * @author Valery Manakhimov
- * @version 1.0 <br>
- */
 public class MessageManager implements Observer {
     public static final int DATA_TABLE_SIZE = 65535;
     private static final int REQUEST_CYCLE = 5; //request cycle must be minimum 5
     private static final long SET_CLOCK_DATA_ID = 1309;
-    private int perPerDayReportRequestCycle = REQUEST_CYCLE;
-    private int perHourReportRequestCycle = REQUEST_CYCLE;
+    private int per_day_request_cycle = REQUEST_CYCLE;
+    private int per_hour_request_cycle = REQUEST_CYCLE;
     private Controller controller;
     private ControllerDao controllerDao;
     private FlockDao flockDao;
@@ -38,10 +31,12 @@ public class MessageManager implements Observer {
     private HashMap<Long, Data> onlineDatatable;
     private RequestMessage requestToSend;
     private RequestPriorityQueue requests;
-    private PerHourReportRequestQueue perHourReportRequestQueue;
+    private PerHourReportRequestQueue hour_queue;
     private Logger logger;
     private boolean updatedFlag = true;
     private boolean requestCreated = false;
+//    private Integer updated_gr_d_min;
+    private boolean flag = false;
 
     public MessageManager(Controller controller) {
         this.controller = controller;
@@ -52,13 +47,7 @@ public class MessageManager implements Observer {
         this.logger = Logger.getLogger(MessageManager.class);
     }
 
-    /**
-     * This constructor create MessageManager for webchick-local module .
-     *
-     * @param controller
-     * @param databaseAccessor
-     */
-    public MessageManager(Controller controller, DatabaseAccessor databaseAccessor) {
+    public MessageManager(Controller controller, DatabaseAccessor databaseAccessor) throws SQLException {
         this.controller = controller;
         this.requests = new RequestPriorityQueue(controller);
         this.controllerDao = databaseAccessor.getControllerDao();
@@ -79,12 +68,6 @@ public class MessageManager implements Observer {
         this.requestCreated = requestCreated;
     }
 
-    /**
-     * Method works when observable object MessageManager notify observers.(as specified by {@link Observer#update})
-     *
-     * @param o the MessageManager object
-     * @param c the command object to execute
-     */
     @Override
     public void update(Observable o, Object c) {
         try {
@@ -138,21 +121,16 @@ public class MessageManager implements Observer {
         }
     }
 
-    /**
-     * Creating request and add to queue.
-     */
-    private void createRequest() throws SQLException {
+    private void createRequest() throws SQLException, ParseException {
         if (updatedFlag == false) {
             setRequestCreated(false);
         }
         if (graphsShouldBeRequested() && isSetClockInOnlineData()) {
-            //2. create graph request hourly.
-            requestToSend = MessageFactory.createGraphRequest(controller.getNetName());
+            requestToSend = MessageFactory.createGraphRequest(controller.getNetName());//T901* 56\r
             setRequestCreated(true);
         } else if (dailyReportShouldBeRequested()) {
-            //3.1. create management daily
             try {
-                requestToSend = createDailyReportRequest();
+                requestToSend = createDailyReportRequest();//%T901h1 167\r
                 setRequestCreated(true);
             } catch (IllegalAccessException ex) {
                 controller.switchOff();
@@ -160,9 +138,8 @@ public class MessageManager implements Observer {
                 setRequestCreated(false);
             }
         } else if (perHourReportsShouldBeRequested()) {
-            //3.2. create management 24 hours
             try {
-                requestToSend = createPerHourReportsRequest();
+                requestToSend = createPerHourReportsRequest();// D
                 setRequestCreated(true);
             } catch (IllegalAccessException ex) {
 //                controller.switchOff();
@@ -175,7 +152,11 @@ public class MessageManager implements Observer {
         } else {
             //4. create request for one of the next message types
             try {
-                requestToSend = requests.next();
+                if (per_hour_request_cycle == 0){
+                    per_hour_request_cycle = REQUEST_CYCLE;
+                }
+                checkAndFixFlock();
+                requestToSend = requests.next();//a,b... f
                 setRequestCreated(true);
             } catch (IllegalAccessException ex) {
                 controller.switchOff();
@@ -203,12 +184,6 @@ public class MessageManager implements Observer {
         }
     }
 
-    /**
-     * Test if need to create request for this controller.
-     * Also set controller state to ON if it was in off state
-     *
-     * @return true if request fro this controller should be created.
-     */
     public boolean requestShouldBeCreated() {
         // if controller in off state
         // don't create requests
@@ -224,12 +199,6 @@ public class MessageManager implements Observer {
         }
     }
 
-    /**
-     * Return true if there is any new data value in database.
-     *
-     * @return true if controller data should be changes
-     * @throws SQLException if failed to get data from database
-     */
     private boolean isAnyDataToChange() throws SQLException {
         Data data = dataDao.getChangedDataValue(controller.getId());
         if (data != null && messageParser != null) {
@@ -239,101 +208,81 @@ public class MessageManager implements Observer {
         return false;
     }
 
-    /**
-     * Return true if took 1 hour with the last update graphs or never been updated.
-     *
-     * @return true if never been updated or took 1 hour with the last update.
-     * @throws SQLException
-     */
     private boolean graphsShouldBeRequested() throws SQLException {
         final Timestamp updateTime = controllerDao.getUpdatedGraphTime(controller.getId());
         if (updateTime == null) {
             return true;
         }
         final long timeSinceUpdated = System.currentTimeMillis() - updateTime.getTime();
-        Long t = TimeUnit.HOURS.toMillis(1L);
         if (timeSinceUpdated > TimeUnit.HOURS.toMillis(1L)) {
             return true;
         }
         return false;
     }
 
-    /**
-     * Return true if new flock is created or\and management should be updated.
-     *
-     * @return true if management should be requested.
-     * @throws SQLException
-     */
     private boolean dailyReportShouldBeRequested() throws SQLException {
-        // lasy initialisation of flock
-        if (flock == null) {
-            flock = flockDao.getOpenFlockByController(controller.getId());
-        }
-        // flock is opened
+        flock = flockDao.getOpenFlockByController(controller.getId());
+
         if (flock != null) {
-            if (perPerDayReportRequestCycle == 0 &&
-                    (perHourReportRequestQueue == null || perHourReportRequestQueue.isCycleComplete())) {
+            if (per_day_request_cycle == 0 && (hour_queue == null || hour_queue.isCycleComplete())) {
                 resetHistReqCycle();
-                if (perHourReportRequestQueue != null) {
-                    perHourReportRequestQueue.resetCycleFlag();
+                if (hour_queue != null) {
+                    hour_queue.resetCycleFlag();
                 }
                 Data growDay = dataDao.getGrowDay(controller.getId());
-                if (growDay == null) {
+
+                if (growDay == null || growDay.getValue() == 1 || growDay.getValue() == -1) {
                     return false;
                 }
-                Integer updatedGrowDay = flockDao.getUpdatedGrowDayHistory(flock.getFlockId());
-                if (updatedGrowDay == null || growDay.getValue() > updatedGrowDay + 1) {
+
+                Integer updatedGrowDayMax = flockDao.getUpdatedGrowDayHistory(flock.getFlockId());
+                Integer updatedGrowDayMin = flockDao.getUpdatedGrowDayHistoryMin(flock.getFlockId());
+
+                if (updatedGrowDayMax == null) {
+                    return true;
+                } else if (((growDay.getValue().intValue() - 1) - updatedGrowDayMax) > 0) {
+                    return true;
+                } else if (updatedGrowDayMin != 1) {
                     return true;
                 }
             }
             decPerDayReportRequestCycle();
+//        }
         }
         return false;
     }
 
-    /**
-     * Return true if new flock is and management should be updated.
-     *
-     * @return true if management should be requested.
-     * @throws SQLException
-     */
     private boolean perHourReportsShouldBeRequested() throws SQLException {
-        // lasy initialization of flock
-        if (flock == null) {
-            flock = flockDao.getOpenFlockByController(controller.getId());
-        }
-
-        Collection<Data> perHourReportDataList = dataDao.getPerHourHistoryDataByControllerValues(controller.getId());
-        if (perHourReportDataList.isEmpty()) {
+        Collection<Data> data_list = dataDao.getPerHourHistoryDataByControllerValues(controller.getId());
+        if (data_list.isEmpty()) {
             return false;
         }
+            flock = flockDao.getOpenFlockByController(controller.getId());
+        if (flock != null && !(controller.getName().equals("ECM12"))) {
+            if (per_day_request_cycle == 0) {
 
-        // flock is opened
-        if (flock != null) {
-            if (perPerDayReportRequestCycle == 0) {
                 Data growDay = dataDao.getGrowDay(controller.getId());
-                if (growDay == null) {
-                    return false;
-                }
+                Integer grDay = growDay.getValue().intValue();
+                Integer updated_gr_d_max = flockDao.getUpdatedGrowDayHistory24(flock.getFlockId());
 
-                Integer updatedGrowDay = flockDao.getUpdatedGrowDayHistory24(flock.getFlockId());
-                try {
-                    if (updatedGrowDay == null || (growDay.getValue() > updatedGrowDay + 1)) {
-                        return true;
+
+                if (grDay != -1) {
+                    if (growDay == null || growDay.getValue().intValue() == -1 || per_hour_request_cycle == 0) {
+                        return false;
                     } else {
-                        int perHourReportCount = flockDao.getFlockPerHourHistoryData(flock.getFlockId(),
-                                updatedGrowDay, 1L).size();
-                        int perHourRecordQueueCount = perHourReportRequestQueue.getSize();
-                        if (perHourReportCount < perHourRecordQueueCount) {
+                        Integer updated_gr_d_min = flockDao.getUpdatedGrowDayHistory24Min(flock.getFlockId());
+                        if (updated_gr_d_max == null) {
                             return true;
-                        } else {
-                            perHourReportRequestQueue.recreateRequests(updatedGrowDay + 1);
-                            resetPerHourReportRequestCycle();
+                        } else if (hour_queue != null && !hour_queue.count_size()){
+                            return true;
+                        } else if ((updated_gr_d_max + 1) != grDay) {
+                            return true;
+                        } else if (updated_gr_d_min == 0){
                             return false;
+                        } else if (updated_gr_d_min > 0) {
+                            return true;
                         }
                     }
-                } catch (Exception ex) {
-                    logger.error(ex.getMessage(), ex);
                 }
             }
         }
@@ -341,24 +290,35 @@ public class MessageManager implements Observer {
     }
 
     private void resetHistReqCycle() {
-        perPerDayReportRequestCycle = REQUEST_CYCLE;
+        per_day_request_cycle = REQUEST_CYCLE;
     }
 
     private void decPerDayReportRequestCycle() {
-        if (perPerDayReportRequestCycle > 0) {
-            perPerDayReportRequestCycle--;
+        if (per_day_request_cycle > 0) {
+            per_day_request_cycle--;
         }
-    }
-
-    private void resetPerHourReportRequestCycle() {
-        perHourReportRequestCycle = REQUEST_CYCLE;
     }
 
     private void decPerHourReportRequestCycle() {
-        if (perHourReportRequestCycle > 0) {
-            perHourReportRequestCycle--;
+        if (per_hour_request_cycle > 0) {
+            per_hour_request_cycle--;
         }
     }
+
+//    private void resetPerHourReportRequestCycle() {
+//        perHourReportRequestCycle = REQUEST_CYCLE;
+//    }
+
+//    private void resetPerHourReportRequestCycle() {
+//        perHourReportRequestCycle = REQUEST_CYCLE;
+//        hour_queue.set_count(0);
+//    }
+
+//    private void decPerHourReportRequestCycle() {
+//        if (perHourReportRequestCycle > 0) {
+//            perHourReportRequestCycle--;
+//        }
+//    }
 
     /**
      * Create management request for this controller.
@@ -367,43 +327,71 @@ public class MessageManager implements Observer {
      * @throws SQLException
      */
     private RequestMessage createDailyReportRequest() throws SQLException, IllegalAccessException {
-        Integer growDay = flockDao.getUpdatedGrowDayHistory(flock.getFlockId());
-        if (growDay == null) {
-            growDay = 1;
-        } else {
-            growDay += 1;
+        RequestMessage retRequest = null;
+
+        Integer growDay = dataDao.getGrowDay(controller.getId()).getValue().intValue();
+        Integer growDayMax = flockDao.getUpdatedGrowDayHistory(flock.getFlockId());
+        Integer growDayMin = flockDao.getUpdatedGrowDayHistoryMin(flock.getFlockId());
+
+        if (growDayMax == null){
+            growDayMax  = growDay - 1;
+            retRequest = MessageFactory.createDailyReportRequests(controller.getNetName(), growDayMax);
+        } else if (((growDay - 1) - growDayMax) > 0){
+            retRequest = MessageFactory.createDailyReportRequests(controller.getNetName(), growDayMax + 1);
+        } else if (growDayMin != 1){
+            growDayMin -= 1;
+            retRequest = MessageFactory.createDailyReportRequests(controller.getNetName(), growDayMin);
         }
-        return MessageFactory.createDailyReportRequests(controller.getNetName(), growDay);
+
+        return retRequest;
     }
 
-    /**
-     * Create management request for this controller.
-     *
-     * @return requestHistory the management request.
-     * @throws SQLException
-     */
+//    private RequestMessage createDailyReportRequest() throws SQLException, IllegalAccessException {
+//                Integer growDay = flockDao.getUpdatedGrowDayHistory(flock.getFlockId());// get online grow day
+//        if (growDay == null) {
+//            growDay = 1;
+//        } else {
+//            growDay += 1;// else groe day -- ad 1
+//        }
+//        return MessageFactory.createDailyReportRequests(controller.getNetName(), growDay);
+//    }
+
     private RequestMessage createPerHourReportsRequest() throws SQLException, IllegalAccessException {
+        RequestMessage retRequest = null;
 
-        Collection<Data> perHourReportDataList = dataDao.getPerHourHistoryDataByControllerValues(controller.getId());
-        if (perHourReportRequestQueue == null) {
-            perHourReportRequestQueue = new PerHourReportRequestQueue(controller.getNetName(), perHourReportDataList);
-        }
+        Integer grDay = dataDao.getGrowDay(controller.getId()).getValue().intValue();
+        Integer updated_gr_d_max = flockDao.getUpdatedGrowDayHistory24(flock.getFlockId());
+        Integer updated_gr_d_min = flockDao.getUpdatedGrowDayHistory24Min(flock.getFlockId());
 
-        Integer updatedGrowDay = flockDao.getUpdatedGrowDayHistory24(flock.getFlockId());
-        if (updatedGrowDay == null) {
-            updatedGrowDay = 1;
-        }
+        if (hour_queue == null) {
 
-        if (perHourReportRequestQueue.getGrowDay().equals(updatedGrowDay)) {
-            int perHourReportCount = flockDao.getFlockPerHourHistoryData(flock.getFlockId(), updatedGrowDay, 1L).size();
-            int perHourRecordQueueCount = perHourReportRequestQueue.getSize();
-            if (perHourReportCount >= perHourRecordQueueCount) {
-                perHourReportRequestQueue.recreateRequests(updatedGrowDay + 1);
+            if (updated_gr_d_max == null) {
+                hour_queue = new PerHourReportRequestQueue(controller, dataDao);// online gr day --
+                flag = true;
+            } else if (((grDay - 1) - updated_gr_d_max > 0)) {
+                hour_queue = new PerHourReportRequestQueue(controller, false, updated_gr_d_max, flock, flockDao);
+                flag = true;
+            } else if (updated_gr_d_min != 0 ) {
+                hour_queue = new PerHourReportRequestQueue(controller, true, updated_gr_d_min, flock, flockDao);
+                flag = true;
             }
-        } else {
-            perHourReportRequestQueue.recreateRequests(updatedGrowDay);
+        } else if (hour_queue != null && hour_queue.count_size() && flag) {
+            if (updated_gr_d_max == null) {
+                hour_queue.recreateRequests_(controller, true, grDay - 1, flock, flockDao);
+            } else if (((grDay - 1) - updated_gr_d_max > 0)) {
+                hour_queue.recreateRequests_(controller, false, updated_gr_d_max, flock, flockDao);
+            } else if (updated_gr_d_min != 0) {
+                hour_queue.recreateRequests_(controller, true, updated_gr_d_min, flock, flockDao);
+            }
+
         }
-        return perHourReportRequestQueue.next();
+
+        decPerHourReportRequestCycle();
+
+        retRequest = hour_queue.next_();
+        hour_queue.dec_count();
+
+        return retRequest;
     }
 
     /**
@@ -417,79 +405,93 @@ public class MessageManager implements Observer {
         createOnlineData();
 
         Map<RequestMessage, ResponseMessage> responses = responseMessageMap.getResponseMap();
-        boolean exist = responseMessageMap.isContainRequest(requestToSend);
+        boolean exist = responseMessageMap.isContainRequest(requestToSend);// key: %T901a 111\r value: 4096 250 4097 201 ...
 
         if (exist) {
-            final MessageType msgType = requestToSend.getMessageType();
-            final ResponseMessage response = responses.get(requestToSend);
+            final MessageType msgType = requestToSend.getMessageType(); //REQUEST_PANEL
+            final ResponseMessage response = responses.get(requestToSend);//value: 4096 250 4097 201 ...
             Timestamp currTime = new Timestamp(System.currentTimeMillis());
             switch (msgType) {
                 case REQUEST_TO_WRITE:
-                    messageParser.parseShortResponse(response, requestToSend);
+//                    messageParser.parseShortResponse(response, requestToSend);
+                    messageParser.parseShortResponse(response, requestToSend, controller);
                     Long dataId = requestToSend.getDataId();
                     Long dataVal = requestToSend.getValue();
                     controllerDao.updateControllerData(controller.getId(), dataId, dataVal);
                     controllerDao.removeChangedValue(controller.getId(), dataId);
                     break;
                 case REQUEST_CHANGED:
-                    messageParser.parseResponse(response, true);
+//                    messageParser.parseResponse(response, true);
+                    messageParser.parseResponse(response, true, controller);
                     controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_PANEL:
-                    messageParser.parseResponse(response, false);
+//                    messageParser.parseResponse(response, false);
+                    messageParser.parseResponse(response, true, controller);
                     controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_CHICK_SCALE:
-                    messageParser.parseResponse(response, false);
+//                    messageParser.parseResponse(response, false);
+                    messageParser.parseResponse(response, true, controller);
                     controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_CONTROLLER:
-                    messageParser.parseResponse(response, false);
+//                    messageParser.parseResponse(response, false);
+                    messageParser.parseResponse(response, true, controller);
                     controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
                 case REQUEST_HISTOGRAM:
                     String datasetHistogram = new String(response.getBuffer(), 0, response.getBuffer().length);
-                    controllerDao.updateControllerHistogram(
-                            controller.getId(), requestToSend.getPlate(), datasetHistogram,
-                            new Timestamp(System.currentTimeMillis()));
+                    controllerDao.updateControllerHistogram(controller.getId(), requestToSend.getPlate(), datasetHistogram, new Timestamp(System.currentTimeMillis()));
                     controller.setGraphUpdateTime(currTime.getTime());
                     break;
 
                 case REQUEST_EGG_COUNT:
-                    messageParser.parseResponse(response, false);
+//                    messageParser.parseResponse(response, false);
+                    messageParser.parseResponse(response, true, controller);
                     controllerDao.updateControllerData(controller.getId(), getUpdatedOnlineData().values());
                     break;
 
-                case REQUEST_GRAPHS:
+                case REQUEST_GRAPHS://*
                     controllerDao.updateControllerGraph(controller.getId(), response.toString(), currTime);
                     controller.setGraphUpdateTime(currTime.getTime());
                     break;
 
-                case REQUEST_HISTORY:
+                case REQUEST_HISTORY://h
+                    //parse and save parsed.
                     Integer growDay = requestToSend.getGrowDay();
                     if (response.toString().equals("Request Error")) {
                         flockDao.updateHistoryByGrowDay(flock.getFlockId(), growDay, "-1");
                     } else {
-                        if (controller.getName().startsWith("Image") && response.getFormat() == Message.Format.BINARY) {
-                            String fixedResponse = messageParser.parseHistoryIfComProtocolBinary(response);
-                            flockDao.updateHistoryByGrowDay(flock.getFlockId(), growDay, fixedResponse);
-                        } else {
-                            flockDao.updateHistoryByGrowDay(flock.getFlockId(), growDay, response.toString());
-                        }
+                        // parse and save
+                        flockDao.updateHistoryByGrowDay(flock.getFlockId(), growDay, response.toString());
+                        //fix start date
+
+//                        if (controller.getName().startsWith("Image") && response.getFormat() == Message.Format.BINARY) {
+//                            String fixedResponse = messageParser.parseHistoryIfComProtocolBinary(response);
+//                            flockDao.updateHistoryByGrowDay(flock.getFlockId(), growDay, fixedResponse);
+//                        } else {
+//                            flockDao.updateHistoryByGrowDay(flock.getFlockId(), growDay, response.toString());
+//                        }
                     }
+                    checkAndFixStartDate();
                     break;
 
-                case REQUEST_PER_HOUR_REPORTS:
+                case REQUEST_PER_HOUR_REPORTS://D
                     Integer growDay24 = requestToSend.getGrowDay();
                     String dnum = requestToSend.getDnum();
                     if (response.toString().equals("Request Error")) {
-                        flockDao.updateHistory24ByGrowDay(flock.getFlockId(), growDay24, dnum, "-1");
+//                        if (growDay24 == 1){
+//                            flockDao.updateHistory24ByGrowDay(flock.getFlockId(), growDay24, dnum, "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ");
+//                        }
                     } else {
-                        if (controller.getName().startsWith("Image") && response.getFormat() == Message.Format.BINARY) {
+                        if (response.toString().equals("0 0")){
+
+                        } else if (controller.getName().startsWith("Image") && response.getFormat() == Message.Format.BINARY) {
                             String fixedResponse = messageParser.parseHistory24IfComProtocolBinary(response);
                             flockDao.updateHistory24ByGrowDay(flock.getFlockId(), growDay24, dnum, fixedResponse);
                         } else {
@@ -589,9 +591,9 @@ public class MessageManager implements Observer {
                 requests.remove(requestToSend);
                 requests.initReaTimeRequest();
             }
-            if (requestToSend.getMessageType() == MessageType.REQUEST_HISTORY) {
-                responseMessageMap.removeResponse(requestToSend);
-            }
+//            if (requestToSend.getMessageType() == MessageType.REQUEST_HISTORY) {//
+//                responseMessageMap.removeResponse(requestToSend);//
+//            }//
             responseMessageMap.removeResponse(requestToSend);
         }
     }
@@ -624,5 +626,81 @@ public class MessageManager implements Observer {
     @Override
     public String toString() {
         return new StringBuilder().append("MessageManager : ").append(controller.getNetName()).toString();
+    }
+
+    private Date add_days_to_date(Date date, int days) {
+        Calendar cal = Calendar.getInstance();
+        Date datte;
+
+        cal.setTime(date);
+        cal.add(Calendar.DATE, days);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        datte = cal.getTime();
+
+        return datte;
+    }
+
+    private Date getCurrentDay(){
+        Date date;
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        date = cal.getTime();
+
+        return date;
+    }
+
+    private void checkAndFixStartDate() throws SQLException {
+        if (flock != null) {
+            Data onlineGrowDay = dataDao.getGrowDay(controller.getId());
+            Integer updatedGrowDay = flockDao.getUpdatedGrowDayHistory(flock.getFlockId());
+            SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy");
+            Date currentDay = getCurrentDay();
+
+            if (onlineGrowDay != null &&
+                    onlineGrowDay.getValue() != -1 &&
+                    onlineGrowDay.getValue() > 1 &&
+                    updatedGrowDay != null &&
+                    flock != null &&
+                    flock.getStatus().toLowerCase().equals("Open".toLowerCase())) {
+
+                Date start_date_to_set = add_days_to_date(currentDay, -(onlineGrowDay.getValue().intValue() - 1));
+                flock.setStartDate(sdf.format(start_date_to_set));
+                flockDao.updateFlockStartDay(flock);
+
+            }
+        }
+    }
+
+    private void checkAndFixFlock() throws SQLException {
+        if (flock != null) {
+            Data onlineGrowDay = dataDao.getGrowDay(controller.getId());
+            Integer updatedGrowDay = flockDao.getUpdatedGrowDayHistory(flock.getFlockId());
+            SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy");
+            Date currentDay = getCurrentDay();
+
+            if (onlineGrowDay != null &&
+                onlineGrowDay.getValue() != -1 &&
+                updatedGrowDay!= null &&
+                updatedGrowDay >= onlineGrowDay.getValue() &&
+                flock != null &&
+                flock.getStatus().toLowerCase().equals("Open".toLowerCase())) {
+
+                Date start_date_to_set = add_days_to_date(currentDay, -(onlineGrowDay.getValue().intValue() - 1));
+                Integer lastInt = flockDao.getUpdatedGrowDayHistory(flock.getFlockId());
+                Date last = add_days_to_date(start_date_to_set, (lastInt - 1));
+                flock.setStatus("Close");
+                flock.setEndDate(sdf.format(last));
+                flockDao.update(flock);
+
+            }
+        }
     }
 }

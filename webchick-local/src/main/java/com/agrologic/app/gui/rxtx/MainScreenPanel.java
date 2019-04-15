@@ -13,14 +13,18 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.Timer;
+import org.apache.commons.lang.builder.EqualsBuilder;
 
 public class MainScreenPanel extends JPanel implements ScreenPanelUI {
+
     private static Logger logger = LoggerFactory.getLogger(MainScreenPanel.class);
     private static int maxComponentCounter = 0;
     private int componentCounter = 0;
@@ -33,24 +37,23 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
     private ApplicationLocal parent;
     private SecondScreenPanel secondScreenPanel;
     private ComponentOrientation currentOrientation;
-
     private Controller controller;
     private List<Data> controllerData;
     private List<ProgramAlarm> programAlarms;
     private List<ProgramRelay> programRelays;
     private List<ProgramSystemState> programSystemStates;
     private List<DataController> controllerDataList;
-    private HashMap<Long,Boolean> alarmMap;
-
+    private HashMap<Long, Boolean> alarmMap;
     private DatabaseManager dbManager;
     private ScheduledExecutorService executor;
     private BufferedImage image;
+    private MP3 mp3;
+    private boolean alarm = false;
 
     /**
      * Creates new form MainScreenPanel
      */
-    public MainScreenPanel(final DatabaseManager dbManager, final Controller controller,
-                           ComponentOrientation orientation) {
+    public MainScreenPanel(final DatabaseManager dbManager, final Controller controller, ComponentOrientation orientation) {
         this.currentOrientation = orientation;
         this.dbManager = dbManager;
         this.controller = controller;
@@ -62,6 +65,14 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
         loadAndInitControllerData();
         initScreenComponents();
         alarmMap = new HashMap<Long, Boolean>();
+        String current = null;
+        try {
+            current = new java.io.File(".").getCanonicalPath();
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(MainScreenPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        current += "\\alarmsignal.mp3";
+        mp3 = new MP3(current);
         try {
             image = ImageIO.read(getClass().getResource("/images/alarm.gif"));
         } catch (IOException e) {
@@ -93,22 +104,24 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
                             if (df.getId().equals(entry.getKey())) {
                                 df.setValue(entry.getValue());
                                 // check alarm data
-                                if (df.isAlarm()){
+                                if (df.isAlarm()) {
                                     if (df.isAlarmOn()) {
-                                        alarmMap.put(df.getId(),true);
+                                        alarmMap.put(df.getId(), true);
                                     } else {
                                         alarmMap.put(df.getId(), false);
                                     }
                                 }
-                                if(isAlarmOn()) {
+                                if (isAlarmOn()) {
                                     try {
-                                        if(btnHouse.getIcon() == null) {
+                                        if (btnHouse.getIcon() == null) {
                                             btnHouse.setIcon(new ImageIcon(image));
+                                            mp3.play();
                                         }
                                     } catch (Exception e) {
                                         logger.error("Cannot load alarm.gif");
                                     }
                                 } else {
+                                    mp3.close();
                                     btnHouse.setIcon(null);
                                 }
                             }
@@ -126,8 +139,8 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
 
     public boolean isAlarmOn() {
         boolean result = false;
-        for(Map.Entry<Long,Boolean> entry:alarmMap.entrySet()) {
-            if(entry.getValue()== true) {
+        for (Map.Entry<Long, Boolean> entry : alarmMap.entrySet()) {
+            if (entry.getValue() == true) {
                 result = true;
             }
         }
@@ -205,15 +218,13 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
                 if (data.getIsRelay() == true) {
                     for (ProgramRelay programRelay : programRelays) {
                         if (programRelay.getDataId().equals(data.getId())) {
-                            // skip relay number equals 0
                             if (programRelay.getRelayNumber() != 0) {
                                 if (data.getValue() == null || data.getValue() == -1) {
                                     programRelay.setOff();
                                 } else {
                                     programRelay.init(data.getValueToUI());
                                 }
-                                dataComponent = ComponentFactory.createRelayComponent(data, getComponentOrientation(),
-                                        programRelay);
+                                dataComponent = ComponentFactory.createRelayComponent(data, getComponentOrientation(), programRelay);
                                 componentCounter++;
                                 gridBagConstraints.gridy++;
                                 gridBagConstraints.gridx = 0;
@@ -224,8 +235,7 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
                         }
                     }
                 } else if (data.isAlarm()) {
-                    dataComponent = ComponentFactory.createAlarmComponent(data, getComponentOrientation(),
-                            programAlarms);
+                    dataComponent = ComponentFactory.createAlarmComponent(data, getComponentOrientation(), programAlarms);
                     componentCounter++;
                     gridBagConstraints.gridy++;
                     gridBagConstraints.gridx = 0;
@@ -236,9 +246,6 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
                     dataComponent = ComponentFactory.createSystemStateComponent(data, getComponentOrientation(), programSystemStates);
                     componentCounter++;
                     gridBagConstraints.gridy++;
-                    // system state to long this for i only show the value without label of system state
-//                    gridBagConstraints.gridx = 0;
-//                    add(dataComponent.getLabel(), gridBagConstraints);
                     gridBagConstraints.gridx = 0;
                     gridBagConstraints.gridwidth = 2;
                     add(dataComponent.getComponent(), gridBagConstraints);
@@ -343,4 +350,3 @@ public class MainScreenPanel extends JPanel implements ScreenPanelUI {
         this.parent = parent;
     }
 }
-

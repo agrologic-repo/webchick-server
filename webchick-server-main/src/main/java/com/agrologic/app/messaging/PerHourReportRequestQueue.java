@@ -1,88 +1,136 @@
 package com.agrologic.app.messaging;
 
+import com.agrologic.app.dao.DaoType;
+import com.agrologic.app.dao.DataDao;
+import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.FlockDao;
+import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Data;
+import com.agrologic.app.model.Flock;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public class PerHourReportRequestQueue {
-    private static final int DEFAULT_GROW_DAY = 1;
     private int size;
-    private Integer growDay;
+    private int count;
     private final String netname;
-    private final CyclicQueue<RequestMessage> requests;
-    private final Collection<Data> perHourReportDataList;
+    private CyclicQueue<RequestMessage> requests;
+    private Collection<Data> perHourReportDataList;
     private List<RequestMessage> activeRequests = new ArrayList<RequestMessage>();
+    private CyclicQueue<RequestMessage> ac_req;
+    private FlockDao flockDao;
+    private DataDao dataDao;
 
-    /**
-     * Constructor with net name and grow day.
-     *
-     * @param netname the net name
-     */
-    public PerHourReportRequestQueue(final String netname, Collection<Data> perHourReportDataList) {
-        this.netname = netname;
-        this.growDay = DEFAULT_GROW_DAY;
-        this.requests = new CyclicQueue<RequestMessage>();
-        this.perHourReportDataList = perHourReportDataList;
+    public PerHourReportRequestQueue(Controller controller, DataDao dataDao) throws SQLException { // queue null
+        this.dataDao = dataDao;
+        this.netname = controller.getNetName();
+        this.perHourReportDataList = dataDao.getPerHourHistoryData();// all types with historyDopt HOUR
         this.size = perHourReportDataList.size();
-        createRequests();
+        this.count = 0;
+        Integer onlineGrowDay = (dataDao.getGrowDay(controller.getId()).getValue().intValue());
+        ac_req = MessageFactory.createPerHourHistoryRequests_(controller.getNetName(), (onlineGrowDay - 1), perHourReportDataList);
     }
 
+//    public PerHourReportRequestQueue(Controller controller,  Integer updated_gr_d_max, Flock flock, FlockDao flockDao) throws SQLException {
+//        this.flockDao = flockDao;
+//        this.netname = controller.getNetName();
+//        Integer maxUptGrowDay = flockDao.getUpdatedGrowDayHistory24(flock.getFlockId());
+//        this.perHourReportDataList = flockDao.getFlockPerHourHistoryData(flock.getFlockId(), maxUptGrowDay, 1L);
+//        this.size = perHourReportDataList.size();
+//        this.count = 0;
+//        ac_req = MessageFactory.createPerHourHistoryRequests_(controller.getNetName(), updated_gr_d_max - 1, perHourReportDataList);
+//    }
 
-    private void createRequests() {
-        activeRequests = MessageFactory.createPerHourHistoryRequests(netname, growDay, perHourReportDataList);
-        requests.clear();
-        for (RequestMessage rm : activeRequests) {
-            requests.add(new RequestMessage(MessageType.REQUEST_PER_HOUR_REPORTS, netname, growDay, rm.getDnum()));
+    public PerHourReportRequestQueue(Controller controller,  Boolean max, Integer updated_gr_d, Flock flock, FlockDao flockDao) throws SQLException {
+        this.flockDao = flockDao;
+        this.netname = controller.getNetName();
+
+        if (max) {// true, updated_gr_d_min
+            int num = flockDao.getNamberOfRowsFromHist24(flock.getFlockId(), updated_gr_d);
+            int num2 = flockDao.getNamberOfRowsFromHist24(flock.getFlockId(), updated_gr_d + 1);
+            if (num < num2){
+                updated_gr_d = updated_gr_d + 1;
+            }
+            this.perHourReportDataList = flockDao.getFlockPerHourHistoryData(flock.getFlockId(), updated_gr_d, 1L);
+            this.size = perHourReportDataList.size();
+            this.count = 0;
+            ac_req = MessageFactory.createPerHourHistoryRequests_(controller.getNetName(), updated_gr_d - 1, perHourReportDataList);
+        }else { // false, updated_gr_d_max
+            int num = flockDao.getNamberOfRowsFromHist24(flock.getFlockId(), updated_gr_d);
+            int num2 = flockDao.getNamberOfRowsFromHist24(flock.getFlockId(), updated_gr_d - 1);
+            if (num < num2){
+                updated_gr_d = updated_gr_d - 1;
+            }
+            this.perHourReportDataList = flockDao.getFlockPerHourHistoryData(flock.getFlockId(), updated_gr_d, 1L);
+            this.size = perHourReportDataList.size();
+            this.count = 0;
+            ac_req = MessageFactory.createPerHourHistoryRequests_(controller.getNetName(), updated_gr_d + 1, perHourReportDataList);
         }
     }
 
-    /**
-     * Creating management requests with new grow day parameter .
-     *
-     * @param newGrowDay the grow day .
-     */
-    public void recreateRequests(final Integer newGrowDay) {
-        growDay = newGrowDay;
-        requests.clear();
-        for (RequestMessage rm : activeRequests) {
-            requests.add(new RequestMessage(MessageType.REQUEST_PER_HOUR_REPORTS, netname, growDay, rm.getDnum()));
+    public void recreateRequests_(Controller controller, Boolean max, Integer updated_gr_d, Flock flock, FlockDao flockDao) throws SQLException {
+        this.flockDao = flockDao;
+        this.activeRequests.clear();
+        this.perHourReportDataList.clear();
+        Integer maxUptGrowDay = flockDao.getUpdatedGrowDayHistory24(flock.getFlockId());
+        this.perHourReportDataList = flockDao.getFlockPerHourHistoryData(flock.getFlockId(), maxUptGrowDay, 1L);
+        this.size = perHourReportDataList.size();
+        this.count = 0;
+        if (max){
+            ac_req = MessageFactory.createPerHourHistoryRequests_(controller.getNetName(), updated_gr_d - 1, perHourReportDataList);
+        } else {
+            ac_req = MessageFactory.createPerHourHistoryRequests_(controller.getNetName(), updated_gr_d + 1, perHourReportDataList);
         }
     }
 
-    /**
-     * Returns the next element in the list .
-     *
-     * @return the nextElem element in the list .
-     * @throws java.util.NoSuchElementException if the iteration has no nextElem element.
-     */
+    //get number of rows updated_gr_d - 2 and number of rows updated_gr_d - 1 if it is != create with update_gr_d
+
+//    public void recreateRequests_(Controller controller, Flock flock, FlockDao flockDao, Integer updated_gr_d_min) throws SQLException {
+//        this.flockDao = flockDao;
+//        this.activeRequests.clear();
+//        this.perHourReportDataList.clear();
+//        Integer maxUptGrowDay = flockDao.getUpdatedGrowDayHistory24(flock.getFlockId());
+//        this.perHourReportDataList = flockDao.getFlockPerHourHistoryData(flock.getFlockId(), maxUptGrowDay, 1L);
+//        this.size = perHourReportDataList.size();
+//        this.count = 0;
+//        ac_req = MessageFactory.createPerHourHistoryRequests_(controller.getNetName(), updated_gr_d_min - 1, perHourReportDataList);
+//    }
+
     public final RequestMessage next() throws IllegalAccessException {
         return requests.nextElem();
+    }
+
+    public final RequestMessage next_() throws IllegalAccessException {
+        return ac_req.nextElem();
     }
 
     public int getSize() {
         return size;
     }
 
-    /**
-     * Return true if head equal tail
-     *
-     * @return true if head equal tail.
-     */
     public boolean isCycleComplete() {
-        return requests.isCycleCompleted();
+        return ac_req.isCycleCompleted();
     }
 
-    /**
-     * Reset flag that indicate that head equals tail.
-     */
     public void resetCycleFlag() {
-        requests.resetCycleFlag();
+//        requests.resetCycleFlag();
+        ac_req.resetCycleFlag();
     }
 
-    public Integer getGrowDay() {
-        return growDay;
+    public boolean count_size(){
+        if (count == size)
+            return true;
+        else
+            return false;
     }
+
+    public void dec_count(){
+        this.count++;
+    }
+
 }
 

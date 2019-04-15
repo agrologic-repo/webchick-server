@@ -5,6 +5,7 @@
 package com.agrologic.app.gui.rxtx.flock;
 
 import com.agrologic.app.config.Configuration;
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.Transaction;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  *
@@ -26,6 +28,7 @@ public class AddTransactionDialog extends JDialog {
     private Long flockId;
     private Transaction currTransaction;
     private FlockManagerService flockService;
+    private ResourceBundle bundle;
 
     /**
      * Creates new form AddSpreadDialog
@@ -36,6 +39,7 @@ public class AddTransactionDialog extends JDialog {
 
     public AddTransactionDialog(Long flockId, Frame owner, boolean modal) {
         initComponents();
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.UK);
         flockService = new FlockManagerService();
         conf = new Configuration();
@@ -73,6 +77,7 @@ public class AddTransactionDialog extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // 09/01/2018
         jComboBox1 = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDataTable = new javax.swing.JTable();
@@ -85,10 +90,12 @@ public class AddTransactionDialog extends JDialog {
         jLabel5 = new javax.swing.JLabel();
         txtExpenses = new javax.swing.JTextField();
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+//        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { bundle.getString("add.transaction.dialog.item1"), bundle.getString("add.transaction.dialog.item2"), bundle.getString("add.transaction.dialog.item3"), bundle.getString("add.transaction.dialog.item4") }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Add Transaction");
+//        setTitle("Add Transaction");
+        setTitle(bundle.getString("add.transaction.dialog.add.transaction"));
         setMaximumSize(new java.awt.Dimension(390, 320));
         setMinimumSize(new java.awt.Dimension(390, 320));
         setPreferredSize(new java.awt.Dimension(390, 320));
@@ -98,9 +105,12 @@ public class AddTransactionDialog extends JDialog {
             new Object [][] {
 
             },
-            new String [] {
-                "ID", "Name", "Expenses", "Revenues"
-            }
+//            new String [] {
+//                "ID", "Name", "Expenses", "Revenues"
+//            }
+                new String [] {
+                        bundle.getString("add.transaction.dialog.id"), bundle.getString("add.transaction.dialog.name"), bundle.getString("add.transaction.dialog.expenses"), bundle.getString("add.transaction.dialog.revenues")
+                }
         ) {
             Class[] types = new Class [] {
                 java.lang.Long.class, java.lang.String.class, java.lang.Float.class, java.lang.Float.class
@@ -122,7 +132,8 @@ public class AddTransactionDialog extends JDialog {
         getContentPane().add(jScrollPane1);
         jScrollPane1.setBounds(10, 11, 360, 170);
 
-        btnAdd.setText("Add ");
+//        btnAdd.setText("Add ");
+        btnAdd.setText(bundle.getString("add.transaction.dialog.add"));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -131,17 +142,20 @@ public class AddTransactionDialog extends JDialog {
         getContentPane().add(btnAdd);
         btnAdd.setBounds(260, 200, 105, 23);
 
-        jLabel2.setText("Name");
+//        jLabel2.setText("Name");
+        jLabel2.setText(bundle.getString("add.transaction.dialog.name"));
         getContentPane().add(jLabel2);
         jLabel2.setBounds(20, 200, 65, 20);
 
-        jLabel4.setText("Revenues");
+//        jLabel4.setText("Revenues");
+        jLabel4.setText(bundle.getString("add.transaction.dialog.revenues"));
         getContentPane().add(jLabel4);
         jLabel4.setBounds(20, 250, 65, 20);
         getContentPane().add(txtName);
         txtName.setBounds(100, 200, 140, 20);
 
-        btnRemove.setText("Delete");
+//        btnRemove.setText("Delete");
+        btnRemove.setText(bundle.getString("add.transaction.dialog.delete"));
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);
@@ -152,7 +166,8 @@ public class AddTransactionDialog extends JDialog {
         getContentPane().add(txtRevenues);
         txtRevenues.setBounds(100, 250, 140, 20);
 
-        jLabel5.setText("Expenses");
+//        jLabel5.setText("Expenses");
+        jLabel5.setText(bundle.getString("add.transaction.dialog.expenses"));
         getContentPane().add(jLabel5);
         jLabel5.setBounds(20, 225, 65, 20);
         getContentPane().add(txtExpenses);

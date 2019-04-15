@@ -54,14 +54,15 @@ public class RequestMessageQueue extends Observable {
      * @return requestToSend the request message to controller .
      */
     public Message getRequest() {
-
-        if (replyForPreviousRequestPending) {
+        if (replyForPreviousRequestPending) {  //true if request must send again
             setReplyForPreviousRequestPending(false);
         } else {
-            if (queue.isEmpty()) {
+            if (queue.isEmpty()) {// Queue with requests
                 setChanged();
                 notifyObservers(CommandType.CREATE_REQUEST);
+//                queue.add(new RequestMessage(REQUEST_PANEL))
             }
+
             requestToSend = queue.poll();
         }
         return requestToSend;
@@ -74,6 +75,7 @@ public class RequestMessageQueue extends Observable {
     public void notifyToCreateRequestToChange() {
         setChanged();
         notifyObservers(CommandType.CREATE_REQUEST_TO_WRITE);
+//        notifyObservers(CommandType.CREATE_REQUEST);
     }
 }
 

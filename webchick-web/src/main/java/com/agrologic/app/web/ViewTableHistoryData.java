@@ -25,8 +25,7 @@ public class ViewTableHistoryData extends AbstractServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = response.getWriter();
@@ -38,8 +37,7 @@ public class ViewTableHistoryData extends AbstractServlet {
             } else {
                 long flockId = Long.parseLong(request.getParameter("flockId"));
                 long langId = getInSessionLanguageId(request);
-                FromDayToDay fromDayToDay = new FromDayToDay(request.getParameter("fromDay"),
-                        request.getParameter("toDay"));
+                FromDayToDay fromDayToDay = new FromDayToDay(request.getParameter("fromDay"), request.getParameter("toDay"));
                 String htmlTable = tableService.toHtmlTablePerDayReports(flockId, fromDayToDay, langId);
                 out.println(htmlTable);
             }

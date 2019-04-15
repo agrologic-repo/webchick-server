@@ -113,6 +113,7 @@ public class HistoryGraph {
         setPlotParameters(plot);
 
         NumberAxis xAxis = (NumberAxis) plot.getDomainAxis();
+//        xAxis.setLabel();
         setAxisParameters(xAxis, xAxisTitle, Color.black);
         xAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         xAxis.setLowerBound(getMinValue(plot).doubleValue());
@@ -176,9 +177,12 @@ public class HistoryGraph {
         for (Entry<Integer, Data> entry : entries) {
             Number x = entry.getKey();
             Number y = valueByType(entry.getValue());
+//            Number y = DataFormat.get
+//            Number y = Double.valueOf(entry.getValue().getFormattedValue());
             series.add(x, y);
             setTopAndBottomCoords(x, y);
         }
+
         return series;
     }
 
@@ -198,10 +202,13 @@ public class HistoryGraph {
         getChart().addSubtitle(localTextTitle);
     }
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private Number valueByType(Data data) {
         if (DataFormat.TIME == data.getFormat()) {
             Long value = data.getValue();
+//            String sv = Long.toHexString(value);
+            String sv = String.valueOf(value);
+            value = Long.parseLong(sv);
             long h = value / 100;
             long m = value % 100;
             long t = h * 60 + m;
@@ -209,7 +216,7 @@ public class HistoryGraph {
         }
         return Double.valueOf(data.getFormattedValue());
     }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Return label of series.
      *
@@ -236,9 +243,7 @@ public class HistoryGraph {
         plot.setRangeGridlinePaint(Color.lightGray);
         plot.setDomainPannable(true);
         plot.setRangePannable(true);
-        StandardXYToolTipGenerator ttg =
-                new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
-                        NumberFormat.getInstance(), NumberFormat.getInstance());
+        StandardXYToolTipGenerator ttg = new StandardXYToolTipGenerator(StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,  NumberFormat.getInstance(), NumberFormat.getInstance());
         TimeSeriesURLGenerator urlg = new TimeSeriesURLGenerator(new SimpleDateFormat("DD"), "", "series", "values");
         StandardXYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES, ttg, urlg);
         renderer.setBaseShapesVisible(true);

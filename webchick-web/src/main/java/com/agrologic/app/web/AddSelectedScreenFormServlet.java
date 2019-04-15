@@ -34,7 +34,10 @@ public class AddSelectedScreenFormServlet extends AbstractServlet {
             } else {
                 Long programId = Long.parseLong(request.getParameter("programId"));
                 Long selectedProgramId = Long.parseLong(request.getParameter("selectedProgramId"));
-                Long selectedScreenId = Long.parseLong(request.getParameter("selectedScreenId"));
+//                String screenn = request.getParameter("selectedScreenId");//
+//                Long selectedScreenId = Long.parseLong(request.getParameter("selectedScreenId"));
+//                String screen = request.getParameter("selectedScreenId");//
+                Long selectedScreenId = Long.parseLong(request.getParameter("screen1"));
 
                 try {
                     ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
@@ -62,26 +65,22 @@ public class AddSelectedScreenFormServlet extends AbstractServlet {
                         for (Table t : screenTables) {
                             t.setProgramId(programId);
                             tableDao.copyTable(t);
-                            List<Data> tableData = (List<Data>) dataDao.getTableDataList(selectedProgramId,
-                                    selectedScreenId, t.getId(), null);
+                            List<Data> tableData = (List<Data>) dataDao.getTableDataList(selectedProgramId, selectedScreenId, t.getId(), null);
 
                             for (Data d : tableData) {
-                                dataDao.insertDataToTable(programId, screen.getId(), t.getId(), d.getId(), "yes",
-                                        d.getPosition());
+                                dataDao.insertDataToTable(programId, screen.getId(), t.getId(), d.getId(), "yes", d.getPosition());
                             }
                         }
                     }
 
                     logger.info("New screen and screens data successfully added !");
                     request.setAttribute("error", false);
-                    request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
-                            response);
+                    request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request, response);
                 } catch (Exception e) {
                     logger.error("Error occurs while adding screen !", e);
                     request.setAttribute("message", "Error occurs during adding screen!");
                     request.setAttribute("error", true);
-                    request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request,
-                            response);
+                    request.getRequestDispatcher("./all-screens.html?programId=" + programId).forward(request, response);
                 }
             }
         } finally {

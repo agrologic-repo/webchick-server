@@ -3,7 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <%@ include file="../../language.jsp" %>
-<%@ page errorPage="../../anerrorpage.jsp" %>
+<%--<%@ page errorPage="../../anerrorpage.jsp" %>--%>
 <%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="com.agrologic.app.model.UserRole" %>
 
@@ -28,19 +28,10 @@
 <head>
 <title><spring:message code='main.screen.page.title'/></title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="shortcut icon" href="resources/images/favicon.ico">
 <link rel="shortcut icon" type="image/x-icon" href="img/favicon5.ico" title="AgroLogic Ltd."/>
 <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
 <link rel="stylesheet" type="text/css" href="resources/style/progressbar.css"/>
-<%--<style>--%>
-    <%--body {--%>
-        <%--background-image: url('resources/images/gradient2.bmp');--%>
-        <%--background-repeat: no-repeat;--%>
-        <%--background-position: center;--%>
-        <%--background-size: cover;--%>
-        <%--width: 100%;--%>
-        <%--height: 100%;--%>
-    <%--}--%>
-<%--</style>--%>
 
     <script type="text/javascript">
     var doClearOld = true;
@@ -73,7 +64,7 @@
                 xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xmlhttp.send(null);
             }
-            timeoutID = setTimeout("ajaxFunction()", 10000);
+            timeoutID = setTimeout("ajaxFunction()", 5000);
         }
 
         var uninitialized = 0;
@@ -127,29 +118,6 @@
             }
         }
 
-        function keyPress(e, o, cid, did) {
-            // look for window.event in case event isn't passed in
-            if (window.event) {
-                e = window.event;
-            }
-            var code = (e.keyCode ? e.keyCode : e.which);
-            switch (code) {
-                case 13:
-                    unblockAjax();
-                    o.blur();
-                    doClearOld = true;
-                    isChanged = false;;
-                    $.ajax({
-                        type: "POST",
-                        url: "./change-value.html?userId=<%=userId%>&cellinkId=<%=cellink.getId()%>&controllerId=" + cid + "&dataId=" + did + "&Nvalue=" + o.value,
-                        success: function () {
-                            o.style.border = "1px orange solid";
-                        }
-                    });
-                    break;
-            }
-        }
-
         function getStatus(text) {
             var length = 12;
             var status = text.substr(0, length);
@@ -183,6 +151,7 @@
     var DATE = 7;
     var DEC_4 = 8;
     var DEC_5 = 10;
+    var DEC_11 = 11;
 
     var EMPTY_DELIM = "";
     var DOT_DELIM = ".";
@@ -206,6 +175,7 @@
     formats[DATE] = "00.00";
     formats[DEC_4] = "0";
     formats[DEC_5] = "0";
+    formats[DEC_11] ="000.0";
     /*
      ** Returns the caret (cursor) position of the specified text field.
      ** Return value range is 0-oField.length.
@@ -288,10 +258,12 @@
             self.close();
         }
     }
+
     function checkField(event, val, type) {
         if (event.keyCode == 13) {
             return;
         }
+
         if (val.value == "") {
             return;
         }
@@ -506,12 +478,30 @@
                     return result;
                 }
                 break;
+            case DEC_11:
+                if (!changed) {
+                    var num = parseFloat(txt);
+                    var result = num.toFixed(1);
+                    return result;
+                } else {
+                    var num = parseFloat(txt);
+                    num = num * 10;
+                    if (num > 999.9) {
+                        var d = parseInt(num / 1000);
+                        num = num - (d * 1000);
+                    }
+                    var result = num.toFixed(1);
+                    return result;
+                }
+                break;
         }
     }
+
     function closeWindow() {
         self.close();
         window.opener.location.reload(true);
     }
+
     function keyDown(val) {
         if (doClearOld) {
             val.value = "";
@@ -539,6 +529,7 @@
         $('.popup').fadeOut(100);
         unblockAjax();
     }
+
     </script>
     <script type="text/javascript" src="resources/javascript/fhelp.js"></script>
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
@@ -565,7 +556,7 @@
                             </a>
                             <% String access = (String) request.getSession().getAttribute("access");%>
                             <% if (!access.toLowerCase().equals("regular")) {%>
-                            <%if (role == UserRole.USER) {%>
+                            <%if (role == UserRole.USER || role == UserRole.READONLYUSER) {%>
                             <img src="resources/images/cellinks.png" border="0" hspace="5"/>
                             <a href="./my-farms.html?userId=<%=userId%>">
                                 <spring:message code='button.myfarms'/>
@@ -589,7 +580,7 @@
     </tr>
     <tr>
         <td>
-            <form name="mainForm" action="">
+            <form name="mainForm" action="./rmctrl-main-screen.html" method="post">
                 <fieldset style="-moz-border-radius:15px;  border-radius: 15px;  -webkit-border-radius: 15px;">
                     <div id="tableData">
 

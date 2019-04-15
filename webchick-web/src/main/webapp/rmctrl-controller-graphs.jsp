@@ -10,41 +10,84 @@
 <%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="java.io.PrintWriter" %>
 
-<% User user = (User) request.getSession().getAttribute("user");
+<%
+    User user;
+    Long userId;
+    Long cellinkId;
+    Long controllerId;
+    Long screenId;
+    Controller controller;
+    Program program;
+    Collection<Screen> screens;
+    Integer newConnectionTimeout;
+    Locale oldLocal;
+    Locale currLocal;
+    String graphURLTH;
+    String filenameth;
+    String filenamewft;
+    String graphURLWFT;
+    String filenamefwpb;
+    String graphURLFWPB;
+    String filenamef2w2pb;
+    String graphURLF2W2PB;
+    String filenamewspb;
+    String graphURLWSPB;
+
+    user = (User) request.getSession().getAttribute("user");
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
     }
-    Long userId = Long.parseLong(request.getParameter("userId"));
-    Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    Long controllerId = Long.parseLong(request.getParameter("controllerId"));
-    Long screenId = Long.parseLong(request.getParameter("screenId"));
-    Controller controller = (Controller) request.getAttribute("controller");
-    Program program = controller.getProgram();
-    Collection<Screen> screens = program.getScreens();
-    Integer newConnectionTimeout = (Integer) request.getAttribute("newConnectionTimeout");
+    userId = Long.parseLong(request.getParameter("userId"));
+    cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+    controllerId = Long.parseLong(request.getParameter("controllerId"));
+    screenId = Long.parseLong(request.getParameter("screenId"));
+    controller = (Controller) request.getAttribute("controller");
+    program = controller.getProgram();
+    screens = program.getScreens();
+    newConnectionTimeout = (Integer) request.getAttribute("newConnectionTimeout");
 
-    Locale oldLocal = (Locale) session.getAttribute("oldLocale");
-    Locale currLocal = (Locale) session.getAttribute("currLocale");
+    oldLocal = (Locale) session.getAttribute("oldLocale");
+    currLocal = (Locale) session.getAttribute("currLocale");
     if (!oldLocal.equals(currLocal)) {
         response.sendRedirect("./rmtctrl-graph.html?lang=" + lang + "&userId=" + userId + "&cellinkId=" + cellinkId + "&controllerId=" + controllerId + "&screenId=" + screenId);
     }
 
-    String graphURLTH;
-    String filenameth = GenerateGraph.generateChartTempHum(controllerId, session, new PrintWriter(out), currLocal);
-    if (filenameth.contains("public_error")) {
-        graphURLTH = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
-    } else {
-        graphURLTH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameth;
-    }
+        filenameth = GenerateGraph.generateChartTempHum(controllerId, session, new PrintWriter(out), currLocal);
+        if (filenameth.contains("public_error")) {
+            graphURLTH = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+        } else {
+            graphURLTH = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenameth;
+        }
 
-    String filenamewft = GenerateGraph.generateChartWaterFeedTemp(controllerId, session, new PrintWriter(out), currLocal);
-    String graphURLWFT;
-    if (filenameth.contains("public_error")) {
-        graphURLWFT = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
-    } else {
-        graphURLWFT = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamewft;
-    }
+        filenamewft = GenerateGraph.generateChartWaterFeedTemp(controllerId, session, new PrintWriter(out), currLocal);
+        if (filenameth.contains("public_error")) {
+            graphURLWFT = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+        } else {
+            graphURLWFT = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamewft;
+        }
+
+        filenamefwpb = GenerateGraph.generateChartFeedWaterPerBird24(controllerId, session, new PrintWriter(out), currLocal);
+        if (filenameth.contains("public_error")) {
+            graphURLFWPB = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+        } else {
+            graphURLFWPB = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamefwpb;
+        }
+
+        filenamef2w2pb = GenerateGraph.generateChartFeed2Water2_24(controllerId, session, new PrintWriter(out), currLocal);
+        if (filenameth.contains("public_error")) {
+            graphURLF2W2PB = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+        } else {
+            graphURLF2W2PB = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamef2w2pb;
+        }
+
+        filenamewspb = GenerateGraph.generateChartWaterSum_24(controllerId, session, new PrintWriter(out), currLocal);
+        if (filenameth.contains("public_error")) {
+            graphURLWSPB = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+        } else {
+            graphURLWSPB = request.getContextPath() + "/servlet/DisplayChart?filename=" + filenamewspb;
+        }
+
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html dir="<%=session.getAttribute("dir")%>">
@@ -54,7 +97,7 @@
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/tabstyle.css"/>
     <link rel="stylesheet" type="text/css" href="resources/style/jquery-ui.css"/>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <%--<script type="text/javascript" src="resources/javascript/util.js">;</script>--%>
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
@@ -181,7 +224,7 @@
                         <% } else {%>
                         <td nowrap>
                             <a class="<%=cssClass%>"
-                               href="rmctrl-controller-screens-ajax.jsp?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId() %>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>"
+                               href="./rmctrl-controller-screens-ajax.html?lang=<%=lang%>&userId=<%=userId%>&cellinkId=<%=controller.getCellinkId()%>&programId=<%=controller.getProgramId() %>&screenId=<%=screen.getId()%>&controllerId=<%=controller.getId()%>"
                                id="<%=screen.getId()%>"
                                onclick='document.body.style.cursor = "wait"'><%=screen.getUnicodeTitle()%>
                             </a>
@@ -190,23 +233,17 @@
                         <%}%>
                     </tr>
                 </table>
-
-
                 <div id="accordion-graph">
-                    <h3><%=session.getAttribute("graph.inside.outside.humidity.title")%>
-                    </h3>
-
-                    <div>
-                        <img src="<%=graphURLTH%>" width=800 height=400 border=0
-                             usemap="#<%=filenameth%>">
-                    </div>
-                    <h3><%=session.getAttribute("graph.feed.water.title")%>
-                    </h3>
-
-                    <div>
-                        <img src="<%= graphURLWFT %>" width=800 height=400 border=0
-                             usemap="#<%= filenamewft %>">
-                    </div>
+                    <h3><%=session.getAttribute("graph.inside.outside.humidity.title")%></h3>
+                    <div><img src="<%=graphURLTH%>" width=800 height=400 border=0 usemap="#<%=filenameth%>"></div>
+                    <h3><%=session.getAttribute("graph.feed.water.title")%></h3>
+                    <div><img src="<%= graphURLWFT %>" width=800 height=400 border=0 usemap="#<%= filenamewft%>"></div>
+                    <h3><%=session.getAttribute("graph.feed.water.per.bird.title")%></h3>
+                    <div><img src="<%= graphURLFWPB %>" width=800 height=400 border=0 usemap="#<%= filenamefwpb%>"></div>
+                    <h3><%=session.getAttribute("graph.feed2.water2.title")%></h3>
+                    <div><img src="<%= graphURLF2W2PB %>" width=800 height=400 border=0 usemap="#<%= filenamef2w2pb%>"></div>
+                    <h3><%=session.getAttribute("graph.water.sum.title")%></h3>
+                    <div><img src="<%= graphURLWSPB %>" width=800 height=400 border=0 usemap="#<%= filenamewspb%>"></div>
                 </div>
             </fieldset>
         </td>

@@ -18,9 +18,7 @@ public class ComponentFactory {
         return new DataComponent(dataController, componentOrientation, programAlarms);
     }
 
-    public static DataComponent createRelayComponent(DataController dataController,
-                                                     ComponentOrientation componentOrientation,
-                                                     ProgramRelay programRelay) {
+    public static DataComponent createRelayComponent(DataController dataController, ComponentOrientation componentOrientation, ProgramRelay programRelay) {
         return new DataComponent(dataController, componentOrientation, programRelay);
     }
 

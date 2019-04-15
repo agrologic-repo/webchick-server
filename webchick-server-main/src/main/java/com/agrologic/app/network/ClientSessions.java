@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Controls sessions between our server and client robots.
+ * Controls sessions between our server and clients.
  */
 public class ClientSessions {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -30,8 +30,8 @@ public class ClientSessions {
         this.cellinkDao = cellinkDao;
     }
 
-    public synchronized SocketThread createSessionWithClient(Socket socket) throws IOException {
-        SocketThread newThread = new SocketThread(this, socket);
+    public synchronized SocketThread createSessionWithClient(Socket socket, int counterMRP) throws IOException {
+        SocketThread newThread = new SocketThread(this, socket, counterMRP);
         newThread.setServerFacade(server);
         threadPool.execute(newThread);
         return newThread;

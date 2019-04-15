@@ -4,11 +4,13 @@
  */
 package com.agrologic.app.gui.rxtx.flock;
 
+import com.agrologic.app.i18n.LocaleManager;
 import com.agrologic.app.model.*;
 import com.agrologic.app.util.Windows;
 
 import javax.swing.*;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author Administrator
@@ -18,6 +20,7 @@ public class Manager extends JFrame {
     private Long currFlockId = (long) 1;
     private Flock currFlock;
     private FlockManagerService flockService;
+    private ResourceBundle bundle; // NOI18N //08/01/2018
 
     /**
      * Creates new form Manager
@@ -25,6 +28,7 @@ public class Manager extends JFrame {
     public Manager() {
         Windows.setWindowsLAF(this);
         initComponents();
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // NOI18N //08/01/2018
         this.flockService = new FlockManagerService();
         setCurrFlock();
         viewFlock();
@@ -141,6 +145,7 @@ public class Manager extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bundle = ResourceBundle.getBundle(LocaleManager.UI_RESOURCE); // NOI18N //08/01/2018
         jLabel46 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
@@ -297,7 +302,8 @@ public class Manager extends JFrame {
 
         jLabel46.setText("jLabel46");
 
-        setTitle("Manager ");
+//        setTitle("Manager "); // 08/01/2018
+        setTitle(bundle.getString("manager")); // 08/01/2018
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
@@ -306,15 +312,20 @@ public class Manager extends JFrame {
 
         jPanel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        pnlHousesParameter.setBorder(javax.swing.BorderFactory.createTitledBorder("Houses parameters"));
+//        pnlHousesParameter.setBorder(javax.swing.BorderFactory.createTitledBorder("Houses parameters")); // 08/01/2018
+        pnlHousesParameter.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.houses.parameters"))); // 08/01/2018
 
-        jLabel1.setText("Area");
+//        jLabel1.setText("Area"); // 08/01/2018
+        jLabel1.setText(bundle.getString("manager.area")); // 08/01/2018
 
-        jLabel2.setText("Currency");
+//        jLabel2.setText("Currency"); // 08/01/2017
+        jLabel2.setText(bundle.getString("manager.currency")); // 08/01/2017
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Dollar", "Sheqel"}));
+//        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Dollar", "Sheqel"})); // 08/01/2018
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[]{bundle.getString("manager.dollar"), bundle.getString("manager.sheqel")})); // 08/01/2018
 
-        btnSaveHouseParam.setText("Save");
+//        btnSaveHouseParam.setText("Save"); // 08/01/2018
+        btnSaveHouseParam.setText(bundle.getString("manager.save")); // 08/01/2018
         btnSaveHouseParam.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveHouseParamActionPerformed(evt);
@@ -372,9 +383,11 @@ public class Manager extends JFrame {
                                 .addContainerGap(282, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Houses ", jPanel1);
+//        jTabbedPane1.addTab("Houses ", jPanel1); // 08/01/2018
+        jTabbedPane1.addTab(bundle.getString("manager.houses"), jPanel1); // 08/01/2018
 
-        pnlEnergy.setBorder(javax.swing.BorderFactory.createTitledBorder("Energy "));
+//        pnlEnergy.setBorder(javax.swing.BorderFactory.createTitledBorder("Energy ")); // 08/01/2018
+        pnlEnergy.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.energy"))); // 08/01/2018
         pnlEnergy.setToolTipText("");
         pnlEnergy.setLayout(null);
 
@@ -447,24 +460,29 @@ public class Manager extends JFrame {
         txtGasTotalPrice.setBounds(130, 160, 60, 20);
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Amount");
+//        jLabel3.setText("Amount"); // 08/01/2017
+        jLabel3.setText(bundle.getString("manager.amount")); // 08/01/2017
         pnlEnergy.add(jLabel3);
         jLabel3.setBounds(70, 100, 60, 22);
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("Price");
+//        jLabel4.setText("Price"); // 08/01/2018
+        jLabel4.setText(bundle.getString("manager.price")); // 08/01/2018
         pnlEnergy.add(jLabel4);
         jLabel4.setBounds(129, 100, 60, 22);
 
-        jLabel5.setText("Start");
+//        jLabel5.setText("Start"); // 08/01/2018
+        jLabel5.setText(bundle.getString("manager.start")); // 08/01/2018
         pnlEnergy.add(jLabel5);
         jLabel5.setBounds(30, 120, 40, 14);
 
-        jLabel6.setText("Left");
+//        jLabel6.setText("Left"); // 08/01/2018
+        jLabel6.setText(bundle.getString("manager.left")); // 08/01/2018
         pnlEnergy.add(jLabel6);
         jLabel6.setBounds(30, 140, 40, 14);
 
-        jLabel7.setText("Total");
+//        jLabel7.setText("Total"); // 08/01/2018
+        jLabel7.setText(bundle.getString("manager.total")); // 08/01/2018
         pnlEnergy.add(jLabel7);
         jLabel7.setBounds(30, 160, 40, 14);
 
@@ -499,12 +517,14 @@ public class Manager extends JFrame {
         txtFuelStartAmount.setBounds(200, 120, 60, 20);
 
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("Price");
+//        jLabel8.setText("Price"); // 08/01/2018
+        jLabel8.setText(bundle.getString("manager.price")); // 08/01/2018
         pnlEnergy.add(jLabel8);
         jLabel8.setBounds(260, 100, 60, 20);
 
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setText("Amount");
+//        jLabel9.setText("Amount"); // 08/01/2018
+        jLabel9.setText(bundle.getString("manager.amount")); // 08/01/2018
         pnlEnergy.add(jLabel9);
         jLabel9.setBounds(200, 102, 60, 20);
 
@@ -529,16 +549,19 @@ public class Manager extends JFrame {
         txtFuelLeftPrice.setBounds(261, 140, 59, 20);
 
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("Gas");
+//        jLabel10.setText("Gas"); // 08/01/2018
+        jLabel10.setText(bundle.getString("manager.gas")); // 08/01/2018
         pnlEnergy.add(jLabel10);
         jLabel10.setBounds(60, 80, 124, 20);
 
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("Fuel");
+//        jLabel11.setText("Fuel"); // 08/01/2018
+        jLabel11.setText(bundle.getString("manager.fuel")); // 08/01/2018
         pnlEnergy.add(jLabel11);
         jLabel11.setBounds(200, 80, 125, 20);
 
-        btnSaveEnergy.setText("Save");
+//        btnSaveEnergy.setText("Save"); // 08/01/2018
+        btnSaveEnergy.setText(bundle.getString("manager.save")); // 08/01/2018
         btnSaveEnergy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveEnergyActionPerformed(evt);
@@ -547,7 +570,8 @@ public class Manager extends JFrame {
         pnlEnergy.add(btnSaveEnergy);
         btnSaveEnergy.setBounds(30, 220, 90, 23);
 
-        btnAddGas.setText("Add Gas");
+//        btnAddGas.setText("Add Gas"); // 08/01/2018
+        btnAddGas.setText(bundle.getString("manager.add.gas")); // 08/01/2018
         btnAddGas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddGasActionPerformed(evt);
@@ -556,7 +580,8 @@ public class Manager extends JFrame {
         pnlEnergy.add(btnAddGas);
         btnAddGas.setBounds(90, 50, 73, 23);
 
-        btnAddFuel.setText("Add Fuel");
+//        btnAddFuel.setText("Add Fuel"); // 08/01/2018
+        btnAddFuel.setText(bundle.getString("manager.add.fuel")); // 08/01/2018
         btnAddFuel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddFuelActionPerformed(evt);
@@ -565,14 +590,17 @@ public class Manager extends JFrame {
         pnlEnergy.add(btnAddFuel);
         btnAddFuel.setBounds(230, 50, 75, 23);
 
-        pnlChickQuantity.setBorder(javax.swing.BorderFactory.createTitledBorder("Chick quantity"));
+//        pnlChickQuantity.setBorder(javax.swing.BorderFactory.createTitledBorder("Chick quantity")); // 08/01/2018
+        pnlChickQuantity.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.chick.quantity"))); // 08/01/2018
         pnlChickQuantity.setLayout(null);
 
-        jLabel12.setText("Male");
+//        jLabel12.setText("Male"); // 08/01/2018
+        jLabel12.setText(bundle.getString("manager.male")); // 08/01/2018
         pnlChickQuantity.add(jLabel12);
         jLabel12.setBounds(30, 110, 90, 20);
 
-        jLabel13.setText("Total");
+//        jLabel13.setText("Total"); // 08/01/2018
+        jLabel13.setText(bundle.getString("manager.total")); // 08/01/2018
         pnlChickQuantity.add(jLabel13);
         jLabel13.setBounds(30, 150, 90, 20);
 
@@ -625,12 +653,14 @@ public class Manager extends JFrame {
         txtFemaleCost.setBounds(220, 130, 90, 20);
 
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setText("Quantity");
+//        jLabel14.setText("Quantity"); // 08/01/2018
+        jLabel14.setText(bundle.getString("manager.quantity")); // 08/01/2018
         pnlChickQuantity.add(jLabel14);
         jLabel14.setBounds(120, 90, 90, 20);
 
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel15.setText("Cost");
+//        jLabel15.setText("Cost"); // 08/01/2018
+        jLabel15.setText(bundle.getString("manager.cost")); // 08/01/2018
         pnlChickQuantity.add(jLabel15);
         jLabel15.setBounds(220, 90, 90, 20);
 
@@ -642,11 +672,13 @@ public class Manager extends JFrame {
         pnlChickQuantity.add(txtTotalCost);
         txtTotalCost.setBounds(220, 150, 90, 20);
 
-        jLabel16.setText("Female");
+//        jLabel16.setText("Female"); // 08/01/2018
+        jLabel16.setText(bundle.getString("manager.female")); // 08/01/2018
         pnlChickQuantity.add(jLabel16);
         jLabel16.setBounds(30, 130, 90, 20);
 
-        btnSaveChickQuant.setText("Save");
+//        btnSaveChickQuant.setText("Save"); // 08/01/2018
+        btnSaveChickQuant.setText(bundle.getString("manager.save")); // 08/01/2018
         btnSaveChickQuant.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveChickQuantActionPerformed(evt);
@@ -655,7 +687,8 @@ public class Manager extends JFrame {
         pnlChickQuantity.add(btnSaveChickQuant);
         btnSaveChickQuant.setBounds(30, 220, 80, 23);
 
-        pnlMeterData.setBorder(javax.swing.BorderFactory.createTitledBorder("Meter data "));
+//        pnlMeterData.setBorder(javax.swing.BorderFactory.createTitledBorder("Meter data ")); // 08/01/2018
+        pnlMeterData.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.meter.data"))); // 08/01/2018
         pnlMeterData.setLayout(null);
 
         txtStartElect.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -747,66 +780,79 @@ public class Manager extends JFrame {
         txtTotalWaterSum.setBounds(340, 120, 65, 20);
 
         jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel17.setText("Start");
+//        jLabel17.setText("Start"); // 08/01/2018
+        jLabel17.setText(bundle.getString("manager.start")); // 08/01/2018
         pnlMeterData.add(jLabel17);
         jLabel17.setBounds(20, 50, 70, 20);
 
         jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel18.setText("End");
+//        jLabel18.setText("End"); // 08/01/2018
+        jLabel18.setText(bundle.getString("manager.end")); // 08/01/2018
         pnlMeterData.add(jLabel18);
         jLabel18.setBounds(100, 50, 60, 20);
 
         jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel19.setText("Price");
+//        jLabel19.setText("Price"); // 08/01/2018
+        jLabel19.setText(bundle.getString("manager.price")); // 08/01/2018
         pnlMeterData.add(jLabel19);
         jLabel19.setBounds(170, 50, 60, 20);
 
         jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel20.setText("Start");
+//        jLabel20.setText("Start"); // 08/01/2018
+        jLabel20.setText(bundle.getString("manager.start")); // 08/01/2018
         pnlMeterData.add(jLabel20);
         jLabel20.setBounds(260, 50, 60, 20);
 
         jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel21.setText("End");
+//        jLabel21.setText("End"); // 08/01/2018
+        jLabel21.setText(bundle.getString("manager.end")); // 08/01/2018
         pnlMeterData.add(jLabel21);
         jLabel21.setBounds(340, 50, 60, 20);
 
         jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel22.setText("Price");
+//        jLabel22.setText("Price"); // 08/01/2018
+        jLabel22.setText(bundle.getString("manager.price")); // 08/01/2018
         pnlMeterData.add(jLabel22);
         jLabel22.setBounds(410, 50, 70, 20);
 
         jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel23.setText("Total Electricity");
+//        jLabel23.setText("Total Electricity"); // 08/01/2018
+        jLabel23.setText(bundle.getString("manager.total.electricity")); // 08/01/2018
         pnlMeterData.add(jLabel23);
         jLabel23.setBounds(10, 95, 80, 20);
 
         jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel24.setText("Total Sum");
+//        jLabel24.setText("Total Sum"); // 08/01/2018
+        jLabel24.setText(bundle.getString("manager.total.sum")); // 08/01/2018
         pnlMeterData.add(jLabel24);
         jLabel24.setBounds(10, 120, 80, 20);
 
         jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel25.setText("Total Water");
+//        jLabel25.setText("Total Water"); // 08/01/2018
+        jLabel25.setText(bundle.getString("manager.total.water")); // 08/01/2018
         pnlMeterData.add(jLabel25);
         jLabel25.setBounds(240, 95, 90, 20);
 
         jLabel26.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel26.setText("Total Sum");
+//        jLabel26.setText("Total Sum"); // 08/01/2018
+        jLabel26.setText(bundle.getString("manager.total.sum")); // 08/01/2018
         pnlMeterData.add(jLabel26);
         jLabel26.setBounds(240, 120, 90, 20);
 
         jLabel27.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel27.setText("Electricity");
+//        jLabel27.setText("Electricity"); // 08/01/2018
+        jLabel27.setText("manager.electricity"); // 08/01/2018
         pnlMeterData.add(jLabel27);
         jLabel27.setBounds(20, 30, 210, 20);
 
         jLabel28.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel28.setText("Water");
+//        jLabel28.setText("Water"); // 08/01/2018
+        jLabel28.setText(bundle.getString("manager.water")); // 08/01/2018
         pnlMeterData.add(jLabel28);
         jLabel28.setBounds(260, 30, 220, 20);
 
-        btnSaveMeterData.setText("Save");
+//        btnSaveMeterData.setText("Save"); // 08/01/2018
+        btnSaveMeterData.setText(bundle.getString("manager.save")); // 08/01/2018
         btnSaveMeterData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveMeterDataActionPerformed(evt);
@@ -815,13 +861,17 @@ public class Manager extends JFrame {
         pnlMeterData.add(btnSaveMeterData);
         btnSaveMeterData.setBounds(20, 160, 90, 23);
 
-        pnlInformation.setBorder(javax.swing.BorderFactory.createTitledBorder("Information"));
+//        pnlInformation.setBorder(javax.swing.BorderFactory.createTitledBorder("Information")); // 08/01/2018
+        pnlInformation.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.information"))); // 08/01/2018
 
-        jLabel29.setText("Hathery ");
+//        jLabel29.setText("Hathery "); // 08/01/2018
+        jLabel29.setText(bundle.getString("manager.hathery")); // 08/01/2018
 
-        jLabel30.setText("Breder  ");
+//        jLabel30.setText("Breeder  "); // 08/01/2018
+        jLabel30.setText(bundle.getString("manager.breeder")); // 08/01/2018
 
-        btnSaveInfo.setText("Save");
+//        btnSaveInfo.setText("Save"); // 08/01/2018
+        btnSaveInfo.setText(bundle.getString("manager.save")); // 08/01/2018
         btnSaveInfo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveInfoActionPerformed(evt);
@@ -893,28 +943,35 @@ public class Manager extends JFrame {
                                 .addContainerGap(138, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Begin&End", jPanel2);
+//        jTabbedPane1.addTab("Begin&End", jPanel2); // 08/01/2018
+        jTabbedPane1.addTab(bundle.getString("manager.begin.and.end"), jPanel2); // 08/01/2018
 
-        pnlTotalDistribution.setBorder(javax.swing.BorderFactory.createTitledBorder("Total Distribution"));
+//        pnlTotalDistribution.setBorder(javax.swing.BorderFactory.createTitledBorder("Total Distribution"));// 08/01/2018
+        pnlTotalDistribution.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.total.distribution")));// 08/01/2018
         pnlTotalDistribution.setLayout(null);
 
-        jLabel40.setText("Total Slaughter Male");
+//        jLabel40.setText("Total Slaughter Male"); // 08/01/2018
+        jLabel40.setText(bundle.getString("manager.total.slaughter.male")); // 08/01/2018
         pnlTotalDistribution.add(jLabel40);
         jLabel40.setBounds(20, 70, 98, 14);
 
-        jLabel41.setText("Total Slaughter Female");
+//        jLabel41.setText("Total Slaughter Female"); // 08/01/2018
+        jLabel41.setText(bundle.getString("manager.total.slaughter.female")); // 08/01/2018
         pnlTotalDistribution.add(jLabel41);
         jLabel41.setBounds(20, 100, 110, 14);
 
-        jLabel42.setText("Total Slaughter Birds");
+//        jLabel42.setText("Total Slaughter Birds"); // 08/01/2018
+        jLabel42.setText(bundle.getString("manager.total.slaughter.birds")); // 08/01/2018
         pnlTotalDistribution.add(jLabel42);
         jLabel42.setBounds(20, 130, 99, 14);
 
-        jLabel43.setText("Total Weight");
+//        jLabel43.setText("Total Weight"); // 08/01/2018
+        jLabel43.setText(bundle.getString("manager.total.weight")); // 08/01/2018
         pnlTotalDistribution.add(jLabel43);
         jLabel43.setBounds(20, 160, 61, 14);
 
-        jLabel44.setText("Total Revenues");
+//        jLabel44.setText("Total Revenues"); // 08/01/2018
+        jLabel44.setText(bundle.getString("manager.total.revenues")); // 08/01/2018
         pnlTotalDistribution.add(jLabel44);
         jLabel44.setBounds(20, 190, 75, 14);
         pnlTotalDistribution.add(txtTotSaughtMale);
@@ -928,7 +985,8 @@ public class Manager extends JFrame {
         pnlTotalDistribution.add(txtTotalRevenues);
         txtTotalRevenues.setBounds(150, 190, 150, 20);
 
-        btnDistribution.setText("Add");
+//        btnDistribution.setText("Add");// 08/01/2018
+        btnDistribution.setText(bundle.getString("manager.add"));// 08/01/2018
         btnDistribution.setMaximumSize(new java.awt.Dimension(60, 25));
         btnDistribution.setMinimumSize(new java.awt.Dimension(60, 25));
         btnDistribution.setPreferredSize(new java.awt.Dimension(60, 25));
@@ -957,16 +1015,20 @@ public class Manager extends JFrame {
                                 .addContainerGap(356, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Distribute", jPanel7);
+//        jTabbedPane1.addTab("Distribute", jPanel7); // 08/01/2018
+        jTabbedPane1.addTab(bundle.getString("manager.distribute"), jPanel7); // 08/01/2018
 
-        pnlSpread.setBorder(javax.swing.BorderFactory.createTitledBorder("Spread"));
+//        pnlSpread.setBorder(javax.swing.BorderFactory.createTitledBorder("Spread")); // 08/01/2018
+        pnlSpread.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.spread"))); // 08/01/2018
         pnlSpread.setLayout(null);
 
-        jLabel31.setText("Total Spread ");
+//        jLabel31.setText("Total Spread "); // 08/01/2018
+        jLabel31.setText(bundle.getString("manager.total.spread")); // 08/01/2018
         pnlSpread.add(jLabel31);
         jLabel31.setBounds(50, 70, 70, 14);
 
-        jLabel32.setText("Total Sum");
+//        jLabel32.setText("Total Sum"); // 08/01/2018
+        jLabel32.setText(bundle.getString("manager.total.sum")); // 08/01/2018
         pnlSpread.add(jLabel32);
         jLabel32.setBounds(50, 100, 70, 14);
         pnlSpread.add(txtTotalSpread);
@@ -974,7 +1036,8 @@ public class Manager extends JFrame {
         pnlSpread.add(txtTotalSum);
         txtTotalSum.setBounds(130, 100, 120, 20);
 
-        btnSpread.setText("Add");
+//        btnSpread.setText("Add"); // 08/01/2018
+        btnSpread.setText(bundle.getString("manager.add")); // 08/01/2018
         btnSpread.setPreferredSize(new java.awt.Dimension(60, 25));
         btnSpread.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -984,21 +1047,25 @@ public class Manager extends JFrame {
         pnlSpread.add(btnSpread);
         btnSpread.setBounds(20, 20, 90, 25);
 
-        pnlFeed.setBorder(javax.swing.BorderFactory.createTitledBorder("Feed "));
+//        pnlFeed.setBorder(javax.swing.BorderFactory.createTitledBorder("Feed ")); // 08/01/2018)
+        pnlFeed.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.feed"))); // 08/01/2018
         pnlFeed.setLayout(null);
 
         jLabel33.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel33.setText("Total Feed");
+//        jLabel33.setText("Total Feed"); // 08/01/2018
+        jLabel33.setText(bundle.getString("manager.total.feed")); // 08/01/2018
         pnlFeed.add(jLabel33);
         jLabel33.setBounds(71, 58, 102, 14);
 
         jLabel34.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel34.setText("Total Expances");
+//        jLabel34.setText("Total Expances"); // 08/01/2018
+        jLabel34.setText(bundle.getString("manager.total.expances")); // 08/01/2018
         pnlFeed.add(jLabel34);
         jLabel34.setBounds(71, 78, 102, 14);
 
         jLabel35.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel35.setText("<html>Total Feed Consumption<p> (from controller) </html>");
+//        jLabel35.setText("<html>Total Feed Consumption<p> (from controller) </html>"); // 08/01/2018
+        jLabel35.setText("<html>" + bundle.getString("manager.total.feed.consumption") + "<p>" + "(" + bundle.getString("manager.from.controller") + ") </html>"); // 08/01/2018
         pnlFeed.add(jLabel35);
         jLabel35.setBounds(60, 98, 116, 40);
         pnlFeed.add(txtTotalFeed);
@@ -1008,7 +1075,8 @@ public class Manager extends JFrame {
         pnlFeed.add(txtTotalFeedConsump);
         txtTotalFeedConsump.setBounds(190, 100, 130, 20);
 
-        btnFeed.setText("Add");
+//        btnFeed.setText("Add"); // 08/01/2018
+        btnFeed.setText(bundle.getString("manager.add")); // 08/01/2018
         btnFeed.setPreferredSize(new java.awt.Dimension(60, 25));
         btnFeed.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1018,11 +1086,14 @@ public class Manager extends JFrame {
         pnlFeed.add(btnFeed);
         btnFeed.setBounds(20, 20, 90, 25);
 
-        pnlMedicine.setBorder(javax.swing.BorderFactory.createTitledBorder("Medicine "));
+//        pnlMedicine.setBorder(javax.swing.BorderFactory.createTitledBorder("Medicine ")); // 08/01/2018
+        pnlMedicine.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.medicine"))); // 08/01/2018
 
-        jLabel39.setText("Total");
+//        jLabel39.setText("Total"); // 08/01/2018
+        jLabel39.setText(bundle.getString("manager.total")); // 08/01/2018
 
-        btnMedicine.setText("Add");
+//        btnMedicine.setText("Add"); // 08/01/2018
+        btnMedicine.setText(bundle.getString("manager.add")); // 08/01/2018
         btnMedicine.setPreferredSize(new java.awt.Dimension(60, 25));
         btnMedicine.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1055,9 +1126,11 @@ public class Manager extends JFrame {
                                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
-        pnlLabor.setBorder(javax.swing.BorderFactory.createTitledBorder("Labor "));
+//        pnlLabor.setBorder(javax.swing.BorderFactory.createTitledBorder("Labor ")); // 08/01/2018
+        pnlLabor.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.labor"))); // 08/01/2018
 
-        btnLabor.setText("Add");
+//        btnLabor.setText("Add");// 08/01/2018
+        btnLabor.setText(bundle.getString("manager.add"));// 08/01/2018
         btnLabor.setPreferredSize(new java.awt.Dimension(60, 25));
         btnLabor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1065,7 +1138,8 @@ public class Manager extends JFrame {
             }
         });
 
-        jLabel36.setText("Total");
+//        jLabel36.setText("Total");// 08/01/2018
+        jLabel36.setText(bundle.getString("manager.total"));// 08/01/2018
 
         javax.swing.GroupLayout pnlLaborLayout = new javax.swing.GroupLayout(pnlLabor);
         pnlLabor.setLayout(pnlLaborLayout);
@@ -1093,13 +1167,17 @@ public class Manager extends JFrame {
                                 .addContainerGap(29, Short.MAX_VALUE))
         );
 
-        pnlTransaction.setBorder(javax.swing.BorderFactory.createTitledBorder("Transaction "));
+//        pnlTransaction.setBorder(javax.swing.BorderFactory.createTitledBorder("Transaction ")); // 08/01/2018
+        pnlTransaction.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.transaction"))); // 08/01/2018
 
-        jLabel37.setText("Total Expenses");
+//        jLabel37.setText("Total Expenses"); // 08/01/2018
+        jLabel37.setText(bundle.getString("manager.total.expenses")); // 08/01/2018
 
-        jLabel38.setText("Total Revenues        ");
+//        jLabel38.setText("Total Revenues        "); // 08/01/2018
+        jLabel38.setText(bundle.getString("manager.total.revenues") + "        "); // 08/01/2018
 
-        btnTransaction.setText("Add");
+//        btnTransaction.setText("Add"); // 08/01/2018
+        btnTransaction.setText(bundle.getString("manager.add")); // 08/01/2018
         btnTransaction.setPreferredSize(new java.awt.Dimension(60, 25));
         btnTransaction.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1173,13 +1251,16 @@ public class Manager extends JFrame {
                                 .addGap(193, 193, 193))
         );
 
-        jTabbedPane1.addTab("Expanses", jPanel3);
+//        jTabbedPane1.addTab("Expanses", jPanel3); // 08/01/2018
+        jTabbedPane1.addTab(bundle.getString("manager.expanses"), jPanel3); // 08/01/2018
 
-        pnlSummary.setBorder(javax.swing.BorderFactory.createTitledBorder("Summary"));
+//        pnlSummary.setBorder(javax.swing.BorderFactory.createTitledBorder("Summary")); // 08/01/2018
+        pnlSummary.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("manager.summary"))); // 08/01/2018
         pnlSummary.setLayout(null);
 
         jLabel45.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel45.setText("Chicks ");
+//        jLabel45.setText("Chicks "); // 08/01/2018
+        jLabel45.setText(bundle.getString("manager.chicks")); // 08/01/2018
         pnlSummary.add(jLabel45);
         jLabel45.setBounds(31, 49, 60, 14);
         pnlSummary.add(txtChicks);
@@ -1204,74 +1285,88 @@ public class Manager extends JFrame {
         txtFeed.setBounds(317, 72, 110, 20);
 
         jLabel47.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel47.setText("Electricity ");
+//        jLabel47.setText("Electricity "); // 08/01/2018
+        jLabel47.setText(bundle.getString("manager.electricity")); // 08/01/2018
         pnlSummary.add(jLabel47);
         jLabel47.setBounds(31, 75, 60, 14);
 
         jLabel48.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel48.setText("Water ");
+//        jLabel48.setText("Water "); // 08/01/2018
+        jLabel48.setText(bundle.getString("manager.water")); // 08/01/2018
         pnlSummary.add(jLabel48);
         jLabel48.setBounds(31, 101, 60, 14);
 
         jLabel49.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel49.setText("Disel ");
+//        jLabel49.setText("Disel "); // 08/01/2018
+        jLabel49.setText(bundle.getString("manager.disel")); // 08/01/2018
         pnlSummary.add(jLabel49);
         jLabel49.setBounds(31, 127, 60, 14);
 
         jLabel50.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel50.setText("Gas ");
+//        jLabel50.setText("Gas "); // 08/01/2018
+        jLabel50.setText(bundle.getString("manager.gas")); // 08/01/2018
         pnlSummary.add(jLabel50);
         jLabel50.setBounds(31, 153, 60, 14);
 
         jLabel51.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel51.setText("Labor ");
+//        jLabel51.setText("Labor "); // 08/01/2018
+        jLabel51.setText(bundle.getString("manager.labor")); // 08/01/2018
         pnlSummary.add(jLabel51);
         jLabel51.setBounds(237, 127, 62, 14);
 
         jLabel52.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel52.setText("Medicine ");
+//        jLabel52.setText("Medicine ");// 08/01/2018
+        jLabel52.setText(bundle.getString("manager.medicine"));// 08/01/2018
         pnlSummary.add(jLabel52);
         jLabel52.setBounds(237, 101, 62, 14);
 
         jLabel53.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel53.setText("Spread ");
+//        jLabel53.setText("Spread "); // 08/01/2018
+        jLabel53.setText(bundle.getString("manager.spread")); // 08/01/2018
         pnlSummary.add(jLabel53);
         jLabel53.setBounds(237, 49, 62, 14);
 
         jLabel54.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel54.setText("Transaction ");
+//        jLabel54.setText("Transaction "); // 08/01/2018
+        jLabel54.setText(bundle.getString("manager.transaction")); // 08/01/2018
         pnlSummary.add(jLabel54);
         jLabel54.setBounds(237, 153, 62, 14);
 
         jLabel55.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel55.setText("Feed ");
+//        jLabel55.setText("Feed "); // 08/01/2018
+        jLabel55.setText(bundle.getString("manager.feed")); // 08/01/2018
         pnlSummary.add(jLabel55);
         jLabel55.setBounds(237, 76, 62, 14);
         pnlSummary.add(jSeparator1);
         jSeparator1.setBounds(31, 188, 560, 10);
 
         jLabel56.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel56.setText("Total Revenues");
+//        jLabel56.setText("Total Revenues"); // 08/01/2018
+        jLabel56.setText(bundle.getString("manager.revenues")); // 08/01/2018
         pnlSummary.add(jLabel56);
         jLabel56.setBounds(31, 231, 76, 14);
 
         jLabel57.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel57.setText("Total Expenses");
+//        jLabel57.setText("Total Expenses"); // 08/01/2018
+        jLabel57.setText(bundle.getString("manager.total.expenses")); // 08/01/2018
         pnlSummary.add(jLabel57);
         jLabel57.setBounds(31, 255, 76, 14);
 
         jLabel58.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel58.setText("Cost per kg");
+//        jLabel58.setText("Cost per kg"); // 08/01/2018
+        jLabel58.setText(bundle.getString("manager.cost.per.kg")); // 08/01/2018
         pnlSummary.add(jLabel58);
         jLabel58.setBounds(31, 281, 76, 14);
 
         jLabel59.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel59.setText("Feed conversion");
+//        jLabel59.setText("Feed conversion"); // 08/01/2018
+        jLabel59.setText(bundle.getString("manager.feed.conversion")); // 08/01/2018
         pnlSummary.add(jLabel59);
         jLabel59.setBounds(17, 307, 90, 14);
 
         jLabel60.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel60.setText("Total ");
+//        jLabel60.setText("Total "); // 08/01/2018
+        jLabel60.setText(bundle.getString("manager.total")); // 08/01/2018
         pnlSummary.add(jLabel60);
         jLabel60.setBounds(40, 330, 71, 14);
         pnlSummary.add(txtRevenuesTotal);
@@ -1302,7 +1397,8 @@ public class Manager extends JFrame {
                                 .addContainerGap(118, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Summary", jPanel4);
+//        jTabbedPane1.addTab("Summary", jPanel4); // 08/01/2018
+        jTabbedPane1.addTab(bundle.getString("manager.summary"), jPanel4); // 08/01/2018
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1343,7 +1439,8 @@ public class Manager extends JFrame {
 
     private void btnSaveEnergyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveEnergyActionPerformed
         if (!energyFormValid()) {
-            JOptionPane.showMessageDialog(Manager.this, "Field cannot be empty ");
+//            JOptionPane.showMessageDialog(Manager.this, "Field cannot be empty "); //08/01/2018
+            JOptionPane.showMessageDialog(Manager.this, bundle.getString("manager.field.cannot.be.empty")); // 08/01/2018
             return;
         }
 
@@ -1373,7 +1470,8 @@ public class Manager extends JFrame {
     private void btnSaveChickQuantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChickQuantActionPerformed
         setCurrFlock();
         if (!chickQuantFormValid()) {
-            JOptionPane.showMessageDialog(Manager.this, "Field cannot be empty ");
+//            JOptionPane.showMessageDialog(Manager.this, "Field cannot be empty "); // 08/01/2018
+            JOptionPane.showMessageDialog(Manager.this, bundle.getString("manager.field.cannot.be.empty")); // 08/01/2018
             return;
         }
 
@@ -1401,7 +1499,8 @@ public class Manager extends JFrame {
     private void btnSaveMeterDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveMeterDataActionPerformed
         setCurrFlock();
         if (!meterDataFormValid()) {
-            JOptionPane.showMessageDialog(Manager.this, "Field cannot be empty ");
+//            JOptionPane.showMessageDialog(Manager.this, "Field cannot be empty "); // 08/01/2018
+            JOptionPane.showMessageDialog(Manager.this, bundle.getString("manager.field.cannot.be.empty")); // 08/01/2018
             return;
         }
 

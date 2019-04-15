@@ -23,7 +23,7 @@
 <head>
     <title>User Info</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <style type="text/css">
@@ -90,11 +90,19 @@
                     <img src="resources/images/user1.png"/>
                 </td>
             </tr>
+            <%if (user.getRole() == UserRole.ADMIN){%>
             <tr>
                 <td valign="top">
                     <a href="./edituserrequest.html?userId=<%=editUser.getId()%>">Edit user</a>
                 </td>
             </tr>
+            <%} else {%>
+            <tr>
+                <td valign="top">
+                    <h1>User</h1>
+                </td>
+            </tr>
+            <%}%>
             <tr>
                 <td valign="top">
                     <table class="table-list" border=1 width="100%" cellpadding="2" cellspacing="1">
@@ -254,7 +262,7 @@
             </tr>
             <tr>
                 <td>
-                    <%if (user.getRole() == UserRole.USER) {%>
+                    <%if (user.getRole() == UserRole.USER || user.getRole() == UserRole.READONLYUSER) {%>
                     <button id="btnCancel" name="btnCancel"
                             onclick='return back("./my-farms.html?userId=<%=user.getId() %>");'>
                         <%=session.getAttribute("button.back") %>

@@ -52,7 +52,7 @@ public class DerbySystemStateDaoImpl extends SystemStateDaoImpl implements Creat
 
     private void createTableSystemStateByLang() throws SQLException {
         String sql = "CREATE TABLE SYSTEMSTATEBYLANGUAGE " + "(SYSTEMSTATEID INT NOT NULL , "
-                + "LANGID INT NOT NULL , " + "UNICODENAME VARCHAR(200) NOT NULL, "
+                + "LANGID INT NOT NULL , " + "UNICODENAME VARCHAR(500) NOT NULL, "
                 + "PRIMARY KEY (SYSTEMSTATEID,LANGID))";
         jdbcTemplate.execute(sql);
     }

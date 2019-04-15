@@ -112,7 +112,7 @@ public enum MessageType {
      * A request to write the value of a data item.
      * The format is  "Controller Type + Net Name + W + 'DATAID ' + ' ' + 'Value' + ' ' + CheckSum"
      * For Example "T901W4096 250 CHS\CR\NL".
-     */
+            */
     REQUEST_TO_WRITE,
 
     /**

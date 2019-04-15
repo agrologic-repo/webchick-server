@@ -16,9 +16,9 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title>Add Table</title>
-
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css">
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css">
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <script type="text/javascript" src="resources/javascript/general.js">;</script>
     <script type="text/javascript">
         function reset() {

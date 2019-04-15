@@ -1,0 +1,427 @@
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/graph/Graph24F2W2.java
+	new file:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/graph/Graph24FWPB.java
+	new file:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/graph/Graph24WS.java
+	new file:   webchick-web/src/main/java/com/agrologic/app/graph/daily/Feed2Water2ConsGraph.java
+	renamed:    webchick-web/src/main/java/com/agrologic/app/graph/daily/FeedWaterConsumpTemp.java -> webchick-web/src/main/java/com/agrologic/app/graph/daily/FeedWaterConsumpTempGraph.java
+	new file:   webchick-web/src/main/java/com/agrologic/app/graph/daily/FeedWaterPerBirdGraph.java
+	new file:   webchick-web/src/main/java/com/agrologic/app/graph/daily/WaterSumConsGraph.java
+	new file:   webchick-web/src/main/java/com/agrologic/app/web/GenerateGraphServlet.java
+	new file:   webchick-web/src/main/java/com/agrologic/app/web/GraphFromTo.java
+	new file:   webchick-web/src/main/java/com/agrologic/app/web/HistoryGraphAction.java
+	new file:   webchick-web/src/main/java/com/agrologic/app/web/controller/FlocksController.java
+	new file:   webchick-web/src/main/webapp/WEB-INF/jsp/dashboard.jsp
+	new file:   webchick-web/src/main/webapp/WEB-INF/jsp/rmctrl-flock-graphs-left-new.jsp
+	new file:   webchick-web/src/main/webapp/WEB-INF/jsp/rmctrl-flock-graphs-main-new.jsp
+	new file:   webchick-web/src/main/webapp/WEB-INF/jsp/rmctrl-flock-graphs-main.jsp
+	new file:   webchick-web/src/main/webapp/WEB-INF/jsp/rmctrl-flock-graphs-top.jsp
+	new file:   webchick-web/src/main/webapp/dashboard.jsp
+	new file:   webchick-web/src/main/webapp/histerrorpage.jsp
+	new file:   webchick-web/src/main/webapp/resources/images/1-fan.jpg
+	new file:   webchick-web/src/main/webapp/resources/images/10-Alarm.jpg
+	new file:   webchick-web/src/main/webapp/resources/images/142884056570867 (1).gif
+	new file:   webchick-web/src/main/webapp/resources/images/142884056570867.gif
+	new file:   webchick-web/src/main/webapp/resources/images/19-Timers.jpg
+	new file:   webchick-web/src/main/webapp/resources/images/22-Water.jpg
+	new file:   webchick-web/src/main/webapp/resources/images/27-silo.jpg
+	new file:   webchick-web/src/main/webapp/resources/images/2863127.gif
+	new file:   webchick-web/src/main/webapp/resources/images/54-pressure.jpg
+	new file:   webchick-web/src/main/webapp/resources/images/6-setup.jpg
+	new file:   webchick-web/src/main/webapp/resources/images/9-light.jpg
+	new file:   webchick-web/src/main/webapp/resources/images/Snore-16.png
+	new file:   webchick-web/src/main/webapp/resources/images/bg-label3.bmp
+	new file:   webchick-web/src/main/webapp/resources/images/bg-table-title.bmp
+	new file:   webchick-web/src/main/webapp/resources/images/bg-table-title2.bmp
+	deleted:    webchick-web/src/main/webapp/resources/images/cellink.jpg
+	new file:   webchick-web/src/main/webapp/resources/images/changes.xls
+	new file:   webchick-web/src/main/webapp/resources/images/down.gif
+	new file:   webchick-web/src/main/webapp/resources/images/download.jpg
+	new file:   webchick-web/src/main/webapp/resources/images/gradient2.bmp
+	new file:   webchick-web/src/main/webapp/resources/images/imageedit_17_7827880967.png
+	new file:   webchick-web/src/main/webapp/resources/images/imageedit_23_3746193975.png
+	new file:   webchick-web/src/main/webapp/resources/images/imageedit_24_7784047100.png
+	new file:   webchick-web/src/main/webapp/resources/images/imageedit_33_5477053672.png
+	new file:   webchick-web/src/main/webapp/resources/images/imageedit_35_9977992478.png
+	new file:   webchick-web/src/main/webapp/resources/images/imageedit_36_8933099292.png
+	new file:   webchick-web/src/main/webapp/resources/images/imageedit_42_4279741920.png
+	new file:   webchick-web/src/main/webapp/resources/images/images.jpg
+	new file:   webchick-web/src/main/webapp/resources/images/korea.png
+	new file:   webchick-web/src/main/webapp/resources/images/loader1.gif
+	new file:   webchick-web/src/main/webapp/resources/images/loading1.gif
+	new file:   webchick-web/src/main/webapp/resources/images/odors_icon.gif
+	new file:   webchick-web/src/main/webapp/resources/images/poland.gif
+	new file:   webchick-web/src/main/webapp/resources/images/poland.png
+	new file:   webchick-web/src/main/webapp/resources/images/spain.gif
+	new file:   webchick-web/src/main/webapp/resources/images/up.gif
+	new file:   webchick-web/src/main/webapp/resources/style/test.css
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-average-weight.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-co2.jsp
+	renamed:    webchick-web/src/main/webapp/rmctrl-flock-mortality.jsp -> webchick-web/src/main/webapp/rmctrl-flock-eggs.jsp
+	renamed:    webchick-web/src/main/webapp/rmctrl-flock-feed-water.jsp -> webchick-web/src/main/webapp/rmctrl-flock-eggscounter-eighth.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggscounter-eleventh.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggscounter-fifth.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggscounter-first.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggscounter-fourth.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggscounter-ninth.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggscounter-second.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggscounter-seventh.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggscounter-sixth.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggscounter-tenth.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggscounter-third.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggscounter-twelfth.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-eggstotal.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-feed-water-24hour.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-graph.jsp
+	new file:   webchick-web/src/main/webapp/rmctrl-flock-graphs-new.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-graphs.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-heaton-time.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-minmaxhum.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-temp-humidity-24hour.jsp
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   .gitignore
+	modified:   config.xml
+	modified:   pom.xml
+	modified:   webchick-common/pom.xml
+	modified:   webchick-common/src/main/java/com/agrologic/app/config/Configuration.java
+	modified:   webchick-common/src/main/java/com/agrologic/app/dao/CellinkDao.java
+	modified:   webchick-common/src/main/java/com/agrologic/app/dao/ControllerDao.java
+	modified:   webchick-common/src/main/java/com/agrologic/app/dao/DataDao.java
+	modified:   webchick-common/src/main/java/com/agrologic/app/dao/FlockDao.java
+	modified:   webchick-common/src/main/java/com/agrologic/app/dao/ScreenDao.java
+	modified:   webchick-common/src/main/java/com/agrologic/app/dao/mappers/RowMappers.java
+	modified:   webchick-common/src/main/java/com/agrologic/app/model/Cellink.java
+	modified:   webchick-common/src/main/java/com/agrologic/app/model/Data.java
+	modified:   webchick-common/src/main/java/com/agrologic/app/model/DataFormat.java
+	modified:   webchick-common/src/main/java/com/agrologic/app/model/UserRole.java
+	modified:   webchick-common/src/main/resources/common-dao-context.xml
+	modified:   webchick-dao-derby/pom.xml
+	modified:   webchick-dao-derby/src/main/java/com/agrologic/app/dao/derby/impl/DerbyFlockDaoImpl.java
+	modified:   webchick-dao-derby/src/main/java/com/agrologic/app/dao/derby/impl/DerbyProgramAlarmDaoImpl.java
+	modified:   webchick-dao-derby/src/main/java/com/agrologic/app/dao/derby/impl/DerbyProgramSystemStateDaoImpl.java
+	modified:   webchick-dao-derby/src/main/java/com/agrologic/app/dao/derby/impl/DerbySystemStateDaoImpl.java
+	modified:   webchick-dao-mysql/pom.xml
+	modified:   webchick-dao-mysql/src/main/java/com/agrologic/app/dao/mysql/impl/CellinkDaoImpl.java
+	modified:   webchick-dao-mysql/src/main/java/com/agrologic/app/dao/mysql/impl/ControllerDaoImpl.java
+	modified:   webchick-dao-mysql/src/main/java/com/agrologic/app/dao/mysql/impl/DataDaoImpl.java
+	modified:   webchick-dao-mysql/src/main/java/com/agrologic/app/dao/mysql/impl/FlockDaoImpl.java
+	modified:   webchick-dao-mysql/src/main/java/com/agrologic/app/dao/mysql/impl/HistorySettingDaoImpl.java
+	modified:   webchick-dao-mysql/src/main/java/com/agrologic/app/dao/mysql/impl/ProgramAlarmDaoImpl.java
+	modified:   webchick-dao-mysql/src/main/java/com/agrologic/app/dao/mysql/impl/ScreenDaoImpl.java
+	modified:   webchick-dao-mysql/src/main/resources/mysql.properties
+	deleted:    webchick-local/agrodb/seg0/c101.dat
+	deleted:    webchick-local/agrodb/seg0/c121.dat
+	modified:   webchick-local/config.xml
+	modified:   webchick-local/dependency-reduced-pom.xml
+	modified:   webchick-local/pom.xml
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/ApplicationLocal.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/ComponentFactory.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/DataComponent.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/Graphs24HourPanel.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/MainScreenPanel.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/AddDistributeDialog.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/AddFeedDialog.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/AddFeedTypeDialog.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/AddFuelDialog.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/AddGasDialog.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/AddLaborDialog.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/AddMedicineDialog.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/AddSpreadDialog.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/AddTransactionDialog.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/AddWorkerDialog.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/FlockGraphs.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/FlockManager.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/FlockManagerService.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/GraphFactory.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/HistoryEntry.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/flock/Manager.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/graph/AbstractGraph.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/graph/Graph24F2W2.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/graph/Graph24FWPB.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/graph/Graph24WS.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/gui/rxtx/graph/GraphType.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/network/rxtx/SerialPortControl.java
+	modified:   webchick-local/src/main/java/com/agrologic/app/network/rxtx/SocketThread.java
+	modified:   webchick-server-main/config.xml
+	modified:   webchick-server-main/pom.xml
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/dao/service/impl/DatabaseGeneralService.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/dao/service/impl/DatabaseLoader.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/dao/service/impl/DatabaseManager.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/gui/Application.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/gui/CellinkTable.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/gui/ConfigurationDialog.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/CyclicQueue.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/KeepAliveMessage.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/Message.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/MessageFactory.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/MessageManager.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/MessageParser.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/MessageType.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/PerHourReportRequestQueue.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/RequestMessage.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/RequestMessageQueue.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/RequestPriorityQueue.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/ResponseMessage.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/messaging/ResponseMessageMap.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/network/ClientSessions.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/network/CommControl.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/network/NetworkState.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/network/ReadBuffer.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/network/ServerThread.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/network/SocketThread.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/network/SocketThreadStarter.java
+	modified:   webchick-server-main/src/main/java/com/agrologic/app/parsing/DataParser.java
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/GraphLabel.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/GraphLabel_de_DE.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/GraphLabel_en_US.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/GraphLabel_fr_FR.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/GraphLabel_iw_IL.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/GraphLabel_ru_RU.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/GraphLabel_tr_TR.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/GraphLabel_zh_CN.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/UI.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/UI_de_DE.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/UI_en_US.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/UI_fr_FR.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/UI_iw_IL.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/UI_ru_RU.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/UI_tr_TR.properties
+	modified:   webchick-server-main/src/main/resources/com/agrologic/app/i18n/UI_zh_CN.properties
+	modified:   webchick-service/pom.xml
+	modified:   webchick-service/src/main/java/com/agrologic/app/service/excel/ExcelFileWriter.java
+	modified:   webchick-service/src/main/java/com/agrologic/app/service/excel/ExcelService.java
+	modified:   webchick-service/src/main/java/com/agrologic/app/service/history/FlockHistoryService.java
+	modified:   webchick-service/src/main/java/com/agrologic/app/service/history/HistoryContent.java
+	modified:   webchick-service/src/main/java/com/agrologic/app/service/history/HistoryContentCreator.java
+	modified:   webchick-service/src/main/java/com/agrologic/app/service/history/transaction/ControllerHistoryServiceImpl.java
+	modified:   webchick-service/src/main/java/com/agrologic/app/service/history/transaction/FlockHistoryServiceImpl.java
+	modified:   webchick-service/src/main/java/com/agrologic/app/service/table/HtmlTableService.java
+	modified:   webchick-web/pom.xml
+	modified:   webchick-web/src/main/java/com/agrologic/app/graph/DataGraphCreator.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/graph/GenerateGraph.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/graph/daily/Feed2Water2ConsGraph.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/graph/daily/FeedWaterConsumpTempGraph.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/graph/daily/FeedWaterPerBirdGraph.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/graph/daily/InsideOutsideHumidityGraph.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/graph/daily/PerHourReportGraph.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/graph/daily/WaterSumConsGraph.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/graph/history/HistoryGraph.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/management/PerGrowDayHistoryDataType.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/service/LocaleService.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/utils/FileDownloadUtil.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AbstractServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/ActivateControllerServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AddControllerFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AddDataSetFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AddFlockFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AddProgramFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AddRelayFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AddScreenServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AddSelectedScreenFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AddTableDataFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AssignAlarmsFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AssignRelaysFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/AssignSystemStateFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/CellinkSetting.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/EditCellinkFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/EditCellinkServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/EditControllerFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/EditControllerServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/ExportToExcelPerDayReport.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/ExportToExcelPerHourReport.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/FlockGraphServlet.java
+	deleted:    webchick-web/src/main/java/com/agrologic/app/web/GenerateGraphServlet.java
+	deleted:    webchick-web/src/main/java/com/agrologic/app/web/Graph24HourFWServlet.java
+	deleted:    webchick-web/src/main/java/com/agrologic/app/web/Graph24HourIOHServlet.java
+	deleted:    webchick-web/src/main/java/com/agrologic/app/web/GraphAvgWeightServlet.java
+	deleted:    webchick-web/src/main/java/com/agrologic/app/web/GraphFeedWaterServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/GraphFromTo.java
+	deleted:    webchick-web/src/main/java/com/agrologic/app/web/GraphHeatOnTimeServlet.java
+	deleted:    webchick-web/src/main/java/com/agrologic/app/web/GraphMinMaxHumidityServlet.java
+	deleted:    webchick-web/src/main/java/com/agrologic/app/web/GraphMortalityServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/HistoryGraphAction.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/HistorySettingServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/ListFlocksServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/ListProgramServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/ListUserServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/ProgramRelaysServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/PropertySummaryServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/RCActionSetServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/RCChangeActionsetValue.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/RCChangeValue.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/RCControllerScreenAjax.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/RCGraphServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/RCMainScreenAjaxNew.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/UserLoginFormServlet.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/ViewTableHistory24Data.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/ViewTableHistoryData.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/controller/ClrearControllerData.java
+	deleted:    webchick-web/src/main/java/com/agrologic/app/web/controller/FlocksController.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/controller/MyFarms.java
+	modified:   webchick-web/src/main/java/com/agrologic/app/web/controller/RemoteMainScreenController.java
+	modified:   webchick-web/src/main/resources/labels.properties
+	modified:   webchick-web/src/main/resources/labels_de_DE.properties
+	modified:   webchick-web/src/main/resources/labels_en_US.properties
+	modified:   webchick-web/src/main/resources/labels_es_ES.properties
+	modified:   webchick-web/src/main/resources/labels_fr_FR.properties
+	modified:   webchick-web/src/main/resources/labels_iw_IL.properties
+	modified:   webchick-web/src/main/resources/labels_pl_PL.properties
+	modified:   webchick-web/src/main/resources/labels_ru_RU.properties
+	modified:   webchick-web/src/main/resources/labels_tr_TR.properties
+	modified:   webchick-web/src/main/resources/labels_zh_CN.properties
+	deleted:    webchick-web/src/main/webapp/WEB-INF/jsp/dashboard.jsp
+	modified:   webchick-web/src/main/webapp/WEB-INF/jsp/errorPage.jsp
+	modified:   webchick-web/src/main/webapp/WEB-INF/jsp/my-farms.jsp
+	modified:   webchick-web/src/main/webapp/WEB-INF/jsp/overview.jsp
+	deleted:    webchick-web/src/main/webapp/WEB-INF/jsp/rmctrl-flock-graphs-left-new.jsp
+	deleted:    webchick-web/src/main/webapp/WEB-INF/jsp/rmctrl-flock-graphs-main-new.jsp
+	deleted:    webchick-web/src/main/webapp/WEB-INF/jsp/rmctrl-flock-graphs-main.jsp
+	deleted:    webchick-web/src/main/webapp/WEB-INF/jsp/rmctrl-flock-graphs-top.jsp
+	modified:   webchick-web/src/main/webapp/WEB-INF/jsp/rmctrl-main-screen.jsp
+	modified:   webchick-web/src/main/webapp/WEB-INF/web.xml
+	modified:   webchick-web/src/main/webapp/access-denied.jsp
+	modified:   webchick-web/src/main/webapp/add-actionsettranslate.jsp
+	modified:   webchick-web/src/main/webapp/add-alarm.jsp
+	modified:   webchick-web/src/main/webapp/add-alarmtranslate.jsp
+	modified:   webchick-web/src/main/webapp/add-cellink.jsp
+	modified:   webchick-web/src/main/webapp/add-controller.jsp
+	modified:   webchick-web/src/main/webapp/add-data.jsp
+	modified:   webchick-web/src/main/webapp/add-datatranslate.jsp
+	modified:   webchick-web/src/main/webapp/add-program.jsp
+	modified:   webchick-web/src/main/webapp/add-relay.jsp
+	modified:   webchick-web/src/main/webapp/add-relaytranslate.jsp
+	modified:   webchick-web/src/main/webapp/add-screen.jsp
+	modified:   webchick-web/src/main/webapp/add-screentranslate.jsp
+	modified:   webchick-web/src/main/webapp/add-systemstate.jsp
+	modified:   webchick-web/src/main/webapp/add-systemstatetranslate.jsp
+	modified:   webchick-web/src/main/webapp/add-table.jsp
+	modified:   webchick-web/src/main/webapp/add-tabletranslate.jsp
+	modified:   webchick-web/src/main/webapp/add-user.jsp
+	modified:   webchick-web/src/main/webapp/adminloginsucces.jsp
+	modified:   webchick-web/src/main/webapp/all-actionset.jsp
+	modified:   webchick-web/src/main/webapp/all-alarms.jsp
+	modified:   webchick-web/src/main/webapp/all-cellinks.jsp
+	modified:   webchick-web/src/main/webapp/all-controllers.jsp
+	modified:   webchick-web/src/main/webapp/all-programs.jsp
+	modified:   webchick-web/src/main/webapp/all-relays.jsp
+	modified:   webchick-web/src/main/webapp/all-screens.jsp
+	modified:   webchick-web/src/main/webapp/all-systemstates.jsp
+	modified:   webchick-web/src/main/webapp/all-tabledata.jsp
+	modified:   webchick-web/src/main/webapp/all-tables.jsp
+	modified:   webchick-web/src/main/webapp/all-users.jsp
+	modified:   webchick-web/src/main/webapp/anerrorpage.jsp
+	modified:   webchick-web/src/main/webapp/assign-alarms.jsp
+	modified:   webchick-web/src/main/webapp/assign-relays.jsp
+	modified:   webchick-web/src/main/webapp/assign-systemstates.jsp
+	modified:   webchick-web/src/main/webapp/cellink-setting.jsp
+	modified:   webchick-web/src/main/webapp/cellinkinfo.jsp
+	modified:   webchick-web/src/main/webapp/change-password.jsp
+	modified:   webchick-web/src/main/webapp/controllers.jsp
+	modified:   webchick-web/src/main/webapp/dashboard.jsp
+	modified:   webchick-web/src/main/webapp/database.jsp
+	modified:   webchick-web/src/main/webapp/edit-alarm.jsp
+	modified:   webchick-web/src/main/webapp/edit-cellink.jsp
+	modified:   webchick-web/src/main/webapp/edit-controller.jsp
+	modified:   webchick-web/src/main/webapp/edit-profile.jsp
+	modified:   webchick-web/src/main/webapp/edit-program.jsp
+	modified:   webchick-web/src/main/webapp/edit-relay.jsp
+	modified:   webchick-web/src/main/webapp/edit-screen.jsp
+	modified:   webchick-web/src/main/webapp/edit-systemstate.jsp
+	modified:   webchick-web/src/main/webapp/edit-table.jsp
+	modified:   webchick-web/src/main/webapp/edit-user.jsp
+	modified:   webchick-web/src/main/webapp/eggs-reports.jsp
+	modified:   webchick-web/src/main/webapp/errorPage.jsp
+	modified:   webchick-web/src/main/webapp/flock-begin.jsp
+	modified:   webchick-web/src/main/webapp/flock-distibute.jsp
+	modified:   webchick-web/src/main/webapp/flock-eggs.jsp
+	modified:   webchick-web/src/main/webapp/flock-houses.jsp
+	modified:   webchick-web/src/main/webapp/flock-summary.jsp
+	modified:   webchick-web/src/main/webapp/google-map.jsp
+	modified:   webchick-web/src/main/webapp/help/index.html
+	modified:   webchick-web/src/main/webapp/help/webchick.work.html
+	modified:   webchick-web/src/main/webapp/help/webchick.work.login.html
+	modified:   webchick-web/src/main/webapp/help/webchick.work.mainscreen.html
+	modified:   webchick-web/src/main/webapp/help/webchick.work.myfarms.html
+	modified:   webchick-web/src/main/webapp/histerrorpage.jsp
+	modified:   webchick-web/src/main/webapp/language.jsp
+	modified:   webchick-web/src/main/webapp/login.jsp
+	modified:   webchick-web/src/main/webapp/loginsucces.jsp
+	modified:   webchick-web/src/main/webapp/logout.jsp
+	modified:   webchick-web/src/main/webapp/mailer.jsp
+	modified:   webchick-web/src/main/webapp/main.jsp
+	modified:   webchick-web/src/main/webapp/my-profile.jsp
+	modified:   webchick-web/src/main/webapp/resources/style/admincontent.css
+	modified:   webchick-web/src/main/webapp/resources/style/rmtstyle.css
+	modified:   webchick-web/src/main/webapp/resources/style/test.css
+	modified:   webchick-web/src/main/webapp/rmctrl-add-distrib-details.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-add-distribute.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-add-feed.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-add-feedtype.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-add-fuel.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-add-gas.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-add-labor.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-add-medicine.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-add-spread.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-add-transaction.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-add-worker.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-content.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-controller-actionset.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-controller-flocks.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-controller-graphs.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-controller-screens-ajax.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-edit-flock.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-edit-value.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-export-excel.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggs.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-eighth.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-eleventh.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-fifth.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-first.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-fourth.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-ninth.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-second.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-seventh.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-sixth.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-tenth.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-third.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggscounter-twelfth.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-eggstotal.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-flock-graph.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-flock-graphs-left.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-flock-graphs-main.jsp
+	deleted:    webchick-web/src/main/webapp/rmctrl-flock-graphs-new.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-flock-graphs-top.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-flock-management.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-flockhistory-table.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-flockhistory24-table.jsp
+	modified:   webchick-web/src/main/webapp/rmctrl-update-meter.jsp
+	modified:   webchick-web/src/main/webapp/screen-preview.jsp
+	modified:   webchick-web/src/main/webapp/serverdown.jsp
+	modified:   webchick-web/src/main/webapp/terms-conditions.jsp
+	modified:   webchick-web/src/main/webapp/toplang.jsp
+	modified:   webchick-web/src/main/webapp/unavailable.jsp
+	modified:   webchick-web/src/main/webapp/usermenuontop.jsp
+	modified:   webchick-web/src/main/webapp/view-result.jsp
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	status
+	webchick-common/src/main/java/com/agrologic/app/model/HistoryHour.java
+	webchick-local/src/main/java/com/agrologic/app/gui/rxtx/MP3.java
+	webchick-local/src/main/resources/sounds/
+	webchick-web/src/main/java/com/agrologic/app/graph/daily/HourHistoryGraph.java
+	webchick-web/src/main/webapp/WEB-INF/jsp/rmctrl-controller-screens-ajax.jsp
+	webchick-web/src/main/webapp/resources/images/Thumbs.db
+	webchick-web/src/main/webapp/resources/images/cellink.jpg
+	webchick-web/src/main/webapp/resources/images/favicon.ico
+	webchick-web/src/main/webapp/rmctrl-flock-graph-daily-hour.jsp
+

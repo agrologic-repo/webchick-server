@@ -2,15 +2,10 @@ package com.agrologic.app.messaging;
 
 import com.agrologic.app.network.CommandType;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Set;
+import java.util.*;
 
 public class ResponseMessageMap extends Observable {
-    /**
-     * The map of request response
-     */
+
     private Map<RequestMessage, ResponseMessage> responseMap;
 
     public ResponseMessageMap() {
@@ -48,6 +43,12 @@ public class ResponseMessageMap extends Observable {
                 case ERROR:
                     setChanged();
                     notifyObservers(CommandType.ERROR);
+
+                    break;
+
+                case REQUEST_HISTORY:
+                    setChanged();
+                    notifyObservers(CommandType.UPDATE);
 
                     break;
 

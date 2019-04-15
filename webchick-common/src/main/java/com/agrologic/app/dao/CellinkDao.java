@@ -32,6 +32,10 @@ public interface CellinkDao {
      */
     void update(Cellink cellink) throws SQLException;
 
+//    void update_without_version (Cellink cellink) throws SQLException;
+
+    void state_update(Cellink cellink) throws SQLException;
+
     /**
      * Removes a cellink from the database
      *
@@ -63,6 +67,8 @@ public interface CellinkDao {
      * @throws java.sql.SQLException if failed to execute statement.
      */
     Cellink validate(String name, String password) throws SQLException;
+
+    Cellink validate_with_version (String name, String password, String version) throws SQLException;
 
     /**
      * Return actual cellink.

@@ -9,6 +9,7 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
     public static final int RELAY = 1;
     public static final int STATUS = 0;
     public static final int SYSTEM_STATE = 3;
+    public static final int STATUS_STRINGS = 6;
     private static final long serialVersionUID = 2L;
     private boolean updated = false;
     private String display;
@@ -324,6 +325,18 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
             return format;
         }
     }
+
+    public int getFormatForLocalGraphs() {
+        if (id == 1302) {
+            return 0;
+        }
+//        if (id == 2163){
+//            return 0;
+//        }
+        else {
+            return format;
+        }
+    }
     /*******************************************************************************************/
     /**
      * ************************ this methods useful in webchick-server************************
@@ -339,7 +352,7 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
     public boolean isAlarmOn() {
         boolean on = false;
         if(isAlarm()) {
-            long val = getValue();
+           long val = getValue();
             if(val > 0) {
                 on = true;
             }
@@ -360,6 +373,12 @@ public class Data implements Serializable, Comparable<Data>, Cloneable {
                 ? true
                 : false;
     }
+
+    public boolean isDEC_5() {//
+        return (format == DataFormat.DEC_5)//
+                ? true//
+                : false;//
+    }//
 
     @Override
     public Object clone() {

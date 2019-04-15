@@ -45,8 +45,7 @@ public class DatabaseManager {
         Long cellinkId = Long.parseLong(config.getCellinkId());
         logger.info("UserID and CellinkID argument: User ID : {} and Cellink ID: {} ", new Object[]{userId, cellinkId});
         if (userId.equals((long) -1) || cellinkId.equals((long) -1)) {
-            logger.info("UserID or CellinkID argument error : User ID : {} and Cellink ID: {} "
-                    , new Object[]{userId, cellinkId});
+            logger.info("UserID or CellinkID argument error : User ID : {} and Cellink ID: {} ", new Object[]{userId, cellinkId});
             throw new IllegalArgumentException();
         }
         logger.info("Start loading data from database ");

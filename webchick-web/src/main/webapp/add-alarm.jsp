@@ -18,6 +18,7 @@
 <head>
     <title>Add Alarm</title>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
 </head>
 <body onunload="closeWindow();">
 <table cellpadding="1" cellspacing="1" border="0" width="100%">

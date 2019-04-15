@@ -17,6 +17,7 @@
     <title>Access Denied</title>
     <link rel="StyleSheet" type="text/css" href="resources/style/menubar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
 </head>
 <body>
 <div id="header">

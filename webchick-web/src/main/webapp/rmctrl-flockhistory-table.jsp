@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%--<%@ page errorPage="anerrorpage.jsp" %>--%>
+<%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.model.User" %>
 
 <% User user = (User) request.getSession().getAttribute("user");
@@ -29,6 +29,7 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title></title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="resources/style/calendar.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/admincontent.css"/>
     <link rel="StyleSheet" type="text/css" href="resources/style/multiopt.css"/>
@@ -41,8 +42,7 @@
     <tr>
         <td align="center">
             <fieldset style="-moz-border-radius:8px;  border-radius: 8px;  -webkit-border-radius: 8px; width: 100%">
-                <h1><%=session.getAttribute("history.table.page.title")%>
-                </h1>
+                <h1><%=session.getAttribute("history.table.page.title")%></h1>
             </fieldset>
         </td>
     </tr>
@@ -57,22 +57,12 @@
                                 <input type="hidden" name="flockId" value="<%=flockId%>">
                                 <%=session.getAttribute("label.show.range")%>&nbsp;
                                 <%if (fromDay == -1 || toDay == -1) {%>
-                                <%=session.getAttribute("label.from")%> : <input type="text" size="5"
-                                                                                 name="fromDay"
-                                                                                 style="display: inline;"/>
-                                <%=session.getAttribute("label.to")%> : <input type="text" size="5"
-                                                                               name="toDay"
-                                                                               style="display: inline;"/>
+                                <%=session.getAttribute("label.from")%> : <input type="text" size="5" name="fromDay" style="display: inline;"/>
+                                <%=session.getAttribute("label.to")%> : <input type="text" size="5" name="toDay" style="display: inline;"/>
                                 <%} else {%>
-                                <%=session.getAttribute("label.from")%> : <input type="text" size="5"
-                                                                                 name="fromDay"
-                                                                                 value="<%=fromDay%>"
-                                                                                 style="display: inline;"/>
-                                <%=session.getAttribute("label.to")%> : <input type="text" size="5" name="toDay"
-                                                                               value="<%=toDay%>"
-                                                                               style="display: inline;"/>
+                                <%=session.getAttribute("label.from")%> : <input type="text" size="5" name="fromDay" value="<%=fromDay%>" style="display: inline;"/>
+                                <%=session.getAttribute("label.to")%> : <input type="text" size="5" name="toDay" value="<%=toDay%>"  style="display: inline;"/>
                                 <%}%>
-
                                 <button id="btnGo" style="min-width: 80px">
                                     <%=session.getAttribute("button.apply")%>
                                 </button>
@@ -88,16 +78,29 @@
             </fieldset>
         </td>
     </tr>
-    <tr>
-        <td align="center">
-            <p>
-                <button id="btnClose" name="btnClose"
-                        onclick='self.close()'><%=session.getAttribute("button.close")%>
-                </button>
-            </p>
-        </td>
-    </tr>
+    <%--<tr>--%>
+        <%--<td align="center">--%>
+            <%--<p>--%>
+                <%--<button id="btnClose" name="btnClose"--%>
+                        <%--onclick='self.close()'><%=session.getAttribute("button.close")%>--%>
+                <%--</button>--%>
+            <%--</p>--%>
+        <%--</td>--%>
+    <%--</tr>--%>
 </table>
+
+<%--<table>--%>
+    <%--<tr>--%>
+        <%--<td align="center">--%>
+            <%--<p>--%>
+                <%--<button id="btnClose" name="btnClose"--%>
+                        <%--onclick='self.close()'><%=session.getAttribute("button.close")%>--%>
+                <%--</button>--%>
+            <%--</p>--%>
+        <%--</td>--%>
+    <%--</tr>--%>
+<%--</table>--%>
+
 <script>
     $("#btnClear").click(function () {
         window.location.href = "./rmctrl-flockhistory-table.jsp?flockId=<%=flockId%>";

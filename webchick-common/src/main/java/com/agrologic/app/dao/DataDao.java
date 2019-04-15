@@ -187,6 +187,10 @@ public interface DataDao {
 
     Data getGrowDay(Long controllerId) throws SQLException;
 
+    Data getResetTime(Long controllerId) throws SQLException;
+
+    Data get_reset_time_by_flock_id(Long flockId) throws SQLException;
+
     Data getChangedDataValue(Long controllerId) throws SQLException;
 
     Collection<Data> find(Long type) throws SQLException;
@@ -234,12 +238,17 @@ public interface DataDao {
 
     Collection<Data> getControllerDataValues(Long controllerId) throws SQLException;
 
+    int removeControllerDataValues(Long controllerId) throws SQLException;
+
     Collection<Data> getPerHourHistoryDataByControllerValues(Long controllerId) throws SQLException;
+
+    Collection<Data> getPerHourHistoryData() throws SQLException;
+
+//    Collection<Data> get_hour_history_1_grd_w_req_err(Long controllerId) throws SQLException;
 
     Map<Long, Long> getUpdatedControllerDataValues(Long controllerId) throws SQLException;
 
-    Collection<Data> getOnlineTableDataList(Long controllerId, Long programId, Long screenId, Long tableId, Long langId)
-            throws SQLException;
+    Collection<Data> getOnlineTableDataList(Long controllerId, Long programId, Long screenId, Long tableId, Long langId) throws SQLException;
 
     /**
      * Return collection of data objects .
@@ -298,6 +307,12 @@ public interface DataDao {
      * @throws java.sql.SQLException if failed to execute the query
      */
     void copySpecialData(Long newProgramId, Long selectedProgramId);
+
+    Data get_data_by_d_num(String d_num) throws SQLException;
+
+    Data get_data_by_d_num_with_unicode_l(String d_num, Long lang_id) throws SQLException;
+
+    String get_label_by_d_num(String d_num) throws SQLException;
 }
 
 
