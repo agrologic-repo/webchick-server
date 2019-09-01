@@ -4,11 +4,8 @@
 
 <%@ page errorPage="anerrorpage.jsp" %>
 <%@ page import="com.agrologic.app.graph.GenerateGraph" %>
-<%@ page import="com.agrologic.app.model.Controller" %>
-<%@ page import="com.agrologic.app.model.Program" %>
-<%@ page import="com.agrologic.app.model.Screen" %>
-<%@ page import="com.agrologic.app.model.User" %>
 <%@ page import="java.io.PrintWriter" %>
+<%@ page import="com.agrologic.app.model.*" %>
 
 <%
     User user;
@@ -39,6 +36,16 @@
         return;
     }
     userId = Long.parseLong(request.getParameter("userId"));
+
+    if(user.getUserRole().equals(UserRole.USER)) {
+        try {
+            if (!user.getId().equals(userId)) {
+                response.sendRedirect("./index.htm");
+            }
+        } catch (Exception e) {
+        }
+    }
+
     cellinkId = Long.parseLong(request.getParameter("cellinkId"));
     controllerId = Long.parseLong(request.getParameter("controllerId"));
     screenId = Long.parseLong(request.getParameter("screenId"));

@@ -27,15 +27,9 @@ import java.util.Map;
 
 @Controller
 public class MyFarms {
-//public class MyFarms extends AbstractServlet{ //
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final CellinkDao cellinkDao;
     private final ControllerDao controllerDao;
-
-
-//    public MyFarms() {//
-//        super();//
-//    }//
 
     @Autowired
     public MyFarms(CellinkDao cellinkDao, ControllerDao controllerDao) {
@@ -48,13 +42,15 @@ public class MyFarms {
 
         User user = (User) session.getAttribute("user");
         if (!CheckUserInSession.isUserInSession(request)) {
-            logger.error("Unauthorized access!");
+            logger.error("Unauthorized access! Requested URI : [{}] ", request.getRequestURI());
             try {
                 response.sendRedirect("./login.jsp");
             } catch (IOException e) {
-                logger.error("Unauthorized access!");
+                logger.error("Unauthorized access! {0} ", e.getMessage(), e);
             }
         }
+
+        validateInputParams(user,userId);
 
         Collection<Cellink> cellinks = getCellinks(userId);
         Map<String, Object> pageModel = new HashMap<String, Object>();
@@ -64,6 +60,12 @@ public class MyFarms {
         return new ModelAndView("my-farms", pageModel);
     }
 
+    private boolean validateInputParams(User user, Long userId) {
+        if(user.getId().equals(userId)) {
+            return true;
+        }
+        return false;
+    }
 
     private Collection<Cellink> getCellinks(Long userId) {
         try {

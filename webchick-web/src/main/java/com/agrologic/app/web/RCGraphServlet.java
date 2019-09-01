@@ -30,36 +30,43 @@ public class RCGraphServlet extends AbstractServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
-        try {
-            long userId = Long.parseLong(request.getParameter("userId"));
-            long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-            long controllerId = Long.parseLong(request.getParameter("controllerId"));
-            long screenId = Long.parseLong(request.getParameter("screenId"));
-            long langId = getInSessionLanguageId(request);
+        if (!CheckUserInSession.isUserInSession(request)) {
+            logger.error("Unauthorized access!");
+            response.sendRedirect("/login.jsp");
+        } else {
+
+
             try {
-                ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-                Controller controller = controllerDao.getById(controllerId);
-                request.setAttribute("controller", controller);
+                long userId = Long.parseLong(request.getParameter("userId"));
+                long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
+                long controllerId = Long.parseLong(request.getParameter("controllerId"));
+                long screenId = Long.parseLong(request.getParameter("screenId"));
+                long langId = getInSessionLanguageId(request);
+                try {
+                    ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
+                    Controller controller = controllerDao.getById(controllerId);
+                    request.setAttribute("controller", controller);
 
-                ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
-                Program program = programDao.getById(controller.getProgramId());
-                controller.setProgram(program);
+                    ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                    Program program = programDao.getById(controller.getProgramId());
+                    controller.setProgram(program);
 
-                ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
-                Collection<Screen> screens = screenDao.getAllScreensByProgramAndLang(program.getId(), langId, false);
-                program.setScreens((List) screens);
+                    ScreenDao screenDao = DbImplDecider.use(DaoType.MYSQL).getDao(ScreenDao.class);
+                    Collection<Screen> screens = screenDao.getAllScreensByProgramAndLang(program.getId(), langId, false);
+                    program.setScreens((List) screens);
 
-                final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
-                List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId(), langId);
-                program.setProgramRelays(programRelays);
+                    final ProgramRelayDao programRelayDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramRelayDao.class);
+                    List<ProgramRelay> programRelays = programRelayDao.getAllProgramRelays(program.getId(), langId);
+                    program.setProgramRelays(programRelays);
 
-                request.getRequestDispatcher("./rmctrl-controller-graphs.jsp?userId" + userId + "&cellinkId=" + cellinkId + "&screenId=" + screenId).forward(request,response);
-            } catch (SQLException ex) {
-                // error page
-                logger.error("SQLException", ex);
+                    request.getRequestDispatcher("./rmctrl-controller-graphs.jsp?userId" + userId + "&cellinkId=" + cellinkId + "&screenId=" + screenId).forward(request, response);
+                } catch (SQLException ex) {
+                    // error page
+                    logger.error("SQLException", ex);
+                }
+            } finally {
+                out.close();
             }
-        } finally {
-            out.close();
         }
     }
 

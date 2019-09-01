@@ -18,7 +18,7 @@
 
     <groupId>com.agrologic</groupId>
     <artifactId>webchick-server</artifactId>
-    <version>6.7.58-SNAPSHOT</version>
+    <version>6.7.60-SNAPSHOT</version>
 
     <scm>
         <connection>scm:git:git://github.com/val100/WebchickServer.git</connection>

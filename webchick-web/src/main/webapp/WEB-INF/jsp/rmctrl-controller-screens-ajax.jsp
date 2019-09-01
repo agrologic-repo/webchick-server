@@ -10,6 +10,7 @@
 <%@ page import="com.agrologic.app.dao.DaoType" %>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Locale" %>
+<%@ page import="com.agrologic.app.model.UserRole" %>
 
 <jsp:useBean id="userId" scope="request" type="java.lang.Long"/>
 <jsp:useBean id="cellink" scope="request" type="com.agrologic.app.model.Cellink"/>
@@ -21,6 +22,15 @@
     if (user == null) {
         response.sendRedirect("./index.htm");
         return;
+    }
+
+    if(user.getUserRole().equals(UserRole.USER)) {
+        try {
+            if (!user.getId().equals(userId)) {
+                response.sendRedirect("./index.htm");
+            }
+        } catch (Exception e) {
+        }
     }
 
     Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
@@ -109,13 +119,13 @@ function handleServerResponse() {
             }
             break;
         case interactive:
-            //var innerHTML = "<table class=\"infoMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"
-            //tableDataDiv.innerHTML = innerHTML;
+            var innerHTML = "<table class=\"infoMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"
+            tableDataDiv.innerHTML = innerHTML;
             break;
 
         case loaded:
-            //var innerHTML = "<table class=\"infoMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"
-            //tableDataDiv.innerHTML = innerHTML;//
+            var innerHTML = "<table class=\"infoMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"
+            tableDataDiv.innerHTML = innerHTML;//
             break;
 
         case loading:
@@ -127,7 +137,7 @@ function handleServerResponse() {
             break;
 
         case uninitialized:
-            //document.getElementById("loading").style.display = "block";
+            document.getElementById("loading").style.display = "block";
             break;
     }
 }

@@ -63,13 +63,10 @@ public enum UserRole {
 
             case 2:
                 return UserRole.USER;
-
             case 3:
                 return UserRole.DISTRIBUTOR;
             case 4:
                 return UserRole.READONLYUSER;
-//            case 5:
-//                return UserRole.READONLYADMIN;
             default:
                 return UserRole.UNKNOWN;
         }

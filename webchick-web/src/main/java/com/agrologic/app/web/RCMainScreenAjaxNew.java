@@ -3,6 +3,7 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.*;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +40,8 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
 
             if (!CheckUserInSession.isUserInSession(request)) {
                 logger.error("Unauthorized access!");
-                response.sendRedirect("./login.jsp");
+                response.sendRedirect("/login.jsp");
+                request.getSession().invalidate();
             } else {
                 long userId = Long.parseLong(request.getParameter("userId"));
                 long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
@@ -215,6 +217,7 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                     out.println("</td>");
                     out.println("</tr>");
                     out.println("</table>");
+                    out.println("<script>window.top.location.href =" + request.getContextPath() + "/login.jsp" + "</script>");
                 }
             }
         } finally {

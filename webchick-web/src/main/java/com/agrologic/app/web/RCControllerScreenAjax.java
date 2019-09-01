@@ -32,6 +32,12 @@ public class RCControllerScreenAjax extends AbstractServlet {
 
         PrintWriter out = response.getWriter();
 
+        if (!CheckUserInSession.isUserInSession(request)) {
+            logger.error("Unauthorized access!");
+            response.sendRedirect("/login.jsp");
+            request.getSession().invalidate();
+        }
+
         try {
 
             long userId = Long.parseLong(request.getParameter("userId"));

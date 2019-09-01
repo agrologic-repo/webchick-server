@@ -30,7 +30,8 @@ public class RemoveControllerServlet extends AbstractServlet {
 
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
-            response.sendRedirect("./login.jsp");
+            response.sendRedirect("/login.jsp");
+            request.getSession().invalidate();
         } else {
             User user = (User) request.getSession().getAttribute("user");
             String forwardLink = "./cellink-setting.html";
@@ -60,12 +61,13 @@ public class RemoveControllerServlet extends AbstractServlet {
             } catch (SQLException ex) {
 
                 // error page
-                logger.error("Error occurs while removing controlller !");
+                logger.error("Error occurs while removing controller !");
                 request.setAttribute("message", "Error occurs while removing controller with id  " +
                         controllerId);
                 request.setAttribute("error", true);
                 request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId"
                         + cellinkId).forward(request, response);
+                out.println("<script>window.top.location.href =" + request.getContextPath() + "/login.jsp" + "</script>");
             } finally {
                 out.close();
             }
