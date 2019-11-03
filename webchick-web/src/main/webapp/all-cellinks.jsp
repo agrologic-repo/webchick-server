@@ -262,7 +262,7 @@
             </tr>
             <tr>
                 <td>
-                    <%if (user.getRole() == UserRole.USER || user.getRole() == UserRole.READONLYUSER) {%>
+                    <%if (user.getRole() == UserRole.USER ) {%>
                     <button id="btnCancel" name="btnCancel"
                             onclick='return back("./my-farms.html?userId=<%=user.getId() %>");'>
                         <%=session.getAttribute("button.back") %>

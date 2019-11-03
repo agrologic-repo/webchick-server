@@ -82,15 +82,9 @@ public class UserLoginFormServlet extends AbstractServlet {
                     case USER:
                         response.sendRedirect(getURLWithContextPath(request) + MY_FARMS_URL + "?userId=" + user.getId());
                         break;
-                    case READONLYUSER:
-                        response.sendRedirect(getURLWithContextPath(request) + MY_FARMS_URL + "?userId=" + user.getId());
-                        break;
                     case DISTRIBUTOR:
                         response.sendRedirect(getURLWithContextPath(request) + OVERVIEW_URL);
                         break;
-//                    case READONLYADMIN:
-//                        response.sendRedirect(getURLWithContextPath(request) + OVERVIEW_URL);
-//                        break;
                     case ADMIN:
                         response.sendRedirect(getURLWithContextPath(request) + OVERVIEW_URL);
                         break;

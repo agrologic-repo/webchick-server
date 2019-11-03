@@ -282,18 +282,12 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
             out.println("</td>");
             out.println("<td class='value'>");
             if (!data.isReadonly()) {
-                if (user.getRole() == UserRole.READONLYUSER) {
-                    out.println("<input name='"+controller.getId()+",1,"+data.getId()+"'type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6'"
-                            + " style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
-                            + data.getFormattedValue() + "'>");
-                } else {
-                    request.getSession().setAttribute("userId", request.getParameter("userId"));
-                    request.getSession().setAttribute("cellinkId", request.getParameter("cellinkId"));
-                    out.println("<input name='"+controller.getId()+",1,"+data.getId()+"'type='text' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
-                            + data.getFormat()
-                            + "')\" size='6' style='height:14pt;color:green;background:lightgoldenrodyellow;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
-                            + data.getFormattedValue() + ">");
-                }
+                request.getSession().setAttribute("userId", request.getParameter("userId"));
+                request.getSession().setAttribute("cellinkId", request.getParameter("cellinkId"));
+                out.println("<input name='"+controller.getId()+",1,"+data.getId()+"'type='text' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
+                        + data.getFormat()
+                        + "')\" size='6' style='height:14pt;color:green;background:lightgoldenrodyellow;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
+                        + data.getFormattedValue() + ">");
             } else {
                 out.println(
                         "<input name='"+controller.getId()+",1,"+data.getId()+"'type='text' type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6'"
@@ -463,20 +457,10 @@ public class RCMainScreenAjaxNew extends AbstractServlet {
                     out.println("<td class='value'>");
 
                     if (!data.isReadonly()) {
-                        if (user.getRole() == UserRole.READONLYUSER) {
-                            out.println("<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6'"
-                                    + " style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
-                                    + data.getFormattedValue() + "'>");
-                        } else {
-//                            out.println(
-//                                    "<input type='text' name='test' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'" + data.getFormat()
-//                                            + "')\" size='8' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;' value=" + data.getFormattedValue() + ">");
-                            out.println("<input name='"+controller.getId()+",1,"+data.getId()+"'type='text' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
-                                    + data.getFormat()
-                                    + "')\" size='6' style='height:14pt;color:green;background:lightgoldenrodyellow;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
-                                    + data.getFormattedValue() + ">");
-                        }
-
+                        out.println("<input name='"+controller.getId()+",1,"+data.getId()+"'type='text' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
+                                + data.getFormat()
+                                + "')\" size='6' style='height:14pt;color:green;background:lightgoldenrodyellow;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
+                                + data.getFormattedValue() + ">");
                     } else {
                         out.println(
                                 "<input type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='8'"

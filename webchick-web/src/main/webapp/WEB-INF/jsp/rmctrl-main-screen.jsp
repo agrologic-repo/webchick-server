@@ -556,7 +556,7 @@
                             </a>
                             <% String access = (String) request.getSession().getAttribute("access");%>
                             <% if (!access.toLowerCase().equals("regular")) {%>
-                            <%if (role == UserRole.USER || role == UserRole.READONLYUSER) {%>
+                            <%if (role == UserRole.USER) {%>
                             <img src="resources/images/cellinks.png" border="0" hspace="5"/>
                             <a href="./my-farms.html?userId=<%=userId%>">
                                 <spring:message code='button.myfarms'/>

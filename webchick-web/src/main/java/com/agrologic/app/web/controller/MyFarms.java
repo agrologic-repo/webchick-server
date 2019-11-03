@@ -27,15 +27,10 @@ import java.util.Map;
 
 @Controller
 public class MyFarms {
-//public class MyFarms extends AbstractServlet{ //
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final CellinkDao cellinkDao;
     private final ControllerDao controllerDao;
 
-
-//    public MyFarms() {//
-//        super();//
-//    }//
 
     @Autowired
     public MyFarms(CellinkDao cellinkDao, ControllerDao controllerDao) {
@@ -44,7 +39,8 @@ public class MyFarms {
     }
 
     @RequestMapping(value = "/my-farms.html", method = RequestMethod.GET)
-    public ModelAndView showMyFarms(@RequestParam(value = "userId") Long userId, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+    public ModelAndView showMyFarms(@RequestParam(value = "userId") Long userId,
+                                         HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 
         User user = (User) session.getAttribute("user");
         if (!CheckUserInSession.isUserInSession(request)) {

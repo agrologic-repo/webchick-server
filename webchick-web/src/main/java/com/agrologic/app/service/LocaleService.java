@@ -6,6 +6,9 @@ import com.agrologic.app.dao.LanguageDao;
 
 import java.sql.SQLException;
 
+/**
+ * Created by Valery on 1/14/14.
+ */
 public class LocaleService {
     private LanguageDao languageDao;
 

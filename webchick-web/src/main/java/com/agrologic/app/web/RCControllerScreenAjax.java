@@ -45,13 +45,10 @@ public class RCControllerScreenAjax extends AbstractServlet {
                 Cellink cellink = cellinkDao.getById(cellinkId);
 
                 if (cellink.getState() == CellinkState.STATE_ONLINE) {
-                    cellink.setTime(new Timestamp(System.currentTimeMillis()));
                     cellink.setState(CellinkState.STATE_START);
-                    cellinkDao.update(cellink);
-                } else {
-                    cellink.setTime(new Timestamp(System.currentTimeMillis()));
-                    cellinkDao.update(cellink);
                 }
+                cellink.setTime(new Timestamp(System.currentTimeMillis()));
+                cellinkDao.update(cellink);
 
                 final ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 final Controller controller = controllerDao.getById(controllerId);
@@ -249,21 +246,12 @@ public class RCControllerScreenAjax extends AbstractServlet {
                                 out.println(data.getUnicodeLabel());
                                 out.println("</td>");
                                 out.println("<td class='value'>");
-
-                                User user = (User) request.getSession().getAttribute("user");
-
                                 if (!data.isReadonly()) {
-                                    if (user.getRole() == UserRole.READONLYUSER) {
-                                        out.println(
-                                                "<input name='"+controller.getId()+","+currScreen.getId()+"'type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"
-                                                        + data.getFormattedValue() + "'>");
-                                    } else {
-                                        out.println(
-                                                "<input name='"+controller.getId()+","+currScreen.getId()+","+data.getId()+"'type='text' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
-                                                        + data.getFormat()
-                                                        + "')\" size='6' style='height:14pt;color:green;background:lightgoldenrodyellow;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
-                                                        + data.getFormattedValue() + ">");
-                                    }
+                                    out.println(
+                                            "<input name='"+controller.getId()+","+currScreen.getId()+","+data.getId()+"'type='text' dir='ltr' onFocus=\"blockAjax()\" onBlur=\"unblockAjax()\" onkeydown=\"return keyDown(this)\" onkeyup=\"return checkField(event,this,'"
+                                                    + data.getFormat()
+                                                    + "')\" size='6' style='height:14pt;color:green;background:lightgoldenrodyellow;font-size:10pt;font-weight: bold; vertical-align: middle;' value="
+                                                    + data.getFormattedValue() + ">");
                                 } else {
                                     out.println(
                                             "<input name='"+controller.getId()+","+currScreen.getId()+"'type='text' dir='ltr' onfocus='this.blur()' readonly='readonly' border='0' size='6' style='height:14pt;color:green;font-size:10pt;font-weight: bold; vertical-align: middle;border:0;' value='"

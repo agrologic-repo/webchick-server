@@ -184,8 +184,6 @@
                                         <%=session.getAttribute("user.role.advanced") %>
                                         <%} else if (user.getRole() == UserRole.USER) {%>
                                         <%=session.getAttribute("user.role.regular") %>
-                                        <%} else if (user.getRole() == UserRole.READONLYUSER) {%>
-                                            Read only user
                                         <%} else {%>
 
                                         <%}%>
@@ -196,7 +194,7 @@
                     </tr>
                     <tr>
                         <td colspan="1">
-                            <%if (user.getRole() == UserRole.USER || user.getRole() == UserRole.READONLYUSER) {%>
+                            <%if (user.getRole() == UserRole.USER) {%>
                             <button id="btnCancel" name="btnCancel"
                                     onclick='return back("./my-farms.html?userId=<%=user.getId() %>");'>
                                 <%=session.getAttribute("button.back") %>

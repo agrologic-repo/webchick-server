@@ -53,6 +53,7 @@ public class ListFlocksServlet extends AbstractServlet {
                     FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
                     for (Controller controller : controllers) {
                         Collection<Flock> flocks = flockDao.getAllFlocksByController(controller.getId());
+//TODO val: check if it works
 //                        // 01/03/2018
 //                        for (Flock f : flocks){
 //                            if (f != null && f.getStatus().toLowerCase().equals("Open".toLowerCase())) {

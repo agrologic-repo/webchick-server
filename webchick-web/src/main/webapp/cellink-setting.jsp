@@ -231,7 +231,7 @@
                                                         <%=controller.getNetName()%>
                                                     </td>
                                                     <td align="center">
-                                                        <%if (user.getRole() != UserRole.USER || user.getRole() != UserRole.READONLYUSER) {%>
+                                                        <%if (user.getRole() != UserRole.USER ) {%>
                                                             <%--<%if (user.getRole() == UserRole.ADMIN) {%>--%>
                                                         <a href="./all-screens.html?programId=<%=controller.getProgramId() %>">
                                                             <%=controller.getProgram().getName() %>
@@ -253,7 +253,7 @@
                                                             <%=session.getAttribute("button.edit")%>
                                                         </a>
                                                     </td>
-                                                    <% if (user.getRole() != UserRole.USER || user.getRole() != UserRole.READONLYUSER) {%>
+                                                    <% if (user.getRole() != UserRole.USER ) {%>
                                                     <td align="center">
                                                         <img src="resources/images/close.png" style="cursor: pointer" border="0" hspace="5"/>
                                                         <a href="javascript:removeController('<%=editCellink.getUserId()%>','<%=cellinkId%>','<%=controller.getId()%>');">
@@ -270,7 +270,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <%if (user.getRole() == UserRole.USER || user.getRole() == UserRole.READONLYUSER) {%>
+                                            <%if (user.getRole() == UserRole.USER) {%>
                                             <button name="btnCancel" type="button" onclick='return back("./my-farms.html?editCellink.getUserId()=<%=editCellink.getUserId() %>");'>
                                                 <%=session.getAttribute("button.cancel") %>
                                             </button>

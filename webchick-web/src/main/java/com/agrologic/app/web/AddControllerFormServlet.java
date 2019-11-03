@@ -42,7 +42,6 @@ public class AddControllerFormServlet extends AbstractServlet {
         String controllerType = request.getParameter("controllerType");
         String active = request.getParameter("active");
         String houseType = request.getParameter("houseType");
-
         Controller controller = new Controller();
         controller.setId(null);
         controller.setNetName(netName);
@@ -59,15 +58,14 @@ public class AddControllerFormServlet extends AbstractServlet {
         }
 
         try {
-
             ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-
+            // TODO : #30 - check if new controller net number is already exist
             Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
-
             boolean ins = true;
-//
             for(Controller c : controllers) {
-                if (c.getNetName().substring(c.getNetName().length() - 2, c.getNetName().length()).equals(controller.getNetName().substring(c.getNetName().length() - 2, c.getNetName().length()))) {
+                int start = c.getNetName().length() - 2;
+                int end = c.getNetName().length();
+                if (c.getNetName().substring(start, end).equals(controller.getNetName().substring(start, end))) {
                     ins = false;
                 }
             }
@@ -77,7 +75,6 @@ public class AddControllerFormServlet extends AbstractServlet {
             }
 
             logger.info("Controller " + controller + " successfully added !");
-
             request.setAttribute("message", "Controller successfully added !");
             request.setAttribute("error", false);
             request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);

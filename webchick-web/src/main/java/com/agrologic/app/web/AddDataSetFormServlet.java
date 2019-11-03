@@ -49,7 +49,6 @@ public class AddDataSetFormServlet extends AbstractServlet {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-
                     int type = (int) startDataId;        // type of value (like 4096)
 
                     if ((type & 0xC000) != 0xC000) {
@@ -57,13 +56,7 @@ public class AddDataSetFormServlet extends AbstractServlet {
                     } else {
                         startDataId = (type & 0xFFFF);
                     }
-//                    if (startDataId < 0){
-//                        startDataId = startDataId + 65536;
-//                    }
-//
-//                    if (endDataId < 0){
-//                        endDataId = endDataId + 65536;
-//                    }
+
                     type = (int) endDataId;              // type of value (like 4096)
 
                     if ((type & 0xC000) != 0xC000) {
@@ -75,7 +68,7 @@ public class AddDataSetFormServlet extends AbstractServlet {
                     if (startDataId > endDataId) {
                         return;
                     }
-
+                    // TODO: fix insert overflow data
                     // stop counter to prevent add over data
                     long stopCount = endDataId - startDataId;
 

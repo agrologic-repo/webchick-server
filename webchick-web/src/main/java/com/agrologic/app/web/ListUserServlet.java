@@ -53,8 +53,7 @@ public class ListUserServlet extends AbstractServlet {
                 }
 
                 try {
-//                    if ((user.getRole() == UserRole.USER) || (user.getRole() == UserRole.DISTRIBUTOR)) {
-                    if ((user.getRole() == UserRole.USER) || (user.getRole() == UserRole.DISTRIBUTOR) || (user.getRole() == UserRole.READONLYUSER)) {////////////////TEST
+                    if ((user.getRole() == UserRole.USER) || (user.getRole() == UserRole.DISTRIBUTOR)) {
                         logger.info("access denied for user " + user);
                         request.getRequestDispatcher("./access-denied.jsp").forward(request, response);
                     } else {
