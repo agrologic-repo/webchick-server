@@ -64,8 +64,7 @@
                         - <%=session.getAttribute("label.help.descript")%>
                     </li>
                 </ul>
-                <%--<p><%=session.getAttribute("label.version")%></p>--%>
-                <p>version 6.7.57</p>
+                <p><%=session.getAttribute("label.version")%></p>
             </td>
         </tr>
     </table>
