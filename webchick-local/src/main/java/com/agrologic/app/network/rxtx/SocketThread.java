@@ -155,24 +155,19 @@ public final class SocketThread extends Observable implements Runnable, Network 
                                 responseMessage.setMessageType(MessageType.SKIP_RESPONSE_TO_WRITE);
                                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
                                 setThreadState(NetworkState.STATE_DELAY);
-                            } else if (sendMessageType == MessageType.REQUEST_EGG_COUNT || sendMessageType == MessageType.REQUEST_CHICK_SCALE || sendMessageType == MessageType.REQUEST_CHANGED) {
+                            } else if (sendMessageType == MessageType.REQUEST_EGG_COUNT
+                                    || sendMessageType == MessageType.REQUEST_CHICK_SCALE
+                                    || sendMessageType == MessageType.REQUEST_CHANGED) {
                                 responseMessage.setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
                                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
                                 setThreadState(NetworkState.STATE_DELAY);
+                            } else if (sendMessageType == MessageType.REQUEST_HISTORY) {
+                                errCount = processMessage(errCount);
                             } else {
                                 setThreadState(NetworkState.STATE_ERROR);
                             }
                         } else {
-                            if (sendMessage.getIndex().equals(responseMessage.getIndex()) || sendMessage.getIndex().equals("100")) {
-                                errCount = 0;
-                                if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY || sendMessage.getMessageType() == MessageType.REQUEST_PER_HOUR_REPORTS) {
-                                    responseMessage.setMessageType(MessageType.RESPONSE_DATA);
-                                }
-                                responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
-                                setThreadState(NetworkState.STATE_DELAY);
-                            } else {
-                                setThreadState(NetworkState.STATE_ERROR);
-                            }
+                            errCount = processMessage(errCount);
                         }
 
                         break;
@@ -251,6 +246,20 @@ public final class SocketThread extends Observable implements Runnable, Network 
             }
         }
         logger.info("Stop socket thread ");
+    }
+
+    private int processMessage(int errCount) {
+        if (sendMessage.getIndex().equals(responseMessage.getIndex()) || sendMessage.getIndex().equals("100")) {
+            errCount = 0;
+            if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY || sendMessage.getMessageType() == MessageType.REQUEST_PER_HOUR_REPORTS) {
+                responseMessage.setMessageType(MessageType.RESPONSE_DATA);
+            }
+            responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
+            setThreadState(NetworkState.STATE_DELAY);
+        } else {
+            setThreadState(NetworkState.STATE_ERROR);
+        }
+        return errCount;
     }
 
     private void sendRequestHandler() throws IOException {

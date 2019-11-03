@@ -135,7 +135,7 @@ public interface Message {
                     return "Request Error";
 
                 default:
-                    return "";
+                    return "OK";
             }
         }
 

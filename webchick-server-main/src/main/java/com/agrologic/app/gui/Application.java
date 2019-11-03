@@ -131,11 +131,10 @@ public class Application extends JFrame implements Observer, ServerUI {
         this.serverSocketThread = new ServerThread(this);
         this.serverSocketThread.addObserver(this);
         this.serverSocketThread.addObserver(serverInfo);
-
+        this.serverThread = new Thread(this.serverSocketThread, "ServerThread");
         if (configuration.runOnWindowsStart() == Boolean.TRUE) {
             logger.info("init server socket 2.1");
             this.serverSocketThread.setServerActivityState(ServerActivityStates.START);
-            serverThread = new Thread(this.serverSocketThread, "ServerThread");
             serverThread.start();
             clock.start();
             if (serverSocketThread.getServerState() == ServerActivityStates.ERROR) {

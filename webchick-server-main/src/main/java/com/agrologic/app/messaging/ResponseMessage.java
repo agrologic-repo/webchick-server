@@ -167,11 +167,14 @@ public final class ResponseMessage implements Message {
             return;
 
         } catch (ChecksumException e) {
+//            // if message type was history we ignore checksum error at this point
+//            if(!getMessageType().equals(MessageType.REQUEST_HISTORY)) {
+//                setMessageType(MessageType.ERROR);
+//            }
             setMessageType(MessageType.ERROR);
             setErrorCodes(ErrorCodes.CHS_ERROR);
             logger.error(e.getMessage(), e);
-            String string = new String(getBuffer().clone(), 0, getBuffer().clone().length - 1);
-            System.out.println(string);
+            setBuffer(messageBody.getBytes());
             return;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -317,7 +320,7 @@ public final class ResponseMessage implements Message {
 
     @Override
     public String toString() {
-        if (errorCodes.toString().equals("")) {
+        if (errorCodes.equals(ErrorCodes.OK) || errorCodes.equals(ErrorCodes.CHS_ERROR)) {
             return messageBody;
         } else {
             return errorCodes.toString();

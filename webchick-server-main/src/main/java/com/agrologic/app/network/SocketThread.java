@@ -286,45 +286,46 @@ public class SocketThread implements Runnable {
         }
         if (responseMessage.getMessageType() == MessageType.ERROR) {
             MessageType sendMessageType = sendMessage.getMessageType();
-
             if (sendMessageType == MessageType.REQUEST_TO_WRITE) {
                 responseMessage.setMessageType(MessageType.SKIP_RESPONSE_TO_WRITE);
                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
                 setThreadState(NetworkState.STATE_DELAY);
-
             } else if (sendMessageType == MessageType.REQUEST_EGG_COUNT
                     || sendMessageType == MessageType.REQUEST_CHICK_SCALE
-                    || sendMessageType == MessageType.REQUEST_CHANGED
-                    || sendMessageType == MessageType.REQUEST_GRAPHS) {
-
+                    || sendMessageType == MessageType.REQUEST_CHANGED) {
                 responseMessage.setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
                 setThreadState(NetworkState.STATE_DELAY);
-
+            } else if (sendMessageType == MessageType.REQUEST_HISTORY) {
+                errCount = processMessage(errCount, withLogger);
             } else {
                 setThreadState(NetworkState.STATE_ERROR);
             }
-        }
-        else if (responseMessage.getMessageType() == MessageType.SKIP_UNUSED_RESPONSE && sendMessage.getMessageType() == MessageType.REQUEST_HISTORY){
+        } else if (responseMessage.getMessageType() == MessageType.SKIP_UNUSED_RESPONSE && sendMessage.getMessageType() == MessageType.REQUEST_HISTORY){
             responseMessage.setMessageType(MessageType.REQUEST_HISTORY);
             responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
             setThreadState(NetworkState.STATE_DELAY);
+        } else {
+            errCount = processMessage(errCount, withLogger);
         }
-        else {
-            if (sendMessage.getIndex().equals(responseMessage.getIndex()) || sendMessage.getIndex().equals("100")) {
-//                if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY || sendMessage.getMessageType() == MessageType.REQUEST_PER_HOUR_REPORTS) {
-//                    responseMessage.setMessageType(MessageType.RESPONSE_DATA);
-//                }
-                responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
-                errCount = 0;
-                setThreadState(NetworkState.STATE_DELAY);
-            } else {
-                if (withLogger) {
-                    logger.error(cellink.getName() + " [response index error]");
-                }
-                commControl.clearInputStreamWithDelayForSilence();
-                setThreadState(NetworkState.STATE_DELAY);
+        return errCount;
+    }
+
+    private int processMessage(int errCount, boolean withLogger) {
+        if (sendMessage.getIndex().equals(responseMessage.getIndex()) || sendMessage.getIndex().equals("100")) {
+            errCount = 0;
+            if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY || sendMessage.getMessageType() == MessageType.REQUEST_PER_HOUR_REPORTS) {
+                responseMessage.setMessageType(MessageType.RESPONSE_DATA);
             }
+            responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
+
+            setThreadState(NetworkState.STATE_DELAY);
+        } else {
+            if (withLogger) {
+                logger.error(cellink.getName() + " [response index error]");
+            }
+            commControl.clearInputStreamWithDelayForSilence();
+            setThreadState(NetworkState.STATE_ERROR);
         }
         return errCount;
     }
