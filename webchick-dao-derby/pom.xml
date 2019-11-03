@@ -7,7 +7,7 @@
     <parent>
         <artifactId>webchick-server</artifactId>
         <groupId>com.agrologic</groupId>
-        <version>6.7.58-SNAPSHOT</version>
+        <version>6.7.59-SNAPSHOT</version>
     </parent>
 
     <artifactId>webchick-dao-derby</artifactId>
