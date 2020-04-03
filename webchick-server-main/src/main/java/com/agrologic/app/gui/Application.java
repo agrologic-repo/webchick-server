@@ -32,7 +32,9 @@ public class Application extends JFrame implements Observer, ServerUI {
     private final Logger logger = Logger.getLogger(Application.class);
     private static final String SOCKET_ALREADY_IN_USE = "Error opening socket \n Host or port already in use !";
     private static final String CANNOT_CREATE_LOCK_FILE = "Can't create Lock File.\nAccess is denied !";
-
+    private TextPaneAppender tpa;
+    private TextPaneAppender tpaf;
+    private TextPaneAppender tpaff;
     /**
      * Creates new form ServerWindow
      *
@@ -131,11 +133,10 @@ public class Application extends JFrame implements Observer, ServerUI {
         this.serverSocketThread = new ServerThread(this);
         this.serverSocketThread.addObserver(this);
         this.serverSocketThread.addObserver(serverInfo);
-
+        this.serverThread = new Thread(this.serverSocketThread, "ServerThread");
         if (configuration.runOnWindowsStart() == Boolean.TRUE) {
             logger.info("init server socket 2.1");
             this.serverSocketThread.setServerActivityState(ServerActivityStates.START);
-            serverThread = new Thread(this.serverSocketThread, "ServerThread");
             serverThread.start();
             clock.start();
             if (serverSocketThread.getServerState() == ServerActivityStates.ERROR) {
@@ -153,13 +154,17 @@ public class Application extends JFrame implements Observer, ServerUI {
     }
 
     private void hookIntoLogging() {
-        TextPaneAppender tpa = new TextPaneAppender("ConsoleAppender");
+        tpa = new TextPaneAppender("ConsoleAppender");
         tpa.setTextPane(statusConsole);
         Logger.getLogger("com.agrologic.app.network.ServerThread").addAppender(tpa);
 
-        TextPaneAppender tpaf = new TextPaneAppender("ConsoleAppender");
+        tpaf = new TextPaneAppender("ConsoleAppender");
         tpaf.setTextPane(trafficLog);
         Logger.getLogger("com.agrologic.app.network.SocketThread").addAppender(tpaf);
+
+        tpaff = new TextPaneAppender("ConsoleAppender");
+        tpaff.setTextPane(trafficLog);
+        Logger.getLogger("com.agrologic.app.network.SocketThreadDebugLogger").addAppender(tpaff);
     }
 
     /**
@@ -317,10 +322,12 @@ public class Application extends JFrame implements Observer, ServerUI {
         btnShowOpendSockets = new javax.swing.JButton();
         btnCloseUnused = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        statusConsoleScrollPane3 = new javax.swing.JScrollPane();
         statusConsole = new javax.swing.JTextPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        trafficLogScrollPane1 = new javax.swing.JScrollPane();
         trafficLog = new javax.swing.JTextPane();
+        trafficLogDebugScrollPane1 = new javax.swing.JScrollPane();
+        trafficDebugLog = new javax.swing.JTextPane();
         jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -362,7 +369,7 @@ public class Application extends JFrame implements Observer, ServerUI {
         );
 
         statusConsole.setEditable(false);
-        jScrollPane3.setViewportView(statusConsole);
+        statusConsoleScrollPane3.setViewportView(statusConsole);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -371,7 +378,7 @@ public class Application extends JFrame implements Observer, ServerUI {
                         .addGap(0, 642, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
+                                        .addComponent(statusConsoleScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
                                         .addGap(10, 10, 10)))
         );
         jPanel3Layout.setVerticalGroup(
@@ -379,7 +386,7 @@ public class Application extends JFrame implements Observer, ServerUI {
                         .addGap(0, 380, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
+                                        .addComponent(statusConsoleScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
                                         .addContainerGap()))
         );
 
@@ -405,9 +412,13 @@ public class Application extends JFrame implements Observer, ServerUI {
 
         paneServer.addTab("Server Log", jPanel1);
 
-        jScrollPane1.setViewportView(trafficLog);
+        trafficLogScrollPane1.setViewportView(trafficLog);
 
-        paneServer.addTab("Traffic Log", jScrollPane1);
+        paneServer.addTab("Traffic Log", trafficLogScrollPane1);
+
+        trafficLogDebugScrollPane1.setViewportView(trafficDebugLog);
+
+        paneServer.addTab("Traffic Debug Log", trafficLogDebugScrollPane1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -498,12 +509,14 @@ public class Application extends JFrame implements Observer, ServerUI {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane paneServer;
+    private javax.swing.JScrollPane statusConsoleScrollPane3;
     private javax.swing.JTextPane statusConsole;
+    private javax.swing.JScrollPane trafficLogScrollPane1;
     private javax.swing.JTextPane trafficLog;
+    private javax.swing.JScrollPane trafficLogDebugScrollPane1;
+    private javax.swing.JTextPane trafficDebugLog;
     // End of variables declaration//GEN-END:variables
 
     @Override

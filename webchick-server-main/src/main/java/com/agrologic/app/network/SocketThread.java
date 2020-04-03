@@ -49,10 +49,13 @@ public class SocketThread implements Runnable {
     private long startRunTimeMRP;
     private int counterMrp;
     private boolean flagMrp;
+    boolean withLogger = false;
+    private SocketThreadDebugLogger socketThreadDebugLogger;
 
     public SocketThread(Cellink cellink) {
         this.cellink = cellink;
         this.clientSessions = null;
+        this.socketThreadDebugLogger = new SocketThreadDebugLogger();
     }
 
     public SocketThread(ClientSessions clientSessions, Socket socket, int counterMrp) throws IOException {
@@ -79,6 +82,7 @@ public class SocketThread implements Runnable {
 
         this.clientSessions = clientSessions;
         this.messageManagers = new ArrayList<MessageManager>();
+        this.socketThreadDebugLogger = new SocketThreadDebugLogger();
     }
 
     public void setServerFacade(ServerUI serverFacade) {
@@ -95,7 +99,7 @@ public class SocketThread implements Runnable {
         int errCount = 0;
         try {
             while (!stopThread) {
-
+                withLogger = getWithLogging();
                 try {
                     switch (getThreadState()) {
 
@@ -154,14 +158,18 @@ public class SocketThread implements Runnable {
                 } catch (IOException ex) {
                     logger.error("Connection to cellink was lost .", ex);
                     networkState = NetworkState.STATE_ABORT;
+                    logger.debug("Exception occured : ", ex);
                 } catch (SQLException ex) {
                     logger.error("Database action failed.\nUpdate cellink " + cellink.getId() + " was failed.");
                     networkState = NetworkState.STATE_ABORT;
+                    logger.debug("Exception occured : ", ex);
                 } catch (NullPointerException ex) {
                     logger.debug("Connection to cellink [{}] stoped ", cellink);
                     networkState = NetworkState.STATE_STOP;
+                    logger.debug("Exception occured : ", ex);
                 } catch (Exception ex) {
                     networkState = NetworkState.STATE_DELAY;
+                    logger.debug("Exception occured : ", ex);
                 }
 
             }
@@ -193,17 +201,20 @@ public class SocketThread implements Runnable {
         stopThread = true;
         cellink.setState(CellinkState.STATE_OFFLINE);
         cellinkDao.update(cellink);
-        boolean withLogger = getWithLogging();
+        
         if (withLogger) {
-            logger.info(" STOP state [ " + cellink + " ] ");
+            //logger.info(" STOP state [ " + cellink + " ] ");
+            socketThreadDebugLogger.printLog(" STOP state [ " + cellink + " ] ");
         }
     }
 
     private void abortThreadHandler() {
         setThreadState(NetworkState.STATE_STOP);
-        boolean withLogger = getWithLogging();
+        
         if (withLogger) {
-            logger.info(cellink.getName() + " abort connection");
+//            logger.info(cellink.getName() + " abort connection");
+            socketThreadDebugLogger.printLog(cellink.getName() + " abort connection");
+
         }
     }
 
@@ -213,9 +224,10 @@ public class SocketThread implements Runnable {
         if (responseMessage.getErrorCodes().equals(Message.ErrorCodes.SOT_ERROR)) {
             errCount++;
         }
-        boolean withLogger = getWithLogging();
+        
         if (withLogger) {
-            logger.error(cellink.getName() + " [" + responseMessage + "] error count : " + errCount);
+//            logger.error(cellink.getName() + " [" + responseMessage + "] error count : " + errCount);
+            socketThreadDebugLogger.printLog(cellink.getName() + " [" + responseMessage + "] error count : " + errCount);
         }
         if (errCount < maxError) {
             requestQueue.setReplyForPreviousRequestPending(true);
@@ -232,15 +244,16 @@ public class SocketThread implements Runnable {
 //            setThreadState(NetworkState.STATE_STOP);
             setThreadState(NetworkState.STATE_DELAY);
             if (withLogger) {
-//                logger.error("Connection to cellink " + cellink.getName() + " is lost . ");
-                logger.error("DELAY " + cellink.getName());
+//                logger.error("Connection to cellink {} is delayed . ",  cellink.getName() );
+                socketThreadDebugLogger.printLog("Connection to cellink {} is delayed . " +  cellink.getName());
+                //logger.error("DELAY " + cellink.getName());
             }
         }
         return errCount;
     }
 
     private int errorHandler(int errCount) {
-        boolean withLogger = getWithLogging();
+        
         errCount++;
         if (errCount < maxError) {
             requestQueue.setReplyForPreviousRequestPending(true);
@@ -251,7 +264,8 @@ public class SocketThread implements Runnable {
             responseMessage.setErrorCodes(Message.ErrorCodes.SOT_ERROR);
             responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
             if (withLogger) {
-                logger.debug("Error count : " + errCount);
+//                logger.debug("Error count : " + errCount);
+                socketThreadDebugLogger.printLog("Error count : " + errCount);
             }
             errCount = 0;
             // we need at least one controller in on state
@@ -261,8 +275,10 @@ public class SocketThread implements Runnable {
             }
         }
         if (withLogger) {
-            logger.debug(cellink.getName() + " error count : " + errCount);
-            logger.error("Exception: ", responseMessage);
+            socketThreadDebugLogger.printLog(cellink.getName() + " error count : " + errCount);
+//            logger.debug(cellink.getName() + " error count : " + errCount);
+            socketThreadDebugLogger.printLog("Exception: " +  responseMessage);
+//            logger.error("Exception: ", responseMessage);
         }
         setThreadState(NetworkState.STATE_DELAY);
         return errCount;
@@ -275,56 +291,60 @@ public class SocketThread implements Runnable {
 
     private int receiveResponseHandler(int errCount) {
         responseMessage = (ResponseMessage) commControl.read();
-        boolean withLogger = getWithLogging();
+        
         // if checkbox with logger checked the send receive messages are shown in traffic log
         if (withLogger) {
 //            logger.info(cellink.getName() + " sent message [ V" + sendMessage.getIndex() + sendMessage + " ]");
-            logger.info(cellink.getName() + " received message [ " + responseMessage + " ]");
+            StringBuilder sb = new StringBuilder();
+            sb.append(cellink.getName() + " received message [ " + responseMessage + " ]").append('\n');
             String reqIdx = sendMessage.getIndex();
             String resIdx = responseMessage.getIndex();
-            logger.info("Request index : " + reqIdx + "  Response index : " + resIdx);
+            sb.append("Request index : " + reqIdx + "  Response index : " + resIdx).append('\n');
+            socketThreadDebugLogger.printLog(sb.toString());
         }
         if (responseMessage.getMessageType() == MessageType.ERROR) {
             MessageType sendMessageType = sendMessage.getMessageType();
-
             if (sendMessageType == MessageType.REQUEST_TO_WRITE) {
                 responseMessage.setMessageType(MessageType.SKIP_RESPONSE_TO_WRITE);
                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
                 setThreadState(NetworkState.STATE_DELAY);
-
             } else if (sendMessageType == MessageType.REQUEST_EGG_COUNT
                     || sendMessageType == MessageType.REQUEST_CHICK_SCALE
-                    || sendMessageType == MessageType.REQUEST_CHANGED
-                    || sendMessageType == MessageType.REQUEST_GRAPHS) {
-
+                    || sendMessageType == MessageType.REQUEST_CHANGED) {
                 responseMessage.setMessageType(MessageType.SKIP_UNUSED_RESPONSE);
                 responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
                 setThreadState(NetworkState.STATE_DELAY);
-
+            } else if (sendMessageType == MessageType.REQUEST_HISTORY) {
+                errCount = processMessage(errCount, withLogger);
             } else {
                 setThreadState(NetworkState.STATE_ERROR);
             }
-        }
-        else if (responseMessage.getMessageType() == MessageType.SKIP_UNUSED_RESPONSE && sendMessage.getMessageType() == MessageType.REQUEST_HISTORY){
+        } else if (responseMessage.getMessageType() == MessageType.SKIP_UNUSED_RESPONSE && sendMessage.getMessageType() == MessageType.REQUEST_HISTORY){
             responseMessage.setMessageType(MessageType.REQUEST_HISTORY);
             responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
             setThreadState(NetworkState.STATE_DELAY);
+        } else {
+            errCount = processMessage(errCount, withLogger);
         }
-        else {
-            if (sendMessage.getIndex().equals(responseMessage.getIndex()) || sendMessage.getIndex().equals("100")) {
-//                if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY || sendMessage.getMessageType() == MessageType.REQUEST_PER_HOUR_REPORTS) {
-//                    responseMessage.setMessageType(MessageType.RESPONSE_DATA);
-//                }
-                responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
-                errCount = 0;
-                setThreadState(NetworkState.STATE_DELAY);
-            } else {
-                if (withLogger) {
-                    logger.error(cellink.getName() + " [response index error]");
-                }
-                commControl.clearInputStreamWithDelayForSilence();
-                setThreadState(NetworkState.STATE_DELAY);
+        return errCount;
+    }
+
+    private int processMessage(int errCount, boolean withLogger) {
+        if (sendMessage.getIndex().equals(responseMessage.getIndex()) || sendMessage.getIndex().equals("100")) {
+            errCount = 0;
+            if (sendMessage.getMessageType() == MessageType.REQUEST_HISTORY || sendMessage.getMessageType() == MessageType.REQUEST_PER_HOUR_REPORTS) {
+                responseMessage.setMessageType(MessageType.RESPONSE_DATA);
             }
+            responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
+
+            setThreadState(NetworkState.STATE_DELAY);
+        } else {
+            if (withLogger) {
+                socketThreadDebugLogger.printLog(cellink.getName() + " [response index error]");
+//                logger.error(cellink.getName() + " [response index error]");
+            }
+            commControl.clearInputStreamWithDelayForSilence();
+            setThreadState(NetworkState.STATE_ERROR);
         }
         return errCount;
     }
@@ -343,9 +363,10 @@ public class SocketThread implements Runnable {
                         sendMessage = requestQueue.getRequest();
                         sendMessage.setIndex(reqIndex.getIndex());
                         commControl.write("V" + reqIndex.getIndex(), sendMessage);
-                        boolean withLogger = getWithLogging();
+                        
                         if (withLogger) {
-                            logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
+                            socketThreadDebugLogger.printLog(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
+//                            logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
                         }
                         setThreadState(NetworkState.STATE_BUSY);
                     } catch (IOException e) {
@@ -372,9 +393,10 @@ public class SocketThread implements Runnable {
                     sendMessage = requestQueue.getRequest();
                     sendMessage.setIndex(reqIndex.getIndex());
                     commControl.write("V" + reqIndex.getIndex(), sendMessage);
-                    boolean withLogger = getWithLogging();
+                    
                     if (withLogger) {
-                        logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
+                        socketThreadDebugLogger.printLog(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
+//                      logger.info(cellink.getName() + " sending message [V" + sendMessage.getIndex() + sendMessage + "]");
                     }
                     setThreadState(NetworkState.STATE_BUSY);
                 } catch (IOException e) {
@@ -516,7 +538,7 @@ public class SocketThread implements Runnable {
                 commControl.write(msg);
                 logger.debug("Sent answer: [{}]", msg);
 
-//                clientSessions.closeDuplicateSession(this);
+                clientSessions.closeDuplicateSession(this);
 
                 // stop running duplicated thread
                 cellink.registrate(commControl.getSocket());
@@ -597,9 +619,10 @@ public class SocketThread implements Runnable {
         responseMessage.setMessageType(MessageType.TIME_OUT_ERROR);
         responseMessage.setErrorCodes(Message.ErrorCodes.TIME_OUT_ERROR);
         responseMessageMap.put((RequestMessage) sendMessage, responseMessage);
-        boolean withLogger = getWithLogging();
+        
         if (withLogger) {
-            logger.debug("Error count : " + errorCount);
+            socketThreadDebugLogger.printLog("Error count : " + errorCount);
+//          logger.debug("Error count : " + errorCount);
         }
     }
 
