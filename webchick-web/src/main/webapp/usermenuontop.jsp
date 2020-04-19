@@ -103,8 +103,6 @@
             <a href="./help/index.html" target="_blank"><%=session.getAttribute("label.help")%></a>
             <span>|</span>
             <a href="./logout.html"><%=session.getAttribute("label.logout")%></a>
-            <span>|</span>
-            <a href="./flock-graphs-test.jsp">Flock Graph</a>
             <%}%>
         </td>
     </tr>
