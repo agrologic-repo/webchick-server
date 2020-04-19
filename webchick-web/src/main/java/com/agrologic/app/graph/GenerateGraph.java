@@ -1,17 +1,19 @@
 package com.agrologic.app.graph;
 
 import com.agrologic.app.dao.*;
+import com.agrologic.app.exception.GraphLoadingException;
 import com.agrologic.app.graph.daily.*;
 import com.agrologic.app.graph.history.HistoryGraph;
 import com.agrologic.app.model.Data;
 import com.agrologic.app.model.HistoryHour;
-import com.agrologic.app.model.history.DayParam;
 import com.agrologic.app.model.history.FromDayToDay;
 import com.agrologic.app.service.LocaleService;
 import com.agrologic.app.service.history.FlockHistoryService;
 import com.agrologic.app.service.history.HistoryContent;
 import com.agrologic.app.service.history.HistoryContentCreator;
+import com.agrologic.app.service.history.HistoryService;
 import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
+import com.agrologic.app.service.history.transaction.HistoryServiceImpl;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.entity.StandardEntityCollection;
@@ -26,68 +28,96 @@ import java.util.*;
 
 public class GenerateGraph {
 
-    public static final String NO_DATA_AVAILABLE = "No data available in database to create {} graph .";
+    private static final String NO_DATA_AVAILABLE = "No data available in database to create {} graph .";
+    private static final String LOADING_DATA_FOR_GRAPH = "Data is loading and try again in several seconds.";
     private static final Logger logger = LoggerFactory.getLogger(GenerateGraph.class);
     private static LocaleService localeService = new LocaleService();
+    private static Map<String, String> dictionary = new HashMap<>();
+    private static Map<Long,List<Data>> defaultDailyHistoryMap = new HashMap<>();
+    private static Map<Long,HistoryContent> flockHistoryContent = new HashMap<>();
+    private static HistoryService historyService = new HistoryServiceImpl();
+    private static FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
 
-
-    public static List<Data> getHistDataList(Long flock_id, Locale locale) {
-
-        List<Data> list = null;
+    public static List <Data> getHistDataList (final Long flockId, Locale locale){
+        List<Data> largestDataList = new ArrayList<>();
 
         try {
+            final Long langId = localeService.getLanguageId(locale.getLanguage());
+            final List<Data> defaultPerDayHistoryList = getDefaultPerDayHistoryList(langId,flockId);
+            largestDataList = defaultPerDayHistoryList;
+            Thread historyContentLoader = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    logger.info("start HistoryContentCreator({},{})", flockId, langId);
+                    if(!flockHistoryContent.containsKey(flockId)) {
+                        Map<Integer, String> flockPerDayNotParsedReports = null;
+                        try {
+                            flockPerDayNotParsedReports = flockHistoryService.getFlockPerDayNotParsedReports(flockId);
+                        } catch (SQLException e) {
+                            logger.error("Error during getHistDataList ", e);
+                        }
+                        HistoryContent historyContent = HistoryContentCreator
+                                .createPerDayHistoryContent(flockPerDayNotParsedReports, defaultPerDayHistoryList);
+                        flockHistoryContent.put(flockId,historyContent);
+                        logger.info("end HistoryContentCreator({},{})", flockId, langId);
+                    }
 
-            FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-            Integer max_gr = flockDao.get_max_grow_day(flock_id);
-
-            String str = flockDao.get_history_of_grow_day(flock_id, max_gr);
-
-            while((str == null || (str.trim().equals("-1"))) && max_gr > 0)
-                str = flockDao.get_history_of_grow_day(flock_id, max_gr = max_gr - 1);
-
-            Long lang_id = localeService.getLanguageId(locale.getLanguage());
-
-            return HistoryContentCreator.history_str_to_list_without_value(str, lang_id);
-
-        } catch (Exception e) {
-            return null;
+                }
+            });
+            historyContentLoader.start();
+            logger.info("end getHistDataList({},{})",flockId, langId);
+        } catch (Exception e){
+            logger.error("Error during getHistDataList ", e);
         }
+
+
+
+        return largestDataList;
     }
-//    public static List<Data> getHistDataList(Long flock_id) {
-//
-//        List<Data> list = null;
-//
-//        try {
-//
-//            FlockDao flockDao = DbImplDecider.use(DaoType.MYSQL).getDao(FlockDao.class);
-//            Integer max_gr = flockDao.get_max_grow_day(flock_id);
-//
-//            String str = flockDao.get_history_of_grow_day(flock_id, max_gr);
-//
-//            while(str == null && max_gr > 0)
-//                str = flockDao.get_history_of_grow_day(flock_id, max_gr - 1);
-//
-//            return HistoryContentCreator.history_str_to_list_without_value(str);
-//
-//        } catch (Exception e) {
-//            return null;
-//        }
-//    }
+
+    /**
+     * Get default history list by language id
+     *
+     * @param langId the language id
+     * @return defaultPerDayHistoryList
+     * @throws SQLException if failed to retrieve
+     */
+    private static List<Data> getDefaultPerDayHistoryList(Long langId, Long flockId) throws SQLException {
+        logger.info("start getDefaultPerDayHistoryList({})", langId);
+        List<Data> defaultPerDayHistoryList = historyService.getPerDayHistoryData(langId, flockId);
+        // if grow day data not the first in array so find it and swap with first
+        if (!defaultPerDayHistoryList.get(0).getId().equals(800L)) {
+            int growDayIndex = -1;
+            int counter = 0;
+            for (Data data : defaultPerDayHistoryList) {
+                if (data.getId().equals(800L)) {
+                    growDayIndex = counter;
+                    break;
+                }
+                counter++;
+            }
+            //Collections.swap(defaultPerDayHistoryList, 0, growDayIndex);
+        }
+        logger.info("end getDefaultPerDayHistoryList({})", langId);
+        return defaultPerDayHistoryList;
+    }
 
     public static String generateGraph(Long flockId, Long data_id, String fromDay, String toDay, HttpSession session, PrintWriter pw, Locale locale) {
 
         String filename = null;
 
         try {
-
+            logger.info("generateGraph({},{})", flockId, locale.getLanguage());
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             Long lang_id = localeService.getLanguageId(locale.getLanguage());
             Data data = dataDao.getById(data_id, lang_id);
+            long start = System.currentTimeMillis();
+            logger.info("start generate_graph_filename");
             filename = generate_graph_filename(flockId, data, fromDay, toDay, session, pw, locale);
-
+            logger.info("end generate_graph_filename");
         } catch (Exception e) {
 
-            logger.error(NO_DATA_AVAILABLE, "No data available");
+            logger.error(NO_DATA_AVAILABLE, "No data available", e);
             filename = "public_error_500x300.png";
 
         }
@@ -100,14 +130,12 @@ public class GenerateGraph {
             DataDao dataDao = DbImplDecider.use(DaoType.MYSQL).getDao(DataDao.class);
             Long lang_id = localeService.getLanguageId(locale.getLanguage());
             for (HistoryHour hh : hour_history){
-//                Data data = dataDao.get_data_by_d_num(hh.get_d_num());// with unicode label
                 Data data = dataDao.get_data_by_d_num_with_unicode_l(hh.get_d_num(), lang_id);
-//                hh.set_label(data.getLabel());
                 hh.set_label(data.getUnicodeLabel());
                 hh.set_format(data.getFormat());
             }
         } catch (Exception e){
-            int test = 1 + 1;
+            logger.info("Error during get_labels_and_format", e);
         }
 
         return hour_history;
@@ -122,9 +150,7 @@ public class GenerateGraph {
         String values = flock_dao.getHistory24(flockId, grow_day, d_num);// get values from request
 
         try {
-
 //            DayParam grow_day_param = new DayParam(grow_day.toString());
-
 //            Integer reset_time = flock_dao.getResetTime(flockId, grow_day_param.getGrowDay());
             Data reset_time = dataDao.get_reset_time_by_flock_id(flockId);
             if (label == null){
@@ -139,7 +165,7 @@ public class GenerateGraph {
             session.setAttribute("filename", file_name);
             pw.flush();
         } catch (Exception e) {
-            logger.error(NO_DATA_AVAILABLE, "No data availavle");
+            logger.error(NO_DATA_AVAILABLE, "No data available", e);
             file_name = "public_error_500x300.png";
         }
         return file_name;
@@ -150,19 +176,18 @@ public class GenerateGraph {
         String filename = null;
 
         try {
-
+            logger.info("start generate_graph_filename");
             FromDayToDay growDayRangeParam = new FromDayToDay(fromDay, toDay);
-            Map<Integer, String> historyByGrowDay = getFlockPerDayNotParsedReportsWithinRange(flockId, growDayRangeParam);
-            HistoryContent historyContent = HistoryContentCreator.createPerDayHistoryContent(historyByGrowDay);
-
-            List<Map<Integer, Data>> dataHistoryList = new ArrayList<Map<Integer, Data>>();
+            if (!flockHistoryContent.containsKey(flockId)) {
+                throw new GraphLoadingException(LOADING_DATA_FOR_GRAPH);
+            }
+            HistoryContent historyContent = flockHistoryContent.get(flockId);
             Map<Integer, List<Data>> historyContentMap = historyContent.getHistoryContentPerDay();
-            HashMap<String, String> dictionary = createDictionary(locale);
-
+            List<Map<Integer, Data>> dataHistoryList = new ArrayList<>();
             dataHistoryList.add(DataGraphCreator.createHistoryData(historyContentMap, data));
 
             String title = data.getUnicodeLabel();
-            String xAxisLabel = dictionary.get("graph.grow.day");
+            String xAxisLabel =  createDictionary(locale).get("graph.grow.day");
             String yAxisLabel = data.getUnicodeLabel();
 
             HistoryGraph dataGraph = new HistoryGraph();
@@ -177,18 +202,20 @@ public class GenerateGraph {
 
             // Write the chart image to the temporary directory
             ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-
             filename = ServletUtilities.saveChartAsPNG(dataGraph.getChart(), 800, 400, info, session);
-
             // Write the image map to the PrintWriter
             ChartUtilities.writeImageMap(pw, filename, info, false);
             session.setAttribute("filename-flockid=" + flockId + "&fromday=" + fromDay + "&today=" + toDay, filename);
             pw.flush();
+            logger.info("start generate_graph_filename");
+        } catch (GraphLoadingException e) {
+            logger.error(e.getMessage(), e);
+            filename = "public_loadingdata_500x300.png";
 
         } catch (Exception e) {
-            logger.error(NO_DATA_AVAILABLE, "No data available");
-            filename = "public_error_500x300.png";
-        }
+                logger.error(NO_DATA_AVAILABLE, "No data available", e);
+                filename = "public_error_500x300.png";
+            }
 
         return filename;
     }
@@ -235,7 +262,7 @@ public class GenerateGraph {
                 pw.flush();
             }
         } catch (Exception e) {
-            logger.error(NO_DATA_AVAILABLE, "Temperature/Humidity");
+            logger.error(NO_DATA_AVAILABLE, "Temperature/Humidity", e);
             filenameth = "public_error_500x300.png";
         }
         return filenameth;
@@ -281,7 +308,7 @@ public class GenerateGraph {
                 pw.flush();
             }
         } catch (Exception e) {
-            logger.error(NO_DATA_AVAILABLE, "Feed/Water");
+            logger.error(NO_DATA_AVAILABLE, "Feed/Water" , e );
             filenamewft = "public_error_500x300.png";
         }
         return filenamewft;
@@ -392,7 +419,7 @@ public class GenerateGraph {
                 pw.flush();
             }
         } catch (Exception e) {
-            logger.error(NO_DATA_AVAILABLE, "Water Sum");
+            logger.error(NO_DATA_AVAILABLE, "Water Sum", e);
             filenamewft = "public_error_500x300.png";
         }
         return filenamewft;
@@ -404,18 +431,14 @@ public class GenerateGraph {
      * @param locale the current locale
      * @return the dictionary
      */
-    protected static HashMap<String, String> createDictionary(Locale locale) {
-        HashMap<String, String> dictionary;
-        ResourceBundle bundle;
-        String key;
-        String value;
-        dictionary = new HashMap<String, String>();
-        bundle = ResourceBundle.getBundle("labels", locale);
-        for (Enumeration<String> e = bundle.getKeys(); e.hasMoreElements(); ) {
-            key = e.nextElement();
-            if (key.startsWith("graph")) {
-                value = bundle.getString(key);
-                dictionary.put(key, value);
+    protected static Map<String, String> createDictionary(Locale locale) {
+        if(dictionary.isEmpty()) {
+            ResourceBundle bundle = ResourceBundle.getBundle("labels", locale);
+            for (Enumeration<String> e = bundle.getKeys(); e.hasMoreElements(); ) {
+                String key = e.nextElement();
+                if (key.startsWith("graph")) {
+                    dictionary.put(key, bundle.getString(key));
+                }
             }
         }
         return dictionary;
@@ -430,6 +453,42 @@ public class GenerateGraph {
             historyByGrowDay = flockDao.getFlockPerDayNotParsedReports(flockId);
         }
         return historyByGrowDay;
+    }
+
+    /**
+     * Helper method to create data set for minimum maximum and humidity graph .
+     *
+     * @param historyByGrowDay the data map by grow day to create data set for graph
+     * @param data             the data object that encapsulate data id and title for data set
+     * @return dataSet the created data set map
+     */
+    private static Map<Integer, Data> createDataSet(final Map<Integer, String> historyByGrowDay, final Data data) {
+        Map<Integer, Data> dataSet = new HashMap<Integer, Data>();
+        Iterator iter = historyByGrowDay.keySet().iterator();
+
+        while (iter.hasNext()) {
+            Integer key = (Integer) iter.next();
+            String value = historyByGrowDay.get(key);
+            StringTokenizer st = new StringTokenizer(value, " ");
+
+            while (st.hasMoreElements()) {
+                try {
+                    String dataElem = (String) st.nextElement();
+                    String valElem = (String) st.nextElement();
+                    String dataType = data.getType().toString();
+                    if (dataElem.equals(dataType) && (valElem.indexOf('-') == -1)) {
+                        data.setValueFromUI(valElem);
+                        Data cloned = (Data) data.clone();
+                        dataSet.put(key, cloned);
+                        break;
+                    }
+                } catch (Exception e) {
+                    break;
+                }
+            }
+        }
+
+        return dataSet;
     }
 }
 

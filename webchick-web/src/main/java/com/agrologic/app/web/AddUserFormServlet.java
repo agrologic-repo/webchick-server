@@ -72,11 +72,12 @@ public class AddUserFormServlet extends AbstractServlet {
         }
 
         try {
-            userManagerService.insert(user);
+            long userId = userManagerService.insert(user);
+            user.setId(userId);
             logger.info("user " + user + " successfully added !");
             request.setAttribute("message", "User successfully added !");
             request.setAttribute("error", false);
-            request.getRequestDispatcher("./all-users.html").forward(request, response);
+            request.getRequestDispatcher("./userinfo.html?userId=" + userId).forward(request, response);
         } catch (SQLException ex) {
             // error page
             logger.error("Error occurs while adding user.", ex);

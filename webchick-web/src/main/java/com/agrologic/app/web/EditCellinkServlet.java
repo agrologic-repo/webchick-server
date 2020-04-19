@@ -47,6 +47,7 @@ public class EditCellinkServlet extends AbstractServlet {
 
                     logger.info("retrieve user and user cellinks to edit");
                     request.setAttribute("edituser", editUser);
+                    request.setAttribute("editcellink", cellink);
                     request.getRequestDispatcher("./edit-cellink.jsp?userId=" + userId + "&celinkId=" + cellinkId).forward(request, response);
                 } catch (SQLException ex) {
                     logger.debug("Can not retrieve cellink to edit ", ex);

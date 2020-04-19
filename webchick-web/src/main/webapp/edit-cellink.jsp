@@ -15,20 +15,8 @@
     }
 
     User editUser = (User) request.getAttribute("edituser");
-    Collection<Cellink> cellinks = editUser.getCellinks();
-    Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-    Cellink cellink = findCellinkToEdit(cellinks, cellinkId);
+    Cellink cellink = (Cellink) request.getAttribute("editcellink");
 %>
-<%! Cellink findCellinkToEdit(Collection<Cellink> cellinks, Long cellinkId) {
-    for (Cellink c : cellinks) {
-        if (c.getId().equals(cellinkId)) {
-            return c;
-        }
-    }
-    return null;
-}
-%>
-
 <!DOCTYPE html>
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
@@ -107,9 +95,13 @@
                             <td>
                                 <select id="Ntype" name="Ntype" style="width:120px">
                                     <option value="N/A">
-                                            <% for (String type : Cellink.getTypeList()) {%>
-                                    <option value="<%=type%>"><%=type%>
-                                            <%}%>
+                                    <% for (String type : Cellink.getTypeList()) {%>
+                                        <%if(cellink.getType().equals(type)){ %>
+                                            <option value="<%=type%>" selected><%=type%>
+                                        <%} else {%>
+                                            <option value="<%=type%>"><%=type%>
+                                        <%}%>
+                                    <%}%>
                                 </select>
                             </td>
                         </tr>

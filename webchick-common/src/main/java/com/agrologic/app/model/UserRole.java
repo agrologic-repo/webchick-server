@@ -59,12 +59,12 @@ public enum UserRole {
                 return UserRole.GUEST;
 
             case 1:
-                return UserRole.ADMIN;
+                return UserRole.ADMIN; // administrator
 
             case 2:
-                return UserRole.USER;
+                return UserRole.USER; // regular
             case 3:
-                return UserRole.DISTRIBUTOR;
+                return UserRole.DISTRIBUTOR; // distributor
             case 4:
                 return UserRole.READONLYUSER;
             default:

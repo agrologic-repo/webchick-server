@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.Collection;
 
 
 public class AddControllerFormServlet extends AbstractServlet {
@@ -42,7 +41,6 @@ public class AddControllerFormServlet extends AbstractServlet {
         String controllerType = request.getParameter("controllerType");
         String active = request.getParameter("active");
         String houseType = request.getParameter("houseType");
-
         Controller controller = new Controller();
         controller.setId(null);
         controller.setNetName(netName);
@@ -59,29 +57,21 @@ public class AddControllerFormServlet extends AbstractServlet {
         }
 
         try {
-
             ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
-
-            Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
-
-            boolean ins = true;
-//
-            for(Controller c : controllers) {
-                if (c.getNetName().substring(c.getNetName().length() - 2, c.getNetName().length()).equals(controller.getNetName().substring(c.getNetName().length() - 2, c.getNetName().length()))) {
-                    ins = false;
-                }
-            }
-
-            if (ins) {
+            // TODO : #30 - check if new controller net number is already exist
+            boolean exists = controllerDao.isNetNameExists(cellinkId, netName);
+            if (!exists) {
                 controllerDao.insert(controller);
+                logger.info("Controller " + controller + " successfully added !");
+                request.setAttribute("message", "Controller successfully added !");
+                request.setAttribute("error", false);
+                request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);
+            } else {
+                forwardLink ="./add-controller.jsp";
+                request.setAttribute("message", "Controller net name " + netName + " already in use. Select another net name !");
+                request.setAttribute("error", true);
+                request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);
             }
-
-            logger.info("Controller " + controller + " successfully added !");
-
-            request.setAttribute("message", "Controller successfully added !");
-            request.setAttribute("error", false);
-            request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);
-
         } catch (SQLException ex) {
             // error page
             logger.error("Error occurs while adding cellink !");

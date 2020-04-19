@@ -50,16 +50,13 @@ public class AddTableDataFormServlet extends AbstractServlet {
                     isSpecial = true;
                 }
 
-//                if (dataType < 0){
-//                    dataType = dataType + 65536;
-//                }
-
                 Long dataId;
                 if ((dataType & 0xC000) != 0xC000) {
                     dataId = (dataType & 0xFFF); // remove type to get an index 4096&0xFFF -> 0
                 } else {
                     dataId = (dataType & 0xFFFF);
                 }
+
 
                 String display = request.getParameter("display");
                 Integer position = Integer.parseInt(request.getParameter("position"));

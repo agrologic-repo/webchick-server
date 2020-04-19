@@ -24,20 +24,21 @@ public class UserDaoImpl implements UserDao {
 
     public UserDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
-        this.jdbcInsert.setTableName(USER_TABLE);
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE)
+                .usingGeneratedKeyColumns("UserId");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void insert(User user) throws SQLException {
+    public long insert(User user) throws SQLException {
         logger.debug("Inserting user with id [{}]", user.getLogin());
         Map<String, Object> valuesToInsert = new HashMap<String, Object>();
         if (user.getId() != null) {
             valuesToInsert.put("userid", user.getId());
         }
+        valuesToInsert.put("name", user.getLogin());
         valuesToInsert.put("name", user.getLogin());
         valuesToInsert.put("password", user.getPassword());
         valuesToInsert.put("firstname", user.getFirstName());
@@ -47,7 +48,12 @@ public class UserDaoImpl implements UserDao {
         valuesToInsert.put("phone", user.getPhone());
         valuesToInsert.put("email", user.getEmail());
         valuesToInsert.put("company", user.getCompany());
-        jdbcInsert.execute(valuesToInsert);
+        Number key = jdbcInsert.executeAndReturnKey(valuesToInsert);
+        if (key != null) {
+            logger.debug("User with id [{}] successfully inserted .", key.longValue());
+            return key.longValue();
+        }
+        throw new RuntimeException("Cannot retrieve primary key");
     }
 
     /**

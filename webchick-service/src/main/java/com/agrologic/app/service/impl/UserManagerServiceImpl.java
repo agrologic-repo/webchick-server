@@ -18,8 +18,8 @@ public class UserManagerServiceImpl implements UserManagerService {
     }
 
     @Override
-    public void insert(User user) throws SQLException {
-        userDao.insert(user);
+    public long insert(User user) throws SQLException {
+        return userDao.insert(user);
     }
 
     @Override

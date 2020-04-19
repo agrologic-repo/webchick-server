@@ -9,7 +9,6 @@ import com.agrologic.app.service.history.HistoryContentCreator;
 import com.agrologic.app.service.history.HistoryService;
 import com.agrologic.app.service.history.transaction.FlockHistoryServiceImpl;
 import com.agrologic.app.service.history.transaction.HistoryServiceImpl;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +29,23 @@ public class HtmlTableService {
 
     private HistoryContent createHistoryPerDayTableContent(Long flockId, FromDayToDay fromDayToDay, Long langId) throws HistoryContentException {
         try {
+            List<Data> defaultPerDayHistoryList = historyService.getPerDayHistoryData(langId);
+            // if grow day data not the first in array so find it and swap with first
+            if (!defaultPerDayHistoryList.get(0).getId().equals(800L)) {
+                int growDayIndex = -1;
+                int counter = 0;
+                for (Data data : defaultPerDayHistoryList) {
+                    if (data.getId().equals(800L)) {
+                        growDayIndex = counter;
+                        break;
+                    }
+                    counter++;
+                }
+                Collections.swap(defaultPerDayHistoryList, 0, growDayIndex);
+            }
 
             Map<Integer, String> flockPerDayHistoryNotParsedList = flockHistoryService.getFlockPerDayNotParsedReportsWithinRange(flockId, fromDayToDay);
-            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayHistoryNotParsedList);
+            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayHistoryNotParsedList, defaultPerDayHistoryList);
 
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);

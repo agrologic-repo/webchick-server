@@ -6,8 +6,8 @@ import com.agrologic.app.model.Cellink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +24,7 @@ public class ClrearControllerData {
     private final DataDao dataDao;
 
     @Autowired
-    public ClrearControllerData(CellinkDao cellinkDao, DataDao dataDao) {
+    public ClrearControllerData(@Qualifier("cellinkDao") CellinkDao cellinkDao, @Qualifier("dataDao") DataDao dataDao) {
         this.cellinkDao = cellinkDao;
         this.dataDao = dataDao;
     }
@@ -33,7 +33,6 @@ public class ClrearControllerData {
     public ModelAndView clearControllerData(@RequestParam(value = "userId") long userId,
                                             @RequestParam(value = "cellinkId") long cellinkId,
                                             @RequestParam(value = "controllerId") long controllerId) {
-
         Cellink cellink = null;
         try {
             cellink = cellinkDao.getById(cellinkId);

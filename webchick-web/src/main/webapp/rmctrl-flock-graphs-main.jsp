@@ -16,35 +16,20 @@
     <link rel="shortcut icon" href="resources/images/favicon.ico">
     <style type="text/css">
         .menuFarme {
-            /*border-style: 1px solid #1B213B;*/
-
             border-collapse: collapse;
-        "
         }
 
         frame {
-            border: 0px solid #1B213B;;
+            border: 1px solid #1B213B;;
         }
     </style>
 </head>
-<c:choose>
-    <c:when test='${dir eq "ltr"}'>
-        <frameset rows="13%, * " frameborder="yes" border="2">
-            <frame src="rmctrl-flock-graphs-top.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&flockName=<%=flock.getFlockName()%>&currLocal=<%=currLocal%>" name="top" target="_blank">
-            <frameset cols="13.5%, *">
-                <frame class="menuFarme" src="./rmctrl-flock-graphs-left.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>" name="leftPage">
-                <frame src="dashboard.jsp" name="rightPage">
-            </frameset>
-        </frameset>
-    </c:when>
-    <c:otherwise>
-        <frameset rows="13%, * " frameborder="yes" border="2">
-            <frame src="rmctrl-flock-graphs-top.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&flockName=<%=flock.getFlockName()%>&currLocal=<%=currLocal%>" name="top" target="_blank">
-            <frameset cols="* , 13.5%">
-                <frame class="menuFarme" src="./rmctrl-flock-graphs-left.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>" name="rightPage">
-                <frame src="dashboard.jsp" name="leftPage">
-            </frameset>
-        </frameset>
-    </c:otherwise>
-</c:choose>
+
+<frameset rows="13%, 87% " frameborder="yes" border="1">
+    <frame src="rmctrl-flock-graphs-top.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&flockName=<%=flock.getFlockName()%>&currLocal=<%=currLocal%>" name="top" target="_blank">
+    <frameset cols="25.5%, *">
+        <frame class="menuFarme" src="./rmctrl-flock-graphs-left.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>" name="leftPage">
+        <frame src="dashboard.jsp" name="rightPage">
+    </frameset>
+</frameset>
 </html>

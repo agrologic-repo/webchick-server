@@ -1,6 +1,5 @@
 package com.agrologic.app.web;
 
-import com.agrologic.app.model.Controller;
 import com.agrologic.app.model.Flock;
 import com.agrologic.app.model.history.DayParam;
 import com.agrologic.app.service.history.FlockHistoryService;
@@ -47,6 +46,7 @@ public class FlockGraphServlet extends AbstractServlet {
             session.setAttribute("progID", programId);////
             try {
                 flockHistoryService = new FlockHistoryServiceImpl();
+                logger.info("retrieve flock by given id [{}] ", flockId);
                 flock = flockHistoryService.getFlock(flockId);
                 request.setAttribute("flock", flock);
 

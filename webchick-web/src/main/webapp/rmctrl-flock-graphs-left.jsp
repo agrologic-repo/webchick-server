@@ -13,11 +13,8 @@
 <html dir="<%=session.getAttribute("dir")%>">
 <head>
     <title><%=session.getAttribute("history.graph.page.title")%></title>
-
     <style type="text/css">
         .button {
-            /*background-color: #4CAF50; *//* Green */
-            /*background-color: #3A8B41;*/
             background-color: #aaaaaa;
             border: none;
             color: white;
@@ -34,10 +31,6 @@
             box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
             width: 100%;
         }
-
-        /*.button1 {*/
-        /*box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);*/
-        /*}*/
     </style>
 
 </head>
@@ -50,7 +43,7 @@
         <input id="flockId" type="hidden" name="flockId" value="<%=flockId%>"/>
         <input id="graphType" type="hidden" name="graphType" value="daily"/>
         <input id="currLocale" type="hidden" name="currLocale" value="<%=currLocale%>"/>
-        <button class="button">
+        <button class="button" id="daily">
             <%=session.getAttribute("graph.to.daily.graphs")%>
         </button>
     </form>
@@ -66,6 +59,11 @@
         </button>
     </form>
 </div>
+<script>
+    $("document").ready(function () {
+        $("#daily")[0].click();
+    });
+</script>
 </body>
 
 </html>

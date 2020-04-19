@@ -242,4 +242,14 @@ public interface ControllerDao {
      * @throws java.sql.SQLException if failed to retrieve send string names.
      */
     Map<String, String> getControllerSendStringNames(String searchText) throws SQLException;
+
+    /**
+     * Return true if controller netname on given cellink already exist .
+     *
+     * @param cellinkId the cellink id to check
+     * @param netName the netName to check
+     * @return true if exit , otherwise false
+     * @throws SQLException if failed
+     */
+    boolean isNetNameExists(Long cellinkId, String netName)  throws SQLException;
 }

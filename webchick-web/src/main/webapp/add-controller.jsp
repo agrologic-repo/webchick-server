@@ -215,6 +215,11 @@
                             </td>
                         </tr>
                         <tr>
+                            <td align="center" colspan="2">
+                                <jsp:include page="messages.jsp"/>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>
                                 <h2><%=session.getAttribute("controller.page.add.header")%>
                                 </h2>

@@ -28,19 +28,19 @@
     <input id="cellinkId" type="hidden" name="cellinkId" value="<%=cellinkId%>"/>
     <input id="flockId" type="hidden" name="flockId" value="<%=flockId%>"/>
 </div>
-<table width="100%">
+<table width="100%" border="0">
     <tr>
         <td align="center" width="100%">
             <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
                 <table width="100%" border="0">
                     <tr>
-                        <td wdith="90%" align="center">
+                        <td wdith="75%" align="center">
                             <h1 style="text-align: center;"><span><%=session.getAttribute("history.graph.page.title")%>
                                 <h2 style="text-align: center;"><%=flock%></h2></span>
                             </h1>
 
                         </td>
-                        <td width="10%">
+                        <td width="25%">
                             <table>
                                 <tr>
                                     <td>

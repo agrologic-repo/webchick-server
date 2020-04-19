@@ -127,9 +127,15 @@
                             </td>
                             <td bgcolor="#F3F3F3">
                                 <%if (editUser.getRole() == UserRole.ADMIN) {%>
-                                <%=session.getAttribute("user.role.admin")%>
+                                    <%=session.getAttribute("user.role.admin") %>
+                                <%} else if (editUser.getRole() == UserRole.DISTRIBUTOR) {%>
+                                    <%=session.getAttribute("user.role.advanced") %>
+                                <%} else if (editUser.getRole() == UserRole.USER) {%>
+                                    <%=session.getAttribute("user.role.regular") %>
+                                <%} else if (editUser.getRole() == UserRole.READONLYUSER) {%>
+                                <%=session.getAttribute("user.role.readonly") %>
                                 <%} else {%>
-                                <%=session.getAttribute("user.role.regular")%>
+
                                 <%}%>
                             </td>
                         </tr>

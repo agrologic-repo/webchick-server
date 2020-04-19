@@ -3,7 +3,6 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.*;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.Controller;
-import com.agrologic.app.model.Data;
 import com.agrologic.app.model.Flock;
 
 import javax.servlet.ServletException;
@@ -12,12 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 
 public class ListFlocksServlet extends AbstractServlet {
 
@@ -40,7 +34,7 @@ public class ListFlocksServlet extends AbstractServlet {
             } else {
                 Long userId = Long.parseLong(request.getParameter("userId"));
                 Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
-
+                logger.info("retrieve flocks by controller ");
                 try {
                     CellinkDao cellinkDao = DbImplDecider.use(DaoType.MYSQL).getDao(CellinkDao.class);
                     Cellink cellink = cellinkDao.getById(cellinkId);

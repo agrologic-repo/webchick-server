@@ -20,11 +20,13 @@ import java.util.List;
 import java.util.Map;
 
 public class ExcelService {
+    private HistoryService historyService;
     private ExcelFileWriter excelFileWriter;
     private FlockHistoryService flockHistoryService;
     private Logger logger;
 
     public ExcelService() {
+        historyService = new HistoryServiceImpl();
         excelFileWriter = new ExcelFileWriter();
         flockHistoryService = new FlockHistoryServiceImpl();
         logger = LoggerFactory.getLogger(ExcelService.class);
@@ -36,12 +38,31 @@ public class ExcelService {
         logger = LoggerFactory.getLogger(ExcelService.class);
     }
 
+    /**
+     * Create list of history values of specified flock
+     *
+     * @param flockId the flock id
+     * @return HistoryContent the content of history data
+     */
     private HistoryContent createPerDayHistoryTableContent(Long flockId, Long langId) throws HistoryContentException {
         try {
-
-            Map<Integer, String> flockPerDayNotParsed = flockHistoryService.getFlockPerDayNotParsedReports(flockId);
-            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayNotParsed);
-
+            List<Data> defaultPerDayHistoryList = historyService.getPerDayHistoryData(langId);
+            // if grow day data not the first in array so find it and swap with first
+            if (!defaultPerDayHistoryList.get(0).getId().equals(800L)) {
+                int growDayIndex = -1;
+                int counter = 0;
+                for (Data data : defaultPerDayHistoryList) {
+                    if (data.getId().equals(800L)) {
+                        growDayIndex = counter;
+                        break;
+                    }
+                    counter++;
+                }
+                Collections.swap(defaultPerDayHistoryList, 0, growDayIndex);
+            }
+            Map<Integer, String> flockPerDayNotParsedReports = flockHistoryService.getFlockPerDayNotParsedReports(flockId);
+            return HistoryContentCreator.createPerDayHistoryContent(flockPerDayNotParsedReports,
+                    defaultPerDayHistoryList);
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new HistoryContentException(e.getMessage(), e);

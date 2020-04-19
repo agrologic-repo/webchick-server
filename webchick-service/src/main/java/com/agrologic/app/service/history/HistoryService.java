@@ -47,5 +47,15 @@ public interface HistoryService {
      * @throws SQLException if failed to get data from database .
      */
     public List<Data> getPerDayAndHourHistoryData(Long langId) throws SQLException;
+
+    /**
+     * Get list of data that have been defined as historical data per grow day and exists in controllerdata.
+     *
+     * @param langId
+     * @param flockId
+     * @return the list of history data per grow day
+     * @throws SQLException if failed to get data from database .
+     */
+    public List<Data> getPerDayHistoryData(Long langId, Long flockId) throws SQLException;
 }
 

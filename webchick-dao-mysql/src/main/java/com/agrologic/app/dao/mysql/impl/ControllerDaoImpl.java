@@ -363,4 +363,11 @@ public class ControllerDaoImpl implements ControllerDao {
         }
         return sendStrings;
     }
+
+    @Override
+    public boolean isNetNameExists(Long cellinkId, String netName) throws SQLException {
+        String query = "SELECT EXISTS(SELECT netname FROM controllers WHERE cellinkid=? and netname=?)";
+        boolean exists = jdbcTemplate.queryForObject(query, new Object[]{cellinkId, netName}, Boolean.class);
+        return exists;
+    }
 }

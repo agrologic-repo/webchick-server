@@ -57,4 +57,12 @@ public class HistoryServiceImpl implements HistoryService {
         List<Data> dataList = (List<Data>) dataDao.getHistoryDataListByCriteria(PER_DAY_AND_HOUR_HISTORY_STRING, langId);
         return dataList;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Data> getPerDayHistoryData(Long langId, Long flockId) throws SQLException {
+        List<Data> dataList = (List<Data>) dataDao.getHistoryDataListByCriteria(PER_DAY_HISTORY_STRING, langId, flockId);
+        return dataList;
+    }
 }

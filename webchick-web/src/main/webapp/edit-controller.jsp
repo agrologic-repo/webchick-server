@@ -215,7 +215,7 @@
             <tr>
                 <td valign="top" style="padding-top:0px">
                     <h1><%=session.getAttribute("controller.page.edit.title")%></h1>
-
+                    <jsp:include page="messages.jsp"/>
                     <p>
                     <h2><%=session.getAttribute("controller.page.edit.title")%> <%=editController.getId() %></h2>
                     <div><p style="color:red">Boxes with an asterisk next to them are required</p></div>
@@ -260,6 +260,8 @@
                                     <option value=""></option>
                                     <option value="Broiler">Broiler</option>
                                     <option value="Layer">Layer</option>
+                                    <option value="Breeder">Breeder</option>
+                                    <option value="Pullets">Pullets</option>
                                 </select>
                                 <script>
                                     var length = document.editForm.houseType.options.length;

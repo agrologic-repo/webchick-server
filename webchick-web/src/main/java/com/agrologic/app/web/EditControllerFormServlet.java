@@ -4,7 +4,9 @@ package com.agrologic.app.web;
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.dao.DaoType;
 import com.agrologic.app.dao.DbImplDecider;
+import com.agrologic.app.dao.ProgramDao;
 import com.agrologic.app.model.Controller;
+import com.agrologic.app.model.Program;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.Collection;
 
 public class EditControllerFormServlet extends AbstractServlet {
 
@@ -41,8 +42,6 @@ public class EditControllerFormServlet extends AbstractServlet {
                 Long userId = Long.parseLong(request.getParameter("userId"));
                 Long cellinkId = Long.parseLong(request.getParameter("cellinkId"));
                 Long controllerId = Long.parseLong(request.getParameter("controllerId"));
-
-
                 String title = request.getParameter("title");
                 String netName = request.getParameter("netname");
                 Long programId = Long.parseLong(request.getParameter("programId"));
@@ -53,49 +52,39 @@ public class EditControllerFormServlet extends AbstractServlet {
                 try {
                     ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                     Controller controller = controllerDao.getById(controllerId);
-
-                    controller.setNetName(netName);
-                    controller.setTitle(title);
-                    controller.setCellinkId(cellinkId);
-                    controller.setProgramId(programId);
-                    controller.setName(controllerType);
-                    controller.setHouseType(houseType);
-
-                    if ((active != null) && "ON".equals(active.toUpperCase())) {
-                        controller.setActive(true);
+                    boolean exists = controllerDao.isNetNameExists(cellinkId, netName);
+                    if(exists && !controller.getNetName().equals(netName)) {
+                        ProgramDao programDao = DbImplDecider.use(DaoType.MYSQL).getDao(ProgramDao.class);
+                        Program program = programDao.getById(controller.getProgramId());
+                        controller.setProgram(program);
+                        forwardLink ="./edit-controller.jsp";
+                        request.setAttribute("message", "Controller net name " + netName + " already in use. Select another net name !");
+                        request.setAttribute("error", true);
+                        request.setAttribute("editcontroller", controller);
+                        request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);
                     } else {
-                        controller.setActive(false);
-                    }
-
-                    Collection<Controller> controllers = controllerDao.getAllByCellink(cellinkId);
-
-                    boolean upt = true;
-
-                    for(Controller c : controllers) {
-                        if (c.getNetName().substring(c.getNetName().length() - 2, c.getNetName().length()).equals(controller.getNetName().substring(c.getNetName().length() - 2, c.getNetName().length()))) {
-                            upt = false;
+                        controller.setNetName(netName);
+                        controller.setTitle(title);
+                        controller.setCellinkId(cellinkId);
+                        controller.setProgramId(programId);
+                        controller.setName(controllerType);
+                        controller.setHouseType(houseType);
+                        if ((active != null) && "ON".equals(active.toUpperCase())) {
+                            controller.setActive(true);
+                        } else {
+                            controller.setActive(false);
                         }
-                    }
-
-                    if (upt) {
                         controllerDao.update(controller);
-                    } else {
-                        controllerDao.update_version(programId, controllerId);
+                        logger.info("Controller " + controller + " successfully updated !");
+                        request.setAttribute("message", "Controller successfully updated !");
+                        request.setAttribute("error", false);
+                        request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);
                     }
-
-                    logger.info("Controller " + controller + " successfully updated !");
-
-                    request.setAttribute("message", "Controller with ID " + controller.getId() + " successfully updated !");
-                    request.setAttribute("error", false);
-                    request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);
-
                 } catch (SQLException ex) {
-
                     logger.error("Error occurs while updating controller !");
                     request.setAttribute("message", "Error occurs while updating controller  .");
                     request.setAttribute("error", true);
                     request.getRequestDispatcher(forwardLink + "?userId" + userId + "&cellinkId" + cellinkId).forward(request, response);
-
                 }
             }
         } finally {

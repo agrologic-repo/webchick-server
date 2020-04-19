@@ -50,7 +50,7 @@ public class UserInfoServlet extends AbstractServlet {
                     request.getRequestDispatcher("./all-cellinks.jsp?userId=" + editUser.getId()).forward(request,
                             response);
                 } catch (SQLException ex) {
-                    logger.trace("Unnkown exception", ex);
+                    logger.trace("Unkown exception", ex);
                 }
             }
         } finally {

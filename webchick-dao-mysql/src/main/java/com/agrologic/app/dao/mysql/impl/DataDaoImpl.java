@@ -6,12 +6,10 @@ import com.agrologic.app.dao.mappers.Util;
 import com.agrologic.app.model.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
@@ -781,9 +779,9 @@ public class DataDaoImpl implements DataDao {
     @Override
     public Data get_data_by_d_num(String d_num) throws SQLException {
 
-        String sql = "SELECT * FROM datatable where historydnum LIKE '%;"+ d_num +"%' or historydnum like '%"+ d_num +";%' or historydnum like '"+ d_num +"'";
+        String sql = "SELECT * FROM datatable where historydnum LIKE ";
 
-        List<Data> result = jdbcTemplate.query(sql, new Object[]{}, RowMappers.data());
+        List<Data> result = jdbcTemplate.query(sql, new Object[]{d_num}, RowMappers.data());
         if(result.size() > 1){
             return null;
         }
@@ -828,5 +826,19 @@ public class DataDaoImpl implements DataDao {
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<Data> getHistoryDataListByCriteria(String criteria, Long langId, Long flockId) throws SQLException {
+
+        String sql = "select * from datatable as dt " +
+                " left join databylanguage as dbl on dbl.dataid=dt.dataid and dbl.langid=?" +
+                " inner join controllerdata as cd on cd.dataid=dt.dataid " +
+                " inner join flocks as f on f.controllerid=cd.controllerid and f.flockid=? and dt.historyopt like ? order by dt.type " ;
+
+        return jdbcTemplate.query(sql, new Object[]{langId, flockId, "%" + criteria + "%"}, RowMappers.data());
     }
 }

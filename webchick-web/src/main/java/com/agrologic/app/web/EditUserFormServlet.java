@@ -66,7 +66,7 @@ public class EditUserFormServlet extends AbstractServlet {
                     user.setCompany(newCompanyList);
                 }
 
-                forwardLink = "./all-users.html";
+                forwardLink = "./userinfo.html?userId=" + userId;
             } else {
                 String password = request.getParameter("Npassword");
                 String firstName = request.getParameter("Nfname");
@@ -96,9 +96,9 @@ public class EditUserFormServlet extends AbstractServlet {
                 request.getRequestDispatcher(forwardLink).forward(request, response);
             } catch (Exception ex) {
                 setErrorMessage(request,
-                        MessageFormat.format(getDefaultMessages(request).getString("message.error.remove"),
+                        MessageFormat.format(getDefaultMessages(request).getString("message.error.update"),
                                 new Object[]{user.getId()}),
-                        MessageFormat.format(getMessages(request).getString("message.error.remove"),
+                        MessageFormat.format(getMessages(request).getString("message.error.update"),
                                 new Object[]{user.getId()}), ex);
                 request.getRequestDispatcher(forwardLink).forward(request, response);
             } finally {

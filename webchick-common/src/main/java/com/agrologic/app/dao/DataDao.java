@@ -313,6 +313,8 @@ public interface DataDao {
     Data get_data_by_d_num_with_unicode_l(String d_num, Long lang_id) throws SQLException;
 
     String get_label_by_d_num(String d_num) throws SQLException;
+
+    Collection<Data> getHistoryDataListByCriteria(String criteria, Long langId, Long flockId) throws SQLException;
 }
 
 

@@ -61,7 +61,6 @@
             }
         }
         function reset() {
-            document.getElementById("msgUserName").innerHTML = "";
             document.getElementById("msgPassword").innerHTML = ""
             document.getElementById("msgFName").innerHTML = "";
             document.getElementById("msgLName").innerHTML = "";
@@ -109,7 +108,10 @@
                 valid = false;
             }
 
-            valid = validateEmail(document.addForm.Nemail);
+            if(document.addForm.Nemail.value != "") {
+                validateEmail(document.addForm.Nemail);
+            }
+
             if (!valid) {
                 return false;
             }
@@ -148,7 +150,7 @@
                     <table>
                         <tr>
                             <td><%=session.getAttribute("user.page.login")%> *</td>
-                            <td><input id="Nusername" type="text" name="Nusername" onchange="validateLoginName();"/>
+                            <td><input id="Nusername" type="text" name="Nusername" onchange="validateLoginName();" onblur="validateLoginName();"/>
                             </td>
                             <td id="msgUserName"></td>
                         </tr>
@@ -223,8 +225,8 @@
                     <button id="btnCancel" name="btnCancel" onclick='return back("./all-users.html");'>
                         <%=session.getAttribute("button.cancel")%>
                     </button>
-                    <button type="submit" onclick='return validate();'>
-                        <%=session.getAttribute("button.ok")%>
+                    <button id="btnAdd" type="submit" name="btnAdd" onclick="return validate();">
+                        <%=session.getAttribute("button.ok") %>
                     </button>
                 </td>
             </tr>

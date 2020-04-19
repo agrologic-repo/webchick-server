@@ -4,11 +4,11 @@ import com.agrologic.app.dao.CellinkDao;
 import com.agrologic.app.dao.ControllerDao;
 import com.agrologic.app.model.Cellink;
 import com.agrologic.app.model.User;
-import com.agrologic.app.web.AbstractServlet;
 import com.agrologic.app.web.CheckUserInSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,26 +31,26 @@ public class MyFarms {
     private final CellinkDao cellinkDao;
     private final ControllerDao controllerDao;
 
+
     @Autowired
-    public MyFarms(CellinkDao cellinkDao, ControllerDao controllerDao) {
+    public MyFarms(@Qualifier("cellinkDao") CellinkDao cellinkDao, @Qualifier("controllerDao") ControllerDao controllerDao) {
         this.cellinkDao = cellinkDao;
         this.controllerDao = controllerDao;
     }
 
     @RequestMapping(value = "/my-farms.html", method = RequestMethod.GET)
-    public ModelAndView showMyFarms(@RequestParam(value = "userId") Long userId, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+    public ModelAndView showMyFarms(@RequestParam(value = "userId") Long userId,
+                                         HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 
         User user = (User) session.getAttribute("user");
         if (!CheckUserInSession.isUserInSession(request)) {
-            logger.error("Unauthorized access! Requested URI : [{}] ", request.getRequestURI());
+            logger.error("Unauthorized access!");
             try {
                 response.sendRedirect("./login.jsp");
             } catch (IOException e) {
                 logger.error("Unauthorized access! {0} ", e.getMessage(), e);
             }
         }
-
-        validateInputParams(user,userId);
 
         Collection<Cellink> cellinks = getCellinks(userId);
         Map<String, Object> pageModel = new HashMap<String, Object>();
@@ -60,12 +60,6 @@ public class MyFarms {
         return new ModelAndView("my-farms", pageModel);
     }
 
-    private boolean validateInputParams(User user, Long userId) {
-        if(user.getId().equals(userId)) {
-            return true;
-        }
-        return false;
-    }
 
     private Collection<Cellink> getCellinks(Long userId) {
         try {

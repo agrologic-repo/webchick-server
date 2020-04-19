@@ -74,8 +74,6 @@ public class DataFormat {
      * @return The String or null
      */
     public static String formatToStringValue(int format, long value) {
-//        format = DEC_3;// for test
-//        value = -1; // for test
         try {
             StringBuilder sb = new StringBuilder();
             String delim;
@@ -96,20 +94,19 @@ public class DataFormat {
 
                     delim = DOT_DELIMITER;     // xxx.x
                     if(value < 0){
-//                        if (len < DEC_1 + 2){
-//                            len = sb.length() - DEC_1 - 1;
-//                            if (len <= 0){
-//                                len = DEC_1 + 2 - sb.length();
-//                            }
-//                            while (len > 0){
-//                                sb.insert(1, "0");
-//                                len--;
-//                            }
-//                        }
-//                        position = sb.length() - DEC_1;
-//                        sb.insert(position, delim);
+                        if (len < DEC_1 + 2){
+                            len = sb.length() - DEC_1 - 1;
+                            if (len <= 0){
+                                len = DEC_1 + 2 - sb.length();
+                            }
+                            while (len > 0){
+                                sb.insert(1, "0");
+                                len--;
+                            }
+                        }
+                        position = sb.length() - DEC_1;
+                        sb.insert(position, delim);
                     } else {
-//                        delim = DOT_DELIMITER;     // xxx.x
                         if (len < DEC_1 + 1) {
                             len = DEC_1 - len + 1;
                             while (len > 0) {
@@ -127,20 +124,19 @@ public class DataFormat {
 
                     delim = DOT_DELIMITER;        // xx.xx
                     if (value < 0){
-//                        if (len < DEC_2 + 2){
-//                            len = sb.length() - DEC_2 - 1;
-//                            if (len <= 0){
-//                                len = DEC_2 + 2 - sb.length();
-//                            }
-//                            while (len > 0){
-//                                sb.insert(1, "0");
-//                                len--;
-//                            }
-//                        }
-//                        position = sb.length() - DEC_2;
-//                        sb.insert(position, delim);
+                        if (len < DEC_2 + 2){
+                            len = sb.length() - DEC_2 - 1;
+                            if (len <= 0){
+                                len = DEC_2 + 2 - sb.length();
+                            }
+                            while (len > 0){
+                                sb.insert(1, "0");
+                                len--;
+                            }
+                        }
+                        position = sb.length() - DEC_2;
+                        sb.insert(position, delim);
                     } else {
-//                        delim = DOT_DELIMITER;        // xx.xx
                         if (len < DEC_2 + 1) {
                             len = DEC_2 - len + 1;
 
@@ -158,21 +154,20 @@ public class DataFormat {
                 case DEC_3:
 
                     delim = DOT_DELIMITER;        // xx.xxx
-                    if (value < 0) { // 21/01/2018
-//                        if (len < DEC_3 + 2){
-//                            len = sb.length() - DEC_3 - 1;
-//                            if (len <= 0){
-//                                len = DEC_3 + 2 - sb.length();
-//                            }
-//                            while (len > 0){
-//                                sb.insert(1, "0");
-//                                len--;
-//                            }
-//                        }
-//                        position = sb.length() - DEC_3;
-//                        sb.insert(position, delim);
-                    } else { // 21/01/2018
-//                        delim = DOT_DELIMITER;        // xx.xxx
+                    if (value < 0) {
+                        if (len < DEC_3 + 2){
+                            len = sb.length() - DEC_3 - 1;
+                            if (len <= 0){
+                                len = DEC_3 + 2 - sb.length();
+                            }
+                            while (len > 0){
+                                sb.insert(1, "0");
+                                len--;
+                            }
+                        }
+                        position = sb.length() - DEC_3;
+                        sb.insert(position, delim);
+                    } else {
                         if (len < DEC_3 + 1) {
                             len = DEC_3 - len + 1;
                                 while (len > 0) {
@@ -182,27 +177,9 @@ public class DataFormat {
                         }
                         position = sb.length() - DEC_3;
                         sb.insert(position, delim);
-                    } // 15/01/2018
+                    }
 
                     break;
-//                case DEC_3:
-//
-//                    delim = DOT_DELIMITER;        // xx.xxx
-//
-//                    if (len < DEC_3 + 1) {
-//                        len = DEC_3 - len + 1;
-//
-//                        while (len > 0) {
-//                            sb.insert(0, "0");
-//                            len--;
-//                        }
-//                    }
-//
-//                    position = sb.length() - DEC_3;
-//                    sb.insert(position, delim);
-//
-//                    break;
-
                 case HUMIDITY:                   // xxx
                     break;
 

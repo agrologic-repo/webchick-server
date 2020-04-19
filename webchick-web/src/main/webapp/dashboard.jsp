@@ -1,7 +1,4 @@
-<%@ page import="com.agrologic.app.graph.GenerateGraph" %>
-<%@ page import="java.io.PrintWriter" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
-<%--<%@ page errorPage="anerrorpage.jsp" %>--%>
 <%@ include file="language.jsp" %>
 
 <!DOCTYPE html>
@@ -29,6 +26,7 @@
             left: 0px;
             visibility: hidden
         }
+
     </style>
     <script type="text/javascript" src="resources/javascript/jquery.js">;</script>
     <script type="text/javascript" src="resources/javascript/jquery-ui.js">;</script>
@@ -37,14 +35,6 @@
 </head>
 </head>
 <body onload="downLoad()">
-<div id="loadingDiv" class="loadingClass" style="width: 100%">
-    <table width="100%">
-        <tr>
-            <td align="center"><p><strong><em><spring:message code="graph.please.wait.while.page.loading"/>
-            </em></strong></p></td>
-        </tr>
-    </table>
-</div>
 <div id="contentDiv" class="contentClass" style="width: 100%">
     <fieldset style="-moz-border-radius:5px;  border-radius: 5px;  -webkit-border-radius: 5px;">
         <table width="100%">
@@ -55,8 +45,7 @@
                             <td valign="top">
                                 <table width="100%">
                                     <tr>
-                                        <td align="center"><p><strong><em><spring:message code="graph.please.wait.while.page.loading"/>
-                                        </em></strong></p></td>
+                                        <td align="center"><p><%=session.getAttribute("graph.please.wait.while.page.loading")%></p></td>
                                     </tr>
                                 </table>
                             </td>
@@ -67,5 +56,14 @@
         </table>
     </fieldset>
 </div>
+<script>
+    function downLoad() {
+        if (document.all) {
+            document.all["contentDiv"].style.visibility = "visible";
+        } else if (document.getElementById) {
+            document.getElementById("contentDiv").style.visibility = 'visible';
+        }
+    }
+</script>
 </body>
 </html>

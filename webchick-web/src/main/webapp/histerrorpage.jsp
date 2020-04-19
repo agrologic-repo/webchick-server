@@ -2,6 +2,11 @@
 
 <%@ page isErrorPage="true" %>
 
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
 <html dir="<%=session.getAttribute("dir")%>">
 
     <head>
@@ -16,5 +21,7 @@
 
     <body>
           <h2> There is no history data. </h2>
+          <button onclick="goBack()">Go Back</button>
+
     </body>
 </html>

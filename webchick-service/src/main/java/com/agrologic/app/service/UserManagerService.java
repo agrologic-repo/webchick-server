@@ -15,7 +15,7 @@ public interface UserManagerService {
      * @param user an objects that encapsulates an user attributes.
      * @throws java.sql.SQLException if failed to insert new user to the database.
      */
-    void insert(User user) throws SQLException;
+    long insert(User user) throws SQLException;
 
     /**
      * Updates an existing user row in table user

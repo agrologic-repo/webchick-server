@@ -55,6 +55,8 @@
     String graphURLM;
     if (fileName.contains("public_error")) {
         graphURLM = request.getContextPath() + "/resources/images/public_nodata_500x300.png";
+    } else if (fileName.contains("public_loading")) {
+        graphURLM = request.getContextPath() + "/resources/images/public_loadingdata_500x300.png";
     } else {
         graphURLM = request.getContextPath() + "/servlet/DisplayChart?filename=" + fileName;
     }
