@@ -169,7 +169,7 @@
                                                 <option value="1"><%=session.getAttribute("user.role.admin")%></option>
                                                 <option value="2"><%=session.getAttribute("user.role.regular")%></option>
                                                 <option value="3"><%=session.getAttribute("user.role.advanced")%></option>
-                                                <option value="4">ReadOnlyUser</option>
+                                                <option value="4"><%=session.getAttribute("user.role.readonly")%></option>
                                             </select>
                                         </td>
                                     </tr>

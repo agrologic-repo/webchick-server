@@ -51,13 +51,10 @@ public class RCControllerScreenAjax extends AbstractServlet {
                 Cellink cellink = cellinkDao.getById(cellinkId);
 
                 if (cellink.getState() == CellinkState.STATE_ONLINE) {
-                    cellink.setTime(new Timestamp(System.currentTimeMillis()));
                     cellink.setState(CellinkState.STATE_START);
-                    cellinkDao.update(cellink);
-                } else {
-                    cellink.setTime(new Timestamp(System.currentTimeMillis()));
-                    cellinkDao.update(cellink);
                 }
+                cellink.setTime(new Timestamp(System.currentTimeMillis()));
+                cellinkDao.update(cellink);
 
                 final ControllerDao controllerDao = DbImplDecider.use(DaoType.MYSQL).getDao(ControllerDao.class);
                 final Controller controller = controllerDao.getById(controllerId);

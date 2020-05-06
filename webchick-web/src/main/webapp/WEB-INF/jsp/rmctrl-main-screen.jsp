@@ -16,15 +16,6 @@
         return;
     }
 
-    if(user.getUserRole().equals(UserRole.USER)) {
-        try {
-            if (!user.getId().equals(userId)) {
-                response.sendRedirect("./index.htm");
-            }
-        } catch (Exception e) {
-        }
-    }
-
     UserRole role = user.getRole();
 
     Locale oldLocal = (Locale) session.getAttribute("oldLocale");
@@ -98,8 +89,8 @@
                             timeoutID = window.setTimeout("ajaxFunction();", 10000);
                         }
                     } else {
-                        <%--var innerHTML = "<table class=\"errMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"--%>
-                        <%--tableDataDiv.innerHTML = window.top.location.href=<%=request.getContextPath()%>"/login.jsp";--%>
+                        var innerHTML = "<table class=\"errMsg\"><tr><td><p>Loading please wait...</p></td></tr></table>"
+                        tableDataDiv.innerHTML = innerHTML;
                     }
                     break;
             }

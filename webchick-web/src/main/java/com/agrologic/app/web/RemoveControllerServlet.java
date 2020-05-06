@@ -31,7 +31,6 @@ public class RemoveControllerServlet extends AbstractServlet {
         if (!CheckUserInSession.isUserInSession(request)) {
             logger.error("Unauthorized access!");
             response.sendRedirect("/login.jsp");
-            request.getSession().invalidate();
         } else {
             User user = (User) request.getSession().getAttribute("user");
             String forwardLink = "./cellink-setting.html";

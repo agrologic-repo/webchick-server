@@ -133,7 +133,7 @@
                                 <%} else if (editUser.getRole() == UserRole.USER) {%>
                                     <%=session.getAttribute("user.role.regular") %>
                                 <%} else if (editUser.getRole() == UserRole.READONLYUSER) {%>
-                                <%=session.getAttribute("user.role.readonly") %>
+                                    <%=session.getAttribute("user.role.readonly") %>
                                 <%} else {%>
 
                                 <%}%>

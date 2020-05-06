@@ -185,7 +185,7 @@
                                         <%} else if (user.getRole() == UserRole.USER) {%>
                                         <%=session.getAttribute("user.role.regular") %>
                                         <%} else if (user.getRole() == UserRole.READONLYUSER) {%>
-                                            Read only user
+                                        <%=session.getAttribute("user.role.readonly") %>
                                         <%} else {%>
 
                                         <%}%>

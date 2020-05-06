@@ -33,7 +33,7 @@ public class GenerateGraph {
     private static final Logger logger = LoggerFactory.getLogger(GenerateGraph.class);
     private static LocaleService localeService = new LocaleService();
     private static Map<String, String> dictionary = new HashMap<>();
-    private static Map<Long,List<Data>> defaultDailyHistoryMap = new HashMap<>();
+//    private static Map<Long,List<Data>> defaultDailyHistoryMap = new HashMap<>();
     private static Map<Long,HistoryContent> flockHistoryContent = new HashMap<>();
     private static HistoryService historyService = new HistoryServiceImpl();
     private static FlockHistoryService flockHistoryService = new FlockHistoryServiceImpl();
@@ -43,25 +43,28 @@ public class GenerateGraph {
 
         try {
             final Long langId = localeService.getLanguageId(locale.getLanguage());
-            final List<Data> defaultPerDayHistoryList = getDefaultPerDayHistoryList(langId,flockId);
+            final List<Data> defaultPerDayHistoryList = getDefaultPerDayHistoryList(langId, flockId);
             largestDataList = defaultPerDayHistoryList;
             Thread historyContentLoader = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     logger.info("start HistoryContentCreator({},{})", flockId, langId);
-                    if(!flockHistoryContent.containsKey(flockId)) {
-                        Map<Integer, String> flockPerDayNotParsedReports = null;
-                        try {
-                            flockPerDayNotParsedReports = flockHistoryService.getFlockPerDayNotParsedReports(flockId);
-                        } catch (SQLException e) {
-                            logger.error("Error during getHistDataList ", e);
-                        }
-                        HistoryContent historyContent = HistoryContentCreator
-                                .createPerDayHistoryContent(flockPerDayNotParsedReports, defaultPerDayHistoryList);
-                        flockHistoryContent.put(flockId,historyContent);
-                        logger.info("end HistoryContentCreator({},{})", flockId, langId);
-                    }
 
+                    if(!flockHistoryContent.containsKey(flockId)) {
+                        HistoryContent historyContent = new HistoryContent();
+                        flockHistoryContent.put(flockId, historyContent);
+                    }
+                    TreeMap<Integer, String> flockPerDayNotParsedReports = null;
+                    try {
+                        if(flockPerDayNotParsedReports == null) {
+                            flockPerDayNotParsedReports = (TreeMap<Integer, String>) flockHistoryService.getFlockPerDayNotParsedReports(flockId);
+                        }
+                    } catch (SQLException e) {
+                        logger.error("Error during getHistDataList ", e);
+                    }
+                    HistoryContentCreator
+                            .createPerDayHistoryContent(flockPerDayNotParsedReports, defaultPerDayHistoryList, flockHistoryContent.get(flockId));
+                    logger.info("end HistoryContentCreator({},{})", flockId, langId);
                 }
             });
             historyContentLoader.start();

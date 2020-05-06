@@ -24,12 +24,24 @@
         }
     </style>
 </head>
-
-<frameset rows="13%, 87% " frameborder="yes" border="1">
-    <frame src="rmctrl-flock-graphs-top.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&flockName=<%=flock.getFlockName()%>&currLocal=<%=currLocal%>" name="top" target="_blank">
-    <frameset cols="25.5%, *">
-        <frame class="menuFarme" src="./rmctrl-flock-graphs-left.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>" name="leftPage">
-        <frame src="dashboard.jsp" name="rightPage">
-    </frameset>
-</frameset>
+<c:choose>
+    <c:when test='${dir eq "ltr"}'>
+        <frameset rows="13%, * " frameborder="yes" border="2">
+            <frame src="rmctrl-flock-graphs-top.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&flockName=<%=flock.getFlockName()%>&currLocal=<%=currLocal%>" name="top" target="_blank">
+            <frameset cols="13.5%, *">
+                <frame class="menuFarme" src="./rmctrl-flock-graphs-left.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>" name="leftPage">
+                <frame src="dashboard.jsp" name="rightPage">
+            </frameset>
+        </frameset>
+    </c:when>
+    <c:otherwise>
+        <frameset rows="13%, * " frameborder="yes" border="2">
+            <frame src="rmctrl-flock-graphs-top.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&flockName=<%=flock.getFlockName()%>&currLocal=<%=currLocal%>" name="top" target="_blank">
+            <frameset cols="* , 13.5%">
+                <frame class="menuFarme" src="./rmctrl-flock-graphs-left.jsp?userId=<%=userId%>&cellinkId=<%=cellinkId%>&flockId=<%=flockId%>&currLocal=<%=currLocal%>" name="rightPage">
+                <frame src="dashboard.jsp" name="leftPage">
+            </frameset>
+        </frameset>
+    </c:otherwise>
+</c:choose>
 </html>
